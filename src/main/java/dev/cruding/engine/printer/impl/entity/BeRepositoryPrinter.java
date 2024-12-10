@@ -24,7 +24,7 @@ public class BeRepositoryPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.module, ".", entity.lname, ";");
+        f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
 
         f.L("");
         f.flushJavaImportBloc();
@@ -35,8 +35,6 @@ public class BeRepositoryPrinter extends Printer {
 
         if (entity.haveFather) {
             f.L("");
-            // @TODO f.L____("void deleteBy", entity.ufather, "Id(", father.id_.jtype, " id", entity.ufather,
-            // ");");
         }
 
         for (Action action : Context.getInstance().actionEntity(entity)) {
@@ -46,7 +44,7 @@ public class BeRepositoryPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.modulePath + '/' + entity.lname + "/" + entity.uname + "Repository.java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Repository.java");
     }
 
 }

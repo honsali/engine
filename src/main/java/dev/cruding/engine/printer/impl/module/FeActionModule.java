@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.Component;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
@@ -21,16 +20,16 @@ public class FeActionModule extends Printer {
         Collections.sort(listePage);
         f.__("export const Action", module.unameLast, " = {");
         for (Page page : listePage) {
-            f.L____("Uc", page.uc, ": {");
-            List<Action> listeAction = Context.getInstance().actionPage(page);
-            for (Action action : listeAction) {
-                action.addActionModule(f, page);
-            }
-            for (Component action : page.listeActionInView) {
-                action.addActionModule(f, page);
-            }
-            f.L____("},");
+            if (page.estReelle()) {
 
+                f.L____("Uc", page.uc, ": {");
+
+                List<Action> listeAction = new ArrayList<>(Context.getInstance().allActionPage(page));
+                for (Action action : listeAction) {
+                    action.addActionModule(f, page);
+                }
+                f.L____("},");
+            }
         }
 
 

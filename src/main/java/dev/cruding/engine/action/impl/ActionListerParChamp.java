@@ -1,7 +1,7 @@
 package dev.cruding.engine.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.action.ActionAvecTable;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.Flow;
@@ -10,21 +10,16 @@ import dev.cruding.engine.flow.MCFlow;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 
-public class ActionListerParChamp extends ActionAvecTable {
+public class ActionListerParChamp extends Action {
 
     public Field par;
     public Field ordonnerPar;
     public String parName;
     public String parNameSuffixed;
 
-    public ActionListerParChamp() {
-        super("listerPar");
-        withService = true;
-    }
+
 
     public ActionListerParChamp(Field par) {
-        super("listerPar");
-        withService = true;
         this.par = par;
     }
 
@@ -33,32 +28,14 @@ public class ActionListerParChamp extends ActionAvecTable {
         return this;
     }
 
-    public ActionListerParChamp entity(Entity entity) {
-        this.entity = entity;
-        parName = entity.uname.equals(par.containingEntity) ? "" : par.containingEntity;
-        parNameSuffixed = parName.length() > 0 ? parName + "_" : "";
 
-        if (par.isRef || par.isFather) {
-            this.actionType = "lister" + entity.uname + "ParId" + par.uname + parName;
-        } else {
-            this.actionType = "lister" + entity.uname + "Par" + par.uname + parName;
-        }
-        this.lname = actionType;
-        if ("id".equals(par.lname)) {
-            this.sourceDonnee = "liste" + entity.uname + parName;
-        } else {
-            this.sourceDonnee = "liste" + entity.uname + parName;
-
-        }
-        return this;
-    }
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity.uname, "modele/" + entity.modulePath + "/Service" + entity.uname);
+        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity.uname + " }", "modele/" + entity.modulePath + "/Domaine" + entity.uname);
+        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
@@ -70,52 +47,42 @@ public class ActionListerParChamp extends ActionAvecTable {
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(sourceDonnee, "I" + entity.uname + "[]");
+        f.addMdlResultAttribute(sourceDonnee(), "I" + entity().uname + "[]");
 
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(sourceDonnee, "I" + entity.uname + "[]");
+        f.addMdlStateAttribute(sourceDonnee(), "I" + entity().uname + "[]");
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const selectListe", entity.uname, " = createSelector([selectMdl", uc, "], (state: ", uc, "Type) => state.", sourceDonnee, ");");
+        f.L("export const selectListe", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", sourceDonnee(), ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
-        f.L("const ", lname, "Impl = async (requete: Req", uc, ", resultat: Res", uc, ", thunkAPI) => {");
+        f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         if (par.isRef || par.isFather) {
-            f.L____("resultat.", sourceDonnee, " = await Service", entity.uname, ".listerParId", par.uname, parName, "(requete.id", par.uname, parName, ");");
+            f.L____("resultat.", sourceDonnee(), " = await Service", entity().uname, ".listerParId", par.uname, parName, "(requete.id", par.uname, parName, ");");
         } else {
-            f.L____("resultat.", sourceDonnee, " = await Service", entity.uname, ".listerPar", par.uname, parName, "(requete.", par.lname, parName, ");");
+            f.L____("resultat.", sourceDonnee(), " = await Service", entity().uname, ".listerPar", par.uname, parName, "(requete.", par.lname, parName, ");");
         }
         f.L("};");
     }
 
-    public void addCtrlDeclaration(MCFlow f) {
-        f.L____(lname, ": action<Req", uc, ", Res", uc, ">(", lname, "Impl, 'Ctrl", uc, "/", lname, "'),");
-    }
 
-    public boolean addMdlReducer(MCFlow flow) {
-        return false;
-    }
 
     public void addMdlExtraReducer(MCFlow f) {
-        f.L____________(".addCase(Ctrl", uc, ".", lname, ".fulfilled, (state, action) => {");
-        f.L____________("    state.resultat = action.payload;");
-        f.L____________("    state.", sourceDonnee, " = action.payload.", sourceDonnee, ";");
+        f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
+        f.L________________("state.resultat = action.payload;");
+        f.L________________("state.", sourceDonnee(), " = action.payload.", sourceDonnee(), ";");
         f.L____________("})");
     }
 
-    public void addViewScript(ViewFlow f) {
-        f.totalScript().L("");
+    public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        if (uc.endsWith(par.containingEntity) && !"id".equals(par.lname)) {
-
-            // f.totalScript().L________("if(", StringUtils.uncapitalize(par.containingEntity), "?.", par.lname,
-            // "){");
-            f.totalScript().L____________("    execute(Ctrl", uc, ".", lname, ", {");
+        if (uc().endsWith(par.containingEntity) && !"id".equals(par.lname)) {
+            f.totalScript().L____________("execute(Ctrl", uc(), ".", lname(), ", {");
             if (par.isRef || par.isFather) {
                 f.totalScript().__(" ", par.uname + parName);
             } else {
@@ -127,35 +94,36 @@ public class ActionListerParChamp extends ActionAvecTable {
             f.totalScript().L____("}, []);");
             f.totalScript().L____("}, [", StringUtils.uncapitalize(par.containingEntity), "]);");
         } else {
-            f.totalScript().L____("    execute(Ctrl", uc, ".", lname, ", {");
+            f.totalScript().L________("execute(Ctrl", uc(), ".", lname(), ", {");
             f.totalScript().__(" ", par.lname, par.containingEntity, " ");
             f.totalScript().__("});");
             f.totalScript().L____("}, [", par.lname, par.containingEntity, "]);");
         }
 
-        if (uc.endsWith(par.containingEntity) && !"id".equals(par.lname)) {
-            f.addSpecificSelector(par.containingEntity, mvcPath + "/Mdl" + uc);
+        if (uc().endsWith(par.containingEntity) && !"id".equals(par.lname)) {
+            f.addSpecificSelector(par.containingEntity, mvcPath() + "/Mdl" + uc());
         } else {
             f.addParam(par.lname + par.containingEntity);
         }
         f.useExecute();
         f.useEffect();
-        f.addJsImport("Ctrl" + uc, mvcPath + "/Ctrl" + uc);
+        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
+        return true;
     }
 
-    public void addServicImplementation(Flow f) {
+    public void addServiceImplementation(Flow f) {
         f.L("");
         if (par.isRef || par.isFather) {
             f.L("const listerParId", par.uname, parName, " = async (id", par.uname, parName, ": string) => {");
-            f.L____("const liste", entity.uname, ": I", entity.uname, "[] = (await axios.get<I", entity.uname, "[]>(`${resourceUri}/listerParId", par.uname, parName, "/${id", par.uname, parName, "}`)).data;");
+            f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/listerParId", par.uname, parName, "/${id", par.uname, parName, "}`)).data;");
 
         } else {
             f.L("const listerPar", par.uname, parName, " = async (", par.lname, parName, ": string) => {");
-            f.L____("const liste", entity.uname, ": I", entity.uname, "[] = (await axios.get<I", entity.uname, "[]>(`${resourceUri}/listerPar", par.uname, parName, "/${", par.lname, parName, "}`)).data;");
+            f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/listerPar", par.uname, parName, "/${", par.lname, parName, "}`)).data;");
 
         }
 
-        f.L____("return liste", entity.uname, ";");
+        f.L____("return liste", entity().uname, ";");
         f.L("};");
 
     }
@@ -178,13 +146,13 @@ public class ActionListerParChamp extends ActionAvecTable {
 
         f.L("");
         if (par.isRef || par.isFather) {
-            f.L____________("List<", entity.uname, "> findAllBy", parNameSuffixed, "IdOrderBy");
+            f.L____("List<", entity().uname, "> findAllBy", parNameSuffixed, "IdOrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
             f.__("(", parEntity.id_.jtype, " id", parName, ");");
         } else {
-            f.L____________("List<", entity.uname, "> findAllBy", parNameSuffixed, par.uname, "OrderBy");
+            f.L____("List<", entity().uname, "> findAllBy", parNameSuffixed, par.uname, "OrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
@@ -203,8 +171,8 @@ public class ActionListerParChamp extends ActionAvecTable {
             Entity parEntity = Context.getInstance().getEntity(par.uname);
             f.L("");
             f.L____("@GetMapping(\"/listerParId", par.uname, parName, "/{id", par.uname, parName, "}\")");
-            f.L____("public List<", entity.uname, "> listerParId", par.uname, parName, "(@PathVariable ", parEntity.id_.jtype, " id", par.uname, parName, ") {");
-            f.L________("return ", entity.lname, "Repository.findAllBy", parNameSuffixed, "IdOrderBy");
+            f.L____("public List<", entity().uname, "> listerParId", par.uname, parName, "(@PathVariable ", parEntity.id_.jtype, " id", par.uname, parName, ") {");
+            f.L________("return ", entity().lname, "Repository.findAllBy", parNameSuffixed, "IdOrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
@@ -214,8 +182,8 @@ public class ActionListerParChamp extends ActionAvecTable {
         } else {
             f.L("");
             f.L____("@GetMapping(\"/listerPar", par.uname, parName, "/{", par.lname, parName, "}\")");
-            f.L____("public List<", entity.uname, "> listerPar", par.uname, parName, "(@PathVariable ", par.jtype, " ", par.lname, parName, ") {");
-            f.L________("return ", entity.lname, "Repository.findAllBy", parNameSuffixed, par.uname, "OrderBy");
+            f.L____("public List<", entity().uname, "> listerPar", par.uname, parName, "(@PathVariable ", par.jtype, " ", par.lname, parName, ") {");
+            f.L________("return ", entity().lname, "Repository.findAllBy", parNameSuffixed, par.uname, "OrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }

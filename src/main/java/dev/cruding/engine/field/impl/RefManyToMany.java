@@ -15,7 +15,7 @@ public class RefManyToMany<T extends Entity> extends RefField<T> {
         super.addJavaImport(f);
         if (!jtype.equals(containingEntity)) {
             Entity re = Context.getInstance().getEntity(jtype);
-            f.addJavaImport("app.domain." + re.module + "." + re.lname + "." + re.uname);
+            f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);
         }
         if (!tranzient) {
             f.addJavaImport("jakarta.persistence.ManyToMany");
@@ -25,16 +25,11 @@ public class RefManyToMany<T extends Entity> extends RefField<T> {
             f.addJavaImport("org.hibernate.annotations.FetchMode");
             f.addJavaImport("java.util.HashSet");
             f.addJavaImport("java.util.Set");
-            String s = getReferenceNameList(jtype);
-            if (!"\"\"".equals(s)) {
-                f.addJavaImport("com.fasterxml.jackson.annotation.JsonIgnoreProperties");
-            }
+
         }
     }
 
     public void addJavaDeclaration(JavaFlow f) {
-
-        String s = getReferenceNameList(jtype);
         f.L("");
         if (tranzient) {
             f.L____("@Transient");
@@ -43,7 +38,6 @@ public class RefManyToMany<T extends Entity> extends RefField<T> {
             f.L____("@Fetch(FetchMode.JOIN)");
             f.L____("@JoinTable(name = \"", jtDbName, "\", joinColumns = @JoinColumn(name = \"", jcDbName, "\"), inverseJoinColumns = @JoinColumn(name = \"", ijcDbName, "\"))");
             f.L____("@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)");
-            f.L____("@JsonIgnoreProperties(value = {" + s + "}, allowSetters = true)");
         }
         f.L____("private Set<" + jtype + "> " + lname + " = new HashSet<>();");
     }

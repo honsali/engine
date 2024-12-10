@@ -1,6 +1,7 @@
 package dev.cruding.engine.field.impl;
 
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
 
@@ -11,9 +12,9 @@ public class GrandFather<T extends Entity> extends RefField<T> {
         isFather = true;
     }
 
-    public void addJsDeclaration(JsFlow flow) {
-    }
+    public void addJsDeclaration(JsFlow flow) {}
 
-    public void addJavaDeclaration(JavaFlow flow) {
-    }
+    public void addJavaDeclaration(JavaFlow flow) {}
+
+    public void addGetterSetter(Flow f) {}
 }

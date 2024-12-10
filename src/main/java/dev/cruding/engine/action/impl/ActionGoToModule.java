@@ -1,33 +1,31 @@
 package dev.cruding.engine.action.impl;
 
-import dev.cruding.engine.action.ActionInViewOnly;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.action.Action;
+import dev.cruding.engine.component.bouton.Actionnable;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Page;
 
-public class ActionGoToModule extends ActionInViewOnly {
+public class ActionGoToModule extends Action {
 
     private String targetModule;
 
-    public ActionGoToModule(Page page, String targetModule) {
-        super("goTo");
+
+    public ActionGoToModule(String targetModule) {
         this.targetModule = targetModule;
+    };
+
+    public void actionnable(Actionnable actionnable) {
+        this.actionnable = actionnable;
+        this.actionnable.lcoreName("goToModule" + targetModule);
+        this.actionnable.lname("goToModule" + targetModule);
     }
 
-    public ActionGoToModule entity(Entity entity) {
-        super.entity(entity);
-        this.lname = "goTo" + targetModule;
-        return this;
-    }
 
-    public void addViewScript(ViewFlow f) {
-
-        f.totalScript().L("");
-        f.totalScript().L____("const goTo", targetModule, " = (", entity.lname, ") => {");
-        f.totalScript().L________("goToModule(APP_MODULES.", targetModule.toUpperCase() + ", ", entity.lname, ");");
+    public boolean addViewScript(ViewFlow f) {
+        f.totalScript().L____("const goToModule", targetModule, " = (", entity().lname, ") => {");
+        f.totalScript().L________("goToModule(APP_MODULES.", targetModule.toUpperCase() + ", ", entity().lname, ");");
         f.totalScript().L____("};");
         f.useGoToModule();
-
+        return true;
     }
 
 }

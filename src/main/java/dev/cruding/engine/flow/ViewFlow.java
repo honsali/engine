@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.Page;
 
 public class ViewFlow extends JsFlow {
 
@@ -30,6 +29,7 @@ public class ViewFlow extends JsFlow {
     private boolean effect;
     private boolean selector;
     private boolean inlineForm;
+    private boolean eventBus;
     private boolean addImportForm = true;
 
     StringBuilder sb = new StringBuilder();
@@ -38,56 +38,70 @@ public class ViewFlow extends JsFlow {
         String sui = uiBuilder.toString();
         uiTotalBuilder.append(sui);
         uiBuilder = new StringBuilder();
-
-        totalScript.append(scriptBuilder);
-        scriptBuilder = new StringBuilder();
     }
 
-    public StringBuilder addToScript(String s) {
-        return scriptBuilder.append(s);
+
+    public StringBuilder indent(int level) {
+        return addToUi(Component.indent[level]);
     }
 
     public StringBuilder addToUi(String s) {
         return uiBuilder.append(s);
     }
 
-    public void flushScriptBloc() {
-        __(totalScript.toString());
+    public void flushScriptBloc(boolean afterInit) {
+        String ts = totalScript.toString();
+        if (ts != null && ts.length() > 0) {
+            if (afterInit) {
+                L("");
+            }
+            __(ts);
+            cleanTotalScript();
+        }
     }
 
     public void flushUiBloc() {
         __(uiTotalBuilder);
     }
 
-    public void flushInitBloc(Page page) {
+    public boolean flushInitBloc() {
+        Flow initFlow = new Flow();
         if (hasNavigate()) {
-            L____("const navigate = useNavigate();");
+            initFlow.L____("const navigate = useNavigate();");
         }
         if (hasGoToPage()) {
-            L____("const goToPage = useGoToPage();");
+            initFlow.L____("const goToPage = useGoToPage();");
         }
         if (hasGoToModule()) {
-            L____("const goToModule = useGoToModule();");
+            initFlow.L____("const goToModule = useGoToModule();");
         }
         if (hasDispatch()) {
-            L____("const dispatch = useAppDispatch();");
+            initFlow.L____("const dispatch = useAppDispatch();");
         }
-        for (String selector : selectorSet) {
-            L____("const " + selector + " = useAppSelector((state) => state.mdl", page.uc, "." + selector + ");");
-        }
-        for (String varName : specificSelectorSet.keySet()) {
-            L____("const ", varName, " = useSelector(select", specificSelectorSet.get(varName), ");");
-        }
-        if (hasExecute()) {
-            L____("const { ", execute, " } = useRequete(", execute.indexOf("rid") > 0 || execute.indexOf("success") > 0 ? "resultat" : "", ");");
-        }
-        if (hasForm()) {
-            L____("const [", form, "] = Form.useForm();");
-        }
-        for (String state : stateSet.keySet()) {
-            L____("const [", state, ", set", StringUtils.capitalize(state), "] = useState(", stateSet.get(state), ");");
+        if (hasEventBus()) {
+            initFlow.L____("const { emit } = useEventBus();");
         }
 
+        for (String varName : specificSelectorSet.keySet()) {
+            initFlow.L____("const ", varName, " = useSelector(select", specificSelectorSet.get(varName), ");");
+        }
+        if (hasExecute()) {
+            initFlow.L____("const { ", execute, " } = useExecute(", execute.indexOf("rid") > 0 || execute.indexOf("success") > 0 ? "resultat" : "", ");");
+        }
+        if (hasForm()) {
+            initFlow.L____("const [", form, "] = Form.useForm();");
+        }
+        for (String state : stateSet.keySet()) {
+            initFlow.L____("const [", state, ", set", StringUtils.capitalize(state), "] = useState(", stateSet.get(state), ");");
+        }
+
+        initFlow.clean();
+        String ts = initFlow.toString();
+        if (ts != null && ts.length() > 0) {
+            __(ts);
+            return true;
+        }
+        return false;
     }
 
     public void flushJsImportBloc() {
@@ -102,7 +116,7 @@ public class ViewFlow extends JsFlow {
         }
         if (hasGoToModule()) {
             addJsImport("{ useGoToModule }", "waxant");
-            addJsImport("{ APP_MODULES }", "commun/config/constants.config");
+            addJsImport("{ APP_MODULES }", "commun");
         }
         if (hasNavigate()) {
             addJsImport("{ useNavigate }", "react-router");
@@ -130,7 +144,12 @@ public class ViewFlow extends JsFlow {
             addJsImport("{ useState }", "react");
         }
         if (hasExecute()) {
-            addJsImport("{ useRequete }", "waxant");
+            addJsImport("{ useExecute }", "waxant");
+        }
+
+        if (hasEventBus()) {
+            addJsImport("{ useEventBus }", "waxant");
+            addJsImport("{ APP_EVENT }", "commun");
         }
         super.flushJsImportBloc();
 
@@ -179,6 +198,14 @@ public class ViewFlow extends JsFlow {
 
     public String getPretArray() {
         return this.pret ? "pret" : "";
+    }
+
+    public boolean hasEventBus() {
+        return eventBus;
+    }
+
+    public void useEventBus() {
+        this.eventBus = true;
     }
 
     public boolean hasEffect() {
@@ -278,13 +305,24 @@ public class ViewFlow extends JsFlow {
     }
 
     public String joinProps() {
-        if (hasProps()) {
-            return "{ " + joinProps() + " }";
+        if (propSet.isEmpty()) {
+            return "";
         }
-        return "";
+        return "{ " + propSet.stream().collect(Collectors.joining(", ")) + " }";
     }
 
     public Flow totalScript() {
         return totalScript;
+    }
+
+
+    public void cleanTotalScript() {
+        totalScript.clean();
+    }
+
+    public void cleanUiBuilder() {
+        if (uiBuilder.length() > 0 && uiBuilder.charAt(uiBuilder.length() - 1) == '\n') {
+            uiBuilder.deleteCharAt(uiBuilder.length() - 1);
+        }
     }
 }

@@ -87,8 +87,8 @@ public class Setting extends Field {
             f.L____("@Column(name = \"", newDbName, "\")");
             f.L____("private ", jtype, " id;");
         } else {
-            f.L____("@Column(name = \"", newDbName, "\" , columnDefinition=\"uniqueidentifier\")");
-            f.L____("private ", jtype, "  id;");
+            f.L____("@Column(name = \"", newDbName, "\", columnDefinition = \"uniqueidentifier\")");
+            f.L____("private ", jtype, " id;");
 
         }
 
@@ -98,8 +98,8 @@ public class Setting extends Field {
         String newDbName = Context.getInstance().getLegacyDbName(entityUname, "id", "column", "id");
         String jtype = idLong ? "Long" : "String";
         f.L____("@Id");
-        f.L____("@Column(name = \"", newDbName, "\" , columnDefinition=\"uniqueidentifier\")");
-        f.L____("private ", jtype, "  id;");
+        f.L____("@Column(name = \"", newDbName, "\", columnDefinition = \"uniqueidentifier\")");
+        f.L____("private ", jtype, " id;");
 
     }
 
@@ -127,13 +127,6 @@ public class Setting extends Field {
             return "cette";
         }
         return "ce";
-    }
-
-    public String aucun() {
-        if (feminin) {
-            return "Aucune";
-        }
-        return "Aucun";
     }
 
 

@@ -1,6 +1,6 @@
 package dev.cruding.engine.field.impl;
 
-import dev.cruding.engine.element.Element;
+import dev.cruding.engine.element.ElementPrinter;
 import dev.cruding.engine.field.Field;
 
 public class File extends Field {
@@ -13,11 +13,11 @@ public class File extends Field {
 
     public String ui(String element) {
         switch (element) {
-            case Element.FORM:
+            case ElementPrinter.FORM:
                 return "ChampFichier";
-            case Element.DETAIL:
+            case ElementPrinter.DETAIL:
                 return "nom";
-            case Element.TABLEAU:
+            case ElementPrinter.TABLEAU:
                 return "Colonne";
             default:
                 return "";

@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
 public class ImpProcessor {
@@ -15,9 +16,6 @@ public class ImpProcessor {
     public final ImpSorter importSorter = new ImpSorter();
 
     public String convert(HashMap<String, Imp> importSet) {
-        //List<Imp> importList = new ArrayList<>(importSet);
-        //
-
         Map<String, Imp> map = new HashMap<>();
 
         for (Imp imp : importSet.values()) {
@@ -65,23 +63,23 @@ public class ImpProcessor {
 
     private String mergeAndSort(String str) {
         String[] parts = StringUtils.split(StringUtils.deleteWhitespace(str), ",");
-        List<String> mergedList = new ArrayList<>(Arrays.asList(parts));
+        Set<String> uniqueParts = new HashSet<>(Arrays.asList(parts));
+
+        List<String> mergedList = new ArrayList<>(uniqueParts);
 
         Comparator<String> customComparator = (s1, s2) -> {
             boolean isS1Capitalized = Character.isUpperCase(s1.charAt(0));
             boolean isS2Capitalized = Character.isUpperCase(s2.charAt(0));
 
-            // Compare based on capitalization
             if (isS1Capitalized && !isS2Capitalized) {
-                return -1; // S1 is capitalized, so it comes first
+                return -1;
             } else if (!isS1Capitalized && isS2Capitalized) {
-                return 1; // S2 is capitalized, so it comes first
+                return 1;
             } else {
-                return s1.compareTo(s2); // Both are either capitalized or not, use standard string comparison
+                return s1.compareTo(s2);
             }
         };
 
-        // Sort the list using the custom comparator
         Collections.sort(mergedList, customComparator);
 
         return StringUtils.join(mergedList, ", ");

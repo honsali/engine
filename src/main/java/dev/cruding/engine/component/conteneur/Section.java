@@ -1,66 +1,63 @@
 package dev.cruding.engine.component.conteneur;
 
-import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.component.bouton.bloc.BlocActionDroit;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Element;
 import dev.cruding.engine.gen.Page;
 
 public class Section extends Component {
 
     public String pageRetour = null;
     public boolean plaqueEtat = false;
-    public BlocActionDroit blocAction = null;
+    public BlocAction blocAction = null;
 
-    public Section(Page page, Component... componentList) {
-        super(page, componentList);
+    public Section(Element element, Component... componentList) {
+        super(element, componentList);
+    }
+
+    public Section(Element element, Entity entity, Component... componentList) {
+        super(element, entity, componentList);
     }
 
     public void addImport(ViewFlow flow) {
         flow.addJsImport("{Section}", "waxant");
+        if (pageRetour != null) {
+            Page pr = Context.getInstance().getPage(pageRetour);
+            flow.addJsImport("{ " + pr.name + " }", pr.module.listePage(element.path, inElement));
+        }
         if (plaqueEtat) {
             flow.addJsImport("{PlaqueEtat}", "waxant");
         }
     }
 
-    public void addScript(ViewFlow flow) {
+    public boolean addOpenTag(ViewFlow flow, int level) {
+        indent(flow, level).append("<Section");
         if (pageRetour != null) {
-            Page pr = Context.getInstance().getPage(pageRetour);
-            flow.addToScript("\n");
-            flow.addToScript(indent[0]).append("const lister").append(entity.uname).append(" = () => {");
-            flow.addToScript(indent[1]).append("navigate('/").append(pr.route).append("');");
-            flow.addToScript(indent[0]).append("};");
-            flow.useNavigate();
-        }
-        // if (plaqueEtat) {
-        //   flow.addMdlResultAttribute(entity.lname, "I" + entity.uname);
-        //}
-    }
+            if (blocAction != null) {
+                indent(flow, level + 1);
+            }
+            flow.addToUi(" pageRetour={").append(pageRetour).append("}");
+            Context.getInstance().addLabel(element.page.module.uname, "Uc" + element.page.uc + ".retour" + pageRetour, "Retour");
 
-    public void addOpenTag(ViewFlow flow, int level) {
-        flow.addToUi(indent[level]).append("<Section");
-        String indt = (blocAction != null) ? indent[level + 1] : "";
-
-        if (pageRetour != null) {
-            flow.addToUi(indt).append(" actionRetour={lister").append(entity.uname).append("}");
         }
         if (plaqueEtat) {
             flow.addToUi(" blocAction={<PlaqueEtat entity={").append(entity.lname).append("} />}");
         }
         if (blocAction != null) {
-            flow.addToUi(indent[level + 1]).append(" blocAction={");
+            indent(flow, level + 1).append(" blocAction={");
             blocAction.addContent(this, flow, level + 2);
-            flow.addToUi(indent[level + 1]).append("}");
-            flow.addToUi(indent[level]).append(">");
+            indent(flow, level + 1).append("}");
+            indent(flow, level).append(">");
         } else {
             flow.addToUi(">");
         }
+        return false;
     }
 
     public void addCloseTag(ViewFlow flow, int level) {
-        flow.addToUi(indent[level]).append("</Section>");
+        indent(flow, level).append("</Section>");
     }
 
     public Section plaqueEtat() {
@@ -69,11 +66,11 @@ public class Section extends Component {
     }
 
     public Section blocAction(Component... componentList) {
-        this.blocAction = new BlocActionDroit(page, componentList);
+        this.blocAction = new BlocAction(element, componentList);
         return this;
     }
 
-    public Section actionRetour(String pageRetour) {
+    public Section pageRetour(String pageRetour) {
         this.pageRetour = pageRetour;
         return this;
     }
@@ -82,10 +79,4 @@ public class Section extends Component {
         return this;
     }
 
-    public Section init(Entity e, Action action) {
-
-        Context.getInstance().addAction(action, page, e);
-
-        return this;
-    }
 }

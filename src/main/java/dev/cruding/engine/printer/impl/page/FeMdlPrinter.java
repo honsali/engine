@@ -2,7 +2,6 @@ package dev.cruding.engine.printer.impl.page;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MCFlow;
 import dev.cruding.engine.gen.Context;
@@ -24,8 +23,7 @@ public class FeMdlPrinter extends Printer {
         }
         f.flushMdlImportBloc();
 
-        f.L(""); // ---------------------------------------------------------------------------------------
-
+        f.L("");
         f.L("export interface Req", page.uc, " extends IRequete {");
         for (Action action : actionList) {
             action.addMdlRequestAttribute(f);
@@ -69,13 +67,13 @@ public class FeMdlPrinter extends Printer {
             action.addMdlExtraReducer(f);
         }
 
-        String listeNomAction = actionList.stream().filter(action -> !action.isInViewOnly()).map(action -> "Ctrl" + page.uc + "." + action.lname).collect(Collectors.joining(", "));
+        String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly()).map(action -> "Ctrl" + page.uc + "." + action.lname()).collect(Collectors.joining(", "));
 
         f.L____________(".addMatcher(isPending(", listeNomAction, "), (state) => {");
-        f.L____________("    state.resultat = {} as Res", page.uc, ";");
+        f.L________________("state.resultat = {} as Res", page.uc, ";");
         f.L____________("})");
         f.L____________(".addMatcher(isRejected(", listeNomAction, "), (state) => {");
-        f.L____________("    state.resultat = { rid: 'erreur' } as Res", page.uc, ";");
+        f.L________________("state.resultat = { rid: 'erreur' } as Res", page.uc, ";");
         f.L____________("});");
 
         f.L____("},");

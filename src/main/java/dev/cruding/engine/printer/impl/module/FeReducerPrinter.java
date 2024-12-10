@@ -3,7 +3,6 @@ package dev.cruding.engine.printer.impl.module;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
@@ -21,17 +20,21 @@ public class FeReducerPrinter extends Printer {
         int idx = module.path.length();
         boolean first = true;
         for (Page page : listePage) {
-            if (first) {
-                first = false;
-            } else {
-                f.L();
+            if (page.estReelle()) {
+                if (first) {
+                    first = false;
+                } else {
+                    f.L();
+                }
+                f.__("import Mdl", page.uc, " from '.", page.path.substring(idx), "/Mdl", page.uc, "';");
             }
-            f.__("import Mdl", page.uc, " from '.", page.path.substring(idx), "/Mdl", page.uc, "';");
         }
         f.L("");
         f.L("const Reducer", module.unameLast, " = {");
         for (Page page : listePage) {
-            f.L____("mdl", page.uc, ": Mdl", page.uc, ",");
+            if (page.estReelle()) {
+                f.L____("mdl", page.uc, ": Mdl", page.uc, ",");
+            }
         }
         f.L("};");
         f.L("");

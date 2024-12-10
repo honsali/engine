@@ -1,8 +1,9 @@
 package dev.cruding.engine.field.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.element.Element;
+import dev.cruding.engine.element.ElementPrinter;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.gen.Context;
 
@@ -22,33 +23,38 @@ public class Ref<T extends Entity> extends RefField<T> {
         super.addJavaImport(f);
         if (!jtype.equals(containingEntity)) {
             Entity re = Context.getInstance().getEntity(jtype);
-            f.addJavaImport("app.domain." + re.module + "." + re.lname + "." + re.uname);
+
+            f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + getRef());
         }
         if (!tranzient) {
             f.addJavaImport("jakarta.persistence.ManyToOne");
             f.addJavaImport("jakarta.persistence.JoinColumn");
-            String s = getReferenceNameList(jtype);
-            if (!"\"\"".equals(s)) {
-                f.addJavaImport("com.fasterxml.jackson.annotation.JsonIgnoreProperties");
-            }
         }
     }
 
     public void addJavaDeclaration(JavaFlow f) {
-        String s = getReferenceNameList(jtype);
         f.L("");
         if (tranzient) {
             f.L____("@Transient");
         } else {
             f.L____("@ManyToOne");
             f.L____("@JoinColumn(name = \"", jcDbName, "\")");
-            if (!"\"\"".equals(s)) {
-                f.L____("@JsonIgnoreProperties(value = {" + s + "}, allowSetters = true)");
-            }
         }
-        f.L____("private " + jtype + " " + lname + ";");
+        f.L____("private " + jtype + getRef() + " " + lname + ";");
 
     }
+
+    public void addGetterSetter(Flow f) {
+        f.L("");
+        f.L____("public " + jtype + getRef() + " get" + uname + "() {");
+        f.L________("return this." + lname + ";");
+        f.L____("}");
+        f.L("");
+        f.L____("public void set" + uname + "(" + jtype + getRef() + " " + lname + ") {");
+        f.L________("this." + lname + " = " + lname + ";");
+        f.L____("}");
+    }
+
 
     public String getExtension() {
         String s = "";
@@ -66,13 +72,12 @@ public class Ref<T extends Entity> extends RefField<T> {
     }
 
     public String ui(String element) {
-
         switch (element) {
-            case Element.FORM:
+            case ElementPrinter.FORM:
                 return larg != null ? "ChampReferenceAvecFiltre" : "ChampReference";
-            case Element.DETAIL:
+            case ElementPrinter.DETAIL:
                 return "reference";
-            case Element.TABLEAU:
+            case ElementPrinter.TABLEAU:
                 return "Colonne tc=\"reference\"";
             default:
                 return "";
@@ -82,5 +87,12 @@ public class Ref<T extends Entity> extends RefField<T> {
 
     protected Ref<T> initCopy() {
         return new Ref<T>(type);
+    }
+
+    private String getRef() {
+        if (jtype.equals("Reference")) {
+            return "";
+        }
+        return "Ref";
     }
 }

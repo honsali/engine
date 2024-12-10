@@ -1,15 +1,23 @@
 package dev.cruding.engine.action.impl;
 
-import dev.cruding.engine.action.ActionInViewOnly;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class ActionRecupererEnSession extends ActionInViewOnly {
+public class ActionRecupererEnSession extends Action {
 
-    public ActionRecupererEnSession() {
-        super("recupererEnSession");
+    public String variable;
+
+
+    public ActionRecupererEnSession(String variable) {
+        this.variable = variable;
     }
 
-    public void addViewScript(ViewFlow f) {
-        f.addSpecificSelector(entity.lname, entity.uname, mvcPath + "/Mdl" + uc);
+    public boolean addViewScript(ViewFlow f) {
+        if (variable != null) {
+            f.addSpecificSelector(variable, mvcPath() + "/Mdl" + uc());
+        } else {
+            f.addSpecificSelector(entity().lname, entity().uname, mvcPath() + "/Mdl" + uc());
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.JavaFlow;
@@ -17,6 +18,11 @@ public class BeDomainePrinter extends Printer {
         for (Field fld : notManyList) {
             fld.addJavaImport(f);
         }
+        List<Field> isIdFieldList = entity.fieldList.stream().filter(p -> p.isId).toList();
+        f.addJavaImport("jakarta.persistence.Id");
+        for (Field fld : isIdFieldList) {
+            fld.addJavaImport(f);
+        }
 
         f.addJavaImport("jakarta.persistence.Column");
         f.addJavaImport("jakarta.persistence.Entity");
@@ -27,7 +33,7 @@ public class BeDomainePrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.module, ".", entity.lname, ";");
+        f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
         f.L("");
         f.flushJavaImportBloc();
         f.L("");
@@ -52,7 +58,7 @@ public class BeDomainePrinter extends Printer {
         if (!entity.isReferenceData()) {
             f.L("");
             f.L____("public String getDisplayString() {");
-            f.L________("return ", entity.lid, ";");
+            f.L________("return ", isIdFieldList.stream().map(fld -> fld.lname).collect(Collectors.joining(" + \" \" + ", "", "")), ";");
             f.L____("}");
         }
         f.L("");
@@ -83,7 +89,7 @@ public class BeDomainePrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.modulePath + '/' + entity.lname + "/" + entity.uname + ".java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + '/' + entity.uname + ".java");
     }
 
 }

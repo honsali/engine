@@ -12,21 +12,21 @@ public class FeDomainePrinter extends Printer {
 
         /* *********************************************************************** */
         for (Field fld : entity.fieldList) {
-            fld.addJsImport(f);
+            fld.addJsImport(f, entity);
         }
         f.addJsImport("{ IPagination }", "modele/commun/pagination/DomainePagination");
         f.flushJsImportBloc();
         f.L("");
         f.L("export interface I", entity.uname, " {");
-        f.L____("id?: string;");
-        f.L____("id", entity.uname, "?: string;");
+        f.L____("id?: number;");
+        f.L____("id", entity.uname, "?: number;");
         for (Field fld : entity.fieldList) {
             fld.addJsDeclaration(f);
         }
         f.L("}");
         f.L("");
 
-        f.L("export interface IRequete", entity.uname, " extends I", entity.uname, ", IPagination {}");
+        f.L("export interface IRequete", entity.uname, " extends I", entity.uname, ", IPagination { }");
         f.L("export interface IListePaginee", entity.uname, " {");
         f.L____("liste?: I", entity.uname, "[];");
         f.L____("pagination?: IPagination;");
@@ -34,7 +34,7 @@ public class FeDomainePrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/modele/" + entity.modulePath + "/Domaine" + entity.uname + ".ts");
+        printFile(s, getBasePath() + "/fe/src/modele/" + entity.path + "/Domaine" + entity.uname + ".ts");
     }
 
 }

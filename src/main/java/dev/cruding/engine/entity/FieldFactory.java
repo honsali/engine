@@ -20,6 +20,7 @@ import dev.cruding.engine.field.impl.RefManyToMany;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.field.impl.Tel;
 import dev.cruding.engine.field.impl.Text;
+import dev.cruding.engine.field.impl.TextArabe;
 import dev.cruding.engine.field.impl.TextArray;
 
 public class FieldFactory {
@@ -30,6 +31,10 @@ public class FieldFactory {
 
     public Field Text(String name) {
         return new Text(name);
+    }
+
+    public Field TextArabe(String name) {
+        return new TextArabe(name);
     }
 
     public Field Annee(String name) {

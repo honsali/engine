@@ -18,7 +18,7 @@ public class FeModulePrinter extends Printer {
         f.L("const Module", module.unameLast, " = (): ModuleDefinition => {");
         f.L____("return {");
         f.L________("key: 'Module", module.unameLast, "',");
-        f.L________("mapI18N: I18n", module.unameLast, ",");
+        f.L________("mapI18n: I18n", module.unameLast, ",");
         f.L________("listePage: ListePage", module.unameLast, ",");
         f.L________("reducer: Reducer", module.unameLast, ",");
         f.L________("index: ", module.pageIndex, ",");

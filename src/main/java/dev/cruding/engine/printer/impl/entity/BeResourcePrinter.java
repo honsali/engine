@@ -18,9 +18,13 @@ public class BeResourcePrinter extends Printer {
         List<Field> childList = entity.fieldList.stream().filter(fld -> fld.isChild).toList();
         for (Field fld : childList) {
             Entity re = Context.getInstance().getEntity(fld.jtype);
-            f.addJavaImport("app.domain." + re.module + "." + re.lname + "." + re.uname + "Repository");
+            f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Repository");
         }
-
+        if (entity.haveFather) {
+            Entity fe = Context.getInstance().getEntity(entity.father.jtype);
+            f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname + "RefRepository");
+            f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname + "Ref");
+        }
         for (Action action : Context.getInstance().actionEntity(entity)) {
             action.addResourceImport(f);
         }
@@ -30,7 +34,9 @@ public class BeResourcePrinter extends Printer {
         f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RestController");
 
-        f.__("package app.domain.", entity.module, ".", entity.lname, ";");
+
+
+        f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
         f.L("");
         f.flushJavaImportBloc();
         f.L("");
@@ -46,25 +52,25 @@ public class BeResourcePrinter extends Printer {
             f.L____("private final ", entity.ufather, "RefRepository ", entity.lfather, "RefRepository;");
         }
         for (Field fld : childList) {
-            f.L____("private final ", fld.uname, "Repository ", fld.lname, "Repository;");
+            f.L____("private final ", fld.uname, "RefRepository ", fld.lname, "RefRepository;");
         }
         f.L("");
         f.L____("public ", entity.uname, "Resource(", entity.uname, "Repository ", entity.lname, "Repository, ", entity.uname, "RefRepository ", entity.lname, "RefRepository");
 
         if (entity.haveFather) {
-            f.__(", ", entity.ufather, "Repository ", entity.lfather, "Repository");
+            f.__(", ", entity.ufather, "RefRepository ", entity.lfather, "RefRepository");
         }
         for (Field fld : childList) {
-            f.__(", ", fld.uname, "Repository ", fld.lname, "Repository");  
+            f.__(", ", fld.uname, "RefRepository ", fld.lname, "RefRepository");
         }
         f.__(") {");
         f.L________("this.", entity.lname, "Repository = ", entity.lname, "Repository;");
         f.L________("this.", entity.lname, "RefRepository = ", entity.lname, "RefRepository;");
         if (entity.haveFather) {
-            f.L________("this.", entity.lfather, "Repository = ", entity.lfather, "Repository;");
+            f.L________("this.", entity.lfather, "RefRepository = ", entity.lfather, "RefRepository;");
         }
         for (Field fld : childList) {
-            f.L________("this.", fld.lname, "Repository = ", fld.lname, "Repository;");
+            f.L________("this.", fld.lname, "RefRepository = ", fld.lname, "RefRepository;");
         }
         f.L____("}");
 
@@ -81,7 +87,7 @@ public class BeResourcePrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.modulePath + '/' + entity.lname + "/" + entity.uname + "Resource.java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Resource.java");
     }
 
 }

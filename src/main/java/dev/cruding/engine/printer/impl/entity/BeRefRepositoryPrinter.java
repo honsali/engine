@@ -16,7 +16,7 @@ public class BeRefRepositoryPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.module, ".", entity.lname, ";");
+        f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
 
         f.L("");
         f.flushJavaImportBloc();
@@ -32,7 +32,7 @@ public class BeRefRepositoryPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.modulePath + '/' + entity.lname + "/" + entity.uname + "RefRepository.java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "RefRepository.java");
     }
 
 }

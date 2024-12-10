@@ -1,14 +1,13 @@
 package dev.cruding.engine.gen;
 
-import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.printer.impl.commun.BeLiqMasterPrinter;
 import dev.cruding.engine.printer.impl.commun.FeGoToPrinter;
 import dev.cruding.engine.printer.impl.commun.FeHasRightPrinter;
-import dev.cruding.engine.printer.impl.commun.FeLabelPrinter;
 import dev.cruding.engine.printer.impl.commun.FeMenuPrinter;
 import dev.cruding.engine.printer.impl.commun.FeRoutesPrinter;
 import dev.cruding.engine.printer.impl.commun.FeStorePrinter;
+import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.entity.BeDomainePrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqConstraintPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqDataPrinter;
@@ -26,13 +25,11 @@ import dev.cruding.engine.printer.impl.module.FeModulePrinter;
 import dev.cruding.engine.printer.impl.module.FeReducerPrinter;
 import dev.cruding.engine.printer.impl.page.FeCtrlPrinter;
 import dev.cruding.engine.printer.impl.page.FeMdlPrinter;
-import dev.cruding.engine.printer.impl.page.FeViewPrinter;
 
 public class Processor {
 
     private final FeCtrlPrinter feCtrlPrinter = new FeCtrlPrinter();
     private final FeMdlPrinter feMdlPrinter = new FeMdlPrinter();
-    private final FeViewPrinter feViewPrinter = new FeViewPrinter();
     private final FeDomainePrinter feDomainePrinter = new FeDomainePrinter();
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainePrinter beDomainePrinter = new BeDomainePrinter();
@@ -46,7 +43,6 @@ public class Processor {
     private final BeLiqTablePrinter beLiqTablePrinter = new BeLiqTablePrinter();
     private final FeStorePrinter feStorePrinter = new FeStorePrinter();
     private final FeRoutesPrinter feRoutesPrinter = new FeRoutesPrinter();
-    private final FeLabelPrinter feLabelPrinter = new FeLabelPrinter();
     private final FeMenuPrinter feMenuPrinter = new FeMenuPrinter();
     private final FeHasRightPrinter feHasRightPrinter = new FeHasRightPrinter();
     private final FeGoToPrinter feGoToPrinter = new FeGoToPrinter();
@@ -55,47 +51,75 @@ public class Processor {
     private final FeActionModule feActionModule = new FeActionModule();
     private final FeListePagePrinter feListePagePrinter = new FeListePagePrinter();
     private final FeReducerPrinter feReducerPrinter = new FeReducerPrinter();
+    private final FeElementPrinter feElementPrinter = new FeElementPrinter();
 
     public void process() {
         for (Page page : Context.getInstance().getPageList()) {
-            for (Element element : page.listeElement) {
-                element.print(page);
-            }
-            if (!page.componentList.isEmpty()) {
+            if (page.estReelle()) {
+                for (Element element : page.listeElement) {
+                    printFeElementFiles(element);
+                }
                 feCtrlPrinter.print(page);
                 feMdlPrinter.print(page);
-                feViewPrinter.print(page);
             }
         }
-        feStorePrinter.print();
-        feRoutesPrinter.print();
-        feLabelPrinter.print();
-        feMenuPrinter.print();
-        feHasRightPrinter.print();
-        feGoToPrinter.print();
 
-        beLiqMasterPrinter.print();
+        printFeGlobalFiles();
+        printBeGlobalFiles();
 
         for (Entity entity : Context.getInstance().getEntityList()) {
-            feDomainePrinter.print(entity);
-            beRefDomainePrinter.print(entity);
-            feServicePrinter.print(entity);
-            beDomainePrinter.print(entity);
-            beRepositoryPrinter.print(entity);
-            beRefRepositoryPrinter.print(entity);
-            beResourcePrinter.print(entity);
-            beLiqConstraintPrinter.print(entity);
-            beLiqDataPrinter.print(entity);
-            beLiqTablePrinter.print(entity);
+            printFeEntityFiles(entity);
+            printBeEntityFiles(entity);
         }
 
         for (Module module : Context.getInstance().getModuleList()) {
-            feI18nPrinter.print(module);
-            feListePagePrinter.print(module);
-            feModulePrinter.print(module);
-            feReducerPrinter.print(module);
-            feActionModule.print(module);
+            printFeModuleFiles(module);
         }
     }
 
+    private void printFePageFiles(Page page) {
+        feCtrlPrinter.print(page);
+        feMdlPrinter.print(page);
+    }
+
+    private void printFeElementFiles(Element element) {
+        feElementPrinter.print(element);
+    }
+
+    private void printFeGlobalFiles() {
+        feStorePrinter.print();
+        feRoutesPrinter.print();
+        feMenuPrinter.print();
+        feHasRightPrinter.print();
+        feGoToPrinter.print();
+    }
+
+    private void printBeGlobalFiles() {
+        beLiqMasterPrinter.print();
+    }
+
+    private void printFeEntityFiles(Entity entity) {
+        feDomainePrinter.print(entity);
+        feServicePrinter.print(entity);
+    }
+
+    private void printBeEntityFiles(Entity entity) {
+        beRefDomainePrinter.print(entity);
+        beDomainePrinter.print(entity);
+        beRepositoryPrinter.print(entity);
+        beRefRepositoryPrinter.print(entity);
+        beResourcePrinter.print(entity);
+        beLiqConstraintPrinter.print(entity);
+        beLiqDataPrinter.print(entity);
+        beLiqTablePrinter.print(entity);
+
+    }
+
+    private void printFeModuleFiles(Module module) {
+        feI18nPrinter.print(module);
+        feListePagePrinter.print(module);
+        feModulePrinter.print(module);
+        feReducerPrinter.print(module);
+        feActionModule.print(module);
+    }
 }

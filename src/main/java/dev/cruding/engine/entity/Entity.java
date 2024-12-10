@@ -1,9 +1,7 @@
 package dev.cruding.engine.entity;
 
 import java.util.ArrayList;
-
 import org.apache.commons.lang3.StringUtils;
-
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.GrandFather;
@@ -16,8 +14,8 @@ import dev.cruding.engine.service.Service;
 
 public class Entity extends FieldFactory {
 
-    public String module;
-    public String modulePath;
+    public String pkg;
+    public String path;
     public String key;
     public String lid;
     public String uid;
@@ -53,8 +51,8 @@ public class Entity extends FieldFactory {
         Field tempIdentifiant = null;
         Setting tempId = null;
         this.key = String.valueOf(Math.abs(lname.hashCode()));
-        this.module = StringUtils.substringAfter(this.getClass().getPackageName(), "modele.");
-        this.modulePath = this.module.replace('.', '/');
+        this.pkg = StringUtils.substringAfter(this.getClass().getPackageName(), "modele.");
+        this.path = this.pkg.replace('.', '/') + '/' + this.lname;
 
         this.dbName = Context.getInstance().getLegacyDbName(uname, "table", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase());
         this.seqName = Context.getInstance().getLegacyDbName(uname, "sequence", "seq_" + this.dbName);
@@ -77,12 +75,10 @@ public class Entity extends FieldFactory {
                             haveRefMany = true;
                         } else if (field instanceof Father) {
                             tempFather = field.lname(f.getName());
-                            field.containingEntity(this);
                             this.lfather = tempFather.lname;
                             fieldList.add(field);
                         } else if (field instanceof GrandFather) {
                             tempGrandFather = field.lname(f.getName());
-                            field.containingEntity(this);
                             this.lgrandfather = tempGrandFather.lname;
                             fieldList.add(field);
 
@@ -103,7 +99,6 @@ public class Entity extends FieldFactory {
         this.father = (Father<?>) tempFather;
         this.id_ = tempId != null ? tempId : new Setting();
         this.setting = this.id_.init(uname);
-        //this.id_.containingEntity(this);
         Field identifiant = tempIdentifiant;
         if (identifiant == null) {
             System.out.println("L'entity " + uname + " n'a pas d'identifiant");

@@ -3,7 +3,7 @@ package dev.cruding.engine.field;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.element.Element;
+import dev.cruding.engine.element.ElementPrinter;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.flow.Flow;
@@ -21,7 +21,6 @@ public class Field extends FieldInAction {
     public String jtype;
     public String stype;
     public String jstype;
-    public String module;
     public boolean required;
 
     public boolean isRef;
@@ -38,7 +37,8 @@ public class Field extends FieldInAction {
     public boolean readOnly;
     public String readOnlyIf;
     public String invisibleSi;
-    public boolean siChange;
+    public String videSi;
+    public String siChange;
     public boolean avecVariable;
     public boolean seulDansLaLigne;
     public boolean surTouteLaLigne;
@@ -47,10 +47,12 @@ public class Field extends FieldInAction {
     public String oui;
     public String non;
     public String init;
+    public boolean initFromMdl;
 
     public Ref<?> of;
 
     public String containingEntity;
+    public String containingEntityDbname;
 
     public Field(Field f) {
         copyFieldProps(f, this);
@@ -69,6 +71,7 @@ public class Field extends FieldInAction {
 
     public Field containingEntity(Entity entity) {
         this.containingEntity = entity.uname;
+        this.containingEntityDbname = entity.dbName;
         this.dbName = Context.getInstance().getLegacyDbName(entity.uname, lname, "column", this.dbName);
         return this;
     }
@@ -80,7 +83,6 @@ public class Field extends FieldInAction {
 
     public Field jtype(String jtype) {
         this.jtype = jtype;
-        this.module = StringUtils.uncapitalize(jtype);
         return this;
     }
 
@@ -113,6 +115,13 @@ public class Field extends FieldInAction {
         return p;
     }
 
+    public Field initFromMdl() {
+        Field p = makeCopy();
+        p.initFromMdl = true;
+        return p;
+    }
+
+
     public Field reference(String reference) {
         Field p = makeCopy();
         p.reference = reference;
@@ -144,9 +153,21 @@ public class Field extends FieldInAction {
         return p;
     }
 
+    public Field videSi(String videSi) {
+        Field p = makeCopy();
+        p.videSi = videSi;
+        return p;
+    }
+
     public Field siChange() {
         Field p = makeCopy();
-        p.siChange = true;
+        p.siChange = "";
+        return p;
+    }
+
+    public Field siChange(String siChange) {
+        Field p = makeCopy();
+        p.siChange = siChange;
         return p;
     }
 
@@ -195,11 +216,11 @@ public class Field extends FieldInAction {
 
     public String ui(String element) {
         switch (element) {
-            case Element.FORM:
+            case ElementPrinter.FORM:
                 return "ChampTexte";
-            case Element.DETAIL:
+            case ElementPrinter.DETAIL:
                 return "nom";
-            case Element.TABLEAU:
+            case ElementPrinter.TABLEAU:
                 return "Colonne";
             default:
                 return "";
@@ -217,6 +238,10 @@ public class Field extends FieldInAction {
 
     public void addJsImport(JsFlow f) {
 
+    }
+
+    public void addJsImport(JsFlow f, Entity entity) {
+        addJsImport(f);
     }
 
     public void addJsDeclaration(JsFlow f) {
@@ -306,7 +331,6 @@ public class Field extends FieldInAction {
         to.stype = from.stype;
         to.jstype = from.jstype;
 
-        to.module = from.module;
         to.required = from.required;
         to.isRef = from.isRef;
         to.isRefMany = from.isRefMany;
@@ -320,15 +344,22 @@ public class Field extends FieldInAction {
         to.readOnly = from.readOnly;
         to.readOnlyIf = from.readOnlyIf;
         to.invisibleSi = from.invisibleSi;
+        to.videSi = from.videSi;
         to.siChange = from.siChange;
         to.avecVariable = from.avecVariable;
         to.seulDansLaLigne = from.seulDansLaLigne;
         to.surTouteLaLigne = from.surTouteLaLigne;
 
-        to.containingEntity = from.containingEntity;
+        to.tranzient = from.tranzient;
+        to.reference = from.reference;
         to.oui = from.oui;
         to.non = from.non;
         to.init = from.init;
+        to.initFromMdl = from.initFromMdl;
+        to.of = from.of;
+
+        to.containingEntity = from.containingEntity;
+        to.containingEntityDbname = from.containingEntityDbname;
 
         to.cloned = true;
 

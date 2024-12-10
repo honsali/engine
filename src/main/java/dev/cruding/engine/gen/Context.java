@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.element.Element;
+import dev.cruding.engine.component.bouton.Actionnable;
 import dev.cruding.engine.entity.Entity;
 
 public class Context {
@@ -32,18 +33,19 @@ public class Context {
     private HashMap<String, Entity> entityMap = new HashMap<>();
 
     private HashMap<String, Page> pageMap = new HashMap<>();
-    private HashMap<String, Module> moduleMap = new HashMap<>();
 
-    private HashMap<String, String> labelMap = new HashMap<>();
+    private HashMap<String, Module> moduleMap = new HashMap<>();
+    private HashMap<String, HashMap<String, String>> labelMap = new HashMap<>();
 
     private HashMap<String, String> legacyDbMap = new HashMap<>();
-    private ArrayList<Association> associationList = new ArrayList<>();
 
+    private ArrayList<Actionnable> actionnableList = new ArrayList<>();
     private String basePath;
-    private int index;
 
-    private Context() {
+    private Context() {}
 
+    public void addPage(Page page) {
+        pageMap.put(page.name, page);
     }
 
     public Entity getEntity(String uname) {
@@ -67,20 +69,16 @@ public class Context {
     }
 
     public List<Page> getPageList(Module module) {
-        return pageMap.values().stream().filter(page -> page.actionUname != null && page.estReelle() && page.moduleDefinition.uname.equals(module.uname)).toList();
+        return pageMap.values().stream().filter(page -> page.actionUname != null && page.module.uname.equals(module.uname)).toList();
     }
 
-    public void addLabel(String key, String label) {
-        labelMap.put(key, label);
+    public void addLabel(String module, String key, String label) {
+        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(key, label);
 
     }
 
-    public String getLabel(String key) {
-        return labelMap.get(key);
-    }
-
-    public HashMap<String, String> getLabelMap() {
-        return labelMap;
+    public HashMap<String, String> getLabelMap(String module) {
+        return labelMap.get(module);
     }
 
     public String getBasePath() {
@@ -105,48 +103,26 @@ public class Context {
         this.legacyDbMap = legacyDbMap;
     }
 
-    public String addAction(Action action, Page page, Element element, Entity entity) {
-        if (action.entity == null && entity != null) {
-            action.uc(page.uc).entity(entity);
-        } else if (entity == null) {
-            System.out.println("action.entity is null");
-        }
-        action.setInElement(true);
-        action.id = "a" + index++;
-        associationList.add(new Association(entity, page, element, action));
-        return action.id;
-    }
-
-    public Action getAction(String id) {
-        return associationList.stream().filter(as -> as.action.id.equals(id)).map(as -> as.action).toList().get(0);
-    }
-
-    public void addAction(Action action, Page page, Entity entity) {
-        action.uc(page.uc);
-        action.id = "a" + index++;
-        if (entity != null) {
-            action.entity(entity);
-            associationList.add(new Association(entity, page, action));
-        } else {
-            associationList.add(new Association(page, action));
-        }
+    public void addAction(Actionnable actionnable) {
+        actionnableList.add(actionnable);
     }
 
     public List<Action> actionPage(Page page) {
-        return associationList.stream().filter(as -> as.page.name.equals(page.name)).map(as -> as.action).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
     }
 
-    public List<Action> actionElement(Page page, Element element) {
-        return associationList.stream().filter(as -> as.element != null && as.page.name.equals(page.name) && as.element.lname.equals(element.lname)).map(as -> as.action).sorted().toList();
+    public List<Action> allActionPage(Page page) {
+        return actionnableList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
+    }
+
+    public List<Action> actionElement(Element element) {
+        return actionnableList.stream().filter(as -> !as.flow() && as.element != null && as.element.name != null && as.element.name.equals(element.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionEntity(Entity entity) {
-        return associationList.stream().filter(as -> as.entity != null && as.entity.lname.equals(entity.lname)).map(as -> as.action).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && as.entity != null && as.entity.lname.equals(entity.lname)).map(as -> as.action).filter(Objects::nonNull).distinct().sorted().toList();
     }
 
-    public Page pageAction(Action action) {
-        return associationList.stream().filter(as -> as.action.id.equals(action.id)).map(as -> as.page).toList().get(0);
-    }
 
     public void initEntities() {
         entityMap.values().stream().forEach(e -> e.init());

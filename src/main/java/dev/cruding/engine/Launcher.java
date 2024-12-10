@@ -4,35 +4,24 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-
 import org.apache.commons.lang3.StringUtils;
-
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Processor;
 
 public class Launcher {
 
-    private static final String element = "#Form#Etat#";
+    private static final String element = "#Form#Etat#Element#View#Page#";
 
     public static void main(final String[] args) throws Exception {
 
-        if (args == null || args.length == 0) {
-            System.out.println("Usage: java -jar cruding.jar <path> <projectName>");
-            System.exit(0);
-        }
-
         long deb = System.currentTimeMillis();
 
-        String pathToDesc = args[0] + args[1] + "\\desc";
-        String pathToResult = args[0] + args[1] + "\\result";
-        String projectName = args[1];
-        Context.getInstance().setBasePath(args[1]);
-        loadEntity(pathToDesc + "\\src\\main\\java\\" + projectName + "\\modele");
+        Context.getInstance().setBasePath("result");
 
+        loadEntity("src\\main\\java\\modele");
         Context.getInstance().initEntities();
 
-        loadPage(pathToResult + "\\src\\main\\java\\" + projectName + "\\modules");
-
+        loadPage("src\\main\\java\\modules");
         Context.getInstance().initPages();
 
         Processor processor = new Processor();
@@ -52,8 +41,7 @@ public class Launcher {
 
     private static void loadPage(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).filter(Launcher::isNotElement).map(Launcher::newInstance)
-                    .forEach(Context::add);
+            files.filter(Files::isRegularFile).filter(Launcher::isNotElement).map(Launcher::newInstance).forEach(Context::add);
         } catch (Exception e) {
             e.printStackTrace();
         }

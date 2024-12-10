@@ -1,37 +1,30 @@
 
 package dev.cruding.engine.component.entite;
 
+import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.impl.ActionInitCreation;
-import dev.cruding.engine.action.impl.ActionInitCreationInFormulaire;
-import dev.cruding.engine.action.impl.ActionInitModificationDepuisMdl;
-import dev.cruding.engine.action.impl.ActionInitModificationInFormulaire;
-import dev.cruding.engine.component.ElementComponent;
-import dev.cruding.engine.element.Element;
-import dev.cruding.engine.element.impl.ElementFormulaire;
+import dev.cruding.engine.component.Component;
+import dev.cruding.engine.element.ElementPrinter;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.Element;
+import dev.cruding.engine.gen.helper.Util;
 
-public class Formulaire extends ElementComponent {
+public class Formulaire extends Component {
 
     public int colNumber = 2;
     public int largeur = 0;
     public boolean enModification = false;
     public String lname;
     public String uname;
-    private Element element;
     public Action fillFrom;
     public boolean inView = true;
 
-    public Formulaire(Page page, Entity entity, Field... fieldList) {
-        super(page, entity, fieldList);
+    public Formulaire(Element element, Entity entity, Field... fieldList) {
+        super(element, entity, fieldList);
         this.lname = entity.lname;
         this.uname = entity.uname;
-        this.element = new ElementFormulaire(entity, this);
-        page.addElement(element);
     }
 
     public Formulaire nom(String uname) {
@@ -46,24 +39,105 @@ public class Formulaire extends ElementComponent {
 
     public String getTitle() {
         String key = "formulaire." + lname;
-        addLabel(key, "Formulaire " + uname);
+        addLabel("Uc" + element.page.uc + "." + key, "Formulaire " + uname);
         return key;
     }
 
     public void addImport(ViewFlow flow) {
-        if (inView) {
-            flow.addJsImport("Formulaire" + uname, "./element/Formulaire" + uname);
+        for (Field c : fieldList) {
+            if (c.siChange != null) {
+                if (c.siChange.length() > 0) {
+                    flow.addJsImport("{ useState }", "react");
+                    flow.addState(c.siChange, "false");
+                }
+                flow.addJsImport("{ useOnChange }", "waxant");
+            }
+            if (c.avecVariable) {
+                flow.addJsImport("{ Form }", "antd");
+            }
+            if (c.videSi != null) {
+                flow.addJsImport("{ ChampVide }", "waxant");
+            }
+        }
+
+        StringBuilder fieldImportList = Util.processListeField(fieldList, ElementPrinter.FORM);
+
+        flow.addJsImport("{ Formulaire }", "waxant");
+        flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
+    }
+
+    public void addScript(ViewFlow flow) {
+        for (int i = 0; i < fieldList.length; i++) {
+            fieldList[i].addViewScript(flow, element.page.uc, "..");
+        }
+        for (Field c : fieldList) {
+            if (c.readOnlyIf != null) {
+                flow.totalScript().L____("const " + c.readOnlyIf + ";");
+                flow.totalScript().L("");
+            }
+            if (c.avecVariable) {
+                flow.totalScript().L____("const " + c.lname + " = Form.useWatch('" + c.lname + "', form);");
+                flow.totalScript().L("");
+            }
+        }
+        for (Field c : fieldList) {
+            if (c.siChange != null) {
+                flow.totalScript().L____("useOnChange('" + c.lname + "', form, (valeur) => {");
+                if (c.siChange.length() > 0) {
+                    flow.totalScript().L________("set").append(StringUtils.capitalize(c.siChange)).append("(valeur);");
+                }
+                flow.totalScript().L____("});");
+                flow.totalScript().L("");
+            }
         }
     }
 
-    public void addOpenTag(ViewFlow flow, int level) {
-        if (inView) {
-            flow.useForm(false);
-            flow.addToUi(indent[level]).append("<Formulaire").append(uname).append(" form={form} />");
+    public boolean addOpenTag(ViewFlow flow, int level) {
+        indent(flow, level).append("<Formulaire form={form}");
+        if (colNumber != 1) {
+            flow.addToUi(" nombreColonne={" + colNumber + "}");
         }
+        flow.addToUi(">");
+        for (Field c : fieldList) {
+            indent(flow, level + 1).append("<" + c.ui(ElementPrinter.FORM) + " nom=\"" + c.lname + "\"");
+            if (c.libelle != null) {
+                flow.addToUi(" libelle=\"" + c.libelle + "\"");
+            }
+            if (c.width > 0) {
+                flow.addToUi(" width={" + c.width + "}");
+            }
+            flow.addToUi(c.getExtension());
+            if (c.required) {
+                flow.addToUi(" requis=\"true\"");
+            }
+            if (c.readOnlyIf != null) {
+                flow.addToUi(" disabled={" + c.readOnlyIf + "}");
+            } else if (c.readOnly) {
+                flow.addToUi(" disabled");
+            }
+            if (c.invisibleSi != null) {
+                flow.addToUi(" invisible={" + c.invisibleSi + "}");
+            }
+            if (c.videSi != null) {
+                flow.addToUi(" invisible={" + c.videSi + "}");
+            }
+            if (c.seulDansLaLigne) {
+                flow.addToUi(" seulDansLaLigne");
+            }
+            if (c.surTouteLaLigne) {
+                flow.addToUi(" surTouteLaLigne");
+            }
+            flow.addToUi(" />");
+            if (c.videSi != null && colNumber == 2) {
+                indent(flow, level + 1).append("<ChampVide invisible={!" + c.videSi + "} />");
+            }
+        }
+        return false;
     }
 
-    public void addCloseTag(ViewFlow flow, int level) {}
+    public void addCloseTag(ViewFlow flow, int level) {
+        indent(flow, level).append("</Formulaire>");
+    }
 
     public Formulaire colNumber(int colNumber) {
         this.colNumber = colNumber;
@@ -80,33 +154,5 @@ public class Formulaire extends ElementComponent {
         return this;
     }
 
-    public Formulaire fillFrom(Action action) {
 
-        Context.getInstance().addAction(action, page, element, entity);
-        this.fillFrom = action;
-
-        return this;
-    }
-
-    public Formulaire initModificationDepuidMdl(String mdlName) {
-        Context.getInstance().addAction(new ActionInitModificationInFormulaire(this), page, element, entity);
-        Context.getInstance().addAction(new ActionInitModificationDepuisMdl(this, mdlName), page, entity);
-        enModification();
-        return this;
-    }
-
-    public Formulaire initModification(Action action) {
-        // Context.getInstance().addAction(new ActionInitModificationInFormulaire(this), page, element,
-        // entity);
-        action.formulaire = this;
-        Context.getInstance().addAction(action, page, entity);
-        enModification();
-        return this;
-    }
-
-    public Formulaire initCreation() {
-        Context.getInstance().addAction(new ActionInitCreationInFormulaire(this), page, element, entity);
-        Context.getInstance().addAction(new ActionInitCreation(this), page, entity);
-        return this;
-    }
 }

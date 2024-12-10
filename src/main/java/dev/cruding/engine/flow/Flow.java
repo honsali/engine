@@ -60,7 +60,6 @@ public class Flow {
     public Flow removeLastComma() {
         int idx = sb.lastIndexOf(",");
         if (idx != -1) {
-            // delete from idx till the end
             sb.delete(idx, sb.length());
         }
         return this;
@@ -151,4 +150,9 @@ public class Flow {
         return this;
     }
 
+    public void clean() {
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
 }

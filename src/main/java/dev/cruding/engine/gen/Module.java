@@ -1,6 +1,7 @@
 package dev.cruding.engine.gen;
 
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.gen.helper.Util;
 
 public class Module {
 
@@ -28,6 +29,12 @@ public class Module {
 
     public String listePage(String path_) {
         return listePage(path_, false);
+    }
+
+    public Page addPage(String name, ElementComposer elementComposer) {
+        Page page = new Page(this, name, elementComposer);
+        Context.getInstance().addPage(page);
+        return page;
     }
 
 }
