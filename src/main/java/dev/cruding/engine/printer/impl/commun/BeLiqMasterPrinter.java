@@ -17,7 +17,7 @@ public class BeLiqMasterPrinter extends Printer {
         f.L____("xmlns:ext=\"http://www.liquibase.org/xml/ns/dbchangelog-ext\"");
         f.L____("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         f.L____("xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd");
-        f.L____________("            http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
+        f.L________________________("http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
         f.L("");
 
         f.L____("<property name=\"now\" value=\"current_timestamp\" dbms=\"postgresql\"/>");

@@ -110,6 +110,14 @@ public class Flow {
         return this;
     }
 
+    public Flow L________________________(String... ss) {
+        sb.append("\n").append("                        ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
     public Flow ______(String... ss) {
         sb.append("    ");
         for (String s : ss) {

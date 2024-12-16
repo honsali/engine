@@ -17,16 +17,16 @@ public class BeLiqTablePrinter extends Printer {
         f.L____("xmlns:ext=\"http://www.liquibase.org/xml/ns/dbchangelog-ext\"");
         f.L____("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
         f.L____("xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd");
-        f.L____________("http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
+        f.L________________________("http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
         f.L("");
         f.L____("<changeSet id=\"", entity.key, "-0\" author=\"app_core\">");
-        f.L________("<createSequence sequenceName=\"", entity.seqName, "\" startValue=\"1050\" incrementBy=\"50\"/>");
+        f.L________("<createSequence sequenceName=\"", entity.seqName, "\" startValue=\"1050\" incrementBy=\"50\" />");
         f.L____("</changeSet>");
 
         f.L____("<changeSet id=\"", entity.key, "-1\" author=\"app_core\">");
         f.L________("<createTable tableName=\"", entity.dbName, "\">");
         f.L____________("<column name=\"", entity.id_.getDbName(entity.uname), "\" type=\"bigint\">");
-        f.L________________("<constraints primaryKey=\"true\" nullable=\"false\"/>");
+        f.L________________("<constraints primaryKey=\"true\" nullable=\"false\" />");
         f.L____________("</column>");
         for (Field fld : entity.fieldList) {
             if (fld.isBasic || fld.isRef || fld.isFather) {
@@ -35,21 +35,21 @@ public class BeLiqTablePrinter extends Printer {
         }
         f.L________("</createTable>");
         f.L____("</changeSet>");
-        f.L(" ");
+        f.L("");
 
-        f.L____("<changeSet id=\"", entity.key, "-data\" author=\"app_core\" >");
+        f.L____("<changeSet id=\"", entity.key, "-data\" author=\"app_core\">");
         f.L________("<loadData");
-        f.L________(" file=\"liquibase/data/", entity.lname, ".csv\"");
-        f.L________(" separator=\";\"");
-        f.L________(" tableName=\"", entity.dbName, "\"");
-        f.L________(" usePreparedStatements=\"true\">");
-        f.L____________("<column name=\"id\" type=\"numeric\"/>");
+        f.L____________("file=\"liquibase/data/", entity.lname, ".csv\"");
+        f.L____________("separator=\";\"");
+        f.L____________("tableName=\"", entity.dbName, "\"");
+        f.L____________("usePreparedStatements=\"true\">");
+        f.L____________("<column name=\"id\" type=\"numeric\" />");
 
         for (Field fld : entity.fieldList) {
             if (fld.isBasic) {
-                f.L____________("<column name=\"", fld.dbName, "\" type=\"", fld.stype, "\"/>");
+                f.L____________("<column name=\"", fld.dbName, "\" type=\"", fld.stype, "\" />");
             } else if (fld.isRef) {
-                f.L____________("<column name=\"", fld.dbName, "\" type=\"numeric\"/>");
+                f.L____________("<column name=\"", fld.dbName, "\" type=\"numeric\" />");
             }
         }
         f.L________("</loadData>");
