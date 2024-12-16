@@ -2,3 +2,9 @@
 src/main/java/modele/
 
 src/main/java/modules/
+
+.settings/
+
+.vscode/
+
+result/
