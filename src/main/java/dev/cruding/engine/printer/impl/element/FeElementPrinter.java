@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.element;
 
+import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
@@ -23,7 +24,8 @@ public class FeElementPrinter extends Printer {
 
         element.addContent(f);
 
-        for (Action action : Context.getInstance().actionElement(element)) {
+        List<Action> listeAction = Context.getInstance().actionElement(element);
+        for (Action action : listeAction) {
             if (action.addViewScript(f)) {
                 f.totalScript().L("");
             }

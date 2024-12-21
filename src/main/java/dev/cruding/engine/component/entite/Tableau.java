@@ -113,6 +113,7 @@ public class Tableau extends Component {
 
     public Tableau onRowClick(Actionnable actionnable) {
         actionnable.inElement(inElement);
+        actionnable.byRow();
         this.onRowClickAction = actionnable;
         return this;
     }

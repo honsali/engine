@@ -27,13 +27,19 @@ public class ActionEvent extends Action {
 
     public boolean addViewScript(ViewFlow f) {
         f.useEventBus();
-        f.totalScript().L____("const ").append(lcoreName()).append(" = () => {");
+        f.totalScript().L____("const ").append(lcoreName()).append(" = (");
+        if (actionnable.byRow) {
+            f.totalScript().__(actionnable.entity.lname);
+        }
+        f.totalScript().append(") => {");
         f.totalScript().L________("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
         if (actionnable.byEntity) {
             f.totalScript().__(", ").__(actionnable.entity.lname);
             f.addSpecificSelector(entity().lname, entity().uname, mvcPath() + "/Mdl" + uc());
         } else if (actionnable.element.byProp != null) {
             f.totalScript().__(", ").__(actionnable.element.byProp);
+        } else if (actionnable.byRow) {
+            f.totalScript().__(", ").__(actionnable.entity.lname);
         }
         f.totalScript().__(");");
         f.totalScript().L____("};");

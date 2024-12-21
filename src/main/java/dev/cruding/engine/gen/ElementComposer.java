@@ -35,6 +35,8 @@ import dev.cruding.engine.component.conteneur.Conteneur;
 import dev.cruding.engine.component.conteneur.FilAriane;
 import dev.cruding.engine.component.conteneur.MenuOnglet;
 import dev.cruding.engine.component.conteneur.Panneau;
+import dev.cruding.engine.component.conteneur.PanneauEtendable;
+import dev.cruding.engine.component.conteneur.PanneauFiltre;
 import dev.cruding.engine.component.conteneur.PlaqueEtat;
 import dev.cruding.engine.component.conteneur.Section;
 import dev.cruding.engine.component.conteneur.Separateur;
@@ -152,7 +154,7 @@ public abstract class ElementComposer {
     }
 
     public Actionnable throwEvent(Entity entity, String target) {
-        return new Actionnable(ActionType.NOUI, "event", entity, element).action(new ActionEvent(target)).inViewOnly();
+        return new Actionnable(ActionType.NOUI, target, entity, element).action(new ActionEvent(target)).inViewOnly();
     }
 
     public Actionnable listerTout(Entity entity) {
@@ -218,6 +220,14 @@ public abstract class ElementComposer {
 
     public Panneau panneau(Component... componentList) {
         return new Panneau(element, componentList);
+    }
+
+    public PanneauFiltre panneauFiltre(Entity entity, Component... componentList) {
+        return new PanneauFiltre(element, entity, componentList);
+    }
+
+    public PanneauEtendable panneauEtendable(Component... componentList) {
+        return new PanneauEtendable(element, componentList);
     }
 
     public MenuOnglet menuOnglet(Component... componentList) {

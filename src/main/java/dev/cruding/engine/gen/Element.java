@@ -63,4 +63,12 @@ public class Element {
         composantRacine.addContent(null, flow, 1);
     }
 
+    public boolean equals(Object obj) {
+        if (obj instanceof Element) {
+            Element e = (Element) obj;
+            return e.name.equals(name) && e.path.equals(path);
+        }
+        return false;
+    }
+
 }

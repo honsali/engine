@@ -116,7 +116,7 @@ public class Context {
     }
 
     public List<Action> actionElement(Element element) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.element != null && as.element.name != null && as.element.name.equals(element.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && as.element.equals(element)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionEntity(Entity entity) {

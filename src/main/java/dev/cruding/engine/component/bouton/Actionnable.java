@@ -30,6 +30,7 @@ public class Actionnable {
     public boolean byGrandFatherId = false;
     public boolean byForm = false;
     public boolean byEntity = false;
+    public boolean byRow = false;
     public boolean byProp = false;
     public Field byField = null;
     public boolean recharger = false;
@@ -160,6 +161,12 @@ public class Actionnable {
 
     public Actionnable byEntity() {
         this.byEntity = true;
+        return this;
+    }
+
+
+    public Actionnable byRow() {
+        this.byRow = true;
         return this;
     }
 
