@@ -37,6 +37,10 @@ public class Bouton extends Component {
         flow.addJsImport("{ Action" + actionnable.page.module.unameLast + " }", s + "/Action" + actionnable.page.module.unameLast);
     }
 
+    public void addInlineTag(ViewFlow flow) {
+        addOpenTag(flow, 0);
+    }
+
     public boolean addOpenTag(ViewFlow flow, int level) {
         String nomAction = "Action" + actionnable.page.module.unameLast + "." + "Uc" + actionnable.page.uc + "." + actionnable.actionKey;
         if (actionnable.noUi()) {

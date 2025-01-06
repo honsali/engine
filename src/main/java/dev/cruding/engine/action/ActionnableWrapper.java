@@ -1,10 +1,10 @@
 package dev.cruding.engine.action;
 
 import java.util.ArrayList;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.component.bouton.Actionnable;
 import dev.cruding.engine.component.bouton.Actionnable.ActionType;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.Element;
 import dev.cruding.engine.gen.Page;
 
@@ -67,16 +67,16 @@ public class ActionnableWrapper {
         return actionnable.byForm;
     };
 
-    public boolean byEntity() {
-        return actionnable.byEntity;
+    public boolean byEntite() {
+        return actionnable.byEntite;
     };
 
     public boolean byProp() {
         return actionnable.byProp;
     };
 
-    public Field byField() {
-        return actionnable.byField;
+    public Champ byChamp() {
+        return actionnable.byChamp;
     };
 
     public boolean recharger() {
@@ -107,8 +107,8 @@ public class ActionnableWrapper {
         return actionnable.action;
     };
 
-    public Entity entity() {
-        return actionnable.entity;
+    public Entite entite() {
+        return actionnable.entite;
     };
 
     public Page targetPage() {
@@ -123,7 +123,7 @@ public class ActionnableWrapper {
         return actionnable.inViewOnly;
     };
 
-    public Field child() {
+    public Champ child() {
         return actionnable.child;
     };
 

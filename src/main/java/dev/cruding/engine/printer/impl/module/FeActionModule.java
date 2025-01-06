@@ -3,6 +3,7 @@ package dev.cruding.engine.printer.impl.module;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
@@ -26,7 +27,7 @@ public class FeActionModule extends Printer {
 
                 List<Action> listeAction = new ArrayList<>(Context.getInstance().allActionPage(page));
                 for (Action action : listeAction) {
-                    action.addActionModule(f, page);
+                    f.L________(action.actionKey(), ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(action.lname()), "',");
                 }
                 f.L____("},");
             }

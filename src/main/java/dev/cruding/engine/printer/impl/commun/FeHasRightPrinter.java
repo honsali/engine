@@ -1,6 +1,6 @@
 package dev.cruding.engine.printer.impl.commun;
 
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
 
@@ -12,7 +12,7 @@ public class FeHasRightPrinter extends Printer {
         f.__("import { useAppSelector } from 'core/config/store.config';");
         f.L("");
         f.L("const ALL = [");
-        for (Entity e : entityList()) {
+        for (Entite e : entiteList()) {
             f.L("    'creer.", e.lname, "', //");
             f.L("    'modifier.", e.lname, "',");
             f.L("    'enregistrer.", e.lname, "',");

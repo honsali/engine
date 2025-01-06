@@ -13,7 +13,7 @@ public class ActionRecupererDepuisMdl extends Action {
     }
 
     public void addViewSelector(ViewFlow f) {
-        f.addSpecificSelector(entity().uname, mvcPath() + "/Mdl" + uc());
+        f.addSpecificSelector(entite().uname, mvcPath() + "/Mdl" + uc());
     }
 
     public boolean addViewScript(ViewFlow f) {
@@ -24,43 +24,43 @@ public class ActionRecupererDepuisMdl extends Action {
         f.useEffect();
         f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
 
-        f.addSpecificSelector(entity().lname, entity().uname, mvcPath() + "/Mdl" + uc());
+        f.addSpecificSelector(entite().lname, entite().uname, mvcPath() + "/Mdl" + uc());
         return true;
     }
 
     public void addCtrlImport(MCFlow f) {}
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
-        f.addMdlRequestAttribute("id" + entity().uname, "string");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entity().ugrandfather, "string");
+        f.addMdlRequestAttribute("id" + entite().uname, "string");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+        if (byFatherId() && entite().haveFather) {
+            f.addMdlRequestAttribute("id" + entite().ufather, "string");
         }
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const select", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entity().lname, ");");
+        f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("const { mdl", mdlName, " } = thunkAPI.getState() as any;");
-        f.L____("resultat.", entity().lname, " = mdl", mdlName, ".", entity().lname, ";");
+        f.L____("resultat.", entite().lname, " = mdl", mdlName, ".", entite().lname, ";");
         f.L("};");
     }
 
@@ -69,7 +69,7 @@ public class ActionRecupererDepuisMdl extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.", entity().lname, " = action.payload.", entity().lname, ";");
+        f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
         f.L____________("})");
     }
 

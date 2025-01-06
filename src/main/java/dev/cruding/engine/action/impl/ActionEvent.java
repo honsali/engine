@@ -29,17 +29,17 @@ public class ActionEvent extends Action {
         f.useEventBus();
         f.totalScript().L____("const ").append(lcoreName()).append(" = (");
         if (actionnable.byRow) {
-            f.totalScript().__(actionnable.entity.lname);
+            f.totalScript().__(actionnable.entite.lname);
         }
         f.totalScript().append(") => {");
         f.totalScript().L________("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
-        if (actionnable.byEntity) {
-            f.totalScript().__(", ").__(actionnable.entity.lname);
-            f.addSpecificSelector(entity().lname, entity().uname, mvcPath() + "/Mdl" + uc());
+        if (actionnable.byEntite) {
+            f.totalScript().__(", ").__(actionnable.entite.lname);
+            f.addSpecificSelector(entite().lname, entite().uname, mvcPath() + "/Mdl" + uc());
         } else if (actionnable.element.byProp != null) {
             f.totalScript().__(", ").__(actionnable.element.byProp);
         } else if (actionnable.byRow) {
-            f.totalScript().__(", ").__(actionnable.entity.lname);
+            f.totalScript().__(", ").__(actionnable.entite.lname);
         }
         f.totalScript().__(");");
         f.totalScript().L____("};");

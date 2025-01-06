@@ -2,9 +2,9 @@ package dev.cruding.engine.component;
 
 import java.util.Arrays;
 import java.util.Objects;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.component.conteneur.BlocAction;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Element;
 
@@ -13,8 +13,8 @@ public abstract class Component {
     public static final String[] indent = new String[] {"\n" + tab, "\n" + tab + tab, "\n" + tab + tab + tab, "\n" + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab + tab + tab};
 
     public Component[] componentList;
-    public Field[] fieldList;
-    public Entity entity;
+    public Champ[] fieldList;
+    public Entite entite;
     public Element element;
     public Component fatherComponent;
     public boolean inElement = false;
@@ -25,18 +25,18 @@ public abstract class Component {
         this.element = element;
     }
 
-    public Component(Element element, Entity entity) {
+    public Component(Element element, Entite entite) {
         this.element = element;
-        this.entity = entity;
+        this.entite = entite;
     }
 
-    public Component(Element element, Entity entity, Component... componentList) {
-        this(element, entity);
+    public Component(Element element, Entite entite, Component... componentList) {
+        this(element, entite);
         this.componentList = componentList;
     }
 
-    public Component(Element element, Entity entity, Field... fieldList) {
-        this(element, entity);
+    public Component(Element element, Entite entite, Champ... fieldList) {
+        this(element, entite);
         this.fieldList = clean(fieldList);
     }
 
@@ -45,7 +45,7 @@ public abstract class Component {
         this.componentList = componentList;
     }
 
-    public Component(Element element, Field... fieldList) {
+    public Component(Element element, Champ... fieldList) {
         this(element);
         this.fieldList = clean(fieldList);
     }
@@ -136,8 +136,8 @@ public abstract class Component {
 
     public void addScript(ViewFlow c) {}
 
-    private Field[] clean(Field[] fieldList) {
-        return Arrays.stream(fieldList).filter(Objects::nonNull).toArray(Field[]::new);
+    private Champ[] clean(Champ[] fieldList) {
+        return Arrays.stream(fieldList).filter(Objects::nonNull).toArray(Champ[]::new);
     }
 
 

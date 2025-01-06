@@ -10,7 +10,7 @@ import dev.cruding.engine.gen.Processor;
 
 public class Launcher {
 
-    private static final String element = "#Form#Etat#Element#View#Page#";
+    private static final String element = "#Form#Etat#";
 
     public static void main(final String[] args) throws Exception {
 
@@ -18,7 +18,7 @@ public class Launcher {
 
         Context.getInstance().setBasePath("result");
 
-        loadEntity("src\\main\\java\\modele");
+        loadEntite("src\\main\\java\\modele");
         Context.getInstance().initEntities();
 
         loadPage("src\\main\\java\\modules");
@@ -31,7 +31,7 @@ public class Launcher {
 
     }
 
-    private static void loadEntity(String path) {
+    private static void loadEntite(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
             files.filter(Files::isRegularFile).map(Launcher::newInstance).forEach(Context::add);
         } catch (Exception e) {

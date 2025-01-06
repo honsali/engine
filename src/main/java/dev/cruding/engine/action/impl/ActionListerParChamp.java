@@ -2,8 +2,8 @@ package dev.cruding.engine.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.MCFlow;
@@ -12,18 +12,18 @@ import dev.cruding.engine.gen.Context;
 
 public class ActionListerParChamp extends Action {
 
-    public Field par;
-    public Field ordonnerPar;
+    public Champ par;
+    public Champ ordonnerPar;
     public String parName;
     public String parNameSuffixed;
 
 
 
-    public ActionListerParChamp(Field par) {
+    public ActionListerParChamp(Champ par) {
         this.par = par;
     }
 
-    public ActionListerParChamp ordonnerPar(Field ordonnerPar) {
+    public ActionListerParChamp ordonnerPar(Champ ordonnerPar) {
         this.ordonnerPar = ordonnerPar;
         return this;
     }
@@ -31,11 +31,11 @@ public class ActionListerParChamp extends Action {
 
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
@@ -47,25 +47,25 @@ public class ActionListerParChamp extends Action {
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(sourceDonnee(), "I" + entity().uname + "[]");
+        f.addMdlResultAttribute(sourceDonnee(), "I" + entite().uname + "[]");
 
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(sourceDonnee(), "I" + entity().uname + "[]");
+        f.addMdlStateAttribute(sourceDonnee(), "I" + entite().uname + "[]");
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const selectListe", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", sourceDonnee(), ");");
+        f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", sourceDonnee(), ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         if (par.isRef || par.isFather) {
-            f.L____("resultat.", sourceDonnee(), " = await Service", entity().uname, ".listerParId", par.uname, parName, "(requete.id", par.uname, parName, ");");
+            f.L____("resultat.", sourceDonnee(), " = await Service", entite().uname, ".listerParId", par.uname, parName, "(requete.id", par.uname, parName, ");");
         } else {
-            f.L____("resultat.", sourceDonnee(), " = await Service", entity().uname, ".listerPar", par.uname, parName, "(requete.", par.lname, parName, ");");
+            f.L____("resultat.", sourceDonnee(), " = await Service", entite().uname, ".listerPar", par.uname, parName, "(requete.", par.lname, parName, ");");
         }
         f.L("};");
     }
@@ -81,29 +81,29 @@ public class ActionListerParChamp extends Action {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        if (uc().endsWith(par.containingEntity) && !"id".equals(par.lname)) {
+        if (uc().endsWith(par.containingEntite) && !"id".equals(par.lname)) {
             f.totalScript().L____________("execute(Ctrl", uc(), ".", lname(), ", {");
             if (par.isRef || par.isFather) {
                 f.totalScript().__(" ", par.uname + parName);
             } else {
                 f.totalScript().__(" ", par.lname + parName);
             }
-            f.totalScript().__(": ", StringUtils.uncapitalize(par.containingEntity), ".", par.lname, " ");
+            f.totalScript().__(": ", StringUtils.uncapitalize(par.containingEntite), ".", par.lname, " ");
             f.totalScript().__("});");
             f.totalScript().L________("}");
             f.totalScript().L____("}, []);");
-            f.totalScript().L____("}, [", StringUtils.uncapitalize(par.containingEntity), "]);");
+            f.totalScript().L____("}, [", StringUtils.uncapitalize(par.containingEntite), "]);");
         } else {
             f.totalScript().L________("execute(Ctrl", uc(), ".", lname(), ", {");
-            f.totalScript().__(" ", par.lname, par.containingEntity, " ");
+            f.totalScript().__(" ", par.lname, par.containingEntite, " ");
             f.totalScript().__("});");
-            f.totalScript().L____("}, [", par.lname, par.containingEntity, "]);");
+            f.totalScript().L____("}, [", par.lname, par.containingEntite, "]);");
         }
 
-        if (uc().endsWith(par.containingEntity) && !"id".equals(par.lname)) {
-            f.addSpecificSelector(par.containingEntity, mvcPath() + "/Mdl" + uc());
+        if (uc().endsWith(par.containingEntite) && !"id".equals(par.lname)) {
+            f.addSpecificSelector(par.containingEntite, mvcPath() + "/Mdl" + uc());
         } else {
-            f.addParam(par.lname + par.containingEntity);
+            f.addParam(par.lname + par.containingEntite);
         }
         f.useExecute();
         f.useEffect();
@@ -115,15 +115,15 @@ public class ActionListerParChamp extends Action {
         f.L("");
         if (par.isRef || par.isFather) {
             f.L("const listerParId", par.uname, parName, " = async (id", par.uname, parName, ": string) => {");
-            f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/listerParId", par.uname, parName, "/${id", par.uname, parName, "}`)).data;");
+            f.L____("const liste", entite().uname, ": I", entite().uname, "[] = (await axios.get<I", entite().uname, "[]>(`${resourceUri}/listerParId", par.uname, parName, "/${id", par.uname, parName, "}`)).data;");
 
         } else {
             f.L("const listerPar", par.uname, parName, " = async (", par.lname, parName, ": string) => {");
-            f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/listerPar", par.uname, parName, "/${", par.lname, parName, "}`)).data;");
+            f.L____("const liste", entite().uname, ": I", entite().uname, "[] = (await axios.get<I", entite().uname, "[]>(`${resourceUri}/listerPar", par.uname, parName, "/${", par.lname, parName, "}`)).data;");
 
         }
 
-        f.L____("return liste", entity().uname, ";");
+        f.L____("return liste", entite().uname, ";");
         f.L("};");
 
     }
@@ -142,17 +142,17 @@ public class ActionListerParChamp extends Action {
     }
 
     public void addRepositoryDeclaration(JavaFlow f) {
-        Entity parEntity = Context.getInstance().getEntity(par.uname);
+        Entite parEntite = Context.getInstance().getEntite(par.uname);
 
         f.L("");
         if (par.isRef || par.isFather) {
-            f.L____("List<", entity().uname, "> findAllBy", parNameSuffixed, "IdOrderBy");
+            f.L____("List<", entite().uname, "> findAllBy", parNameSuffixed, "IdOrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
-            f.__("(", parEntity.id_.jtype, " id", parName, ");");
+            f.__("(", parEntite.id_.jtype, " id", parName, ");");
         } else {
-            f.L____("List<", entity().uname, "> findAllBy", parNameSuffixed, par.uname, "OrderBy");
+            f.L____("List<", entite().uname, "> findAllBy", parNameSuffixed, par.uname, "OrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
@@ -168,11 +168,11 @@ public class ActionListerParChamp extends Action {
     public void addResourceDeclaration(JavaFlow f) {
 
         if (par.isRef || par.isFather) {
-            Entity parEntity = Context.getInstance().getEntity(par.uname);
+            Entite parEntite = Context.getInstance().getEntite(par.uname);
             f.L("");
             f.L____("@GetMapping(\"/listerParId", par.uname, parName, "/{id", par.uname, parName, "}\")");
-            f.L____("public List<", entity().uname, "> listerParId", par.uname, parName, "(@PathVariable ", parEntity.id_.jtype, " id", par.uname, parName, ") {");
-            f.L________("return ", entity().lname, "Repository.findAllBy", parNameSuffixed, "IdOrderBy");
+            f.L____("public List<", entite().uname, "> listerParId", par.uname, parName, "(@PathVariable ", parEntite.id_.jtype, " id", par.uname, parName, ") {");
+            f.L________("return ", entite().lname, "Repository.findAllBy", parNameSuffixed, "IdOrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }
@@ -182,8 +182,8 @@ public class ActionListerParChamp extends Action {
         } else {
             f.L("");
             f.L____("@GetMapping(\"/listerPar", par.uname, parName, "/{", par.lname, parName, "}\")");
-            f.L____("public List<", entity().uname, "> listerPar", par.uname, parName, "(@PathVariable ", par.jtype, " ", par.lname, parName, ") {");
-            f.L________("return ", entity().lname, "Repository.findAllBy", parNameSuffixed, par.uname, "OrderBy");
+            f.L____("public List<", entite().uname, "> listerPar", par.uname, parName, "(@PathVariable ", par.jtype, " ", par.lname, parName, ") {");
+            f.L________("return ", entite().lname, "Repository.findAllBy", parNameSuffixed, par.uname, "OrderBy");
             if (ordonnerPar != null) {
                 f.__(ordonnerPar.uname);
             }

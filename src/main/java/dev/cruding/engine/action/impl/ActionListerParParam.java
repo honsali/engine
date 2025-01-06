@@ -2,7 +2,7 @@ package dev.cruding.engine.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.MCFlow;
@@ -12,7 +12,7 @@ public class ActionListerParParam extends Action {
 
     public String lparName;
     public String uparName;
-    public Field ordonnerPar;
+    public Champ ordonnerPar;
 
 
 
@@ -22,18 +22,18 @@ public class ActionListerParParam extends Action {
 
     }
 
-    public ActionListerParParam ordonnerPar(Field ordonnerPar) {
+    public ActionListerParParam ordonnerPar(Champ ordonnerPar) {
         this.ordonnerPar = ordonnerPar;
         return this;
     }
 
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
@@ -41,23 +41,23 @@ public class ActionListerParParam extends Action {
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(sourceDonnee(), "I" + entity().uname + "[]");
+        f.addMdlResultAttribute(sourceDonnee(), "I" + entite().uname + "[]");
 
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(sourceDonnee(), "I" + entity().uname + "[]");
+        f.addMdlStateAttribute(sourceDonnee(), "I" + entite().uname + "[]");
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const selectListe", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", sourceDonnee(), ");");
+        f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", sourceDonnee(), ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
 
-        f.L____("resultat.", sourceDonnee(), " = await Service", entity().uname, ".listerPar", uparName, "(requete.", lparName, ");");
+        f.L____("resultat.", sourceDonnee(), " = await Service", entite().uname, ".listerPar", uparName, "(requete.", lparName, ");");
         f.L("};");
     }
 
@@ -87,10 +87,10 @@ public class ActionListerParParam extends Action {
         f.L("");
 
         f.L("const listerPar", uparName, " = async (", lparName, ": string) => {");
-        f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/listerPar", uparName, "/${", lparName, "}`)).data;");
+        f.L____("const liste", entite().uname, ": I", entite().uname, "[] = (await axios.get<I", entite().uname, "[]>(`${resourceUri}/listerPar", uparName, "/${", lparName, "}`)).data;");
 
 
-        f.L____("return liste", entity().uname, ";");
+        f.L____("return liste", entite().uname, ";");
         f.L("};");
 
     }
@@ -108,7 +108,7 @@ public class ActionListerParParam extends Action {
 
         f.L("");
 
-        f.L____("List<", entity().uname, "> findAllBy", lparName, "OrderBy");
+        f.L____("List<", entite().uname, "> findAllBy", lparName, "OrderBy");
         if (ordonnerPar != null) {
             f.__(ordonnerPar.uname);
         }
@@ -126,8 +126,8 @@ public class ActionListerParParam extends Action {
 
         f.L("");
         f.L____("@GetMapping(\"/listerPar", uparName, "/{", lparName, "}\")");
-        f.L____("public List<", entity().uname, "> listerPar", uparName, "(@PathVariable ", lparName, " ", lparName, ") {");
-        f.L________("return ", entity().lname, "Repository.findAllBy", lparName, "OrderBy");
+        f.L____("public List<", entite().uname, "> listerPar", uparName, "(@PathVariable ", lparName, " ", lparName, ") {");
+        f.L________("return ", entite().lname, "Repository.findAllBy", lparName, "OrderBy");
         if (ordonnerPar != null) {
             f.__(ordonnerPar.uname);
         }

@@ -1,7 +1,7 @@
 package dev.cruding.engine.component.conteneur;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Element;
 
@@ -13,8 +13,8 @@ public class PanneauEtendable extends Conteneur {
         super(element, componentList);
     }
 
-    public PanneauEtendable(Element element, Entity entity, Component... componentList) {
-        super(element, entity, componentList);
+    public PanneauEtendable(Element element, Entite entite, Component... componentList) {
+        super(element, entite, componentList);
     }
 
     public void addImport(ViewFlow flow) {

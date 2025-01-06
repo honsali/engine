@@ -4,63 +4,76 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.champ.impl.RefChamp;
 import dev.cruding.engine.flow.MCFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionInitCreation extends Action {
 
-    private Field[] fieldList = new Field[0];
+    private Champ[] fieldList = new Champ[0];
 
     public ActionInitCreation() {
-        this.fieldList = new Field[0];
+        this.fieldList = new Champ[0];
     }
 
-    public ActionInitCreation(Field... fieldList) {
+    public ActionInitCreation(Champ... fieldList) {
         this.fieldList = fieldList;
     }
 
     public void addCtrlImport(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addCtrlImport(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addCtrlImport(f);
+            }
         }
     }
 
     public void addMdlImport(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlImport(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlImport(f);
+            }
         }
     }
 
     public void addMdlRequestAttribute(MCFlow f) {}
 
     public void addMdlResultAttribute(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlResultAttribute(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlResultAttribute(f);
+            }
         }
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlStateAttribute(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlStateAttribute(f);
+            }
         }
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlSelector(f, uc());
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlSelector(f, uc);
+            }
         }
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.", entity().lname, " = {");
+        f.L____("resultat.", entite().lname, " = {");
         String result = Arrays.asList(fieldList).stream().filter(field -> field.init != null).map(field -> " " + field.lname + ": " + field.init).collect(Collectors.joining(","));
         f.__(result, StringUtils.isNotBlank(result) ? " " : "");
         f.__("};");
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addCtrlImplementation(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addCtrlImplementation(f);
+            }
         }
         f.L("};");
     }
@@ -70,10 +83,12 @@ public class ActionInitCreation extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.", entity().lname, " = action.payload.", entity().lname, ";");
+        f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlExtraReducer(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlExtraReducer(f);
+            }
         }
 
         f.L____________("})");
@@ -81,11 +96,11 @@ public class ActionInitCreation extends Action {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".initCreation", entity().uname, ");");
+        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".initCreation", entite().uname, ");");
         f.totalScript().L____("}, [", f.getPretArray(), "]);");
         f.totalScript().L("");
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("success && form.setFieldsValue(resultat.", entity().lname, ");");
+        f.totalScript().L________("success && form.setFieldsValue(resultat.", entite().lname, ");");
         f.totalScript().L____("}, [success]);");
         f.addSpecificSelector("resultat", uc() + "Resultat", mvcPath() + "/Mdl" + uc());
         f.useExecute("execute, success");

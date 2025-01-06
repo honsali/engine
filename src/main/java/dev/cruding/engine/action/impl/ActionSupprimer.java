@@ -18,7 +18,7 @@ public class ActionSupprimer extends ActionSpecifique {
         f.L____("@DeleteMapping(\"/{id}\")");
         f.L____("public ResponseEntity<Void> ", lname(), "(@PathVariable Long id");
         f.__(") throws URISyntaxException {");
-        f.L________(entity().lname, "Repository.deleteById(id);");
+        f.L________(entite().lname, "Repository.deleteById(id);");
         f.L________("return ResponseEntity.noContent().build();");
         f.L____("}");
     }

@@ -65,10 +65,10 @@ public class FeListePagePrinter extends Printer {
     }
 
     private String getPath(Module module, Page page) {
-        return module.path.substring(8) + "/" + page.entityLname + "/" + page.actionLname;
+        return module.path.substring(8) + "/" + page.entiteLname + "/" + page.actionLname;
     }
 
     private String getToPath(Module module, Page page) {
-        return module.path.substring(7) + "/" + page.entityLname + "/" + page.actionLname;
+        return module.path.substring(7) + "/" + page.entiteLname + "/" + page.actionLname;
     }
 }

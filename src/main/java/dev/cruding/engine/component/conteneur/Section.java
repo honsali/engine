@@ -1,7 +1,7 @@
 package dev.cruding.engine.component.conteneur;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Element;
@@ -17,8 +17,8 @@ public class Section extends Component {
         super(element, componentList);
     }
 
-    public Section(Element element, Entity entity, Component... componentList) {
-        super(element, entity, componentList);
+    public Section(Element element, Entite entite, Component... componentList) {
+        super(element, entite, componentList);
     }
 
     public void addImport(ViewFlow flow) {
@@ -43,7 +43,7 @@ public class Section extends Component {
 
         }
         if (plaqueEtat) {
-            flow.addToUi(" blocAction={<PlaqueEtat entity={").append(entity.lname).append("} />}");
+            flow.addToUi(" blocAction={<PlaqueEtat entite={").append(entite.lname).append("} />}");
         }
         if (blocAction != null) {
             indent(flow, level + 1).append(" blocAction={");

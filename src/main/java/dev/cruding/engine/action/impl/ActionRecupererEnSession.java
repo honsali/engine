@@ -16,7 +16,7 @@ public class ActionRecupererEnSession extends Action {
         if (variable != null) {
             f.addSpecificSelector(variable, mvcPath() + "/Mdl" + uc());
         } else {
-            f.addSpecificSelector(entity().lname, entity().uname, mvcPath() + "/Mdl" + uc());
+            f.addSpecificSelector(entite().lname, entite().uname, mvcPath() + "/Mdl" + uc());
         }
         return false;
     }

@@ -2,12 +2,13 @@
 package dev.cruding.engine.component.entite;
 
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.ElementPrinter;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Element;
+import dev.cruding.engine.gen.helper.Util;
 
 public class Etat extends Component {
 
@@ -15,20 +16,20 @@ public class Etat extends Component {
     public int largeur = 0;
     public String lname;
     public String uname;
-    public Field field;
+    public Champ field;
     public boolean inView = true;
 
-    public Etat(Element element, Entity entity, Field... fieldList) {
-        this(entity.lname, entity.uname, element, entity, null, fieldList);
+    public Etat(Element element, Entite entite, Champ... fieldList) {
+        this(entite.lname, entite.uname, element, entite, null, fieldList);
 
     }
 
-    public Etat(Element element, Field field, Entity entity, Field... fieldList) {
-        this(field.lname, field.uname, element, entity, field, fieldList);
+    public Etat(Element element, Champ field, Entite entite, Champ... fieldList) {
+        this(field.lname, field.uname, element, entite, field, fieldList);
     }
 
-    private Etat(String lname, String uname, Element element, Entity entity, Field field, Field... fieldList) {
-        super(element, entity, fieldList);
+    private Etat(String lname, String uname, Element element, Entite entite, Champ field, Champ... fieldList) {
+        super(element, entite, fieldList);
         this.lname = lname;
         this.uname = uname;
         this.field = field;
@@ -52,25 +53,36 @@ public class Etat extends Component {
     }
 
     public void addImport(ViewFlow flow) {
-        flow.addJsImport("{ Bloc, Champ, Etat }", "waxant");
+        for (Champ c : fieldList) {
+
+            if (c.videSi != null) {
+                flow.addJsImport("{ ChampVide }", "waxant");
+            }
+        }
+
+        StringBuilder fieldImportList = Util.processListeChamp(fieldList, ElementPrinter.DETAIL);
+
+        flow.addJsImport("{ FormulaireConsultation }", "waxant");
+        flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
     }
 
     public void addScript(ViewFlow flow) {
-        flow.addSpecificSelector(entity.lname, "../Mdl" + element.page.uc);
+        flow.addSpecificSelector(entite.lname, "../Mdl" + element.page.uc);
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
         if (field != null) {
-            indent(flow, level).append("<Etat modele={" + entity.lname + "." + field.lname + "}");
+            indent(flow, level).append("<FormulaireConsultation modele={" + entite.lname + "." + field.lname + "}");
         } else {
-            indent(flow, level).append("<Etat modele={" + entity.lname + "}");
+            indent(flow, level).append("<FormulaireConsultation modele={" + entite.lname + "}");
         }
         if (colNumber != 2) {
             flow.addToUi(" nombreColonne={" + colNumber + "}");
         }
         flow.addToUi(">");
-        for (Field c : fieldList) {
-            indent(flow, level + 1).append("<Champ " + c.ui(ElementPrinter.DETAIL) + "=\"" + c.lname + "\"");
+        for (Champ c : fieldList) {
+            indent(flow, level + 1).append("<" + c.ui(ElementPrinter.DETAIL) + " nom=\"" + c.lname + "\"");
+            flow.addToUi(c.getExtension());
             if (c.libelle != null) {
                 flow.addToUi(" libelle=\"" + c.libelle + "\"");
             }
@@ -99,7 +111,7 @@ public class Etat extends Component {
     }
 
     public void addCloseTag(ViewFlow flow, int level) {
-        indent(flow, level).append("</Etat>");
+        indent(flow, level).append("</FormulaireConsultation>");
     }
 
     public Etat colNumber(int colNumber) {

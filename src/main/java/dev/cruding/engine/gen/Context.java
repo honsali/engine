@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.bouton.Actionnable;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 
 public class Context {
     private final static Context instance = new Context();
@@ -20,9 +20,9 @@ public class Context {
         if (instance instanceof Page) {
             Page page = (Page) instance;
             getInstance().pageMap.put(page.name, page);
-        } else if (instance instanceof Entity) {
-            Entity entity = (Entity) instance;
-            getInstance().entityMap.put(entity.uname, entity);
+        } else if (instance instanceof Entite) {
+            Entite entite = (Entite) instance;
+            getInstance().entiteMap.put(entite.uname, entite);
         } else if (instance instanceof Module) {
             Module module = (Module) instance;
             getInstance().moduleMap.put(module.packge, module);
@@ -30,7 +30,7 @@ public class Context {
 
     }
 
-    private HashMap<String, Entity> entityMap = new HashMap<>();
+    private HashMap<String, Entite> entiteMap = new HashMap<>();
 
     private HashMap<String, Page> pageMap = new HashMap<>();
 
@@ -48,12 +48,12 @@ public class Context {
         pageMap.put(page.name, page);
     }
 
-    public Entity getEntity(String uname) {
-        return entityMap.get(uname);
+    public Entite getEntite(String uname) {
+        return entiteMap.get(uname);
     }
 
-    public Collection<Entity> getEntityList() {
-        return entityMap.values();
+    public Collection<Entite> getEntiteList() {
+        return entiteMap.values();
     }
 
     public Collection<Module> getModuleList() {
@@ -119,13 +119,13 @@ public class Context {
         return actionnableList.stream().filter(as -> !as.flow() && as.element.equals(element)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
     }
 
-    public List<Action> actionEntity(Entity entity) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.entity != null && as.entity.lname.equals(entity.lname)).map(as -> as.action).filter(Objects::nonNull).distinct().sorted().toList();
+    public List<Action> actionEntite(Entite entite) {
+        return actionnableList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).map(as -> as.action).filter(Objects::nonNull).distinct().sorted().toList();
     }
 
 
     public void initEntities() {
-        entityMap.values().stream().forEach(e -> e.init());
+        entiteMap.values().stream().forEach(e -> e.init());
     }
 
     public void initPages() {

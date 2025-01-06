@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.impl.ActionVide;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Element;
 import dev.cruding.engine.gen.Page;
@@ -29,10 +29,10 @@ public class Actionnable {
     public boolean byFatherId = false;
     public boolean byGrandFatherId = false;
     public boolean byForm = false;
-    public boolean byEntity = false;
+    public boolean byEntite = false;
     public boolean byRow = false;
     public boolean byProp = false;
-    public Field byField = null;
+    public Champ byChamp = null;
     public boolean recharger = false;
     public boolean confirmer;
     public ArrayList<Actionnable> siReussi = new ArrayList<>();
@@ -41,13 +41,13 @@ public class Actionnable {
     public Element element;
     public Page page;
     public Action action;
-    public Entity entity;
+    public Entite entite;
     public Page targetPage;
     public String actionType;
     public String uc;
     public boolean inViewOnly = false;
     public boolean inElement = false;
-    public Field child;
+    public Champ child;
     public String sourceDonnee;
     public boolean resultatInId = false;
     public String paginee = "";
@@ -56,10 +56,10 @@ public class Actionnable {
     public String modele;
     public boolean isVide = true;
 
-    public Actionnable(ActionType type, String lcoreName, Entity entity, Page page) {
+    public Actionnable(ActionType type, String lcoreName, Entite entite, Page page) {
         this.type = type;
-        this.entity = entity;
-        this.orderBy = entity.uid;
+        this.entite = entite;
+        this.orderBy = entite.uid;
         this.page = page;
         this.uc = page.uc;
         lcoreName(lcoreName);
@@ -71,8 +71,8 @@ public class Actionnable {
         }
     }
 
-    public Actionnable(ActionType type, String lcoreName, Entity entity, Element element) {
-        this(type, lcoreName, entity, element.page);
+    public Actionnable(ActionType type, String lcoreName, Entite entite, Element element) {
+        this(type, lcoreName, entite, element.page);
         element(element);
 
     }
@@ -81,10 +81,10 @@ public class Actionnable {
         this.lcoreName = lcoreName;
         this.ucoreName = StringUtils.capitalize(lcoreName);
         String n = this.lcoreName;
-        if (this.entity != null) {
-            n = n + this.entity.uname;
+        if (this.entite != null) {
+            n = n + this.entite.uname;
         } else {
-            n = n + this.page.entityUname;
+            n = n + this.page.entiteUname;
         }
         this.lname(n);
         return this;
@@ -159,8 +159,8 @@ public class Actionnable {
     }
 
 
-    public Actionnable byEntity() {
-        this.byEntity = true;
+    public Actionnable byEntite() {
+        this.byEntite = true;
         return this;
     }
 
@@ -175,8 +175,8 @@ public class Actionnable {
         return this;
     }
 
-    public Actionnable byField(Field field) {
-        this.byField = field;
+    public Actionnable byChamp(Champ field) {
+        this.byChamp = field;
         return this;
     }
 
@@ -225,7 +225,7 @@ public class Actionnable {
         return this;
     }
 
-    public Actionnable child(Field child) {
+    public Actionnable child(Champ child) {
         this.child = child;
         return this;
     }

@@ -1,6 +1,6 @@
 package dev.cruding.engine.printer.impl.commun;
 
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
 
@@ -28,10 +28,10 @@ public class BeLiqMasterPrinter extends Printer {
         f.L____("<property name=\"datetimeType\" value=\"datetime\" dbms=\"postgresql\"/>");
         f.L("");
         f.L____("<include file=\"liquibase/changelog/_initial_schema.xml\" relativeToChangelogFile=\"false\"/>");
-        for (Entity e : entityList()) {
+        for (Entite e : entiteList()) {
             f.L("  <include file=\"liquibase/changelog/", e.lname, "_table.xml\" relativeToChangelogFile=\"false\"/>");
         }
-        for (Entity e : entityList()) {
+        for (Entite e : entiteList()) {
             f.L("  <include file=\"liquibase/changelog/", e.lname, "_constraints.xml\" relativeToChangelogFile=\"false\"/>");
         }
         f.L("</databaseChangeLog>");

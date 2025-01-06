@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 
@@ -16,8 +16,8 @@ public abstract class Printer {
         return Context.getInstance().getBasePath();
     }
 
-    protected Collection<Entity> entityList() {
-        return Context.getInstance().getEntityList();
+    protected Collection<Entite> entiteList() {
+        return Context.getInstance().getEntiteList();
     }
 
     protected Collection<Page> pageList() {

@@ -10,14 +10,14 @@ public class ActionConsulterElement extends Action {
 
 
     public boolean addViewScript(ViewFlow f) {
-        f.totalScript().L____("const consulter", entity().uname, " = (", entity().lname, ") => {");
-        f.totalScript().L________("goToPage(PageConsulter", entity().uname + ", ", entity().lname, ");");
+        f.totalScript().L____("const consulter", entite().uname, " = (", entite().lname, ") => {");
+        f.totalScript().L________("goToPage(PageConsulter", entite().uname + ", ", entite().lname, ");");
         f.totalScript().L____("};");
         f.useGoToPage();
 
-        Page targetPage = Context.getInstance().getPage("PageConsulter" + entity().uname);
+        Page targetPage = Context.getInstance().getPage("PageConsulter" + entite().uname);
         if (targetPage == null) {
-            System.out.println("PageConsulter" + entity().uname + " not found");
+            System.out.println("PageConsulter" + entite().uname + " not found");
             System.exit(1);
         } else {
             f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(page().path + (inElement() ? "/element/" : "")));

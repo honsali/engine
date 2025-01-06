@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
 
 public class Util {
     public static int findFirstCapitalIndex(String word) {
@@ -30,15 +30,15 @@ public class Util {
         return p;
     }
 
-    public static StringBuilder processListeField(Field[] fieldList, String elementType) {
+    public static StringBuilder processListeChamp(Champ[] fieldList, String elementType) {
 
         HashSet<String> listeType = new HashSet<>();
 
-        for (Field field : fieldList) {
+        for (Champ field : fieldList) {
             if (field != null) {
                 listeType.add(field.ui(elementType));
             } else {
-                System.out.println("Field is null");
+                System.out.println("Champ is null");
 
             }
         }

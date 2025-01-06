@@ -2,7 +2,7 @@ package dev.cruding.engine.gen;
 
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 
 public class LabelMapper {
 
@@ -62,18 +62,18 @@ public class LabelMapper {
         return StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
     }
 
-    public String nomAction(String key, Entity entity) {
+    public String nomAction(String key, Entite entite) {
         String nom = key;
         if (verbeActionDansBoutonMap.containsKey(key)) {
             nom = verbeActionDansBoutonMap.get(key);
-        } else if (verbeActionDansBoutonMap.containsKey(key + entity.setting.ce())) {
-            nom = verbeActionDansBoutonMap.get(key + entity.setting.ce());
+        } else if (verbeActionDansBoutonMap.containsKey(key + entite.setting.ce())) {
+            nom = verbeActionDansBoutonMap.get(key + entite.setting.ce());
         } else {
             nom = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
 
         if (avecEntite.indexOf(key) > -1) {
-            nom = nom + " " + entity.setting.libelle;
+            nom = nom + " " + entite.setting.libelle;
             if (pluriels.indexOf(key) > -1) {
                 nom = nom + "s";
             }
@@ -83,36 +83,36 @@ public class LabelMapper {
 
 
 
-    public String titreConfirmation(String key, Entity entity) {
+    public String titreConfirmation(String key, Entite entite) {
         String verbe = key;
         if (verbeActionDansTitreMap.containsKey(key)) {
             verbe = verbeActionDansTitreMap.get(key);
         } else {
             verbe = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return StringUtils.capitalize(verbe + " " + entity.setting.libelle);
+        return StringUtils.capitalize(verbe + " " + entite.setting.libelle);
 
     }
 
-    public String enteteConfirmation(String key, Entity entity) {
+    public String enteteConfirmation(String key, Entite entite) {
         String verbe = key;
         if (verbeActionDansTitreMap.containsKey(key)) {
             verbe = verbeActionDansTitreMap.get(key);
         } else {
             verbe = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return "Etes vous sur de vouloir " + verbe + " " + entity.setting.ce() + " " + entity.setting.libelle;
+        return "Etes vous sur de vouloir " + verbe + " " + entite.setting.ce() + " " + entite.setting.libelle;
     }
 
-    public String messageSuccess(String key, Entity entity) {
+    public String messageSuccess(String key, Entite entite) {
         String lPp = key;
         if (actionPpMap.containsKey(key)) {
-            lPp = actionPpMap.get(key) + (entity.setting.feminin ? "e" : "");
+            lPp = actionPpMap.get(key) + (entite.setting.feminin ? "e" : "");
 
         } else {
             lPp = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return entity.setting.libelle + " " + lPp + " avec succès";
+        return entite.setting.libelle + " " + lPp + " avec succès";
     }
 
     public String uLabel(String key) {
@@ -127,9 +127,9 @@ public class LabelMapper {
     public String getTitre(Page page) {
         String titre = uLabel(page.actionUname);
 
-        Entity entity = Context.getInstance().getEntity(page.entityUname);
-        if (entity != null) {
-            titre = titre + " " + entity.setting.libelle;
+        Entite entite = Context.getInstance().getEntite(page.entiteUname);
+        if (entite != null) {
+            titre = titre + " " + entite.setting.libelle;
 
             if (pluriels.indexOf(page.actionUname) > -1) {
                 titre = titre + "s";

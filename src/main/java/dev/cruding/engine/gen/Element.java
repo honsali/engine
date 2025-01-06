@@ -27,9 +27,6 @@ public class Element {
     }
 
     public Element page(Page page) {
-        if (relativePath.equals("")) {
-            System.out.println("ok");
-        }
         if (StringUtils.startsWith(relativePath, "../")) {
             this.path = StringUtils.substringBeforeLast(page.path, "/") + "/" + StringUtils.substringAfter(relativePath, "/");
         } else if (page == null) {

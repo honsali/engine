@@ -21,8 +21,8 @@ public class ActionGoToPage extends Action {
 
     public boolean addViewScript(ViewFlow f) {
         f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, inElement()));
-        f.totalScript().L____("const goToPage", targetPage.name, " = (", entity().lname, ") => {");
-        f.totalScript().L________("goToPage(", targetPage.name + ", ", entity().lname, ");");
+        f.totalScript().L____("const goToPage", targetPage.name, " = (", entite().lname, ") => {");
+        f.totalScript().L________("goToPage(", targetPage.name + ", ", entite().lname, ");");
         f.totalScript().L____("};");
         f.useGoToModule();
         return true;
@@ -38,17 +38,17 @@ public class ActionGoToPage extends Action {
         String key = "";
         String label = "";
         String uAction = LabelMapper.getInstance().nomAction(lcoreName());
-        if (entity() == null) {
-            key = lcoreName() + page().entityUname;
+        if (entite() == null) {
+            key = lcoreName() + page().entiteUname;
             label = uAction;
-        } else if (!entity().lname.equals(page().entityLname)) {
-            String entityLabel = entity().setting.libelle;
-            key = lcoreName() + entity().uname;
-            label = uAction + " " + entityLabel;
+        } else if (!entite().lname.equals(page().entiteLname)) {
+            String entiteLabel = entite().setting.libelle;
+            key = lcoreName() + entite().uname;
+            label = uAction + " " + entiteLabel;
         } else {
-            String entityLabel = entity().setting.libelle;
-            key = lcoreName() + entity().uname;
-            label = uAction + " " + entityLabel;
+            String entiteLabel = entite().setting.libelle;
+            key = lcoreName() + entite().uname;
+            label = uAction + " " + entiteLabel;
         }
 
         f.L____("[Action", page().module.unameLast, ".", "Uc", uc(), ".", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(key), "_").toUpperCase(), "]", ": '", label, "',");

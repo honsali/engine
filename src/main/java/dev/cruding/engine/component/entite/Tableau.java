@@ -2,12 +2,13 @@ package dev.cruding.engine.component.entite;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.impl.ActionChangerSelection;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.champ.impl.RefChamp;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.component.bouton.Actionnable;
 import dev.cruding.engine.component.bouton.Actionnable.ActionType;
 import dev.cruding.engine.element.ElementPrinter;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Element;
@@ -23,26 +24,26 @@ public class Tableau extends Component {
     public boolean pagine = false;
     public String sourceDonnee = "liste";
 
-    public Tableau(Element element, Entity entity, Action action, Field... fieldList) {
-        super(element, entity, fieldList);
-        this.lname = entity.lname;
-        this.uname = entity.uname;
+    public Tableau(Element element, Entite entite, Action action, Champ... fieldList) {
+        super(element, entite, fieldList);
+        this.lname = entite.lname;
+        this.uname = entite.uname;
         inElement = true;
         if (action != null) {
-            this.actionPagination = new Actionnable(ActionType.NOUI, "changerPage", entity, element).action(action);
+            this.actionPagination = new Actionnable(ActionType.NOUI, "changerPage", entite, element).action(action);
             this.pagine = actionPagination != null;
             if (this.actionPagination != null) {
                 actionPagination.inElement(inElement);
             }
         }
-        sourceDonnee = "liste" + (pagine ? "Paginee" : "") + entity.uname;
-        Context.getInstance().addLabel(element.page.module.uname, "aucun." + entity.lname, (entity.setting.feminin ? "Aucune " : "Aucun ") + entity.setting.libelle);
+        sourceDonnee = "liste" + (pagine ? "Paginee" : "") + entite.uname;
+        Context.getInstance().addLabel(element.page.module.uname, "aucun." + entite.lname, (entite.setting.feminin ? "Aucune " : "Aucun ") + entite.setting.libelle);
 
 
     }
 
-    public Tableau(Element element, Entity entity, Field... fieldList) {
-        this(element, entity, null, fieldList);
+    public Tableau(Element element, Entite entite, Champ... fieldList) {
+        this(element, entite, null, fieldList);
     }
 
 
@@ -62,8 +63,10 @@ public class Tableau extends Component {
     }
 
     public void addScript(ViewFlow flow) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addViewScript(flow, element.page.uc, "..");
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addViewScript(flow, element.page.uc, "..");
+            }
         }
         if (selection != null) {
             flow.totalScript().L____("const changerSelection = (liste) => {");
@@ -89,10 +92,10 @@ public class Tableau extends Component {
         if (selection != null) {
             flow.addToUi(" siSelectionChange={changerSelection}");
         }
-        flow.addToUi(" texteAucunResultat=\"").append("aucun.").append(entity.lname).append("\"");
+        flow.addToUi(" texteAucunResultat=\"").append("aucun.").append(entite.lname).append("\"");
         flow.addToUi(">");
 
-        for (Field c : fieldList) {
+        for (Champ c : fieldList) {
             String prefix = c.of == null ? "" : c.of.lname + ".";
             indent(flow, level + 1).append("<").append(c.ui(ElementPrinter.TABLEAU)).append(" nom=\"").append(prefix).append(c.lname).append("\"");
             if (c.libelle != null) {
@@ -135,7 +138,7 @@ public class Tableau extends Component {
     }
 
     public Tableau selection(String selection) {
-        this.selection = new Actionnable(ActionType.NOUI, selection, entity, element).action(new ActionChangerSelection()).inViewOnly();
+        this.selection = new Actionnable(ActionType.NOUI, selection, entite, element).action(new ActionChangerSelection()).inViewOnly();
         return this;
     }
 }

@@ -21,8 +21,8 @@ public class ActionGoToModule extends Action {
 
 
     public boolean addViewScript(ViewFlow f) {
-        f.totalScript().L____("const goToModule", targetModule, " = (", entity().lname, ") => {");
-        f.totalScript().L________("goToModule(APP_MODULES.", targetModule.toUpperCase() + ", ", entity().lname, ");");
+        f.totalScript().L____("const goToModule", targetModule, " = (", entite().lname, ") => {");
+        f.totalScript().L________("goToModule(APP_MODULES.", targetModule.toUpperCase() + ", ", entite().lname, ");");
         f.totalScript().L____("};");
         f.useGoToModule();
         return true;

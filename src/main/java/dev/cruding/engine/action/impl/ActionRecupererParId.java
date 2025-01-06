@@ -13,50 +13,50 @@ public class ActionRecupererParId extends Action {
     public void actionnable(Actionnable actionnable) {
         this.actionnable = actionnable;
         this.actionnable.lcoreName("recupererParId");
-        this.actionnable.lname("recuperer" + entity().uname + "ParId");
+        this.actionnable.lname("recuperer" + entite().uname + "ParId");
     };
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
-        f.addMdlRequestAttribute("id" + entity().uname, "string");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entity().ugrandfather, "string");
+        f.addMdlRequestAttribute("id" + entite().uname, "string");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+        if (byFatherId() && entite().haveFather) {
+            f.addMdlRequestAttribute("id" + entite().ufather, "string");
         }
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const select", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entity().lname, ");");
+        f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.", entity().lname, " = await Service", entity().uname, ".recupererParId(");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("requete.id" + entity().ugrandfather, ", ");
+        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("requete.id" + entite().ugrandfather, ", ");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("requete.id" + entity().ufather, ", ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("requete.id" + entite().ufather, ", ");
         }
-        f.__("requete.id", entity().uname, ");");
+        f.__("requete.id", entite().uname, ");");
         f.L("};");
     }
 
@@ -65,7 +65,7 @@ public class ActionRecupererParId extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.", entity().lname, " = action.payload.", entity().lname, ";");
+        f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
         f.L____________("})");
     }
 
@@ -80,7 +80,7 @@ public class ActionRecupererParId extends Action {
     }
 
     public void addViewSelector(ViewFlow f) {
-        f.addSpecificSelector(entity().uname, mvcPath() + "/Mdl" + uc());
+        f.addSpecificSelector(entite().uname, mvcPath() + "/Mdl" + uc());
     }
 
     public void addResourceImport(JavaFlow f) {
@@ -96,21 +96,21 @@ public class ActionRecupererParId extends Action {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@GetMapping(\"/{id}\")");
-        f.L____("public ResponseEntity<", entity().uname, "> ", lcoreName(), "(@PathVariable ", entity().id_.jtype, " id) {");
-        f.L________("Optional<", entity().uname, "> ", entity().lname, " = ", entity().lname, "Repository.findById(id);");
-        f.L________("return ", entity().lname, ".map(response -> ResponseEntity.ok().body(response)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));");
+        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(@PathVariable ", entite().id_.jtype, " id) {");
+        f.L________("Optional<", entite().uname, "> ", entite().lname, " = ", entite().lname, "Repository.findById(id);");
+        f.L________("return ", entite().lname, ".map(response -> ResponseEntity.ok().body(", entite().uname, "Dto.asEntity(response))).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));");
         f.L____("}");
     }
 
     public void addServiceImport(JsFlow f) {
-        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
+        f.addJsImport("{ I" + entite().uname + " }", "./Domaine" + entite().uname);
     }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const recupererParId = async (id", entity().uname, ": string) => {");
-        f.L____("const ", entity().lname, ": I", entity().uname, " = (await axios.get<I", entity().uname, ">(`${resourceUri}/${id", entity().uname, "}`)).data;");
-        f.L____("return ", entity().lname, ";");
+        f.L("const recupererParId = async (id", entite().uname, ": string) => {");
+        f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname, ">(`${resourceUri}/${id", entite().uname, "}`)).data;");
+        f.L____("return ", entite().lname, ";");
         f.L("};");
 
     }

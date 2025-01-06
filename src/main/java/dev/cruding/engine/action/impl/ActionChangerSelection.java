@@ -13,13 +13,13 @@ public class ActionChangerSelection extends Action {
 
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(lname(), "I" + entity().uname + "[]");
+        f.addMdlStateAttribute(lname(), "I" + entite().uname + "[]");
     }
 
 
 
     public boolean addMdlReducer(MCFlow f) {
-        f.L________("modifier", uname(), "(state, action: PayloadAction<I", entity().uname, "[]>) {");
+        f.L________("modifier", uname(), "(state, action: PayloadAction<I", entite().uname, "[]>) {");
         f.L____________("state.", lname(), " = action.payload;");
         f.L________("},");
         return true;

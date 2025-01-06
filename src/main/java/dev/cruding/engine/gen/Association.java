@@ -1,11 +1,11 @@
 package dev.cruding.engine.gen;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 
 public class Association {
 
-    protected Entity entity;
+    protected Entite entite;
     protected Element element;
     protected Action action;
 
@@ -14,8 +14,8 @@ public class Association {
         this.action = action;
     }
 
-    public Association(Entity entity, Element element, Action action) {
-        this.entity = entity;
+    public Association(Entite entite, Element element, Action action) {
+        this.entite = entite;
         this.element = element;
         this.action = action;
     }

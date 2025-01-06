@@ -1,6 +1,6 @@
 package dev.cruding.engine.gen;
 
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.printer.impl.commun.BeLiqMasterPrinter;
 import dev.cruding.engine.printer.impl.commun.FeGoToPrinter;
 import dev.cruding.engine.printer.impl.commun.FeHasRightPrinter;
@@ -8,16 +8,16 @@ import dev.cruding.engine.printer.impl.commun.FeMenuPrinter;
 import dev.cruding.engine.printer.impl.commun.FeRoutesPrinter;
 import dev.cruding.engine.printer.impl.commun.FeStorePrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
-import dev.cruding.engine.printer.impl.entity.BeDomainePrinter;
-import dev.cruding.engine.printer.impl.entity.BeLiqConstraintPrinter;
-import dev.cruding.engine.printer.impl.entity.BeLiqDataPrinter;
-import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
-import dev.cruding.engine.printer.impl.entity.BeRefDomainePrinter;
-import dev.cruding.engine.printer.impl.entity.BeRefRepositoryPrinter;
-import dev.cruding.engine.printer.impl.entity.BeRepositoryPrinter;
-import dev.cruding.engine.printer.impl.entity.BeResourcePrinter;
-import dev.cruding.engine.printer.impl.entity.FeDomainePrinter;
-import dev.cruding.engine.printer.impl.entity.FeServicePrinter;
+import dev.cruding.engine.printer.impl.entite.BeDomainePrinter;
+import dev.cruding.engine.printer.impl.entite.BeDtoPrinter;
+import dev.cruding.engine.printer.impl.entite.BeLiqConstraintPrinter;
+import dev.cruding.engine.printer.impl.entite.BeLiqDataPrinter;
+import dev.cruding.engine.printer.impl.entite.BeLiqTablePrinter;
+import dev.cruding.engine.printer.impl.entite.BeRepositoryPrinter;
+import dev.cruding.engine.printer.impl.entite.BeResourcePrinter;
+import dev.cruding.engine.printer.impl.entite.FeDomainePrinter;
+import dev.cruding.engine.printer.impl.entite.FeServicePrinter;
+import dev.cruding.engine.printer.impl.module.FeAclModule;
 import dev.cruding.engine.printer.impl.module.FeActionModule;
 import dev.cruding.engine.printer.impl.module.FeI18nPrinter;
 import dev.cruding.engine.printer.impl.module.FeListePagePrinter;
@@ -33,9 +33,8 @@ public class Processor {
     private final FeDomainePrinter feDomainePrinter = new FeDomainePrinter();
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainePrinter beDomainePrinter = new BeDomainePrinter();
-    private final BeRefDomainePrinter beRefDomainePrinter = new BeRefDomainePrinter();
+    private final BeDtoPrinter beDtoPrinter = new BeDtoPrinter();
     private final BeRepositoryPrinter beRepositoryPrinter = new BeRepositoryPrinter();
-    private final BeRefRepositoryPrinter beRefRepositoryPrinter = new BeRefRepositoryPrinter();
     private final BeResourcePrinter beResourcePrinter = new BeResourcePrinter();
     private final BeLiqConstraintPrinter beLiqConstraintPrinter = new BeLiqConstraintPrinter();
     private final BeLiqDataPrinter beLiqDataPrinter = new BeLiqDataPrinter();
@@ -49,6 +48,7 @@ public class Processor {
     private final FeModulePrinter feModulePrinter = new FeModulePrinter();
     private final FeI18nPrinter feI18nPrinter = new FeI18nPrinter();
     private final FeActionModule feActionModule = new FeActionModule();
+    private final FeAclModule feAclModule = new FeAclModule();
     private final FeListePagePrinter feListePagePrinter = new FeListePagePrinter();
     private final FeReducerPrinter feReducerPrinter = new FeReducerPrinter();
     private final FeElementPrinter feElementPrinter = new FeElementPrinter();
@@ -67,9 +67,9 @@ public class Processor {
         printFeGlobalFiles();
         printBeGlobalFiles();
 
-        for (Entity entity : Context.getInstance().getEntityList()) {
-            printFeEntityFiles(entity);
-            printBeEntityFiles(entity);
+        for (Entite entite : Context.getInstance().getEntiteList()) {
+            printFeEntiteFiles(entite);
+            printBeEntiteFiles(entite);
         }
 
         for (Module module : Context.getInstance().getModuleList()) {
@@ -98,20 +98,21 @@ public class Processor {
         beLiqMasterPrinter.print();
     }
 
-    private void printFeEntityFiles(Entity entity) {
-        feDomainePrinter.print(entity);
-        feServicePrinter.print(entity);
+    private void printFeEntiteFiles(Entite entite) {
+        feDomainePrinter.print(entite);
+        feServicePrinter.print(entite);
     }
 
-    private void printBeEntityFiles(Entity entity) {
-        beRefDomainePrinter.print(entity);
-        beDomainePrinter.print(entity);
-        beRepositoryPrinter.print(entity);
-        beRefRepositoryPrinter.print(entity);
-        beResourcePrinter.print(entity);
-        beLiqConstraintPrinter.print(entity);
-        beLiqDataPrinter.print(entity);
-        beLiqTablePrinter.print(entity);
+    private void printBeEntiteFiles(Entite entite) {
+        beDomainePrinter.print(entite);
+        if (!entite.isReferenceData()) {
+            beResourcePrinter.print(entite);
+            beRepositoryPrinter.print(entite);
+        }
+        beDtoPrinter.print(entite);
+        beLiqConstraintPrinter.print(entite);
+        beLiqDataPrinter.print(entite);
+        beLiqTablePrinter.print(entite);
 
     }
 
@@ -121,5 +122,6 @@ public class Processor {
         feModulePrinter.print(module);
         feReducerPrinter.print(module);
         feActionModule.print(module);
+        feAclModule.print(module);
     }
 }

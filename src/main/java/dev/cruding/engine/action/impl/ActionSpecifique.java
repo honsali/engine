@@ -11,14 +11,14 @@ public class ActionSpecifique extends Action {
 
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
         if (byForm()) {
             f.addCtrlImport("{ util }", "waxant");
         }
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
         if (child() != null) {
             f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
             f.addMdlImport("{ I" + child().uname + " }", "modele/" + child().lname + "/Domaine" + child().uname);
@@ -33,28 +33,28 @@ public class ActionSpecifique extends Action {
         if (child() != null) {
             f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
         }
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entity().ugrandfather, "string");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+        if (byFatherId() && entite().haveFather) {
+            f.addMdlRequestAttribute("id" + entite().ufather, "string");
         }
 
         if (byId()) {
-            f.addMdlRequestAttribute("id" + entity().uname, "string");
+            f.addMdlRequestAttribute("id" + entite().uname, "string");
         }
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
         if (resultatInId()) {
-            f.addMdlResultAttribute("id" + entity().uname, "string");
+            f.addMdlResultAttribute("id" + entite().uname, "string");
         }
 
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(entity().lname, "I" + entity().uname);
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
         if (child() != null) {
             f.addMdlStateAttribute("liste" + child().uname, "I" + child().uname + "[]");
         }
@@ -63,9 +63,9 @@ public class ActionSpecifique extends Action {
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        if (byEntity()) {
+        if (byEntite()) {
             f.L____("const { mdl", uc(), " } = thunkAPI.getState() as any;");
-            f.L____("const ", entity().lname, " = mdl", uc(), ".", entity().lname, ";");
+            f.L____("const ", entite().lname, " = mdl", uc(), ".", entite().lname, ";");
         }
         if (byForm()) {
             f.L____("await requete.form.validateFields();");
@@ -74,24 +74,24 @@ public class ActionSpecifique extends Action {
 
         f.L____("");
         if (resultatInId()) {
-            f.__("resultat.id", entity().uname, " = ");
+            f.__("resultat.id", entite().uname, " = ");
         }
-        f.__("await Service", entity().uname, ".", lcoreName(), "(");
+        f.__("await Service", entite().uname, ".", lcoreName(), "(");
         boolean withComma = false;
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("requete.id" + entity().ugrandfather, ", ");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("requete.id" + entite().ugrandfather, ", ");
             withComma = true;
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("requete.id" + entity().ufather, ", ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("requete.id" + entite().ufather, ", ");
             withComma = true;
         }
         if (byId()) {
-            f.__("requete.id", entity().uname, ", ");
+            f.__("requete.id", entite().uname, ", ");
             withComma = true;
         }
-        if (byField() != null) {
-            f.__("requete.", byField().lname, ", ");
+        if (byChamp() != null) {
+            f.__("requete.", byChamp().lname, ", ");
             withComma = true;
         }
         if (child() != null) {
@@ -99,8 +99,8 @@ public class ActionSpecifique extends Action {
             withComma = true;
         }
         if (byForm()) {
-            if (byEntity()) {
-                f.__("{ ...", entity().lname, ", ...dataForm },");
+            if (byEntite()) {
+                f.__("{ ...", entite().lname, ", ...dataForm },");
             } else {
                 f.__("dataForm, ");
             }
@@ -111,14 +111,14 @@ public class ActionSpecifique extends Action {
         }
         f.__(");");
         if (recharger()) {
-            f.L____("resultat.", entity().lname, " = await Service", entity().uname, ".recupererParId(");
-            if (byGrandFatherId() && entity().haveGrandFather) {
-                f.__("requete.id" + entity().ugrandfather, ", ");
+            f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
+            if (byGrandFatherId() && entite().haveGrandFather) {
+                f.__("requete.id" + entite().ugrandfather, ", ");
             }
-            if (byFatherId() && entity().haveFather) {
-                f.__("requete.id" + entity().ufather, ", ");
+            if (byFatherId() && entite().haveFather) {
+                f.__("requete.id" + entite().ufather, ", ");
             }
-            f.__("requete.id", entity().uname, ");");
+            f.__("requete.id", entite().uname, ");");
         }
         f.L("};");
 
@@ -139,7 +139,7 @@ public class ActionSpecifique extends Action {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         if (recharger()) {
-            f.L________________("state.", entity().lname, " = action.payload.", entity().lname, ";");
+            f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
         }
         f.L____________("})");
     }
@@ -157,37 +157,38 @@ public class ActionSpecifique extends Action {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((byGrandFatherId() && entity().haveGrandFather) || (byFatherId() && entity().haveFather) || byId()) {
-            f.__("(\"");
+        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+            f.__("(\"/", lcoreName());
         }
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("/", entity().lgrandfather, "/{id" + entity().ugrandfather, "}");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("/", entite().lgrandfather, "/{id" + entite().ugrandfather, "}");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/{id" + entity().ufather, "}");
+        if (byFatherId() && entite().haveFather) {
+            f.__("/", entite().lfather, "/{id" + entite().ufather, "}");
         }
         if (byId()) {
-            f.__("/${id", entity().uname, "}");
+            f.__("/{id", entite().uname, "}");
         }
-        if ((byGrandFatherId() && entity().haveGrandFather) || (byFatherId() && entity().haveFather) || byId()) {
+        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
             f.__("\")");
         }
-        f.L____("public ResponseEntity<", entity().uname, "> ", lcoreName(), "(");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("@PathVariable Long id" + entity().ugrandfather, ",");
+        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("@PathVariable Long id" + entite().ugrandfather, ",");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("@PathVariable Long id" + entity().ufather, ", ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("@PathVariable Long id" + entite().ufather, ",");
         }
         if (byId()) {
-            f.__("@PathVariable Long id" + entity().uname, ",");
+            f.__("@PathVariable Long id" + entite().uname, ",");
         }
-        if (byForm() || byEntity()) {
-            f.__("@Valid @RequestBody ", entity().uname, " ", entity().lname);
+        if (byForm() || byEntite()) {
+            f.__("@Valid @RequestBody ", entite().uname, " ", entite().lname);
         }
+        f.cleanComma();
         f.__(") throws URISyntaxException {");
-        f.L________(entity().uname, " result = ", entity().lname, "Repository.save(", entity().lname, ");");
-        f.L________("return ResponseEntity.ok().body(result);");
+        f.L________(entite().uname, " result = ", entite().lname, "Repository.save(", entite().lname, ");");
+        f.L________("return ResponseEntity.ok().body(", entite().uname, "Dto.asEntity(result));");
         f.L____("}");
     }
 
@@ -195,20 +196,20 @@ public class ActionSpecifique extends Action {
         f.L("");
         f.L("const ", lcoreName(), " = async (");
         boolean withComma = false;
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("id" + entity().ugrandfather, ", ");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("id" + entite().ugrandfather, ", ");
             withComma = true;
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("id" + entity().ufather, ": string, ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("id" + entite().ufather, ": string, ");
             withComma = true;
         }
         if (byId()) {
-            f.__("id", entity().uname, ": string, ");
+            f.__("id", entite().uname, ": string, ");
             withComma = true;
         }
-        if (byField() != null) {
-            f.__("", byField().lname, ", ");
+        if (byChamp() != null) {
+            f.__("", byChamp().lname, ", ");
             withComma = true;
         }
         if (child() != null) {
@@ -216,7 +217,7 @@ public class ActionSpecifique extends Action {
             withComma = true;
         }
         if (byForm()) {
-            f.__(entity().lname, ": I", entity().uname, ", ");
+            f.__(entite().lname, ": I", entite().uname, ", ");
             withComma = true;
         }
         if (withComma) {
@@ -224,18 +225,18 @@ public class ActionSpecifique extends Action {
         }
         f.__(") => {");
         f.L____("return (await axios.", lrest(), "(`${resourceUri}");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("/", entity().lgrandfather, "/${id" + entity().ugrandfather, "}");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("/", entite().lgrandfather, "/${id" + entite().ugrandfather, "}");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/${id" + entity().ufather, "}");
+        if (byFatherId() && entite().haveFather) {
+            f.__("/", entite().lfather, "/${id" + entite().ufather, "}");
         }
         if (byId()) {
-            f.__("/${id", entity().uname, "}");
+            f.__("/${id", entite().uname, "}");
         }
         f.__("`");
-        if (byForm() || byEntity()) {
-            f.__(", ", entity().lname);
+        if (byForm() || byEntite()) {
+            f.__(", ", entite().lname);
         }
         f.__(")).data");
         if (resultatInId()) {
@@ -265,8 +266,8 @@ public class ActionSpecifique extends Action {
 
     public boolean addViewScript(ViewFlow flow) {
         addImport(flow);
-        if (actionnable.byEntity) {
-            flow.addProp(actionnable.entity.lname);
+        if (actionnable.byEntite) {
+            flow.addProp(actionnable.entite.lname);
         }
         if (!this.actionnable.inViewOnly) {
             flow.useExecute();
@@ -275,8 +276,8 @@ public class ActionSpecifique extends Action {
             if (this.actionnable.byForm) {
                 flow.totalScript().__(", { form }");
             }
-            if (actionnable.byEntity) {
-                flow.totalScript().__(", { " + actionnable.entity.lname + " }");
+            if (actionnable.byEntite) {
+                flow.totalScript().__(", { " + actionnable.entite.lname + " }");
             }
             flow.totalScript().__(");");
             flow.totalScript().L____("};");

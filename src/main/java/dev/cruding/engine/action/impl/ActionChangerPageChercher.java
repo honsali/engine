@@ -7,11 +7,11 @@ import dev.cruding.engine.flow.ViewFlow;
 public class ActionChangerPageChercher extends Action {
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ IListePaginee" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ IListePaginee" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
@@ -19,18 +19,18 @@ public class ActionChangerPageChercher extends Action {
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute("listePaginee" + entity().uname, "IListePaginee" + entity().uname);
+        f.addMdlResultAttribute("listePaginee" + entite().uname, "IListePaginee" + entite().uname);
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute("listePaginee" + entity().uname, "IListePaginee" + entity().uname);
+        f.addMdlStateAttribute("listePaginee" + entite().uname, "IListePaginee" + entite().uname);
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("const { mdl", uc(), " } = thunkAPI.getState() as any;");
-        f.L____("resultat.listePaginee", entity().uname, " = await Service", entity().uname, ".chercher({ ...mdl", uc(), ".filtre, pageCourante: requete.pageCourante });");
+        f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".chercher({ ...mdl", uc(), ".filtre, pageCourante: requete.pageCourante });");
         f.L("};");
     }
 
@@ -39,7 +39,7 @@ public class ActionChangerPageChercher extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.listePaginee", entity().uname, " = action.payload.listePaginee", entity().uname, ";");
+        f.L________________("state.listePaginee", entite().uname, " = action.payload.listePaginee", entite().uname, ";");
         f.L____________("})");
     }
 

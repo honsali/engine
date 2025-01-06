@@ -1,8 +1,7 @@
 package dev.cruding.engine.action;
 
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
@@ -65,12 +64,9 @@ public abstract class Action extends ActionnableWrapper implements Comparable<Ac
     public void addServiceImplementation(Flow flow) {}
 
     public void addI18n(Flow f, Page page) {
-        if (lname().equals("retourConsulterRubrique")) {
-            System.out.println("ok");
-        }
         if (!noUi()) {
 
-            Entity e = entity() == null ? Context.getInstance().getEntity(actionnable.page.entityUname) : entity();
+            Entite e = entite() == null ? Context.getInstance().getEntite(actionnable.page.entiteUname) : entite();
             if (e != null) {
 
                 String nomAction = LabelMapper.getInstance().nomAction(lcoreName(), e);
@@ -91,9 +87,7 @@ public abstract class Action extends ActionnableWrapper implements Comparable<Ac
         }
     }
 
-    public void addActionModule(Flow f, Page page) {
-        f.L________(actionKey(), ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(lname()), "',");
-    }
+
 
     public boolean equals(Object obj) {
         if (this == obj)

@@ -17,33 +17,32 @@ public class ActionEnregistrer extends ActionSpecifique {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((byGrandFatherId() && entity().haveGrandFather) || (byFatherId() && entity().haveFather) || byId()) {
+        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
             f.__("(\"");
         }
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("/", entity().lgrandfather, "/{id" + entity().ugrandfather, "}");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("/", entite().lgrandfather, "/{id" + entite().ugrandfather, "}");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/{id" + entity().ufather, "}");
+        if (byFatherId() && entite().haveFather) {
+            f.__("/", entite().lfather, "/{id" + entite().ufather, "}");
         }
         if (byId()) {
-            f.__("/${id", entity().uname, "}");
+            f.__("/${id", entite().uname, "}");
         }
-        if ((byGrandFatherId() && entity().haveGrandFather) || (byFatherId() && entity().haveFather) || byId()) {
+        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
             f.__("\")");
         }
-        f.L____("public ResponseEntity<", entity().uname, "> ", lcoreName(), "(");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("@PathVariable Long id" + entity().ugrandfather, ",");
+        f.L____("public ResponseEntity<Void> ", lcoreName(), "(");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("@PathVariable Long id" + entite().ugrandfather, ",");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("@PathVariable Long id" + entity().ufather, ", ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("@PathVariable Long id" + entite().ufather, ", ");
         }
-
-        f.__("@Valid @RequestBody ", entity().uname, " ", entity().lname);
+        f.__("@Valid @RequestBody ", entite().uname, " ", entite().lname);
         f.__(") throws URISyntaxException {");
-        f.L________(entity().uname, " result = ", entity().lname, "Repository.save(", entity().lname, ");");
-        f.L________("return ResponseEntity.ok().body(result);");
+        f.L________(entite().lname, "Repository.save(", entite().lname, ");");
+        f.L________("return ResponseEntity.noContent().build();");
         f.L____("}");
     }
 

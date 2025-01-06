@@ -12,46 +12,46 @@ public class ActionListerParIdPere extends Action {
 
     public void actionnable(Actionnable actionnable) {
         this.actionnable = actionnable;
-        this.actionnable.lcoreName("listerParId" + entity().father.uname);
-        this.actionnable.lname("lister" + entity().uname + "ParId" + entity().father.uname);
+        this.actionnable.lcoreName("listerParId" + entite().father.uname);
+        this.actionnable.lname("lister" + entite().uname + "ParId" + entite().father.uname);
     };
 
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
     public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entity().ugrandfather, "string");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
         }
-        f.addMdlRequestAttribute("id" + entity().ufather, "string");
+        f.addMdlRequestAttribute("id" + entite().ufather, "string");
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute("liste" + entity().uname, "I" + entity().uname + "[]");
+        f.addMdlResultAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
 
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute("liste" + entity().uname, "I" + entity().uname + "[]");
+        f.addMdlStateAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const selectListe", entity().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.liste", entity().uname, ");");
+        f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.liste", entite().uname, ");");
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.liste", entity().uname, " = await Service", entity().uname, ".", lcoreName(), "(");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("requete.id" + entity().ugrandfather, ", ");
+        f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lcoreName(), "(");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("requete.id" + entite().ugrandfather, ", ");
         }
-        f.__("requete.id", entity().ufather);
+        f.__("requete.id", entite().ufather);
         f.__(");");
         f.L("};");
     }
@@ -61,7 +61,7 @@ public class ActionListerParIdPere extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.liste", entity().uname, " = action.payload.liste", entity().uname, ";");
+        f.L________________("state.liste", entite().uname, " = action.payload.liste", entite().uname, ";");
         f.L____________("})");
     }
 
@@ -81,32 +81,33 @@ public class ActionListerParIdPere extends Action {
 
     public void addRepositoryDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("List<", entity().uname, "> findAllBy", entity().ufather, "_IdOrderBy", orderBy(), "(Long id", entity().ufather, ");");
+        f.L____("List<", entite().uname, "> findAllBy", entite().ufather, "_IdOrderBy", orderBy(), "(Long id", entite().ufather, ");");
     }
 
     public void addResourceImport(JavaFlow f) {
         f.addJavaImport("java.util.List");
         f.addJavaImport("org.springframework.web.bind.annotation.GetMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.PathVariable");
+        f.addJavaImport("java.util.stream.Collectors");
     }
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@GetMapping(\"/", lcoreName(), "/{id", entity().ufather, "}\")");
-        f.L____("public List<", entity().uname, "> ", lcoreName(), "(@PathVariable Long id", entity().ufather, ") {");
-        f.L________("return ", entity().lname, "Repository.findAllBy", entity().ufather, "_IdOrderBy", orderBy(), "(id", entity().ufather, ");");
+        f.L____("@GetMapping(\"/", lcoreName(), "/{id", entite().ufather, "}\")");
+        f.L____("public List<", entite().uname, "Dto> ", lcoreName(), "(@PathVariable Long id", entite().ufather, ") {");
+        f.L________("return ", entite().lname, "Repository.findAllBy", entite().ufather, "_IdOrderBy", orderBy(), "(id", entite().ufather, ").stream().map(", entite().uname, "Dto::asEntity).collect(Collectors.toList());");
         f.L____("}");
     }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const ", lcoreName(), " = async (");
-        f.__("id" + entity().ufather, ": string");
+        f.__("id" + entite().ufather, ": string");
         f.__(") => {");
-        f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${resourceUri}/", lcoreName());
-        f.__("/${id", entity().ufather, "}");
+        f.L____("const liste", entite().uname, ": I", entite().uname, "[] = (await axios.get<I", entite().uname, "[]>(`${resourceUri}/", lcoreName());
+        f.__("/${id", entite().ufather, "}");
         f.__("`)).data;");
-        f.L____("return liste", entity().uname, ";");
+        f.L____("return liste", entite().uname, ";");
         f.L("};");
 
     }

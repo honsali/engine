@@ -118,6 +118,55 @@ public class Flow {
         return this;
     }
 
+    public Flow L____________________________(String... ss) {
+        sb.append("\n").append("                            ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+    public Flow L________________________________(String... ss) {
+        sb.append("\n").append("                                ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+    public Flow L____________________________________(String... ss) {
+        sb.append("\n").append("                                    ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+    public Flow L________________________________________(String... ss) {
+        sb.append("\n").append("                                        ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+    public Flow L____________________________________________(String... ss) {
+        sb.append("\n").append("                                            ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+    public Flow L________________________________________________(String... ss) {
+        sb.append("\n").append("                                                ");
+        for (String s : ss) {
+            sb.append(s);
+        }
+        return this;
+    }
+
+
     public Flow ______(String... ss) {
         sb.append("    ");
         for (String s : ss) {
@@ -160,6 +209,12 @@ public class Flow {
 
     public void clean() {
         if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+
+    public void cleanComma() {
+        if (sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
         }
     }

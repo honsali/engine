@@ -7,7 +7,7 @@ public class ActionConsulterDansDialogue extends Action {
 
 
     public boolean addViewScript(ViewFlow f) {
-        f.totalScript().L____("const consulter", entity().uname, " = (", entity().lname, ") => {");
+        f.totalScript().L____("const consulter", entite().uname, " = (", entite().lname, ") => {");
         f.totalScript().L____("};");
         f.useGoToPage();
         return true;

@@ -1,7 +1,7 @@
 package dev.cruding.engine.component.conteneur;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Element;
 
@@ -14,8 +14,8 @@ public class Panneau extends Conteneur {
         super(element, componentList);
     }
 
-    public Panneau(Element element, Entity entity, Component... componentList) {
-        super(element, entity, componentList);
+    public Panneau(Element element, Entite entite, Component... componentList) {
+        super(element, entite, componentList);
     }
 
     public void addImport(ViewFlow flow) {
@@ -27,7 +27,7 @@ public class Panneau extends Conteneur {
         indent(flow, level).append("<Panneau").append(titre());
 
         if (plaqueEtat) {
-            flow.addToUi(" etat={").append(entity.lname).append("?.etat?.libelle}");
+            flow.addToUi(" etat={").append(entite.lname).append("?.etat?.libelle}");
         }
 
         if (blocAction != null) {

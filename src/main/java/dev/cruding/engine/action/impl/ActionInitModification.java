@@ -1,73 +1,87 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.champ.impl.RefChamp;
 import dev.cruding.engine.flow.MCFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionInitModification extends Action {
 
-    private Field[] fieldList = new Field[0];
+    private Champ[] fieldList = new Champ[0];
 
     public ActionInitModification() {
-        this.fieldList = new Field[0];
+        this.fieldList = new Champ[0];
     }
 
-    public ActionInitModification(Field... fieldList) {
+    public ActionInitModification(Champ... fieldList) {
         this.fieldList = fieldList;
     }
 
+
     public void addCtrlImport(MCFlow f) {
-        f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addCtrlImport(f);
+        f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addCtrlImport(f);
+            }
         }
     }
 
     public void addMdlImport(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlImport(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlImport(f);
+            }
         }
     }
 
     public void addMdlRequestAttribute(MCFlow f) {
-        if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+        if (byFatherId() && entite().haveFather) {
+            f.addMdlRequestAttribute("id" + entite().ufather, "string");
         }
-        f.addMdlRequestAttribute("id" + entity().uname, "string");
+        f.addMdlRequestAttribute("id" + entite().uname, "string");
     }
 
     public void addMdlResultAttribute(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlResultAttribute(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlResultAttribute(f);
+            }
         }
     }
 
     public void addMdlStateAttribute(MCFlow f) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlStateAttribute(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlStateAttribute(f);
+            }
         }
     }
 
     public void addMdlSelector(MCFlow f, String uc) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlSelector(f, uc());
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlSelector(f, uc);
+            }
         }
     }
 
     public void addCtrlImplementation(MCFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.", entity().lname, " = await Service", entity().uname, ".recupererParId(");
-        if (byGrandFatherId() && entity().haveGrandFather) {
-            f.__("requete.id" + entity().ugrandfather, ", ");
+        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
+        if (byGrandFatherId() && entite().haveGrandFather) {
+            f.__("requete.id" + entite().ugrandfather, ", ");
         }
-        if (byFatherId() && entity().haveFather) {
-            f.__("requete.id" + entity().ufather, ", ");
+        if (byFatherId() && entite().haveFather) {
+            f.__("requete.id" + entite().ufather, ", ");
         }
-        f.__("requete.id", entity().uname, ");");
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addCtrlImplementation(f);
+        f.__("requete.id", entite().uname, ");");
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addCtrlImplementation(f);
+            }
         }
         f.L("};");
     }
@@ -77,10 +91,12 @@ public class ActionInitModification extends Action {
     public void addMdlExtraReducer(MCFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
-        f.L________________("state.", entity().lname, " = action.payload.", entity().lname, ";");
+        f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addMdlExtraReducer(f);
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addMdlExtraReducer(f);
+            }
         }
 
         f.L____________("})");
@@ -88,11 +104,11 @@ public class ActionInitModification extends Action {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".initModification", entity().uname, ");");
+        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".initModification", entite().uname, ");");
         f.totalScript().L____("}, [", f.getPretArray(), "]);");
         f.totalScript().L("");
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("success && form.setFieldsValue(resultat.", entity().lname, ");");
+        f.totalScript().L________("success && form.setFieldsValue(resultat.", entite().lname, ");");
         f.totalScript().L____("}, [success]);");
         f.addSpecificSelector("resultat", uc() + "Resultat", mvcPath() + "/Mdl" + uc());
         f.useExecute("execute, success");

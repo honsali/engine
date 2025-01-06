@@ -1,6 +1,6 @@
 package dev.cruding.engine.printer.impl.commun;
 
-import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
 
@@ -13,7 +13,7 @@ public class FeGoToPrinter extends Printer {
         f.L("import { useNavigate } from 'react-router';");
         f.L("");
         f.L("const pageMap = {");
-        for (Entity e : entityList()) {
+        for (Entite e : entiteList()) {
             f.L("    PageConsulter", e.uname, ": _.template('/", e.lname, "/<%=id%>/consulter'),");
             f.L("    PageLister", e.uname, ": _.template('/", e.lname, "/lister'),");
             f.L("    PageChercher", e.uname, ": _.template('/", e.lname, "/chercher'),");

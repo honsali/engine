@@ -3,10 +3,11 @@ package dev.cruding.engine.component.entite;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.champ.impl.RefChamp;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.ElementPrinter;
-import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.field.Field;
+import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Element;
 import dev.cruding.engine.gen.helper.Util;
@@ -21,10 +22,10 @@ public class Formulaire extends Component {
     public Action fillFrom;
     public boolean inView = true;
 
-    public Formulaire(Element element, Entity entity, Field... fieldList) {
-        super(element, entity, fieldList);
-        this.lname = entity.lname;
-        this.uname = entity.uname;
+    public Formulaire(Element element, Entite entite, Champ... fieldList) {
+        super(element, entite, fieldList);
+        this.lname = entite.lname;
+        this.uname = entite.uname;
     }
 
     public Formulaire nom(String uname) {
@@ -44,7 +45,7 @@ public class Formulaire extends Component {
     }
 
     public void addImport(ViewFlow flow) {
-        for (Field c : fieldList) {
+        for (Champ c : fieldList) {
             if (c.siChange != null) {
                 if (c.siChange.length() > 0) {
                     flow.addJsImport("{ useState }", "react");
@@ -60,17 +61,19 @@ public class Formulaire extends Component {
             }
         }
 
-        StringBuilder fieldImportList = Util.processListeField(fieldList, ElementPrinter.FORM);
+        StringBuilder fieldImportList = Util.processListeChamp(fieldList, ElementPrinter.FORM);
 
         flow.addJsImport("{ Formulaire }", "waxant");
         flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
     }
 
     public void addScript(ViewFlow flow) {
-        for (int i = 0; i < fieldList.length; i++) {
-            fieldList[i].addViewScript(flow, element.page.uc, "..");
-        }
-        for (Field c : fieldList) {
+
+
+        for (Champ c : fieldList) {
+            if (c instanceof RefChamp) {
+                ((RefChamp) c).addViewScript(flow, element.page.uc, "..");
+            }
             if (c.readOnlyIf != null) {
                 flow.totalScript().L____("const " + c.readOnlyIf + ";");
                 flow.totalScript().L("");
@@ -79,8 +82,6 @@ public class Formulaire extends Component {
                 flow.totalScript().L____("const " + c.lname + " = Form.useWatch('" + c.lname + "', form);");
                 flow.totalScript().L("");
             }
-        }
-        for (Field c : fieldList) {
             if (c.siChange != null) {
                 flow.totalScript().L____("useOnChange('" + c.lname + "', form, (valeur) => {");
                 if (c.siChange.length() > 0) {
@@ -98,7 +99,7 @@ public class Formulaire extends Component {
             flow.addToUi(" nombreColonne={" + colNumber + "}");
         }
         flow.addToUi(">");
-        for (Field c : fieldList) {
+        for (Champ c : fieldList) {
             indent(flow, level + 1).append("<" + c.ui(ElementPrinter.FORM) + " nom=\"" + c.lname + "\"");
             if (c.libelle != null) {
                 flow.addToUi(" libelle=\"" + c.libelle + "\"");
