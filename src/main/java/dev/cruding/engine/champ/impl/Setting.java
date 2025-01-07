@@ -3,7 +3,7 @@ package dev.cruding.engine.champ.impl;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 
 public class Setting extends Champ {
 
@@ -64,7 +64,7 @@ public class Setting extends Champ {
     }
 
     public String getDbName(String entiteUname) {
-        return Context.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
+        return Contexte.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
     }
 
     public void addJavaImport(JavaFlow f) {
@@ -78,7 +78,7 @@ public class Setting extends Champ {
 
     public void addJavaDeclaration(JavaFlow f, String entiteUname, String seqName) {
 
-        String newDbName = Context.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
+        String newDbName = Contexte.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
         String jtype = idLong ? "Long" : "String";
         f.L____("@Id");
         if (idSequence) {
@@ -95,7 +95,7 @@ public class Setting extends Champ {
     }
 
     public void addJavaDeclaration(JavaFlow f, String entiteUname) {
-        String newDbName = Context.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
+        String newDbName = Contexte.getInstance().getLegacyDbName(entiteUname, "id", "column", "id");
         String jtype = idLong ? "Long" : "String";
         f.L____("@Id");
         f.L____("@Column(name = \"", newDbName, "\", columnDefinition = \"uniqueidentifier\")");

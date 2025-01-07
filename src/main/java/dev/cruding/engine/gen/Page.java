@@ -2,6 +2,7 @@ package dev.cruding.engine.gen;
 
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.helper.Util;
 
@@ -56,7 +57,7 @@ public class Page implements Comparable<Page> {
     }
 
     public Entite getEntite(String uname) {
-        return Context.getInstance().getEntite(uname);
+        return Contexte.getInstance().getEntite(uname);
     }
 
     public boolean estReelle() {

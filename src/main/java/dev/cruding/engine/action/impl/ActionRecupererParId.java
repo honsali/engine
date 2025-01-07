@@ -1,11 +1,12 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.bouton.Actionnable;
+import dev.cruding.engine.composant.bouton.Actionnable;
+import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionRecupererParId extends Action {
@@ -16,53 +17,53 @@ public class ActionRecupererParId extends Action {
         this.actionnable.lname("recuperer" + entite().uname + "ParId");
     };
 
-    public void addCtrlImport(MCFlow f) {
+    public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
-    public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
-    }
-
-    public void addMdlRequestAttribute(MCFlow f) {
-        f.addMdlRequestAttribute("id" + entite().uname, "string");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
-        }
-        if (byFatherId() && entite().haveFather) {
-            f.addMdlRequestAttribute("id" + entite().ufather, "string");
-        }
-    }
-
-    public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
-    }
-
-    public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
-    }
-
-    public void addMdlSelector(MCFlow f, String uc) {
-        f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
-    }
-
-    public void addCtrlImplementation(MCFlow f) {
+    public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("requete.id" + entite().ugrandfather, ", ");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("requete.id" + entite().ugrandPere, ", ");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("requete.id" + entite().ufather, ", ");
+        if (byPereId() && entite().havePere) {
+            f.__("requete.id" + entite().upere, ", ");
         }
         f.__("requete.id", entite().uname, ");");
         f.L("};");
     }
 
+    public void addMdlImport(MdlFlow f) {
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
+    }
+
+    public void addMdlRequestAttribute(MdlFlow f) {
+        f.addMdlRequestAttribute("id" + entite().uname, "string");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
+        }
+        if (byPereId() && entite().havePere) {
+            f.addMdlRequestAttribute("id" + entite().upere, "string");
+        }
+    }
+
+    public void addMdlResultAttribute(MdlFlow f) {
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
+    }
+
+    public void addMdlStateAttribute(MdlFlow f) {
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
+    }
+
+    public void addMdlSelector(MdlFlow f, String uc) {
+        f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
+    }
 
 
-    public void addMdlExtraReducer(MCFlow f) {
+
+    public void addMdlExtraReducer(MdlFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");

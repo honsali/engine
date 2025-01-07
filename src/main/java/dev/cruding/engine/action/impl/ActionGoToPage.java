@@ -2,10 +2,10 @@ package dev.cruding.engine.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.Component;
+import dev.cruding.engine.composant.Composant;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.gen.Page;
 
@@ -15,7 +15,7 @@ public class ActionGoToPage extends Action {
     private Page targetPage;
 
     public ActionGoToPage(String targetPage) {
-        this.targetPage = Context.getInstance().getPage(targetPage);
+        this.targetPage = Contexte.getInstance().getPage(targetPage);
     }
 
 
@@ -30,7 +30,7 @@ public class ActionGoToPage extends Action {
 
     public void addFlowScript(ViewFlow f, int level) {
         f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, inElement()));
-        f.totalScript().__(Component.indent[level]).__("goToPage(", targetPage.name, ", resultat);");
+        f.totalScript().__(Composant.indent[level]).__("goToPage(", targetPage.name, ", resultat);");
         f.useGoToPage();
     }
 

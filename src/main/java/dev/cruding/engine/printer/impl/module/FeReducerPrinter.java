@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -15,7 +15,7 @@ public class FeReducerPrinter extends Printer {
         ViewFlow f = new ViewFlow();
 
         /* *********************************************************************** */
-        List<Page> listePage = new ArrayList<>(Context.getInstance().getPageList(module));
+        List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
         Collections.sort(listePage);
         int idx = module.path.length();
         boolean first = true;

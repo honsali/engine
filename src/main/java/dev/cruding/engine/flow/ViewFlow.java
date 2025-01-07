@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.component.Component;
+import dev.cruding.engine.composant.Composant;
 
 public class ViewFlow extends JsFlow {
 
@@ -14,7 +14,6 @@ public class ViewFlow extends JsFlow {
     private HashMap<String, String> stateSet = new HashMap<>();
     private HashMap<String, String> specificSelectorSet = new HashMap<>();
     private HashMap<String, String> specificSelectorImportSet = new HashMap<>();
-    private StringBuilder scriptBuilder = new StringBuilder();
     private Flow totalScript = new Flow();
     private StringBuilder uiBuilder = new StringBuilder();
     private StringBuilder uiTotalBuilder = new StringBuilder();
@@ -31,10 +30,11 @@ public class ViewFlow extends JsFlow {
     private boolean inlineForm;
     private boolean eventBus;
     private boolean addImportForm = true;
+    private boolean afterInit = false;
 
     StringBuilder sb = new StringBuilder();
 
-    public void flush(Component component) {
+    public void flush(Composant Composant) {
         String sui = uiBuilder.toString();
         uiTotalBuilder.append(sui);
         uiBuilder = new StringBuilder();
@@ -42,21 +42,21 @@ public class ViewFlow extends JsFlow {
 
 
     public StringBuilder indent(int level) {
-        return addToUi(Component.indent[level]);
+        return addToUi(Composant.indent[level]);
     }
 
     public StringBuilder addToUi(String s) {
         return uiBuilder.append(s);
     }
 
-    public void flushScriptBloc(boolean afterInit) {
+    public void flushScriptBloc() {
+        totalScript.clean();
         String ts = totalScript.toString();
         if (ts != null && ts.length() > 0) {
             if (afterInit) {
                 L("");
             }
             __(ts);
-            cleanTotalScript();
         }
     }
 
@@ -64,7 +64,7 @@ public class ViewFlow extends JsFlow {
         __(uiTotalBuilder);
     }
 
-    public boolean flushInitBloc() {
+    public void flushInitBloc() {
         Flow initFlow = new Flow();
         if (hasNavigate()) {
             initFlow.L____("const navigate = useNavigate();");
@@ -99,12 +99,11 @@ public class ViewFlow extends JsFlow {
         String ts = initFlow.toString();
         if (ts != null && ts.length() > 0) {
             __(ts);
-            return true;
+            afterInit = true;
         }
-        return false;
     }
 
-    public void flushJsImportBloc() {
+    public void flushViewImportBloc() {
         if (hasEffect()) {
             addJsImport("{ useEffect }", "react");
         }
@@ -152,7 +151,6 @@ public class ViewFlow extends JsFlow {
             addJsImport("{ APP_EVENT }", "commun");
         }
         super.flushJsImportBloc();
-
     }
 
     public boolean hasNavigate() {
@@ -297,7 +295,9 @@ public class ViewFlow extends JsFlow {
     }
 
     public void addProp(String prop) {
-        propSet.add(prop);
+        if (prop != null) {
+            propSet.add(prop);
+        }
     }
 
     public boolean hasProps() {
@@ -316,9 +316,6 @@ public class ViewFlow extends JsFlow {
     }
 
 
-    public void cleanTotalScript() {
-        totalScript.clean();
-    }
 
     public void cleanUiBuilder() {
         if (uiBuilder.length() > 0 && uiBuilder.charAt(uiBuilder.length() - 1) == '\n') {

@@ -13,6 +13,8 @@ public class LabelMapper {
     private static final HashMap<String, String> verbeActionDansBoutonMap = new HashMap<>();
 
     private static final HashMap<String, String> actionPpMap = new HashMap<>();
+    public static final String listeActionSansPermission = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
+    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#" + listeActionSansPermission;
 
 
     static {
@@ -127,7 +129,7 @@ public class LabelMapper {
     public String getTitre(Page page) {
         String titre = uLabel(page.actionUname);
 
-        Entite entite = Context.getInstance().getEntite(page.entiteUname);
+        Entite entite = Contexte.getInstance().getEntite(page.entiteUname);
         if (entite != null) {
             titre = titre + " " + entite.setting.libelle;
 

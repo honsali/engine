@@ -2,7 +2,7 @@ package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Page;
 
 public class ActionConsulterElement extends Action {
@@ -15,7 +15,7 @@ public class ActionConsulterElement extends Action {
         f.totalScript().L____("};");
         f.useGoToPage();
 
-        Page targetPage = Context.getInstance().getPage("PageConsulter" + entite().uname);
+        Page targetPage = Contexte.getInstance().getPage("PageConsulter" + entite().uname);
         if (targetPage == null) {
             System.out.println("PageConsulter" + entite().uname + " not found");
             System.exit(1);

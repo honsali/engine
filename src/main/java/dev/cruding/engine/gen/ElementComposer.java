@@ -30,30 +30,31 @@ import dev.cruding.engine.champ.impl.Liste;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.Rendu;
 import dev.cruding.engine.champ.impl.Tag;
-import dev.cruding.engine.component.Component;
-import dev.cruding.engine.component.ElementWrapper;
-import dev.cruding.engine.component.bouton.Actionnable;
-import dev.cruding.engine.component.bouton.Actionnable.ActionType;
-import dev.cruding.engine.component.bouton.Bouton;
-import dev.cruding.engine.component.bouton.ElementBoutonComposer;
-import dev.cruding.engine.component.conteneur.Bloc;
-import dev.cruding.engine.component.conteneur.BlocAction;
-import dev.cruding.engine.component.conteneur.CadreBas;
-import dev.cruding.engine.component.conteneur.CadreHaut;
-import dev.cruding.engine.component.conteneur.Conteneur;
-import dev.cruding.engine.component.conteneur.FilAriane;
-import dev.cruding.engine.component.conteneur.MenuOnglet;
-import dev.cruding.engine.component.conteneur.Panneau;
-import dev.cruding.engine.component.conteneur.PanneauEtendable;
-import dev.cruding.engine.component.conteneur.PanneauFiltre;
-import dev.cruding.engine.component.conteneur.PlaqueEtat;
-import dev.cruding.engine.component.conteneur.Section;
-import dev.cruding.engine.component.conteneur.Separateur;
-import dev.cruding.engine.component.conteneur.SiCondition;
-import dev.cruding.engine.component.entite.Etat;
-import dev.cruding.engine.component.entite.Filtre;
-import dev.cruding.engine.component.entite.Formulaire;
-import dev.cruding.engine.component.entite.Tableau;
+import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.composant.bouton.Actionnable;
+import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
+import dev.cruding.engine.composant.bouton.Bouton;
+import dev.cruding.engine.composant.bouton.ElementBoutonComposer;
+import dev.cruding.engine.composant.conteneur.Bloc;
+import dev.cruding.engine.composant.conteneur.BlocAction;
+import dev.cruding.engine.composant.conteneur.CadreBas;
+import dev.cruding.engine.composant.conteneur.CadreHaut;
+import dev.cruding.engine.composant.conteneur.Conteneur;
+import dev.cruding.engine.composant.conteneur.FilAriane;
+import dev.cruding.engine.composant.conteneur.MenuOnglet;
+import dev.cruding.engine.composant.conteneur.Panneau;
+import dev.cruding.engine.composant.conteneur.PanneauEtendable;
+import dev.cruding.engine.composant.conteneur.PanneauFiltre;
+import dev.cruding.engine.composant.conteneur.PlaqueEtat;
+import dev.cruding.engine.composant.conteneur.Section;
+import dev.cruding.engine.composant.conteneur.Separateur;
+import dev.cruding.engine.composant.conteneur.SiCondition;
+import dev.cruding.engine.composant.entite.Etat;
+import dev.cruding.engine.composant.entite.Filtre;
+import dev.cruding.engine.composant.entite.Formulaire;
+import dev.cruding.engine.composant.entite.Tableau;
+import dev.cruding.engine.element.Element;
+import dev.cruding.engine.element.ElementEntantQueComposant;
 import dev.cruding.engine.entite.Entite;
 
 public abstract class ElementComposer {
@@ -70,7 +71,7 @@ public abstract class ElementComposer {
         element.page(page);
     }
 
-    public Component composantRacine() {
+    public Composant composantRacine() {
         return null;
     }
 
@@ -78,14 +79,14 @@ public abstract class ElementComposer {
         return element.composantRacine(composantRacine());
     }
 
-    public ElementWrapper element(ElementComposer elementComposer) {
+    public ElementEntantQueComposant element(ElementComposer elementComposer) {
         elementComposer.setPage(page);
         Element subElement = elementComposer.compose();
         page.addElement(subElement);
-        return new ElementWrapper(element, subElement);
+        return new ElementEntantQueComposant(element, subElement);
     }
 
-    public ElementWrapper element(Actionnable actionnable) {
+    public ElementEntantQueComposant element(Actionnable actionnable) {
         if (actionnable.action == null) {
             actionnable.action(new ActionSpecifique());
         }
@@ -97,7 +98,7 @@ public abstract class ElementComposer {
     }
 
     public Entite getEntite(String uname) {
-        return Context.getInstance().getEntite(uname);
+        return Contexte.getInstance().getEntite(uname);
     }
 
 
@@ -195,52 +196,52 @@ public abstract class ElementComposer {
     }
 
 
-    public Section section(Component... componentList) {
-        return new Section(element, componentList);
+    public Section section(Composant... ComposantList) {
+        return new Section(element, ComposantList);
     }
 
-    public Section section(Entite entite, Component... componentList) {
-        return new Section(element, entite, componentList);
+    public Section section(Entite entite, Composant... ComposantList) {
+        return new Section(element, entite, ComposantList);
     }
 
-    public Bloc bloc(Component... componentList) {
-        return new Bloc(element, componentList);
+    public Bloc bloc(Composant... ComposantList) {
+        return new Bloc(element, ComposantList);
     }
 
-    public CadreBas cadreBas(Component... componentList) {
-        return new CadreBas(element, componentList);
+    public CadreBas cadreBas(Composant... ComposantList) {
+        return new CadreBas(element, ComposantList);
     }
 
-    public Conteneur cadreHaut(Component... componentList) {
-        return new CadreHaut(element, componentList);
+    public Conteneur cadreHaut(Composant... ComposantList) {
+        return new CadreHaut(element, ComposantList);
     }
 
-    public Component plaqueEtat(Entite e) {
+    public Composant plaqueEtat(Entite e) {
         return new PlaqueEtat(element, e);
     }
 
-    public Panneau panneau(Component... componentList) {
-        return new Panneau(element, componentList);
+    public Panneau panneau(Composant... ComposantList) {
+        return new Panneau(element, ComposantList);
     }
 
-    public PanneauFiltre panneauFiltre(Entite entite, Component... componentList) {
-        return new PanneauFiltre(element, entite, componentList);
+    public PanneauFiltre panneauFiltre(Entite entite, Composant... ComposantList) {
+        return new PanneauFiltre(element, entite, ComposantList);
     }
 
-    public PanneauEtendable panneauEtendable(Component... componentList) {
-        return new PanneauEtendable(element, componentList);
+    public PanneauEtendable panneauEtendable(Composant... ComposantList) {
+        return new PanneauEtendable(element, ComposantList);
     }
 
-    public MenuOnglet menuOnglet(Component... componentList) {
-        return new MenuOnglet(element, componentList);
+    public MenuOnglet menuOnglet(Composant... ComposantList) {
+        return new MenuOnglet(element, ComposantList);
     }
 
     public Etat etat(Entite e, Champ... fieldList) {
-        return new Etat(element, e, fieldList);
+        return new Etat(e, element, fieldList);
     }
 
     public Etat etat(Champ f, Entite e, Champ... fieldList) {
-        return new Etat(element, f, e, fieldList);
+        return new Etat(f, e, element, fieldList);
     }
 
 
@@ -254,27 +255,27 @@ public abstract class ElementComposer {
     }
 
 
-    public Component separateur() {
+    public Composant separateur() {
         return new Separateur(element);
     }
 
-    public Component siVrai(String condition, Component... componentList) {
-        return new SiCondition(element, condition, "siVrai", false, componentList);
+    public Composant siVrai(String condition, Composant... ComposantList) {
+        return new SiCondition(element, condition, "siVrai", false, ComposantList);
     }
 
-    public Component siVraiInLine(String condition, Component... componentList) {
-        return new SiCondition(element, condition, "siVrai", true, componentList);
+    public Composant siVraiInLine(String condition, Composant... ComposantList) {
+        return new SiCondition(element, condition, "siVrai", true, ComposantList);
     }
 
-    public Component siFaux(String condition, Component... componentList) {
-        return new SiCondition(element, condition, "siFaux", false, componentList);
+    public Composant siFaux(String condition, Composant... ComposantList) {
+        return new SiCondition(element, condition, "siFaux", false, ComposantList);
     }
 
-    public Component siNonVide(String condition, Component... componentList) {
-        return new SiCondition(element, condition, "siNonVide", false, componentList);
+    public Composant siNonVide(String condition, Composant... ComposantList) {
+        return new SiCondition(element, condition, "siNonVide", false, ComposantList);
     }
 
-    public Component separateur(int height) {
+    public Composant separateur(int height) {
         return new Separateur(element, height);
     }
 
@@ -298,8 +299,8 @@ public abstract class ElementComposer {
 
 
 
-    public Component blocAction(Component... componentList) {
-        return new BlocAction(element, componentList);
+    public Composant blocAction(Composant... ComposantList) {
+        return new BlocAction(element, ComposantList);
     }
 
     public Champ liste(Champ f) {
@@ -335,8 +336,8 @@ public abstract class ElementComposer {
         return new Rendu(lname);
     }
 
-    public FilAriane filAriane(String uname, Component... componentList) {
-        return new FilAriane(element, uname, componentList);
+    public FilAriane filAriane(String uname, Composant... ComposantList) {
+        return new FilAriane(element, uname, ComposantList);
     }
 
 }

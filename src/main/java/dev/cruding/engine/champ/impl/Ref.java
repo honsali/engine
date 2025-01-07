@@ -1,14 +1,14 @@
 package dev.cruding.engine.champ.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.element.ElementPrinter;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 
-public class Ref<T extends Entite> extends RefChamp<T> {
+public class Ref<T extends Entite> extends ChampRef<T> {
 
     public Ref(Class<T> t) {
         super(t, false);
@@ -25,14 +25,14 @@ public class Ref<T extends Entite> extends RefChamp<T> {
     }
 
     public void addDtoImport(JavaFlow flow) {
-        Entite re = Context.getInstance().getEntite(jtype);
+        Entite re = Contexte.getInstance().getEntite(jtype);
         flow.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Dto");
     }
 
     public void addJavaImport(JavaFlow f) {
         super.addJavaImport(f);
         if (!jtype.equals(containingEntite)) {
-            Entite re = Context.getInstance().getEntite(jtype);
+            Entite re = Contexte.getInstance().getEntite(jtype);
 
             f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);
         }
@@ -84,16 +84,15 @@ public class Ref<T extends Entite> extends RefChamp<T> {
 
     public String ui(String element) {
         switch (element) {
-            case ElementPrinter.FORM:
+            case Element.FORM:
                 return larg != null ? "ChampReferenceAvecFiltre" : "ChampReference";
-            case ElementPrinter.DETAIL:
+            case Element.DETAIL:
                 return "Reference";
-            case ElementPrinter.TABLEAU:
+            case Element.TABLEAU:
                 return "Colonne tc=\"reference\"";
             default:
                 return "";
         }
-
     }
 
     protected Ref<T> initCopy() {

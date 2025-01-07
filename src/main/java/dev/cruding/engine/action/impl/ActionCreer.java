@@ -4,8 +4,6 @@ import dev.cruding.engine.flow.JavaFlow;
 
 public class ActionCreer extends ActionSpecifique {
 
-
-
     public String lrest() {
         return "post";
     }
@@ -17,37 +15,37 @@ public class ActionCreer extends ActionSpecifique {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("(\"");
         }
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("/", entite().lgrandfather, "/{id" + entite().ugrandfather, "}");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("/", entite().lgrandPere, "/{id" + entite().ugrandPere, "}");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("/", entite().lfather, "/{id" + entite().ufather, "}");
+        if (byPereId() && entite().havePere) {
+            f.__("/", entite().lpere, "/{id" + entite().upere, "}");
         }
         if (byId()) {
             f.__("/${id", entite().uname, "}");
         }
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("\")");
         }
         f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("@PathVariable Long id" + entite().ugrandfather, ",");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("@PathVariable Long id" + entite().ugrandPere, ",");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("@PathVariable Long id" + entite().ufather, ", ");
+        if (byPereId() && entite().havePere) {
+            f.__("@PathVariable Long id" + entite().upere, ", ");
         }
 
         f.__("@Valid @RequestBody ", entite().uname, " ", entite().lname);
         f.__(") throws URISyntaxException {");
-        if (entite().haveFather) {
-            f.L________("Optional<", entite().ufather, "> ", entite().lfather, " = ", entite().lfather, "Repository.findById(id", entite().ufather, ");");
-            f.L________("if (!", entite().lfather, ".isPresent()) {");
-            f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, \"", entite().lfather, ".notFoud\");");
+        if (entite().havePere) {
+            f.L________("Optional<", entite().upere, "> ", entite().lpere, " = ", entite().lpere, "Repository.findById(id", entite().upere, ");");
+            f.L________("if (!", entite().lpere, ".isPresent()) {");
+            f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, \"", entite().lpere, ".notFoud\");");
             f.L________("}");
-            f.L________(entite().lname, ".set", entite().ufather, "(", entite().lfather, ".get());");
+            f.L________(entite().lname, ".set", entite().upere, "(", entite().lpere, ".get());");
         }
         f.L________(entite().uname, " result = ", entite().lname, "Repository.save(", entite().lname, ");");
         f.L________("return ResponseEntity.ok().body(", entite().uname, "Dto.asEntity(result));");

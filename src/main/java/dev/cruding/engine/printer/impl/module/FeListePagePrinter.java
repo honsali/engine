@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -15,11 +15,11 @@ public class FeListePagePrinter extends Printer {
         ViewFlow f = new ViewFlow();
 
         /* *********************************************************************** */
-        List<Page> listePage = new ArrayList<>(Context.getInstance().getPageList(module));
+        List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
         Collections.sort(listePage);
         int idx = module.path.length();
         f.addJsImport("IconeMenuCarre", "commun/composants/IconeMenuCarre");
-        f.addJsImport("{ ContexteViewProvider, PageDefinition }", "waxant");
+        f.addJsImport("{ ContexteeViewProvider, PageDefinition }", "waxant");
         for (Page page : listePage) {
             if (page.estReelle()) {
                 f.addJsImport("View" + page.uc, "." + page.path.substring(idx) + "/View" + page.uc);
@@ -35,9 +35,9 @@ public class FeListePagePrinter extends Printer {
                 f.L____("toPath: (args) => '", getToPath(module, page), "',");
                 f.L____("icone: <IconeMenuCarre />,");
                 f.L____("view: (");
-                f.L________("<ContexteViewProvider uc=\"Uc", page.uc, "\">");
+                f.L________("<ContexteeViewProvider uc=\"Uc", page.uc, "\">");
                 f.L____________("<View", page.uc, " />");
-                f.L________("</ContexteViewProvider>");
+                f.L________("</ContexteeViewProvider>");
                 f.L____("),");
                 f.L("};");
                 f.L("");

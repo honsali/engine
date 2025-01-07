@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -17,7 +17,7 @@ public class FeActionModule extends Printer {
         ViewFlow f = new ViewFlow();
 
         /* *********************************************************************** */
-        List<Page> listePage = new ArrayList<>(Context.getInstance().getPageList(module));
+        List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
         Collections.sort(listePage);
         f.__("export const Action", module.unameLast, " = {");
         for (Page page : listePage) {
@@ -25,7 +25,7 @@ public class FeActionModule extends Printer {
 
                 f.L____("Uc", page.uc, ": {");
 
-                List<Action> listeAction = new ArrayList<>(Context.getInstance().allActionPage(page));
+                List<Action> listeAction = new ArrayList<>(Contexte.getInstance().allActionPage(page));
                 for (Action action : listeAction) {
                     f.L________(action.actionKey(), ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(action.lname()), "',");
                 }

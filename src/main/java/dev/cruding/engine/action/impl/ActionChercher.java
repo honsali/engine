@@ -1,45 +1,46 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.flow.MdlFlow;
 
 public class ActionChercher extends Action {
 
 
-    public void addCtrlImport(MCFlow f) {
+    public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
         f.addCtrlImport("{ util }", "waxant");
     }
 
-    public void addMdlImport(MCFlow f) {
+    public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ IListePaginee" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
         f.addMdlImport("{ IRequete" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
-    public void addMdlRequestAttribute(MCFlow f) {
+    public void addMdlRequestAttribute(MdlFlow f) {
         f.addMdlRequestAttribute("form", "any");
         f.addMdlRequestAttribute("pageCourante", "number");
     }
 
-    public void addMdlResultAttribute(MCFlow f) {
+    public void addMdlResultAttribute(MdlFlow f) {
         f.addMdlResultAttribute("listePaginee" + entite().uname, "IListePaginee" + entite().uname);
         f.addMdlResultAttribute("filtre", "IRequete" + entite().uname);
 
     }
 
-    public void addMdlStateAttribute(MCFlow f) {
+    public void addMdlStateAttribute(MdlFlow f) {
         f.addMdlStateAttribute("listePaginee" + entite().uname, "IListePaginee" + entite().uname);
         f.addMdlStateAttribute("filtre", "IRequete" + entite().uname);
     }
 
-    public void addMdlSelector(MCFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f, String uc) {
         f.L("export const selectListePaginee", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.listePaginee", entite().uname, ");");
     }
 
-    public void addCtrlImplementation(MCFlow f) {
+    public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
@@ -48,7 +49,7 @@ public class ActionChercher extends Action {
         f.L("};");
     }
 
-    public void addMdlExtraReducer(MCFlow f) {
+    public void addMdlExtraReducer(MdlFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.listePaginee", entite().uname, " = action.payload.listePaginee", entite().uname, ";");

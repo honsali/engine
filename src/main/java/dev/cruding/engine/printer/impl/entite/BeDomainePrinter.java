@@ -13,7 +13,7 @@ public class BeDomainePrinter extends Printer {
         JavaFlow f = new JavaFlow();
 
         /* *********************************************************************** */
-        List<Champ> notManyList = entite.fieldList.stream().filter(p -> p.isBasic || p.isRef || p.isFather).toList();
+        List<Champ> notManyList = entite.fieldList.stream().filter(p -> p.isBasic || p.isRef || p.isPere).toList();
         entite.id_.addJavaImport(f);
         for (Champ fld : notManyList) {
             fld.addJavaImport(f);

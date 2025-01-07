@@ -2,10 +2,10 @@ package dev.cruding.engine.action;
 
 import java.util.ArrayList;
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.component.bouton.Actionnable;
-import dev.cruding.engine.component.bouton.Actionnable.ActionType;
+import dev.cruding.engine.composant.bouton.Actionnable;
+import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.gen.Element;
 import dev.cruding.engine.gen.Page;
 
 
@@ -55,12 +55,12 @@ public class ActionnableWrapper {
         return actionnable.byId;
     };
 
-    public boolean byFatherId() {
-        return actionnable.byFatherId;
+    public boolean byPereId() {
+        return actionnable.byPereId;
     };
 
-    public boolean byGrandFatherId() {
-        return actionnable.byGrandFatherId;
+    public boolean byGrandPereId() {
+        return actionnable.byGrandPereId;
     };
 
     public boolean byForm() {

@@ -3,9 +3,9 @@ package dev.cruding.engine.champ.impl;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 
-public class RefMany<T extends Entite> extends RefChamp<T> {
+public class RefMany<T extends Entite> extends ChampRef<T> {
 
     public RefMany(Class<T> t) {
         super(t, true);
@@ -19,7 +19,7 @@ public class RefMany<T extends Entite> extends RefChamp<T> {
     public void addJavaImport(JavaFlow f) {
         super.addJavaImport(f);
         if (!jtype.equals(containingEntite)) {
-            Entite re = Context.getInstance().getEntite(jtype);
+            Entite re = Contexte.getInstance().getEntite(jtype);
             f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);
         }
         if (!tranzient) {

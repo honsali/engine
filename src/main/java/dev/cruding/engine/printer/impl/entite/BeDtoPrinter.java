@@ -34,7 +34,7 @@ public class BeDtoPrinter extends Printer {
         for (int i = 0; i < fieldList.size(); i++) {
             Champ fld = fieldList.get(i);
             String end = i == fieldList.size() - 1 ? " //" : ", //";
-            if (fld.isRef || fld.isFather) {
+            if (fld.isRef || fld.isPere) {
                 f.L________(fld.jtype, "Dto ", fld.lname, end);
 
             } else {
@@ -56,7 +56,7 @@ public class BeDtoPrinter extends Printer {
             for (int i = 0; i < fieldList.size(); i++) {
                 Champ fld = fieldList.get(i);
                 String end = i == fieldList.size() - 1 ? " //" : ", //";
-                if (fld.isRef || fld.isFather) {
+                if (fld.isRef || fld.isPere) {
                     f.L________________________(fld.jtype, "Dto.asRef(entity.get", fld.uname, "())", end);
                 } else {
                     f.L________________________("entity.get", fld.uname, "()", end);

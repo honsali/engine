@@ -1,7 +1,6 @@
 package dev.cruding.engine.flow;
 
 import java.util.HashMap;
-
 import dev.cruding.engine.gen.helper.Imp;
 import dev.cruding.engine.gen.helper.ImpProcessor;
 

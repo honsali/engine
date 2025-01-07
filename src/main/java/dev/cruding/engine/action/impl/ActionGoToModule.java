@@ -1,7 +1,7 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.bouton.Actionnable;
+import dev.cruding.engine.composant.bouton.Actionnable;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionGoToModule extends Action {

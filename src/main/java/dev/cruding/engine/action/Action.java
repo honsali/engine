@@ -2,32 +2,37 @@ package dev.cruding.engine.action;
 
 import java.util.Objects;
 import dev.cruding.engine.entite.Entite;
+import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.gen.Page;
 
 public abstract class Action extends ActionnableWrapper implements Comparable<Action> {
-    public static final String listeActionSansPermission = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
-    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#" + listeActionSansPermission;
 
-    public void addCtrlImport(MCFlow flow) {}
+    public void addCtrlImport(CtrlFlow f) {}
 
-    public void addMdlImport(MCFlow flow) {}
+    public void addCtrlImplementation(CtrlFlow f) {}
 
-    public void addMdlRequestAttribute(MCFlow flow) {}
+    public void addCtrlDeclaration(CtrlFlow f, Page page) {
+        if (uc() != null && !inViewOnly()) {
+            f.L____(lname(), ": action<Req", uc(), ", Res", uc(), ">(", lname(), "Impl, Action", page.module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
+        }
+    }
 
-    public void addMdlResultAttribute(MCFlow flow) {}
+    public void addMdlImport(MdlFlow flow) {}
 
-    public void addMdlStateAttribute(MCFlow flow) {}
+    public void addMdlRequestAttribute(MdlFlow flow) {}
 
-    public void addMdlSelector(MCFlow flow, String uc) {}
+    public void addMdlResultAttribute(MdlFlow flow) {}
 
-    public void addCtrlImplementation(MCFlow flow) {}
+    public void addMdlStateAttribute(MdlFlow flow) {}
+
+    public void addMdlSelector(MdlFlow flow, String uc) {}
 
     public boolean addViewScript(ViewFlow flow) {
         return false;
@@ -35,19 +40,13 @@ public abstract class Action extends ActionnableWrapper implements Comparable<Ac
 
     public void addFlowScript(ViewFlow flow, int level) {}
 
-    public void addCtrlDeclaration(MCFlow f, Page page) {
-        if (uc() != null && !inViewOnly()) {
-            f.L____(lname(), ": action<Req", uc(), ", Res", uc(), ">(", lname(), "Impl, Action", page.module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
-        }
-    }
 
 
-
-    public boolean addMdlReducer(MCFlow flow) {
+    public boolean addMdlReducer(MdlFlow flow) {
         return false;
     }
 
-    public void addMdlExtraReducer(MCFlow flow) {}
+    public void addMdlExtraReducer(MdlFlow flow) {}
 
     public void addRepositoryDeclaration(JavaFlow flow) {}
 
@@ -66,7 +65,7 @@ public abstract class Action extends ActionnableWrapper implements Comparable<Ac
     public void addI18n(Flow f, Page page) {
         if (!noUi()) {
 
-            Entite e = entite() == null ? Context.getInstance().getEntite(actionnable.page.entiteUname) : entite();
+            Entite e = entite() == null ? Contexte.getInstance().getEntite(actionnable.page.entiteUname) : entite();
             if (e != null) {
 
                 String nomAction = LabelMapper.getInstance().nomAction(lcoreName(), e);

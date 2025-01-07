@@ -1,66 +1,25 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.bouton.Actionnable;
+import dev.cruding.engine.composant.bouton.Actionnable;
+import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionSpecifique extends Action {
 
 
-    public void addCtrlImport(MCFlow f) {
+
+    public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
         if (byForm()) {
             f.addCtrlImport("{ util }", "waxant");
         }
     }
 
-    public void addMdlImport(MCFlow f) {
-        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
-        if (child() != null) {
-            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
-            f.addMdlImport("{ I" + child().uname + " }", "modele/" + child().lname + "/Domaine" + child().uname);
-            f.addMdlImport("{ PayloadAction }", "@reduxjs/toolkit");
-        }
-    }
-
-    public void addMdlRequestAttribute(MCFlow f) {
-        if (byForm()) {
-            f.addMdlRequestAttribute("form", "any");
-        }
-        if (child() != null) {
-            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
-        }
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
-        }
-        if (byFatherId() && entite().haveFather) {
-            f.addMdlRequestAttribute("id" + entite().ufather, "string");
-        }
-
-        if (byId()) {
-            f.addMdlRequestAttribute("id" + entite().uname, "string");
-        }
-    }
-
-    public void addMdlResultAttribute(MCFlow f) {
-        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
-        if (resultatInId()) {
-            f.addMdlResultAttribute("id" + entite().uname, "string");
-        }
-
-    }
-
-    public void addMdlStateAttribute(MCFlow f) {
-        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
-        if (child() != null) {
-            f.addMdlStateAttribute("liste" + child().uname, "I" + child().uname + "[]");
-        }
-    }
-
-    public void addCtrlImplementation(MCFlow f) {
+    public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         if (byEntite()) {
@@ -78,12 +37,12 @@ public class ActionSpecifique extends Action {
         }
         f.__("await Service", entite().uname, ".", lcoreName(), "(");
         boolean withComma = false;
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("requete.id" + entite().ugrandfather, ", ");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("requete.id" + entite().ugrandPere, ", ");
             withComma = true;
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("requete.id" + entite().ufather, ", ");
+        if (byPereId() && entite().havePere) {
+            f.__("requete.id" + entite().upere, ", ");
             withComma = true;
         }
         if (byId()) {
@@ -112,11 +71,11 @@ public class ActionSpecifique extends Action {
         f.__(");");
         if (recharger()) {
             f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
-            if (byGrandFatherId() && entite().haveGrandFather) {
-                f.__("requete.id" + entite().ugrandfather, ", ");
+            if (byGrandPereId() && entite().haveGrandPere) {
+                f.__("requete.id" + entite().ugrandPere, ", ");
             }
-            if (byFatherId() && entite().haveFather) {
-                f.__("requete.id" + entite().ufather, ", ");
+            if (byPereId() && entite().havePere) {
+                f.__("requete.id" + entite().upere, ", ");
             }
             f.__("requete.id", entite().uname, ");");
         }
@@ -124,8 +83,51 @@ public class ActionSpecifique extends Action {
 
     }
 
+    public void addMdlImport(MdlFlow f) {
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
+        if (child() != null) {
+            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
+            f.addMdlImport("{ I" + child().uname + " }", "modele/" + child().lname + "/Domaine" + child().uname);
+            f.addMdlImport("{ PayloadAction }", "@reduxjs/toolkit");
+        }
+    }
 
-    public boolean addMdlReducer(MCFlow f) {
+    public void addMdlRequestAttribute(MdlFlow f) {
+        if (byForm()) {
+            f.addMdlRequestAttribute("form", "any");
+        }
+        if (child() != null) {
+            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
+        }
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
+        }
+        if (byPereId() && entite().havePere) {
+            f.addMdlRequestAttribute("id" + entite().upere, "string");
+        }
+
+        if (byId()) {
+            f.addMdlRequestAttribute("id" + entite().uname, "string");
+        }
+    }
+
+    public void addMdlResultAttribute(MdlFlow f) {
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
+        if (resultatInId()) {
+            f.addMdlResultAttribute("id" + entite().uname, "string");
+        }
+
+    }
+
+    public void addMdlStateAttribute(MdlFlow f) {
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
+        if (child() != null) {
+            f.addMdlStateAttribute("liste" + child().uname, "I" + child().uname + "[]");
+        }
+    }
+
+
+    public boolean addMdlReducer(MdlFlow f) {
         if (child() != null) {
             f.L________("setListe", child().uname, ": (state, action: PayloadAction<I", child().uname, "[]>) => {");
             f.L________________("state.liste", child().uname, " = action.payload;");
@@ -135,7 +137,7 @@ public class ActionSpecifique extends Action {
         return false;
     }
 
-    public void addMdlExtraReducer(MCFlow f) {
+    public void addMdlExtraReducer(MdlFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         if (recharger()) {
@@ -157,27 +159,27 @@ public class ActionSpecifique extends Action {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("(\"/", lcoreName());
         }
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("/", entite().lgrandfather, "/{id" + entite().ugrandfather, "}");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("/", entite().lgrandPere, "/{id" + entite().ugrandPere, "}");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("/", entite().lfather, "/{id" + entite().ufather, "}");
+        if (byPereId() && entite().havePere) {
+            f.__("/", entite().lpere, "/{id" + entite().upere, "}");
         }
         if (byId()) {
             f.__("/{id", entite().uname, "}");
         }
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("\")");
         }
         f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("@PathVariable Long id" + entite().ugrandfather, ",");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("@PathVariable Long id" + entite().ugrandPere, ",");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("@PathVariable Long id" + entite().ufather, ",");
+        if (byPereId() && entite().havePere) {
+            f.__("@PathVariable Long id" + entite().upere, ",");
         }
         if (byId()) {
             f.__("@PathVariable Long id" + entite().uname, ",");
@@ -196,12 +198,12 @@ public class ActionSpecifique extends Action {
         f.L("");
         f.L("const ", lcoreName(), " = async (");
         boolean withComma = false;
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("id" + entite().ugrandfather, ", ");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("id" + entite().ugrandPere, ", ");
             withComma = true;
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("id" + entite().ufather, ": string, ");
+        if (byPereId() && entite().havePere) {
+            f.__("id" + entite().upere, ": string, ");
             withComma = true;
         }
         if (byId()) {
@@ -225,11 +227,11 @@ public class ActionSpecifique extends Action {
         }
         f.__(") => {");
         f.L____("return (await axios.", lrest(), "(`${resourceUri}");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("/", entite().lgrandfather, "/${id" + entite().ugrandfather, "}");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("/", entite().lgrandPere, "/${id" + entite().ugrandPere, "}");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("/", entite().lfather, "/${id" + entite().ufather, "}");
+        if (byPereId() && entite().havePere) {
+            f.__("/", entite().lpere, "/${id" + entite().upere, "}");
         }
         if (byId()) {
             f.__("/${id", entite().uname, "}");

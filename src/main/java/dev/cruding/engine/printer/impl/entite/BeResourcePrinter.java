@@ -1,11 +1,9 @@
 package dev.cruding.engine.printer.impl.entite;
 
-import java.util.List;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.printer.Printer;
 
 public class BeResourcePrinter extends Printer {
@@ -15,17 +13,13 @@ public class BeResourcePrinter extends Printer {
 
         /* *********************************************************************** */
 
-        List<Champ> childList = entite.fieldList.stream().filter(fld -> fld.isChild).toList();
-        for (Champ fld : childList) {
-            Entite re = Context.getInstance().getEntite(fld.jtype);
-            f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Repository");
-        }
-        if (entite.haveFather) {
-            Entite fe = Context.getInstance().getEntite(entite.father.jtype);
+
+        if (entite.havePere) {
+            Entite fe = Contexte.getInstance().getEntite(entite.pere.jtype);
             f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname + "Repository");
             f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname);
         }
-        for (Action action : Context.getInstance().actionEntite(entite)) {
+        for (Action action : Contexte.getInstance().actionEntite(entite)) {
             action.addResourceImport(f);
         }
         f.addJavaImport("java.util.List");
@@ -34,8 +28,7 @@ public class BeResourcePrinter extends Printer {
         f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RestController");
 
-
-
+        /* *********************************************************************** */
         f.__("package app.domain.", entite.pkg, ".", entite.lname, ";");
         f.L("");
         f.flushJavaImportBloc();
@@ -47,37 +40,24 @@ public class BeResourcePrinter extends Printer {
         f.L("public class ", entite.uname, "Resource {");
         f.L("");
         f.L____("private final ", entite.uname, "Repository ", entite.lname, "Repository;");
-        if (entite.haveFather) {
-            f.L____("private final ", entite.ufather, "Repository ", entite.lfather, "Repository;");
-        }
-        for (Champ fld : childList) {
-            // @TODO
-            // f.L____("private final ", fld.uname, "RefRepository ", fld.lname, "RefRepository;");
+        if (entite.havePere) {
+            f.L____("private final ", entite.upere, "Repository ", entite.lpere, "Repository;");
         }
         f.L("");
         f.L____("public ", entite.uname, "Resource(", entite.uname, "Repository ", entite.lname, "Repository");
-
-        if (entite.haveFather) {
-            f.__(", ", entite.ufather, "Repository ", entite.lfather, "Repository");
-        }   
-        for (Champ fld : childList) {
-            // @TODO
-            // f.__(", ", fld.uname, "RefRepository ", fld.lname, "RefRepository");
+        if (entite.havePere) {
+            f.__(", ", entite.upere, "Repository ", entite.lpere, "Repository");
         }
         f.__(") {");
         f.L________("this.", entite.lname, "Repository = ", entite.lname, "Repository;");
-        if (entite.haveFather) {
+        if (entite.havePere) {
 
-            f.L________("this.", entite.lfather, "Repository = ", entite.lfather, "Repository;");
-        }
-        for (Champ fld : childList) {
-            // @TODO
-            // f.L________("this.", fld.lname, "RefRepository = ", fld.lname, "RefRepository;");
+            f.L________("this.", entite.lpere, "Repository = ", entite.lpere, "Repository;");
         }
         f.L____("}");
 
 
-        for (Action action : Context.getInstance().actionEntite(entite)) {
+        for (Action action : Contexte.getInstance().actionEntite(entite)) {
             action.addResourceDeclaration(f);
         }
         f.L("}");

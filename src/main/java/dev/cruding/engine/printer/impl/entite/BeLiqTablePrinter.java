@@ -29,7 +29,7 @@ public class BeLiqTablePrinter extends Printer {
         f.L________________("<constraints primaryKey=\"true\" nullable=\"false\" />");
         f.L____________("</column>");
         for (Champ fld : entite.fieldList) {
-            if (fld.isBasic || fld.isRef || fld.isFather) {
+            if (fld.isBasic || fld.isRef || fld.isPere) {
                 fld.addLiqDeclaration(f);
             }
         }

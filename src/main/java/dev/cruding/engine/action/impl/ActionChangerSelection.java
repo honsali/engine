@@ -1,8 +1,8 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.bouton.Actionnable;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.composant.bouton.Actionnable;
+import dev.cruding.engine.flow.MdlFlow;
 
 public class ActionChangerSelection extends Action {
 
@@ -12,13 +12,13 @@ public class ActionChangerSelection extends Action {
     }
 
 
-    public void addMdlStateAttribute(MCFlow f) {
+    public void addMdlStateAttribute(MdlFlow f) {
         f.addMdlStateAttribute(lname(), "I" + entite().uname + "[]");
     }
 
 
 
-    public boolean addMdlReducer(MCFlow f) {
+    public boolean addMdlReducer(MdlFlow f) {
         f.L________("modifier", uname(), "(state, action: PayloadAction<I", entite().uname, "[]>) {");
         f.L____________("state.", lname(), " = action.payload;");
         f.L________("},");
@@ -26,7 +26,7 @@ public class ActionChangerSelection extends Action {
     }
 
 
-    public void addMdlSelector(MCFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f, String uc) {
         f.L("export const select", uname(), " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", lname(), ");");
     }
 }

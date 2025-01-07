@@ -7,21 +7,21 @@ import java.nio.file.Paths;
 import java.util.Collection;
 
 import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Page;
 
 public abstract class Printer {
 
     protected String getBasePath() {
-        return Context.getInstance().getBasePath();
+        return Contexte.getInstance().getBasePath();
     }
 
     protected Collection<Entite> entiteList() {
-        return Context.getInstance().getEntiteList();
+        return Contexte.getInstance().getEntiteList();
     }
 
     protected Collection<Page> pageList() {
-        return Context.getInstance().getPageList();
+        return Contexte.getInstance().getPageList();
     }
 
     protected void printFile(String content, String path) {

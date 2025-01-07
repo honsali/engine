@@ -3,51 +3,53 @@ package dev.cruding.engine.printer.impl.page;
 import java.util.List;
 import java.util.stream.Collectors;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.flow.MCFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.flow.MdlFlow;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
 
 public class FeMdlPrinter extends Printer {
 
     public void print(Page page) {
-        MCFlow f = new MCFlow();
-        List<Action> actionList = Context.getInstance().actionPage(page);
+        MdlFlow f = new MdlFlow();
+        List<Action> actionList = Contexte.getInstance().actionPage(page);
         /* *********************************************************************** */
-
+        for (Action action : actionList) {
+            action.addMdlImport(f);
+            action.addMdlRequestAttribute(f);
+            action.addMdlResultAttribute(f);
+            action.addMdlStateAttribute(f);
+        }
         f.addMdlImport("{ createSelector, createSlice, isPending, isRejected }", "@reduxjs/toolkit");
         f.addMdlImport("{ IRequete, IResultat }", "waxant");
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
-        for (Action action : actionList) {
-            action.addMdlImport(f);
-        }
+        /* *********************************************************************** */
+
         f.flushMdlImportBloc();
 
-        f.L("");
+        f.L("");// --------------------------------------------
+
         f.L("export interface Req", page.uc, " extends IRequete {");
-        for (Action action : actionList) {
-            action.addMdlRequestAttribute(f);
-        }
         f.flushMdlRequestAttributeBloc();
         f.L("}");
-        f.L("");
+
+        f.L("");// --------------------------------------------
+
         f.L("export interface Res", page.uc, " extends IResultat {");
-        for (Action action : actionList) {
-            action.addMdlResultAttribute(f);
-        }
         f.flushMdlResultAttributeBloc();
         f.L("}");
-        f.L("");
+
+        f.L("");// --------------------------------------------
+
         f.L("const initialState = {");
         f.L____("resultat: {} as Res", page.uc, ",");
-        for (Action action : actionList) {
-            action.addMdlStateAttribute(f);
-        }
         f.flushMdlStateAttributeBloc();
         f.L("};");
-        f.L("");
+
+        f.L("");// --------------------------------------------
         f.L("type ", page.uc, "Type = typeof initialState;");
-        f.L("");
+        f.L("");// --------------------------------------------
+
         f.L("const Slice", page.uc, " = createSlice({");
         f.L____("name: 'Mdl", page.uc, "',");
         f.L____("initialState,");

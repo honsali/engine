@@ -2,9 +2,9 @@ package dev.cruding.engine.printer.impl.element;
 
 import java.util.List;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Element;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.printer.Printer;
 
 public class FeElementPrinter extends Printer {
@@ -17,25 +17,23 @@ public class FeElementPrinter extends Printer {
         if (element.byForm) {
             f.addProp("form");
         }
-
-        if (element.byProp != null) {
-            f.addProp(element.byProp);
-        }
+        f.addProp(element.byProp);
 
         element.addContent(f);
 
-        List<Action> listeAction = Context.getInstance().actionElement(element);
+        List<Action> listeAction = Contexte.getInstance().actionElement(element);
         for (Action action : listeAction) {
             if (action.addViewScript(f)) {
                 f.totalScript().L("");
             }
         }
-        f.cleanTotalScript();
-        f.flushJsImportBloc();
+        /* *********************************************************************** */
+
+        f.flushViewImportBloc();
         f.L("");
         f.L("const ", element.name, " = (", f.joinProps(), ") => {");
-        boolean notEmpty = f.flushInitBloc();
-        f.flushScriptBloc(notEmpty);
+        f.flushInitBloc();
+        f.flushScriptBloc();
         f.L____("//");
         f.L____("return ");
         f.flushUiBloc();

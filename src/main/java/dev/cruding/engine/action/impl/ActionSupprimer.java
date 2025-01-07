@@ -12,7 +12,6 @@ public class ActionSupprimer extends ActionSpecifique {
         return "Delete";
     }
 
-
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@DeleteMapping(\"/{id}\")");

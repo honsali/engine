@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Processor;
+import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.gen.Processeur;
 
 public class Launcher {
 
@@ -16,16 +16,16 @@ public class Launcher {
 
         long deb = System.currentTimeMillis();
 
-        Context.getInstance().setBasePath("result");
+        Contexte.getInstance().setBasePath("result");
 
         loadEntite("src\\main\\java\\modele");
-        Context.getInstance().initEntities();
+        Contexte.getInstance().initEntities();
 
         loadPage("src\\main\\java\\modules");
-        Context.getInstance().initPages();
+        Contexte.getInstance().initPages();
 
-        Processor processor = new Processor();
-        processor.process();
+        Processeur processeur = new Processeur();
+        processeur.executer();
 
         System.out.println(System.currentTimeMillis() - deb);
 
@@ -33,7 +33,7 @@ public class Launcher {
 
     private static void loadEntite(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).map(Launcher::newInstance).forEach(Context::add);
+            files.filter(Files::isRegularFile).map(Launcher::newInstance).forEach(Contexte::add);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,7 +41,7 @@ public class Launcher {
 
     private static void loadPage(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).filter(Launcher::isNotElement).map(Launcher::newInstance).forEach(Context::add);
+            files.filter(Files::isRegularFile).filter(Launcher::isNotElement).map(Launcher::newInstance).forEach(Contexte::add);
         } catch (Exception e) {
             e.printStackTrace();
         }

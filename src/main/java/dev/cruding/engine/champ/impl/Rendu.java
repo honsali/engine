@@ -1,7 +1,7 @@
 package dev.cruding.engine.champ.impl;
 
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.element.ElementPrinter;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class Rendu extends Champ {
@@ -23,7 +23,7 @@ public class Rendu extends Champ {
     }
 
     public String ui(String element) {
-        if (element.equals(ElementPrinter.TABLEAU)) {
+        if (element.equals(Element.TABLEAU)) {
             return "Colonne tc=\"rendu\" content={getColonne" + uname + "}";
         }
         return super.ui(element);

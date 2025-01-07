@@ -1,10 +1,10 @@
 package dev.cruding.engine.printer.impl.entite;
 
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.champ.impl.RefChamp;
+import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.printer.Printer;
 
 public class BeLiqConstraintPrinter extends Printer {
@@ -24,17 +24,17 @@ public class BeLiqConstraintPrinter extends Printer {
         f.L("");
 
         f.L____("<changeSet id=\"", entite.key, "-2\" author=\"app_core\">");
-        if (entite.haveFather) {
+        if (entite.havePere) {
             f.L________("<addForeignKeyConstraint");
-            f.L____________("baseColumnNames=\"", entite.father.dbName, "\"");
+            f.L____________("baseColumnNames=\"", entite.pere.dbName, "\"");
             f.L____________("baseTableName=\"", entite.dbName, "\"");
-            f.L____________("constraintName=\"fk_", entite.dbName, "_", entite.father.dbName, "\"");
+            f.L____________("constraintName=\"fk_", entite.dbName, "_", entite.pere.dbName, "\"");
             f.L____________("referencedColumnNames=\"", entite.id_.getDbName(entite.uname), "\"");
-            f.L____________("referencedTableName=\"", entite.father.dbTypeName, "\" />");
+            f.L____________("referencedTableName=\"", entite.pere.dbTypeName, "\" />");
         }
         for (Champ fld : entite.fieldList) {
             if (fld.isRef) {
-                RefChamp<?> ref = (RefChamp) fld;
+                ChampRef<?> ref = (ChampRef) fld;
                 f.L________("<addForeignKeyConstraint");
                 f.L____________("baseColumnNames=\"", ref.dbName, "\"");
                 f.L____________("baseTableName=\"", entite.dbName, "\"");
@@ -42,7 +42,7 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L____________("referencedColumnNames=\"", entite.id_.getDbName(entite.uname), "\"");
                 f.L____________("referencedTableName=\"", ref.dbTypeName, "\" />");
             } else if (fld.isRefMany) {
-                RefChamp<?> ref = (RefChamp) fld;
+                ChampRef<?> ref = (ChampRef) fld;
                 f.L________("<addForeignKeyConstraint");
                 f.L____________("baseColumnNames=\"", ref.jcDbName, "\"");
                 f.L____________("baseTableName=\"", ref.jtDbName, "\"");
@@ -50,7 +50,7 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L____________("referencedColumnNames=\"", entite.id_.getDbName(entite.uname), "\"");
                 f.L____________("referencedTableName=\"", entite.dbName, "\" />");
 
-                Entite fieldEntite = Context.getInstance().getEntite(ref.jtype);
+                Entite fieldEntite = Contexte.getInstance().getEntite(ref.jtype);
                 String ijtDbName = fieldEntite.dbName;
 
                 f.L________("<addForeignKeyConstraint");

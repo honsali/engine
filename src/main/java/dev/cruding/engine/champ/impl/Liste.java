@@ -1,10 +1,9 @@
 package dev.cruding.engine.champ.impl;
 
-import dev.cruding.engine.element.ElementPrinter;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 
 public class Liste<T extends Entite> extends Ref<T> {
-
 
     public Liste(Ref<T> r) {
         super(r.type, r.lname);
@@ -17,23 +16,20 @@ public class Liste<T extends Entite> extends Ref<T> {
 
     public String getExtension() {
         return " liste={liste" + jtype + "}";
-
     }
-
 
     @Override
     public String ui(String element) {
         switch (element) {
-            case ElementPrinter.FORM:
+            case Element.FORM:
                 return "ChampListe";
-            case ElementPrinter.DETAIL:
+            case Element.DETAIL:
                 return "reference";
-            case ElementPrinter.TABLEAU:
+            case Element.TABLEAU:
                 return "Colonne tc=\"reference\"";
             default:
                 return "";
         }
-
     }
 
     protected Ref<T> initCopy() {

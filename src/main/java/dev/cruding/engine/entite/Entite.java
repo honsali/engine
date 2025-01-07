@@ -4,12 +4,12 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.champ.impl.Father;
-import dev.cruding.engine.champ.impl.GrandFather;
+import dev.cruding.engine.champ.impl.GrandPere;
+import dev.cruding.engine.champ.impl.Pere;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.RefMany;
 import dev.cruding.engine.champ.impl.Setting;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.service.Service;
 
 public class Entite extends ChampFactory {
@@ -24,16 +24,16 @@ public class Entite extends ChampFactory {
     public String dbName;
     public String seqName;
 
-    public boolean haveFather = false;
+    public boolean havePere = false;
     public Setting id_;
-    public Father<?> father;
-    public String lfather;
-    public String ufather;
-    public boolean haveGrandFather = false;
+    public Pere<?> pere;
+    public String lpere;
+    public String upere;
+    public boolean haveGrandPere = false;
     public boolean haveRefMany = false;
 
-    public String lgrandfather;
-    public String ugrandfather;
+    public String lgrandPere;
+    public String ugrandPere;
 
     public Setting setting;
 
@@ -46,16 +46,16 @@ public class Entite extends ChampFactory {
     }
 
     public void init() {
-        Champ tempFather = null;
-        Champ tempGrandFather = null;
+        Champ tempPere = null;
+        Champ tempGrandPere = null;
         Champ tempIdentifiant = null;
         Setting tempId = null;
         this.key = String.valueOf(Math.abs(lname.hashCode()));
         this.pkg = StringUtils.substringAfter(this.getClass().getPackageName(), "modele.");
         this.path = this.pkg.replace('.', '/') + '/' + this.lname;
 
-        this.dbName = Context.getInstance().getLegacyDbName(uname, "table", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase());
-        this.seqName = Context.getInstance().getLegacyDbName(uname, "sequence", "seq_" + this.dbName);
+        this.dbName = Contexte.getInstance().getLegacyDbName(uname, "table", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase());
+        this.seqName = Contexte.getInstance().getLegacyDbName(uname, "sequence", "seq_" + this.dbName);
         for (Field f : this.getClass().getFields()) {
             if (Champ.class.isAssignableFrom(f.getType())) {
                 try {
@@ -69,13 +69,13 @@ public class Entite extends ChampFactory {
                             field.lname(f.getName());
                             fieldList.add(field);
                             haveRefMany = true;
-                        } else if (field instanceof Father) {
-                            tempFather = field.lname(f.getName());
-                            this.lfather = tempFather.lname;
+                        } else if (field instanceof Pere) {
+                            tempPere = field.lname(f.getName());
+                            this.lpere = tempPere.lname;
                             fieldList.add(field);
-                        } else if (field instanceof GrandFather) {
-                            tempGrandFather = field.lname(f.getName());
-                            this.lgrandfather = tempGrandFather.lname;
+                        } else if (field instanceof GrandPere) {
+                            tempGrandPere = field.lname(f.getName());
+                            this.lgrandPere = tempGrandPere.lname;
                             fieldList.add(field);
 
                         } else if (field instanceof Setting) {
@@ -92,7 +92,7 @@ public class Entite extends ChampFactory {
                 }
             }
         }
-        this.father = (Father<?>) tempFather;
+        this.pere = (Pere<?>) tempPere;
         this.id_ = tempId != null ? tempId : new Setting();
         this.setting = this.id_.init(uname);
         Champ identifiant = tempIdentifiant;
@@ -103,12 +103,12 @@ public class Entite extends ChampFactory {
             this.lid = identifiant.lname;
             this.uid = identifiant.uname;
         }
-        if (this.lfather != null) {
-            this.haveFather = true;
-            this.ufather = StringUtils.capitalize(lfather);
-            if (this.lgrandfather != null) {
-                this.haveGrandFather = true;
-                this.ugrandfather = StringUtils.capitalize(lgrandfather);
+        if (this.lpere != null) {
+            this.havePere = true;
+            this.upere = StringUtils.capitalize(lpere);
+            if (this.lgrandPere != null) {
+                this.haveGrandPere = true;
+                this.ugrandPere = StringUtils.capitalize(lgrandPere);
 
             }
         }

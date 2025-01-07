@@ -33,7 +33,7 @@ public class Module {
 
     public Page addPage(String name, ElementComposer elementComposer) {
         Page page = new Page(this, name, elementComposer);
-        Context.getInstance().addPage(page);
+        Contexte.getInstance().addPage(page);
         return page;
     }
 

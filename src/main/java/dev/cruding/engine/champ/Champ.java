@@ -4,14 +4,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.champ.impl.Ref;
-import dev.cruding.engine.element.ElementPrinter;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 
-public class Champ extends ChampInAction {
+public class Champ {
 
     public String larg;
     public String uarg;
@@ -27,7 +27,7 @@ public class Champ extends ChampInAction {
     public boolean isRefMany;
     public boolean isChild;
     public boolean isBasic;
-    public boolean isFather;
+    public boolean isPere;
     public boolean isId;
 
     public boolean cloned = false;
@@ -72,7 +72,7 @@ public class Champ extends ChampInAction {
     public Champ containingEntite(Entite entite) {
         this.containingEntite = entite.uname;
         this.containingEntiteDbname = entite.dbName;
-        this.dbName = Context.getInstance().getLegacyDbName(entite.uname, lname, "column", this.dbName);
+        this.dbName = Contexte.getInstance().getLegacyDbName(entite.uname, lname, "column", this.dbName);
         return this;
     }
 
@@ -216,11 +216,11 @@ public class Champ extends ChampInAction {
 
     public String ui(String element) {
         switch (element) {
-            case ElementPrinter.FORM:
+            case Element.FORM:
                 return "ChampTexte";
-            case ElementPrinter.DETAIL:
+            case Element.DETAIL:
                 return "Texte";
-            case ElementPrinter.TABLEAU:
+            case Element.TABLEAU:
                 return "Colonne";
             default:
                 return "";
@@ -300,7 +300,7 @@ public class Champ extends ChampInAction {
     }
 
     public String getReferenceNameList(String entiteName) {
-        Entite entite = Context.getInstance().getEntite(entiteName);
+        Entite entite = Contexte.getInstance().getEntite(entiteName);
         if (entite != null && entite.fieldList.size() > 0) {
             return entite.fieldList.stream().filter(p -> p.isRef || p.isRefMany).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
         }
@@ -308,7 +308,7 @@ public class Champ extends ChampInAction {
     }
 
     public String getReferenceName(String entiteName, String c) {
-        Entite entite = Context.getInstance().getEntite(entiteName);
+        Entite entite = Contexte.getInstance().getEntite(entiteName);
         if (entite != null && entite.fieldList.size() > 0) {
             Optional<String> o = entite.fieldList.stream().filter(p -> p.isRef || p.isRefMany).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
             if (o.isPresent()) {
@@ -344,7 +344,7 @@ public class Champ extends ChampInAction {
         to.isRefMany = from.isRefMany;
         to.isChild = from.isChild;
         to.isBasic = from.isBasic;
-        to.isFather = from.isFather;
+        to.isPere = from.isPere;
         to.isId = from.isId;
 
         to.libelle = from.libelle;

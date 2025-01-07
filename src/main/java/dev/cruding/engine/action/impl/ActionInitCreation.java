@@ -5,8 +5,9 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.champ.impl.RefChamp;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.champ.impl.ChampRef;
+import dev.cruding.engine.flow.CtrlFlow;
+import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionInitCreation extends Action {
@@ -21,49 +22,49 @@ public class ActionInitCreation extends Action {
         this.fieldList = fieldList;
     }
 
-    public void addCtrlImport(MCFlow f) {
+    public void addCtrlImport(CtrlFlow f) {
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addCtrlImport(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addCtrlImport(f);
             }
         }
     }
 
-    public void addMdlImport(MCFlow f) {
+    public void addMdlImport(MdlFlow f) {
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addMdlImport(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addMdlImport(f);
             }
         }
     }
 
-    public void addMdlRequestAttribute(MCFlow f) {}
+    public void addMdlRequestAttribute(MdlFlow f) {}
 
-    public void addMdlResultAttribute(MCFlow f) {
+    public void addMdlResultAttribute(MdlFlow f) {
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addMdlResultAttribute(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addMdlResultAttribute(f);
             }
         }
     }
 
-    public void addMdlStateAttribute(MCFlow f) {
+    public void addMdlStateAttribute(MdlFlow f) {
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addMdlStateAttribute(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addMdlStateAttribute(f);
             }
         }
     }
 
-    public void addMdlSelector(MCFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f, String uc) {
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addMdlSelector(f, uc);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addMdlSelector(f, uc);
             }
         }
     }
 
-    public void addCtrlImplementation(MCFlow f) {
+    public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.", entite().lname, " = {");
@@ -71,8 +72,8 @@ public class ActionInitCreation extends Action {
         f.__(result, StringUtils.isNotBlank(result) ? " " : "");
         f.__("};");
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addCtrlImplementation(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addCtrlImplementation(f);
             }
         }
         f.L("};");
@@ -80,14 +81,14 @@ public class ActionInitCreation extends Action {
 
 
 
-    public void addMdlExtraReducer(MCFlow f) {
+    public void addMdlExtraReducer(MdlFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 
         for (Champ c : fieldList) {
-            if (c instanceof RefChamp) {
-                ((RefChamp) c).addMdlExtraReducer(f);
+            if (c instanceof ChampRef) {
+                ((ChampRef) c).addMdlExtraReducer(f);
             }
         }
 

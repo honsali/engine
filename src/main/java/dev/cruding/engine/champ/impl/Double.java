@@ -1,7 +1,7 @@
 package dev.cruding.engine.champ.impl;
 
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.element.ElementPrinter;
+import dev.cruding.engine.element.Element;
 
 public class Double extends Champ {
 
@@ -13,16 +13,15 @@ public class Double extends Champ {
 
     public String ui(String element) {
         switch (element) {
-            case ElementPrinter.FORM:
-                return "ChampNumerique";
-            case ElementPrinter.DETAIL:
+            case Element.FORM:
+                return "ChampDecimal";
+            case Element.DETAIL:
                 return "Texte";
-            case ElementPrinter.TABLEAU:
-                return "Colonne tc=\"numerique\"";
+            case Element.TABLEAU:
+                return "Colonne tc=\"decimal\"";
             default:
                 return "";
         }
-
     }
 
     protected Champ initCopy() {

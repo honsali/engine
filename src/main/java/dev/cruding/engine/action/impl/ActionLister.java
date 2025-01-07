@@ -1,59 +1,60 @@
 package dev.cruding.engine.action.impl;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.flow.MCFlow;
+import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionLister extends Action {
 
 
-    public void addCtrlImport(MCFlow f) {
+    public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
 
-    public void addMdlImport(MCFlow f) {
+    public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
-    public void addMdlRequestAttribute(MCFlow f) {
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.addMdlRequestAttribute("id" + entite().ugrandfather, "string");
+    public void addMdlRequestAttribute(MdlFlow f) {
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
         }
-        if (byFatherId() && entite().haveFather)
-            f.addMdlRequestAttribute("id" + entite().ufather, "string");
+        if (byPereId() && entite().havePere)
+            f.addMdlRequestAttribute("id" + entite().upere, "string");
     }
 
-    public void addMdlResultAttribute(MCFlow f) {
+    public void addMdlResultAttribute(MdlFlow f) {
         f.addMdlResultAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
 
     }
 
-    public void addMdlStateAttribute(MCFlow f) {
+    public void addMdlStateAttribute(MdlFlow f) {
         f.addMdlStateAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
     }
 
-    public void addMdlSelector(MCFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f, String uc) {
         f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.liste", entite().uname, ");");
     }
 
-    public void addCtrlImplementation(MCFlow f) {
+    public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lcoreName(), "(");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("requete.id" + entite().ugrandfather, ", ");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("requete.id" + entite().ugrandPere, ", ");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("requete.id", entite().ufather);
+        if (byPereId() && entite().havePere) {
+            f.__("requete.id", entite().upere);
         }
         f.__(");");
         f.L("};");
     }
 
-    public void addMdlExtraReducer(MCFlow f) {
+    public void addMdlExtraReducer(MdlFlow f) {
         f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.liste", entite().uname, " = action.payload.liste", entite().uname, ";");
@@ -108,19 +109,19 @@ public class ActionLister extends Action {
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const ", lcoreName(), " = async (");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("id" + entite().ugrandfather, ": string, ");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("id" + entite().ugrandPere, ": string, ");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("id" + entite().ufather, ": string");
+        if (byPereId() && entite().havePere) {
+            f.__("id" + entite().upere, ": string");
         }
         f.__(") => {");
         f.L____("const liste", entite().uname, ": I", entite().uname, "[] = (await axios.get<I", entite().uname, "[]>(`${resourceUri}/", lcoreName());
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("/", entite().lgrandfather, "/${id", entite().ugrandfather, "}");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("/", entite().lgrandPere, "/${id", entite().ugrandPere, "}");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("/", entite().lfather, "/${id", entite().ufather, "}");
+        if (byPereId() && entite().havePere) {
+            f.__("/", entite().lpere, "/${id", entite().upere, "}");
         }
         f.__("`)).data;");
         f.L____("return liste", entite().uname, ";");

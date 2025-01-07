@@ -4,14 +4,14 @@ import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.printer.Printer;
 
 public class FeServicePrinter extends Printer {
 
     public void print(Entite entite) {
         JsFlow f = new JsFlow();
-        List<Action> actionList = Context.getInstance().actionEntite(entite);
+        List<Action> actionList = Contexte.getInstance().actionEntite(entite);
 
         /* *********************************************************************** */
 

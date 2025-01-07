@@ -4,8 +4,6 @@ import dev.cruding.engine.flow.JavaFlow;
 
 public class ActionEnregistrer extends ActionSpecifique {
 
-
-
     public String lrest() {
         return "put";
     }
@@ -17,27 +15,27 @@ public class ActionEnregistrer extends ActionSpecifique {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("(\"");
         }
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("/", entite().lgrandfather, "/{id" + entite().ugrandfather, "}");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("/", entite().lgrandPere, "/{id" + entite().ugrandPere, "}");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("/", entite().lfather, "/{id" + entite().ufather, "}");
+        if (byPereId() && entite().havePere) {
+            f.__("/", entite().lpere, "/{id" + entite().upere, "}");
         }
         if (byId()) {
             f.__("/${id", entite().uname, "}");
         }
-        if ((byGrandFatherId() && entite().haveGrandFather) || (byFatherId() && entite().haveFather) || byId()) {
+        if ((byGrandPereId() && entite().haveGrandPere) || (byPereId() && entite().havePere) || byId()) {
             f.__("\")");
         }
         f.L____("public ResponseEntity<Void> ", lcoreName(), "(");
-        if (byGrandFatherId() && entite().haveGrandFather) {
-            f.__("@PathVariable Long id" + entite().ugrandfather, ",");
+        if (byGrandPereId() && entite().haveGrandPere) {
+            f.__("@PathVariable Long id" + entite().ugrandPere, ",");
         }
-        if (byFatherId() && entite().haveFather) {
-            f.__("@PathVariable Long id" + entite().ufather, ", ");
+        if (byPereId() && entite().havePere) {
+            f.__("@PathVariable Long id" + entite().upere, ", ");
         }
         f.__("@Valid @RequestBody ", entite().uname, " ", entite().lname);
         f.__(") throws URISyntaxException {");

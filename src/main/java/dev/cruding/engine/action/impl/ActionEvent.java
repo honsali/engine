@@ -2,8 +2,8 @@ package dev.cruding.engine.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.component.Component;
-import dev.cruding.engine.component.bouton.Actionnable;
+import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.composant.bouton.Actionnable;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ActionEvent extends Action {
@@ -21,7 +21,7 @@ public class ActionEvent extends Action {
     }
 
     public void addFlowScript(ViewFlow f, int level) {
-        f.totalScript().__(Component.indent[level]).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase()).append(", resultat);");
+        f.totalScript().__(Composant.indent[level]).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase()).append(", resultat);");
         f.useEventBus();
     }
 

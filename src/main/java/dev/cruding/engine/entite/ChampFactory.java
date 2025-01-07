@@ -2,25 +2,24 @@ package dev.cruding.engine.entite;
 
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.champ.impl.Annee;
-import dev.cruding.engine.champ.impl.Boolean;
-import dev.cruding.engine.champ.impl.Child;
+import dev.cruding.engine.champ.impl.Booleen;
 import dev.cruding.engine.champ.impl.Date;
 import dev.cruding.engine.champ.impl.Double;
 import dev.cruding.engine.champ.impl.Email;
-import dev.cruding.engine.champ.impl.Father;
 import dev.cruding.engine.champ.impl.File;
-import dev.cruding.engine.champ.impl.GrandFather;
+import dev.cruding.engine.champ.impl.GrandPere;
 import dev.cruding.engine.champ.impl.Heure;
 import dev.cruding.engine.champ.impl.Int;
 import dev.cruding.engine.champ.impl.ListeStatique;
-import dev.cruding.engine.champ.impl.LongText;
+import dev.cruding.engine.champ.impl.Pere;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.RefMany;
 import dev.cruding.engine.champ.impl.Setting;
 import dev.cruding.engine.champ.impl.Tel;
-import dev.cruding.engine.champ.impl.Text;
-import dev.cruding.engine.champ.impl.TextArabe;
 import dev.cruding.engine.champ.impl.TextArray;
+import dev.cruding.engine.champ.impl.Texte;
+import dev.cruding.engine.champ.impl.TexteArabe;
+import dev.cruding.engine.champ.impl.TexteLong;
 
 public class ChampFactory {
 
@@ -28,12 +27,12 @@ public class ChampFactory {
         return new Setting();
     }
 
-    public Champ Text(String name) {
-        return new Text(name);
+    public Champ Texte(String name) {
+        return new Texte(name);
     }
 
-    public Champ TextArabe(String name) {
-        return new TextArabe(name);
+    public Champ TexteArabe(String name) {
+        return new TexteArabe(name);
     }
 
     public Champ Annee(String name) {
@@ -77,12 +76,12 @@ public class ChampFactory {
     }
 
 
-    public <T extends Entite> Father<T> Father(Class<T> type) {
-        return new Father<T>(type);
+    public <T extends Entite> Pere<T> Pere(Class<T> type) {
+        return new Pere<T>(type);
     }
 
-    public <T extends Entite> GrandFather<T> GrandFather(Class<T> type) {
-        return new GrandFather<T>(type);
+    public <T extends Entite> GrandPere<T> GrandPere(Class<T> type) {
+        return new GrandPere<T>(type);
     }
 
     public <T extends Entite> Ref<T> Ref(Class<T> type) {
@@ -106,16 +105,12 @@ public class ChampFactory {
         return new TextArray(name);
     }
 
-    public Champ Boolean(String name) {
-        return new Boolean(name);
+    public Champ Booleen(String name) {
+        return new Booleen(name);
     }
 
-    public Champ LongText(String name) {
-        return new LongText(name);
-    }
-
-    public Champ Child(String name) {
-        return new Child(name);
+    public Champ TexteLong(String name) {
+        return new TexteLong(name);
     }
 
 }
