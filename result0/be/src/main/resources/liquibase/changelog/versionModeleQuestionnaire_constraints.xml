@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1231262895-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="modele_id"
+            baseTableName="version_modele_questionnaire"
+            constraintName="fk_version_modele_questionnaire_modele_id"
+            referencedColumnNames="id"
+            referencedTableName="modele_questionnaire" />
+        <addForeignKeyConstraint
+            baseColumnNames="etat_id"
+            baseTableName="version_modele_questionnaire"
+            constraintName="fk_version_modele_questionnaire_etat_id"
+            referencedColumnNames="id"
+            referencedTableName="etat_version_modele_questionnaire" />
+    </changeSet>
+</databaseChangeLog>

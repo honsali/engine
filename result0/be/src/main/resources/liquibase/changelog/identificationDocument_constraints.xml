@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="591779415-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="famille_document_id"
+            baseTableName="identification_document"
+            constraintName="fk_identification_document_famille_document_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="type_document_id"
+            baseTableName="identification_document"
+            constraintName="fk_identification_document_type_document_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="type_expediteur_id"
+            baseTableName="identification_document"
+            constraintName="fk_identification_document_type_expediteur_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="prestataire_id"
+            baseTableName="identification_document"
+            constraintName="fk_identification_document_prestataire_id"
+            referencedColumnNames="id"
+            referencedTableName="expediteur" />
+    </changeSet>
+</databaseChangeLog>

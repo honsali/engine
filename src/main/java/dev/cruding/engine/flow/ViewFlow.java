@@ -34,7 +34,7 @@ public class ViewFlow extends JsFlow {
 
     StringBuilder sb = new StringBuilder();
 
-    public void flush(Composant Composant) {
+    public void flush(Composant composant) {
         String sui = uiBuilder.toString();
         uiTotalBuilder.append(sui);
         uiBuilder = new StringBuilder();

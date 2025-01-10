@@ -30,7 +30,7 @@ public class FeI18nPrinter extends Printer {
             f.L____("'Uc", page.uc, ".titre': '", LabelMapper.getInstance().getTitre(page), "',");
 
             for (Action action : Contexte.getInstance().allActionPage(page)) {
-                action.addI18n(f, page);
+                action.viewActionInjection.addI18n(f);
             }
         }
 

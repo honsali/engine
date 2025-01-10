@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="220091249-0" author="app_core">
+        <createSequence sequenceName="seq_sous_dossier" startValue="1050" incrementBy="50" />
+    </changeSet>
+    <changeSet id="220091249-1" author="app_core">
+        <createTable tableName="sous_dossier">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="date_survenance" type="nvarchar(250)">
+                <constraints nullable="false" />
+            </column>
+            <column name="heure_survenance" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="etat" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_ouverture" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_declaration" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="est_master" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="id_utilisateur" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="id_sinistre" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="profession" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="revenu" type="int">
+                <constraints nullable="true" />
+            </column>
+            <column name="type_revenu" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="decede" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="degat_mat" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="degat_corpo" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="tiers_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="220091249-data" author="app_core">
+        <loadData
+            file="liquibase/data/sousDossier.csv"
+            separator=";"
+            tableName="sous_dossier"
+            usePreparedStatements="true">
+            <column name="id" type="numeric" />
+            <column name="date_survenance" type="nvarchar(250)" />
+            <column name="heure_survenance" type="nvarchar(250)" />
+            <column name="etat" type="nvarchar(250)" />
+            <column name="date_ouverture" type="nvarchar(250)" />
+            <column name="date_declaration" type="nvarchar(250)" />
+            <column name="est_master" type="boolean" />
+            <column name="id_utilisateur" type="nvarchar(250)" />
+            <column name="id_sinistre" type="nvarchar(250)" />
+            <column name="profession" type="nvarchar(250)" />
+            <column name="revenu" type="int" />
+            <column name="type_revenu" type="nvarchar(250)" />
+            <column name="decede" type="boolean" />
+            <column name="degat_mat" type="boolean" />
+            <column name="degat_corpo" type="boolean" />
+            <column name="tiers_id" type="numeric" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

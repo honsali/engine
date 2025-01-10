@@ -1,40 +1,41 @@
 package dev.cruding.engine.composant.bouton;
 
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.composant.Composant;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.helper.Util;
 
 public class Bouton extends Composant {
 
-    public Actionnable actionnable;
+    public Action action;
 
-    public Bouton(Actionnable actionnable) {
-        super(actionnable.element);
-        this.actionnable = actionnable;
+    public Bouton(Action action) {
+        super(action.element);
+        this.action = action;
     }
 
     public void addImport(ViewFlow flow) {
-        if (actionnable.noUi()) {
+        if (action.noUi()) {
             return;
-        } else if (actionnable.normale()) {
+        } else if (action.normale()) {
             flow.addJsImport("{ActionUcNormale}", "waxant");
-        } else if (actionnable.forte()) {
+        } else if (action.forte()) {
             flow.addJsImport("{ActionUcForte}", "waxant");
-        } else if (actionnable.ucConfirmer()) {
+        } else if (action.ucConfirmer()) {
             flow.addJsImport("{ActionUcConfirmer}", "waxant");
         } else {
-            flow.addJsImport("{ActionUc" + actionnable.ucoreName + "}", "waxant");
+            flow.addJsImport("{ActionUc" + action.ucoreName + "}", "waxant");
         }
 
-        if (actionnable.nfc() && actionnable.icone != null) {
-            flow.addJsImport("{ " + actionnable.icone + " }", "@ant-design/icons");
+        if (action.nfc() && action.icone != null) {
+            flow.addJsImport("{ " + action.icone + " }", "@ant-design/icons");
         }
 
-        if (actionnable.targetPage != null) {
-            flow.addJsImport("{ " + actionnable.targetPage.name + " }", actionnable.targetPage.module.listePage(element.path, inElement));
+        if (action.targetPage != null) {
+            flow.addJsImport("{ " + action.targetPage.name + " }", action.targetPage.module.listePage(element.path, inElement));
         }
-        String s = Util.getRelativePath(actionnable.element.path, actionnable.page.module.path, false);
-        flow.addJsImport("{ Action" + actionnable.page.module.unameLast + " }", s + "/Action" + actionnable.page.module.unameLast);
+        String s = Util.getRelativePath(action.element.path, action.page.module.path, false);
+        flow.addJsImport("{ Action" + action.page.module.unameLast + " }", s + "/Action" + action.page.module.unameLast);
     }
 
     public void addInlineTag(ViewFlow flow) {
@@ -42,32 +43,32 @@ public class Bouton extends Composant {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        String nomAction = "Action" + actionnable.page.module.unameLast + "." + "Uc" + actionnable.page.uc + "." + actionnable.actionKey;
-        if (actionnable.noUi()) {
+        String nomAction = "Action" + action.page.module.unameLast + "." + "Uc" + action.page.uc + "." + action.actionKey;
+        if (action.noUi()) {
             return false;
-        } else if (actionnable.normale()) {
+        } else if (action.normale()) {
             indent(flow, level).append("<ActionUcNormale");
-        } else if (actionnable.forte()) {
+        } else if (action.forte()) {
             indent(flow, level).append("<ActionUcForte");
-        } else if (actionnable.ucConfirmer()) {
+        } else if (action.ucConfirmer()) {
             indent(flow, level).append("<ActionUcConfirmer");
         } else {
-            indent(flow, level).append("<ActionUc").append(actionnable.ucoreName);
+            indent(flow, level).append("<ActionUc").append(action.ucoreName);
         }
         flow.addToUi(" nom={").append(nomAction).append("}");
-        if (actionnable.targetPage != null) {
-            flow.addToUi(" page={").append(actionnable.targetPage.name).append("}");
+        if (action.targetPage != null) {
+            flow.addToUi(" page={").append(action.targetPage.name).append("}");
         }
-        if (actionnable.uca() && actionnable.modele != null) {
-            flow.addToUi(" modele={").append(actionnable.modele).append("}");
+        if (action.uca() && action.modele != null) {
+            flow.addToUi(" modele={").append(action.modele).append("}");
         }
-        if (!actionnable.isVide && actionnable.action != null) {
-            flow.addToUi(" action={").append(actionnable.action.lname()).append("}");
+        if (!action.isVide) {
+            flow.addToUi(" action={").append(action.lname).append("}");
         }
-        if (actionnable.nfc() && actionnable.icone != null) {
-            flow.addToUi(" icone={<").append(actionnable.icone).append(" />}");
+        if (action.nfc() && action.icone != null) {
+            flow.addToUi(" icone={<").append(action.icone).append(" />}");
         }
-        if (actionnable.confirmer || actionnable.hasReussi) {
+        if (action.confirmer || action.hasReussi) {
             flow.addToUi(" rid={rid}");
         }
         flow.addToUi(" />");

@@ -1,10 +1,8 @@
 package dev.cruding.engine.composant.conteneur;
 
-import dev.cruding.engine.action.impl.ActionChercher;
-import dev.cruding.engine.composant.bouton.Actionnable;
-import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
-import dev.cruding.engine.element.Element;
+import dev.cruding.engine.action.chercher.ActionChercher;
 import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
 
@@ -12,8 +10,7 @@ public class PanneauFiltre extends Conteneur {
 
     public PanneauFiltre(Element element, Entite entite, Composant... ComposantList) {
         super(element, entite, ComposantList);
-        Actionnable actionnable = new Actionnable(ActionType.NOUI, "chercher", entite, element);
-        actionnable.action(new ActionChercher());
+        new ActionChercher(entite, element);
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {

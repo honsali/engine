@@ -18,7 +18,7 @@ public class FeServicePrinter extends Printer {
         f.addJsImport("{ API_URL }", "commun");
         f.addJsImport("axios", "axios");
         for (Action action : actionList) {
-            action.addServiceImport(f);
+            action.serviceActionInjection.addServiceImport(f);
         }
 
         f.flushJsImportBloc();
@@ -27,13 +27,13 @@ public class FeServicePrinter extends Printer {
         f.L("const resourceUri = API_URL + '/", entite.lname, "';");
 
         for (Action action : actionList) {
-            action.addServiceImplementation(f);
+            action.serviceActionInjection.addServiceImplementation(f);
         }
         f.L("");
         f.L("const Service", entite.uname, " = {");
 
         for (Action action : actionList) {
-            action.addServiceDeclaration(f);
+            action.serviceActionInjection.addServiceDeclaration(f);
         }
         f.L("};");
         f.L("");

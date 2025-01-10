@@ -25,19 +25,19 @@ public class FeCtrlPrinter extends Printer {
         }
 
         for (Action action : actionList) {
-            action.addCtrlImport(f);
+            action.ctrlActionInjection.addCtrlImport(f);
         }
 
         f.flushCtrlImportBloc();
 
         for (Action action : actionList) {
-            action.addCtrlImplementation(f);
+            action.ctrlActionInjection.addCtrlImplementation(f);
         }
 
         f.L("");
         f.L("const Ctrl", page.uc, " = {");
         for (Action action : actionList) {
-            action.addCtrlDeclaration(f, page);
+            action.ctrlActionInjection.addCtrlDeclaration(f);
         }
         f.L("};");
 

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.composant.bouton.Actionnable;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 
@@ -40,7 +39,7 @@ public class Contexte {
 
     private HashMap<String, String> legacyDbMap = new HashMap<>();
 
-    private ArrayList<Actionnable> actionnableList = new ArrayList<>();
+    private ArrayList<Action> actionnableList = new ArrayList<>();
     private String basePath;
 
     private Contexte() {}
@@ -104,24 +103,24 @@ public class Contexte {
         this.legacyDbMap = legacyDbMap;
     }
 
-    public void addAction(Actionnable actionnable) {
-        actionnableList.add(actionnable);
+    public void addAction(Action action) {
+        actionnableList.add(action);
     }
 
     public List<Action> actionPage(Page page) {
-        return actionnableList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> allActionPage(Page page) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionElement(Element element) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.element.equals(element)).map(as -> as.action).filter(Objects::nonNull).sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionEntite(Entite entite) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).map(as -> as.action).filter(Objects::nonNull).distinct().sorted().toList();
+        return actionnableList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).filter(Objects::nonNull).distinct().sorted().toList();
     }
 
 

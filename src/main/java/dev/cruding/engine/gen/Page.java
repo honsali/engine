@@ -48,7 +48,7 @@ public class Page implements Comparable<Page> {
     }
 
     public void init() {
-        Element elementRacine = this.elementComposer.compose();
+        Element elementRacine = this.elementComposer.creerElement();
         addElement(elementRacine);
     }
 

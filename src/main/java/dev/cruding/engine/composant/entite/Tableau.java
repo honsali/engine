@@ -1,12 +1,9 @@
 package dev.cruding.engine.composant.entite;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.impl.ActionChangerSelection;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.composant.Composant;
-import dev.cruding.engine.composant.bouton.Actionnable;
-import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
@@ -14,11 +11,11 @@ import dev.cruding.engine.gen.Contexte;
 
 public class Tableau extends Composant {
 
-    public Actionnable onRowClickAction;
-    public Actionnable fillFrom;
+    public Action onRowClickAction;
+    public Action fillFrom;
     public int largeur = 0;
-    public Actionnable actionPagination;
-    public Actionnable selection;
+    public Action actionPagination;
+    public Action selection;
     public boolean pagine = false;
     public String sourceDonnee = "liste";
 
@@ -30,28 +27,26 @@ public class Tableau extends Composant {
     public Tableau(Element element, Entite entite, Action action, Champ... fieldList) {
         super(element, entite, fieldList);
         inElement = true;
-        if (action != null) {
-            this.actionPagination = new Actionnable(ActionType.NOUI, "changerPage", entite, element).action(action);
-            this.pagine = actionPagination != null;
-            if (this.actionPagination != null) {
-                actionPagination.inElement(inElement);
-            }
-        }
+        /*
+         * if (action != null) { this.actionPagination = new ActionChangerPage(ActionType.NOUI,
+         * "changerPage", entite, element).action(action); this.pagine = actionPagination != null; if
+         * (this.actionPagination != null) { actionPagination.inElement(inElement); } }
+         */
         sourceDonnee = "liste" + (pagine ? "Paginee" : "") + entite.uname;
         Contexte.getInstance().addLabel(element.page.module.uname, "aucun." + entite.lname, (entite.setting.feminin ? "Aucune " : "Aucun ") + entite.setting.libelle);
     }
 
-    public Tableau onRowClick(Actionnable actionnable) {
-        actionnable.inElement(inElement);
-        actionnable.byRow();
-        this.onRowClickAction = actionnable;
+    public Tableau onRowClick(Action action) {
+        action.inElement(inElement);
+        action.byRow();
+        this.onRowClickAction = action;
         return this;
     }
 
-    public Tableau fillFrom(Actionnable actionnable) {
-        actionnable.inElement(inElement);
-        actionnable.paginee(this.pagine);
-        this.fillFrom = actionnable;
+    public Tableau fillFrom(Action action) {
+        action.inElement(inElement);
+        action.paginee(this.pagine);
+        this.fillFrom = action;
         if (this.fillFrom.sourceDonnee != null) {
             sourceDonnee = this.fillFrom.sourceDonnee;
         }
@@ -63,10 +58,6 @@ public class Tableau extends Composant {
         return this;
     }
 
-    public Tableau selection(String selection) {
-        this.selection = new Actionnable(ActionType.NOUI, selection, entite, element).action(new ActionChangerSelection()).inViewOnly();
-        return this;
-    }
 
     public void addImport(ViewFlow flow) {
         flow.addJsImport("{ Bloc, Colonne, Tableau }", "waxant");

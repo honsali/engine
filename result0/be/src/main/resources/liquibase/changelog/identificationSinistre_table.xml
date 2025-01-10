@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="945451277-0" author="app_core">
+        <createSequence sequenceName="seq_identification_sinistre" startValue="1050" incrementBy="50" />
+    </changeSet>
+    <changeSet id="945451277-1" author="app_core">
+        <createTable tableName="identification_sinistre">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="numero_sinistre" type="nvarchar(250)">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_survenance" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_ouverture" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="945451277-data" author="app_core">
+        <loadData
+            file="liquibase/data/identificationSinistre.csv"
+            separator=";"
+            tableName="identification_sinistre"
+            usePreparedStatements="true">
+            <column name="id" type="numeric" />
+            <column name="numero_sinistre" type="nvarchar(250)" />
+            <column name="date_survenance" type="nvarchar(250)" />
+            <column name="date_ouverture" type="nvarchar(250)" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

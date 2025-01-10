@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1231262895-0" author="app_core">
+        <createSequence sequenceName="seq_version_modele_questionnaire" startValue="1050" incrementBy="50" />
+    </changeSet>
+    <changeSet id="1231262895-1" author="app_core">
+        <createTable tableName="version_modele_questionnaire">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="version" type="nvarchar(250)">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_creation" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_modification" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_debut_utilisation" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_fin_utilisation" type="date">
+                <constraints nullable="true" />
+            </column>
+            <column name="modele_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="etat_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1231262895-data" author="app_core">
+        <loadData
+            file="liquibase/data/versionModeleQuestionnaire.csv"
+            separator=";"
+            tableName="version_modele_questionnaire"
+            usePreparedStatements="true">
+            <column name="id" type="numeric" />
+            <column name="version" type="nvarchar(250)" />
+            <column name="date_creation" type="date" />
+            <column name="date_modification" type="date" />
+            <column name="date_debut_utilisation" type="date" />
+            <column name="date_fin_utilisation" type="date" />
+            <column name="modele_id" type="numeric" />
+            <column name="etat_id" type="numeric" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

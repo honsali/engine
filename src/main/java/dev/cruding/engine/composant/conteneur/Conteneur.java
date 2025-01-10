@@ -20,8 +20,8 @@ public class Conteneur extends Composant {
     }
 
     public void addImport(ViewFlow flow) {
-        for (Composant Composant : ComposantList) {
-            Composant.addImport(flow);
+        for (Composant composant : ComposantList) {
+            composant.addImport(flow);
         }
     }
 

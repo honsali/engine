@@ -19,7 +19,7 @@ public class BeRepositoryPrinter extends Printer {
         f.addJavaImport("org.springframework.stereotype.Repository");
 
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
-            action.addRepositoryImport(f);
+            action.repoActionInjection.addRepositoryImport(f);
         }
 
         /* *********************************************************************** */
@@ -34,7 +34,7 @@ public class BeRepositoryPrinter extends Printer {
         f.L("public interface ", entite.uname, "Repository extends JpaRepository<", entite.uname, ", ", entite.id_.jtype, "> {");
 
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
-            action.addRepositoryDeclaration(f);
+            action.repoActionInjection.addRepositoryDeclaration(f);
         }
         f.L("}");
 

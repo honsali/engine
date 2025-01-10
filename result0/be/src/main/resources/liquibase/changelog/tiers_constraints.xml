@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="110357201-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="sexe_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_sexe_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="type_identification_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_type_identification_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="ville_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_ville_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="qualite_victime_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_qualite_victime_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="situation_familiale_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_situation_familiale_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="profession_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_profession_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="assureur_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_assureur_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="lien_parente_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_lien_parente_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="entite_adverse_id"
+            baseTableName="tiers"
+            constraintName="fk_tiers_entite_adverse_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+    </changeSet>
+</databaseChangeLog>

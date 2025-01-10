@@ -23,7 +23,7 @@ public class FeElementPrinter extends Printer {
 
         List<Action> listeAction = Contexte.getInstance().actionElement(element);
         for (Action action : listeAction) {
-            if (action.addViewScript(f)) {
+            if (action.viewActionInjection.addViewScript(f)) {
                 f.totalScript().L("");
             }
         }

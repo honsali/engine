@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="1094599310-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="questionnaire_id"
+            baseTableName="reponse"
+            constraintName="fk_reponse_questionnaire_id"
+            referencedColumnNames="id"
+            referencedTableName="questionnaire" />
+        <addForeignKeyConstraint
+            baseColumnNames="type_option_sans_reponse_id"
+            baseTableName="reponse"
+            constraintName="fk_reponse_type_option_sans_reponse_id"
+            referencedColumnNames="id"
+            referencedTableName="type_option_sans_reponse" />
+        <addForeignKeyConstraint
+            baseColumnNames="question_id"
+            baseTableName="reponse"
+            constraintName="fk_reponse_question_id"
+            referencedColumnNames="id"
+            referencedTableName="question" />
+        <addForeignKeyConstraint
+            baseColumnNames="session_interview_id"
+            baseTableName="reponse"
+            constraintName="fk_reponse_session_interview_id"
+            referencedColumnNames="id"
+            referencedTableName="session_interview" />
+    </changeSet>
+</databaseChangeLog>

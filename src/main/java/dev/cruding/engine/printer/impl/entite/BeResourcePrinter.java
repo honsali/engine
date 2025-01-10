@@ -20,7 +20,7 @@ public class BeResourcePrinter extends Printer {
             f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname);
         }
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
-            action.addResourceImport(f);
+            action.resourceActionInjection.addResourceImport(f);
         }
         f.addJavaImport("java.util.List");
         f.addJavaImport("org.springframework.transaction.annotation.Transactional");
@@ -58,7 +58,7 @@ public class BeResourcePrinter extends Printer {
 
 
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
-            action.addResourceDeclaration(f);
+            action.resourceActionInjection.addResourceDeclaration(f);
         }
         f.L("}");
 

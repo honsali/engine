@@ -3,13 +3,12 @@ package dev.cruding.engine.composant.entite;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.impl.ActionChercher;
+import dev.cruding.engine.action.Action.ActionType;
+import dev.cruding.engine.action.chercher.ActionChercher;
 import dev.cruding.engine.action.impl.ActionVide;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.composant.Composant;
-import dev.cruding.engine.composant.bouton.Actionnable;
-import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
@@ -25,11 +24,10 @@ public class Filtre extends Composant {
 
     public Filtre(Element element, Entite entite, Champ... fieldList) {
         super(element, entite, fieldList);
-        Actionnable actionnable = new Actionnable(ActionType.NOUI, "chercher", entite, element);
-        actionnable.action(new ActionChercher());
-        new Actionnable(ActionType.UCA, "appliquerFiltre", entite, element).action(new ActionVide()).inViewOnly();
-        new Actionnable(ActionType.UCA, "initialiserFiltre", entite, element).action(new ActionVide()).inViewOnly();
-    } 
+        new ActionChercher(entite, element);
+        new ActionVide(ActionType.UCA, "appliquerFiltre", entite, element).inViewOnly();
+        new ActionVide(ActionType.UCA, "initialiserFiltre", entite, element).inViewOnly();
+    }
 
     public Filtre inLine() {
         this.inLine = true;

@@ -1,90 +1,305 @@
 package dev.cruding.engine.action;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.champ.Champ;
+import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.flow.CtrlFlow;
-import dev.cruding.engine.flow.Flow;
-import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.flow.MdlFlow;
-import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Contexte;
-import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.injection.CtrlActionInjection;
+import dev.cruding.engine.injection.MdlActionInjection;
+import dev.cruding.engine.injection.RepoActionInjection;
+import dev.cruding.engine.injection.ResourceActionInjection;
+import dev.cruding.engine.injection.ServiceActionInjection;
+import dev.cruding.engine.injection.ViewActionInjection;
 
-public abstract class Action extends ActionnableWrapper implements Comparable<Action> {
+public abstract class Action implements Comparable<Action> {
 
-    public void addCtrlImport(CtrlFlow f) {}
+    public enum ActionType {
+        NOUI, UCA, NORMALE, FORTE, FLOW, CONFIRMER
+    }
 
-    public void addCtrlImplementation(CtrlFlow f) {}
+    public CtrlActionInjection ctrlActionInjection;
+    public MdlActionInjection mdlActionInjection;
+    public RepoActionInjection repoActionInjection;
+    public ResourceActionInjection resourceActionInjection;
+    public ServiceActionInjection serviceActionInjection;
+    public ViewActionInjection viewActionInjection;
 
-    public void addCtrlDeclaration(CtrlFlow f, Page page) {
-        if (uc() != null && !inViewOnly()) {
-            f.L____(lname(), ": action<Req", uc(), ", Res", uc(), ">(", lname(), "Impl, Action", page.module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
+    public ActionType type;
+    public String lcoreName;
+    public String ucoreName;
+    public String lname;
+    public String uname;
+    public String icone = null;
+    public boolean byId = false;
+    public boolean parIdPere = false;
+    public boolean parIdGrandPere = false;
+    public boolean byForm = false;
+    public boolean byEntite = false;
+    public boolean byRow = false;
+    public boolean byProp = false;
+    public Champ byChamp = null;
+    public boolean recharger = false;
+    public boolean confirmer;
+    public ArrayList<Action> siReussi = new ArrayList<>();
+    public String actionKey = null;
+    public Element element;
+    public Page page;
+    public Entite entite;
+    public Page targetPage;
+    public String uc;
+    public boolean inViewOnly = false;
+    public boolean inElement = false;
+    public Champ child;
+    public String sourceDonnee;
+    public boolean resultatInId = false;
+    public String paginee = "";
+    public String orderBy;
+    public String mvcPath = ".";
+    public String modele;
+    public boolean isVide = true;
+    public boolean hasReussi = false;
+    public String lrest = "get";
+    public String urest = "Get";
+
+
+    public Action(ActionType type, String lcoreName, Entite entite, Element element) {
+        this.type = type;
+        this.entite = entite;
+        this.orderBy = entite.uid;
+        this.page = element.page;
+        this.uc = page.uc;
+        lcoreName(lcoreName);
+        if (ucConfirmer()) {
+            this.confirmer();
         }
+        element(element);
+        Contexte.getInstance().addAction(this);
+
+
     }
 
-    public void addMdlImport(MdlFlow flow) {}
-
-    public void addMdlRequestAttribute(MdlFlow flow) {}
-
-    public void addMdlResultAttribute(MdlFlow flow) {}
-
-    public void addMdlStateAttribute(MdlFlow flow) {}
-
-    public void addMdlSelector(MdlFlow flow, String uc) {}
-
-    public boolean addViewScript(ViewFlow flow) {
-        return false;
+    public void init() {
+        ctrlActionInjection = new CtrlActionInjection();
+        mdlActionInjection = new MdlActionInjection();
+        repoActionInjection = new RepoActionInjection();
+        resourceActionInjection = new ResourceActionInjection();
+        serviceActionInjection = new ServiceActionInjection();
+        viewActionInjection = new ViewActionInjection();
+        overrideActionInjection();
+        ctrlActionInjection.action(this);
+        mdlActionInjection.action(this);
+        repoActionInjection.action(this);
+        resourceActionInjection.action(this);
+        serviceActionInjection.action(this);
+        viewActionInjection.action(this);
     }
 
-    public void addFlowScript(ViewFlow flow, int level) {}
+    public void overrideActionInjection() {}
 
-
-
-    public boolean addMdlReducer(MdlFlow flow) {
-        return false;
+    public Action lcoreName(String lcoreName) {
+        this.lcoreName = lcoreName;
+        this.ucoreName = StringUtils.capitalize(lcoreName);
+        String n = this.lcoreName;
+        if (this.entite != null) {
+            n = n + this.entite.uname;
+        } else {
+            n = n + this.page.entiteUname;
+        }
+        this.lname(n);
+        return this;
     }
 
-    public void addMdlExtraReducer(MdlFlow flow) {}
+    public Action lname(String lname) {
 
-    public void addRepositoryDeclaration(JavaFlow flow) {}
+        this.lname = lname;
+        this.uname = StringUtils.capitalize(this.lname);
+        this.actionKey = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(this.lname), "_").toUpperCase();
 
-    public void addRepositoryImport(JavaFlow flow) {}
+        return this;
+    }
 
-    public void addResourceDeclaration(JavaFlow flow) {}
-
-    public void addResourceImport(JavaFlow flow) {}
-
-    public void addServiceImport(JsFlow flow) {}
-
-    public void addServiceDeclaration(Flow flow) {}
-
-    public void addServiceImplementation(Flow flow) {}
-
-    public void addI18n(Flow f, Page page) {
-        if (!noUi()) {
-
-            Entite e = entite() == null ? Contexte.getInstance().getEntite(actionnable.page.entiteUname) : entite();
-            if (e != null) {
-
-                String nomAction = LabelMapper.getInstance().nomAction(lcoreName(), e);
-                String titreConfirmation = LabelMapper.getInstance().titreConfirmation(lcoreName(), e);
-                String enteteConfirmation = LabelMapper.getInstance().enteteConfirmation(lcoreName(), e);
-                String messageSuccess = LabelMapper.getInstance().messageSuccess(lcoreName(), e);
+    public Action element(Element element) {
+        this.element = element;
+        for (Action a : siReussi) {
+            a.element(element);
+        }
+        return this;
+    }
 
 
-                String key = "Action" + actionnable.page.module.unameLast + "." + "Uc" + page.uc + "." + actionnable.actionKey;
-                f.L____("[", key, "]", ": '", nomAction, "',");
 
-                if (actionnable.confirmer) {
-                    f.L____("[titreConfirmation(", key, ")]: '", titreConfirmation, "',");
-                    f.L____("[enteteConfirmation(", key, ")]: '", enteteConfirmation, "',");
-                    f.L____("[messageSuccess(", key, ")]: '", messageSuccess, "',");
-                }
+    public Action byId() {
+        this.byId = true;
+        return this;
+    }
+
+
+    public Action parIdPere() {
+        this.parIdPere = true;
+        return this;
+    }
+
+    public Action inElement(boolean inElement) {
+        this.inElement = inElement;
+        return this;
+    }
+
+    public Action inElement() {
+        this.inElement = true;
+        return this;
+    }
+
+    public Action inViewOnly() {
+        this.inViewOnly = true;
+        return this;
+    }
+
+    public Action resultatInId() {
+        this.resultatInId = true;
+        return this;
+    }
+
+    public Action parIdGrandPere() {
+        this.parIdGrandPere = true;
+        return this;
+    }
+
+    public Action byForm() {
+        this.byForm = true;
+        return this;
+    }
+
+
+    public Action byEntite() {
+        this.byEntite = true;
+        return this;
+    }
+
+
+    public Action byRow() {
+        this.byRow = true;
+        return this;
+    }
+
+    public Action byProp() {
+        this.byProp = true;
+        return this;
+    }
+
+    public Action byChamp(Champ field) {
+        this.byChamp = field;
+        return this;
+    }
+
+    public Action siReussiRecharger() {
+        this.recharger = true;
+        return this;
+    }
+
+    public Action icone(String icone) {
+        this.icone = icone;
+        return this;
+    }
+
+    public Action targetPage(String targetPage) {
+        this.targetPage = Contexte.getInstance().getPage(targetPage);
+        return this;
+    }
+
+
+    public Action siReussi(Action... listeAction) {
+        for (Action action : listeAction) {
+            this.siReussi.add(action);
+            action.type(ActionType.FLOW);
+            if (action.element != null) {
+                action.element(this.element);
             }
+            hasReussi = true;
         }
+        return this;
     }
+
+
+
+    public Action confirmer() {
+        this.confirmer = true;
+        return this;
+    }
+
+    public Action uc(String uc) {
+        this.uc = uc;
+        return this;
+    }
+
+    public Action modele(String modele) {
+        this.modele = modele;
+        return this;
+    }
+
+    public Action child(Champ child) {
+        this.child = child;
+        return this;
+    }
+
+
+    public Action paginee(boolean paginee) {
+        this.paginee = paginee ? "Paginee" : "";
+        return this;
+    }
+
+    public Action orderBy(String orderBy) {
+        this.orderBy = orderBy;
+        return this;
+    }
+
+    public Action sourceDonnee(String sourceDonnee) {
+        this.sourceDonnee = sourceDonnee;
+        return this;
+    }
+
+    public Action type(ActionType type) {
+        this.type = type;
+        return this;
+    }
+
+    public Action lrest(String lrest) {
+        this.lrest = lrest;
+        this.urest = StringUtils.capitalize(lrest);
+        return this;
+    }
+
+    public boolean noUi() {
+        return type == ActionType.NOUI;
+    };
+
+    public boolean uca() {
+        return type == ActionType.UCA;
+    };
+
+    public boolean normale() {
+        return type == ActionType.NORMALE;
+    };
+
+    public boolean forte() {
+        return type == ActionType.FORTE;
+    };
+
+    public boolean ucConfirmer() {
+        return type == ActionType.CONFIRMER;
+    };
+
+
+    public boolean flow() {
+        return type == ActionType.FLOW;
+    };
+
+    public boolean nfc() {
+        return normale() || forte() || ucConfirmer();
+    };
 
 
 
@@ -96,17 +311,17 @@ public abstract class Action extends ActionnableWrapper implements Comparable<Ac
 
         Action other = (Action) obj;
 
-        return lname().equals(other.lname());
+        return lname.equals(other.lname);
     }
 
 
     public int hashCode() {
-        return Objects.hash(lname());
+        return Objects.hash(lname);
     }
 
     @Override
     public int compareTo(Action o) {
-        return this.lname().compareTo(o.lname());
+        return this.lname.compareTo(o.lname);
     }
 
 }

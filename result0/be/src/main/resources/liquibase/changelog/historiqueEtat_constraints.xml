@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="921324159-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="etat_id"
+            baseTableName="historique_etat"
+            constraintName="fk_historique_etat_etat_id"
+            referencedColumnNames="id"
+            referencedTableName="etat" />
+        <addForeignKeyConstraint
+            baseColumnNames="motif_id"
+            baseTableName="historique_etat"
+            constraintName="fk_historique_etat_motif_id"
+            referencedColumnNames="id"
+            referencedTableName="motif" />
+    </changeSet>
+</databaseChangeLog>

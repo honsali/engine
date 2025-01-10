@@ -1,26 +1,26 @@
 package dev.cruding.engine.gen;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.impl.ActionChangerPageChercher;
-import dev.cruding.engine.action.impl.ActionChangerPageLister;
-import dev.cruding.engine.action.impl.ActionChercher;
-import dev.cruding.engine.action.impl.ActionConsulterElement;
-import dev.cruding.engine.action.impl.ActionEvent;
-import dev.cruding.engine.action.impl.ActionGoToModule;
-import dev.cruding.engine.action.impl.ActionGoToPage;
-import dev.cruding.engine.action.impl.ActionInitCreation;
-import dev.cruding.engine.action.impl.ActionInitModification;
-import dev.cruding.engine.action.impl.ActionLister;
-import dev.cruding.engine.action.impl.ActionListerEnPage;
-import dev.cruding.engine.action.impl.ActionListerEnPageParIdPere;
-import dev.cruding.engine.action.impl.ActionListerParChamp;
-import dev.cruding.engine.action.impl.ActionListerParIdPere;
-import dev.cruding.engine.action.impl.ActionListerParParam;
-import dev.cruding.engine.action.impl.ActionRecupererDepuisMdl;
-import dev.cruding.engine.action.impl.ActionRecupererEnSession;
-import dev.cruding.engine.action.impl.ActionRecupererParChamp;
-import dev.cruding.engine.action.impl.ActionRecupererParId;
-import dev.cruding.engine.action.impl.ActionSpecifique;
+import dev.cruding.engine.action.Action.ActionType;
+import dev.cruding.engine.action.changerPage.ActionChangerPageChercher;
+import dev.cruding.engine.action.changerPage.ActionChangerPageLister;
+import dev.cruding.engine.action.chercher.ActionChercher;
+import dev.cruding.engine.action.crud.ActionCreer;
+import dev.cruding.engine.action.crud.ActionEnregistrer;
+import dev.cruding.engine.action.crud.ActionSupprimer;
+import dev.cruding.engine.action.impl.AppliquerFiltre;
+import dev.cruding.engine.action.impl.InitialiserFiltre;
+import dev.cruding.engine.action.inViewOnly.ActionConsulterElement;
+import dev.cruding.engine.action.inViewOnly.ActionEvent;
+import dev.cruding.engine.action.inViewOnly.ActionGoToModule;
+import dev.cruding.engine.action.inViewOnly.ActionGoToPage;
+import dev.cruding.engine.action.init.ActionInitCreation;
+import dev.cruding.engine.action.init.ActionInitModification;
+import dev.cruding.engine.action.lister.ActionLister;
+import dev.cruding.engine.action.recuperer.ActionRecupererDepuisMdl;
+import dev.cruding.engine.action.recuperer.ActionRecupererEnSession;
+import dev.cruding.engine.action.recuperer.ActionRecupererParChamp;
+import dev.cruding.engine.action.specifique.ActionSpecifique;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.champ.impl.Cache;
 import dev.cruding.engine.champ.impl.Code;
@@ -31,8 +31,6 @@ import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.Rendu;
 import dev.cruding.engine.champ.impl.Tag;
 import dev.cruding.engine.composant.Composant;
-import dev.cruding.engine.composant.bouton.Actionnable;
-import dev.cruding.engine.composant.bouton.Actionnable.ActionType;
 import dev.cruding.engine.composant.bouton.Bouton;
 import dev.cruding.engine.composant.bouton.ElementBoutonComposer;
 import dev.cruding.engine.composant.conteneur.Bloc;
@@ -53,8 +51,8 @@ import dev.cruding.engine.composant.entite.Etat;
 import dev.cruding.engine.composant.entite.Filtre;
 import dev.cruding.engine.composant.entite.Formulaire;
 import dev.cruding.engine.composant.entite.Tableau;
+import dev.cruding.engine.element.ComposantRepresentantUnElement;
 import dev.cruding.engine.element.Element;
-import dev.cruding.engine.element.ElementEntantQueComposant;
 import dev.cruding.engine.entite.Entite;
 
 public abstract class ElementComposer {
@@ -75,124 +73,125 @@ public abstract class ElementComposer {
         return null;
     }
 
-    public Element compose() {
-        return element.composantRacine(composantRacine());
+    public Element creerElement() {
+        element.setComposantRacine(composantRacine());
+        page.addElement(element);
+        return element;
     }
 
-    public ElementEntantQueComposant element(ElementComposer elementComposer) {
-        elementComposer.setPage(page);
-        Element subElement = elementComposer.compose();
-        page.addElement(subElement);
-        return new ElementEntantQueComposant(element, subElement);
+    public ComposantRepresentantUnElement element(ElementComposer elementComposerFils) {
+        elementComposerFils.setPage(page);
+        Element elementFils = elementComposerFils.creerElement();
+        return new ComposantRepresentantUnElement(element, elementFils);
     }
 
-    public ElementEntantQueComposant element(Actionnable actionnable) {
-        if (actionnable.action == null) {
-            actionnable.action(new ActionSpecifique());
-        }
-        return element(new ElementBoutonComposer(actionnable));
+    public ComposantRepresentantUnElement element(Action action) {
+        return element(new ElementBoutonComposer(action));
     }
 
-    public Bouton bouton(Actionnable actionnable) {
-        return new Bouton(actionnable.element(element));
+    public Bouton bouton(Action action) {
+        return new Bouton(action.element(element));
     }
 
     public Entite getEntite(String uname) {
         return Contexte.getInstance().getEntite(uname);
     }
 
-
-    public Actionnable actionForte(Entite entite, String ltype) {
-        return new Actionnable(ActionType.FORTE, ltype, entite, page);
+    public Action actionForte(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.FORTE, ltype, entite, element);
     }
 
-    public Actionnable actionNormale(Entite entite, String ltype) {
-        return new Actionnable(ActionType.NORMALE, ltype, entite, page);
+    public Action actionNormale(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.NORMALE, ltype, entite, element);
     }
 
-    public Actionnable actionConfirmer(Entite entite, String ltype) {
-        return new Actionnable(ActionType.CONFIRMER, ltype, entite, page);
+    public Action actionConfirmer(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.CONFIRMER, ltype, entite, element);
     }
 
-    public Actionnable actionUc(Entite entite, String ltype) {
-        return new Actionnable(ActionType.UCA, ltype, entite, page);
+    public Action actionUc(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.UCA, ltype, entite, element);
     }
 
-    public Actionnable actionUcSpec(Entite entite, String ltype) {
-        return new Actionnable(ActionType.UCA, ltype, entite, page).action(new ActionSpecifique());
+    public Action actionUcSpec(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.UCA, ltype, entite, element);
     }
 
-    public Actionnable recupererParId(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "recupererParId", entite, element).action(new ActionRecupererParId());
+    public Action recupererParId(Entite entite) {
+        return new ActionRecupererParChamp(entite, element, "Id");
     }
 
-    public Actionnable recupererParChamp(Entite entite, Champ field) {
-        return new Actionnable(ActionType.NOUI, "recupererParChamp", entite, element).action(new ActionRecupererParChamp(field));
+    public Action actionCreer(Entite entite) {
+        return new ActionCreer(entite, element);
+    }
+
+    public Action supprimer(Entite entite) {
+        return new ActionSupprimer(entite, element);
+    }
+
+    public Action actionEnregistrer(Entite entite) {
+        return new ActionEnregistrer(entite, element);
+    }
+
+    public Action actionRetourListe(Entite entite, String targePage) {
+        return actionUc(entite, "retourListe").targetPage(targePage);
+    }
+
+    public Action recupererParChamp(Entite entite, Champ field) {
+        return new ActionRecupererParChamp(entite, element, field.uname);
+    }
+
+    public Action initCreation(Entite entite, Champ... fieldList) {
+        return new ActionInitCreation(entite, element, fieldList);
+    }
+
+    public Action initModification(Entite entite) {
+        return new ActionInitModification(entite, element);
+    }
+
+    public Action initModification(Entite entite, Champ... fieldList) {
+        return new ActionInitModification(entite, element, fieldList);
+    }
+
+    public Action goToModule(Entite entite, String target) {
+        return new ActionGoToModule(entite, element, target);
+    }
+
+    public Action goToPage(Entite entite, String target) {
+        return new ActionGoToPage(entite, element, target);
+    }
+
+    public Action throwEvent(Entite entite, String target) {
+        return new ActionEvent(entite, element, target);
+    }
+
+    public Action listerTout(Entite entite) {
+        return new ActionLister(entite, element);
     }
 
 
-    public Actionnable initCreation(Entite entite, Champ... fieldList) {
-        return new Actionnable(ActionType.NOUI, "initCreation", entite, element).action(new ActionInitCreation(fieldList));
+    public Action consulterElement(Entite entite) {
+        return new ActionConsulterElement(entite, element).inViewOnly();
     }
 
-    public Actionnable initModification(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "initModification", entite, element).action(new ActionInitModification());
+    public Action recupererEnSession(Entite entite, String variable) {
+        return new ActionRecupererEnSession(entite, element, variable);
     }
 
-    public Actionnable initModification(Entite entite, Champ... fieldList) {
-        return new Actionnable(ActionType.NOUI, "initModification", entite, element).action(new ActionInitModification(fieldList));
+    public Action recupererDepuisMdl(Entite entite, String mdlName) {
+        return new ActionRecupererDepuisMdl(entite, element, mdlName);
     }
 
-    public Actionnable listerEnPageParIdPere(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "listerEnPage", entite, element).action(new ActionListerEnPageParIdPere());
+    public Action chercher(Entite entite) {
+        return new ActionChercher(entite, element);
     }
 
-    public Actionnable goToModule(Entite entite, String target) {
-        return new Actionnable(ActionType.NOUI, "goToModule" + target, entite, element).action(new ActionGoToModule(target)).inViewOnly();
+    public Action appliquerFiltre(Entite entite) {
+        return new AppliquerFiltre(entite, element);
     }
 
-    public Actionnable goToPage(Entite entite, String target) {
-        return new Actionnable(ActionType.NOUI, "goToPage" + target, entite, element).action(new ActionGoToPage(target)).inViewOnly();
-    }
-
-    public Actionnable throwEvent(Entite entite, String target) {
-        return new Actionnable(ActionType.NOUI, target, entite, element).action(new ActionEvent(target)).inViewOnly();
-    }
-
-    public Actionnable listerTout(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "lister", entite, element).action(new ActionLister());
-    }
-
-    public Actionnable listerParIdPere(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "listerParIdPere", entite, element).action(new ActionListerParIdPere());
-    }
-
-    public Actionnable consulterElement(Entite entite) {
-        return new Actionnable(ActionType.NOUI, "consulter", entite, element).action(new ActionConsulterElement()).inViewOnly();
-    }
-
-    public Action listerParChamp(Champ f) {
-        return new ActionListerParChamp(f);
-    }
-
-    public Action listerParParam(String parName) {
-        return new ActionListerParParam(parName);
-    }
-
-    public Actionnable recupererEnSession(Entite entite, String variable) {
-        return new Actionnable(ActionType.NOUI, "recupererEnSession", entite, element).action(new ActionRecupererEnSession(variable));
-    }
-
-    public Actionnable recupererDepuisMdl(Entite entite, String mdlName) {
-        return new Actionnable(ActionType.NOUI, "recupererEnSession", entite, element).action(new ActionRecupererDepuisMdl(mdlName));
-    }
-
-    public Action listerEnPage() {
-        return new ActionListerEnPage();
-    }
-
-    public Actionnable chercher() {
-        return new Actionnable(ActionType.NOUI, "chercher", null, element).action(new ActionChercher());
+    public Action initialiserFiltre(Entite entite) {
+        return new InitialiserFiltre(entite, element);
     }
 
 
@@ -244,8 +243,6 @@ public abstract class ElementComposer {
         return new Etat(f, e, element, fieldList);
     }
 
-
-
     public Formulaire formulaire(Entite e, Champ... fieldList) {
         return new Formulaire(element, e, fieldList);
     }
@@ -253,7 +250,6 @@ public abstract class ElementComposer {
     public Filtre filtre(Entite e, Champ... fieldList) {
         return new Filtre(element, e, fieldList);
     }
-
 
     public Composant separateur() {
         return new Separateur(element);
@@ -279,25 +275,17 @@ public abstract class ElementComposer {
         return new Separateur(element, height);
     }
 
-
     public Tableau tableauPagine(Entite e, Champ... fieldList) {
-        return new Tableau(element, e, new ActionChangerPageLister(), fieldList);
+        return new Tableau(element, e, new ActionChangerPageLister(e, element), fieldList);
     }
-
 
     public Tableau tableauResultatPagine(Entite e, Champ... fieldList) {
-        return new Tableau(element, e, new ActionChangerPageChercher(), fieldList);
+        return new Tableau(element, e, new ActionChangerPageChercher(e, element), fieldList);
     }
 
-    /*
-     * public Tableau resultatPagine(Entite e, Champ... fieldList) { return new Tableau(element, e, new
-     * ActionChangerPageChercher(), fieldList); }
-     */
     public Tableau tableau(Entite e, Champ... fieldList) {
         return new Tableau(element, e, fieldList);
     }
-
-
 
     public Composant blocAction(Composant... ComposantList) {
         return new BlocAction(element, ComposantList);
@@ -330,7 +318,6 @@ public abstract class ElementComposer {
     public Champ cache(Champ f) {
         return new Cache(f);
     }
-
 
     public Champ rendu(String lname) {
         return new Rendu(lname);

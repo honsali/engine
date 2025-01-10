@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="410862190-2" author="app_core">
+        <addForeignKeyConstraint
+            baseColumnNames="famille_document_id"
+            baseTableName="identification"
+            constraintName="fk_identification_famille_document_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="type_document_id"
+            baseTableName="identification"
+            constraintName="fk_identification_type_document_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="prestataire_id"
+            baseTableName="identification"
+            constraintName="fk_identification_prestataire_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="compagnie_adverse_id"
+            baseTableName="identification"
+            constraintName="fk_identification_compagnie_adverse_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="ville_tribunal_id"
+            baseTableName="identification"
+            constraintName="fk_identification_ville_tribunal_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="tribunal_id"
+            baseTableName="identification"
+            constraintName="fk_identification_tribunal_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="numero_chambre_id"
+            baseTableName="identification"
+            constraintName="fk_identification_numero_chambre_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+        <addForeignKeyConstraint
+            baseColumnNames="phase_id"
+            baseTableName="identification"
+            constraintName="fk_identification_phase_id"
+            referencedColumnNames="id"
+            referencedTableName="reference" />
+    </changeSet>
+</databaseChangeLog>

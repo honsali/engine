@@ -87,8 +87,8 @@ public abstract class Composant {
         boolean childInline = addOpenTag(flow, level);
         if (!isElement) {
             if (ComposantList != null) {
-                for (Composant Composant : ComposantList) {
-                    Composant.addContent(this, flow, childInline, level + 1);
+                for (Composant composant : ComposantList) {
+                    composant.addContent(this, flow, childInline, level + 1);
                 }
             }
         }

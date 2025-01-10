@@ -15,10 +15,10 @@ public class FeMdlPrinter extends Printer {
         List<Action> actionList = Contexte.getInstance().actionPage(page);
         /* *********************************************************************** */
         for (Action action : actionList) {
-            action.addMdlImport(f);
-            action.addMdlRequestAttribute(f);
-            action.addMdlResultAttribute(f);
-            action.addMdlStateAttribute(f);
+            action.mdlActionInjection.addMdlImport(f);
+            action.mdlActionInjection.addMdlRequestAttribute(f);
+            action.mdlActionInjection.addMdlResultAttribute(f);
+            action.mdlActionInjection.addMdlStateAttribute(f);
         }
         f.addMdlImport("{ createSelector, createSlice, isPending, isRejected }", "@reduxjs/toolkit");
         f.addMdlImport("{ IRequete, IResultat }", "waxant");
@@ -56,7 +56,7 @@ public class FeMdlPrinter extends Printer {
         f.L____("reducers: {");
         boolean full = false;
         for (Action action : actionList) {
-            full = full || action.addMdlReducer(f);
+            full = full || action.mdlActionInjection.addMdlReducer(f);
         }
         if (full) {
             f.L____("},");
@@ -66,10 +66,10 @@ public class FeMdlPrinter extends Printer {
         f.L____("extraReducers(builder) {");
         f.L________("builder");
         for (Action action : actionList) {
-            action.addMdlExtraReducer(f);
+            action.mdlActionInjection.addMdlExtraReducer(f);
         }
 
-        String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly()).map(action -> "Ctrl" + page.uc + "." + action.lname()).collect(Collectors.joining(", "));
+        String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly).map(action -> "Ctrl" + page.uc + "." + action.lname).collect(Collectors.joining(", "));
 
         f.L____________(".addMatcher(isPending(", listeNomAction, "), (state) => {");
         f.L________________("state.resultat = {} as Res", page.uc, ";");
@@ -86,7 +86,7 @@ public class FeMdlPrinter extends Printer {
         f.L("const selectMdl", page.uc, " = (state) => state.mdl", page.uc, ";");
         f.L("export const select", page.uc, "Resultat = createSelector([selectMdl", page.uc, "], (state: ", page.uc, "Type) => state.resultat);");
         for (Action action : actionList) {
-            action.addMdlSelector(f, page.uc);
+            action.mdlActionInjection.addMdlSelector(f);
         }
         f.L("");
         f.L("export default Slice", page.uc, ".reducer;");

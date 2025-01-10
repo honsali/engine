@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="45400489-0" author="app_core">
+        <createSequence sequenceName="seq_identification_tribunal" startValue="1050" incrementBy="50" />
+    </changeSet>
+    <changeSet id="45400489-1" author="app_core">
+        <createTable tableName="identification_tribunal">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ville_tribunal_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="tribunal_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="numero_dossier" type="nvarchar(250)">
+                <constraints nullable="false" />
+            </column>
+            <column name="numero_chambre_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="phase_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="exercice" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_audience" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+            <column name="date_jugement" type="nvarchar(250)">
+                <constraints nullable="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="45400489-data" author="app_core">
+        <loadData
+            file="liquibase/data/identificationTribunal.csv"
+            separator=";"
+            tableName="identification_tribunal"
+            usePreparedStatements="true">
+            <column name="id" type="numeric" />
+            <column name="ville_tribunal_id" type="numeric" />
+            <column name="tribunal_id" type="numeric" />
+            <column name="numero_dossier" type="nvarchar(250)" />
+            <column name="numero_chambre_id" type="numeric" />
+            <column name="phase_id" type="numeric" />
+            <column name="exercice" type="nvarchar(250)" />
+            <column name="date_audience" type="nvarchar(250)" />
+            <column name="date_jugement" type="nvarchar(250)" />
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

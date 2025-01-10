@@ -43,9 +43,8 @@ public class Element {
         return this;
     }
 
-    public Element composantRacine(Composant Composant) {
-        this.composantRacine = Composant;
-        return this;
+    public void setComposantRacine(Composant composant) {
+        this.composantRacine = composant;
     }
 
     public Element byForm() {
