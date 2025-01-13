@@ -13,9 +13,7 @@ public class ActionEvent extends Action {
     public ActionEvent(Entite entite, Element element, String targetEvent) {
         super(ActionType.NOUI, targetEvent, entite, element);
         this.targetEvent = targetEvent;
-        lname(targetEvent);
         inViewOnly();
-        init();
     }
 
     public void overrideActionInjection() {

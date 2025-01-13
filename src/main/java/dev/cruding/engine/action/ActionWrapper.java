@@ -43,12 +43,17 @@ public class ActionWrapper {
         return action.ucoreName;
     };
 
-    public String lname() {
-        return action.lname;
+    public String lnameAvecEntite() {
+        return action.lnameAvecEntite;
     };
 
-    public String uname() {
-        return action.uname;
+    public String lnameSansEntite() {
+        return action.lnameSansEntite;
+    };
+
+
+    public String unameAvecEntite() {
+        return action.unameAvecEntite;
     };
 
     public String icone() {

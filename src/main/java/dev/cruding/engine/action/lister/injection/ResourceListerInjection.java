@@ -13,6 +13,7 @@ public class ResourceListerInjection extends ResourceActionInjection {
     }
 
     public void addResourceDeclaration(JavaFlow f) {
+        String and = "";
         f.L("");
         f.L____("@GetMapping(\"/", lcoreName());
         if (parIdGrandPere() && entite().haveGrandPere) {
@@ -22,7 +23,7 @@ public class ResourceListerInjection extends ResourceActionInjection {
             f.__("/", entite().lpere, "/{id", entite().upere, "}");
         }
         f.__("\")");
-        f.L____("public List<", entite().uname, "Dto> ", lcoreName(), "(");
+        f.L____("public List<", entite().uname, "Dto> ", lnameSansEntite(), "(");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("@PathVariable Long id", entite().ugrandPere, ", ");
         }
@@ -30,7 +31,22 @@ public class ResourceListerInjection extends ResourceActionInjection {
             f.__("@PathVariable Long id", entite().upere);
         }
         f.__(") {");
-        f.L________("return ", entite().lname, "Repository.findAllByOrderBy", orderBy(), "().stream().map(", entite().uname, "Dto::asEntity).collect(Collectors.toList());");
+        f.L________("return ", entite().lname, "Repository.findAllBy");
+        if (parIdGrandPere() && entite().haveGrandPere) {
+            f.__(entite().ugrandPere, "_Id");
+            and = "And";
+        }
+        if (parIdPere() && entite().havePere) {
+            f.__(and, entite().upere, "_Id");
+        }
+        f.__("OrderBy", orderBy(), "(");
+        if (parIdGrandPere() && entite().haveGrandPere) {
+            f.__("id", entite().ugrandPere, ", ");
+        }
+        if (parIdPere() && entite().havePere) {
+            f.__("id", entite().upere);
+        }
+        f.__(").stream().map(", entite().uname, "Dto::asEntity).collect(Collectors.toList());");
         f.L____("}");
     }
 }

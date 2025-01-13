@@ -12,9 +12,9 @@ public class CtrlChercherInjection extends CtrlActionInjection {
 
     public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
-        f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
+        f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
-        f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".", lcoreName(), "({ ...dataForm, pageCourante: 0 });");
+        f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "({ ...dataForm, pageCourante: 0 });");
         f.L____("resultat.filtre = dataForm;");
         f.L("};");
     }

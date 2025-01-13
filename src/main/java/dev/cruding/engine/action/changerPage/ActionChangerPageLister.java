@@ -11,7 +11,6 @@ public class ActionChangerPageLister extends Action {
 
     public ActionChangerPageLister(Entite entite, Element element) {
         super(ActionType.NOUI, "changerPageLister", entite, element);
-        init();
     }
 
     public void overrideActionInjection() {

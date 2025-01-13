@@ -15,9 +15,9 @@ public class ResourceChercherInjection extends ResourceActionInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@PostMapping(\"/", lcoreName(), "\")");
-        f.L____("public Page<", entite().uname, "> ", lcoreName(), "(@RequestBody ", entite().uname, " ", entite().lname, ", @ParameterObject Pageable pageable) {");
-        f.L________("return ", entite().lname, "Repository.", lcoreName(), "(", entite().lname, ", pageable);");
+        f.L____("@PostMapping(\"/", lnameSansEntite(), "\")");
+        f.L____("public Page<", entite().uname, "> ", lnameSansEntite(), "(@RequestBody ", entite().uname, " ", entite().lname, ", @ParameterObject Pageable pageable) {");
+        f.L________("return ", entite().lname, "Repository.", lnameSansEntite(), "(", entite().lname, ", pageable);");
         f.L____("}");
     }
 }

@@ -39,7 +39,7 @@ public class Contexte {
 
     private HashMap<String, String> legacyDbMap = new HashMap<>();
 
-    private ArrayList<Action> actionnableList = new ArrayList<>();
+    private ArrayList<Action> actionList = new ArrayList<>();
     private String basePath;
 
     private Contexte() {}
@@ -104,23 +104,23 @@ public class Contexte {
     }
 
     public void addAction(Action action) {
-        actionnableList.add(action);
+        actionList.add(action);
     }
 
     public List<Action> actionPage(Page page) {
-        return actionnableList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> allActionPage(Page page) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionElement(Element element) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> !as.flow() && as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionEntite(Entite entite) {
-        return actionnableList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).filter(Objects::nonNull).distinct().sorted().toList();
+        return actionList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).filter(Objects::nonNull).distinct().sorted().toList();
     }
 
 
@@ -130,6 +130,10 @@ public class Contexte {
 
     public void initPages() {
         pageMap.values().stream().forEach(p -> p.init());
+    }
+
+    public void initActions() {
+        actionList.stream().forEach(a -> a.init());
     }
 
     public Module getModule(String packageName) {

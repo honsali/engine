@@ -14,7 +14,6 @@ public class ActionSpecifique extends Action {
 
     public ActionSpecifique(ActionType type, String lcoreName, Entite entite, Element element) {
         super(type, lcoreName, entite, element);
-        init();
     }
 
     public void overrideActionInjection() {

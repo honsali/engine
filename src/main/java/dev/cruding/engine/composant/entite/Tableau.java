@@ -75,7 +75,7 @@ public class Tableau extends Composant {
         }
         if (selection != null) {
             flow.totalScript().L____("const changerSelection = (liste) => {");
-            flow.totalScript().L________("dispatch(Mdl", element.page.uc, ".modifier", selection.uname, "(liste));");
+            flow.totalScript().L________("dispatch(Mdl", element.page.uc, ".modifier", selection.unameAvecEntite, "(liste));");
             flow.totalScript().L____("};");
         }
         flow.totalScript().L("");
@@ -89,7 +89,7 @@ public class Tableau extends Composant {
             indent(flow, level).append("<Tableau listeDonnee={").append(sourceDonnee).append("}");
         }
         if (onRowClickAction != null) {
-            flow.addToUi(" siClicLigne={").append(onRowClickAction.lname).append("}");
+            flow.addToUi(" siClicLigne={").append(onRowClickAction.lnameAvecEntite).append("}");
         }
         if (pagine) {
             flow.addToUi(" siChangementPage={actionChangementPage}");

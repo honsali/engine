@@ -8,6 +8,7 @@ import dev.cruding.engine.action.chercher.ActionChercher;
 import dev.cruding.engine.action.crud.ActionCreer;
 import dev.cruding.engine.action.crud.ActionEnregistrer;
 import dev.cruding.engine.action.crud.ActionSupprimer;
+import dev.cruding.engine.action.impl.ActionVide;
 import dev.cruding.engine.action.impl.AppliquerFiltre;
 import dev.cruding.engine.action.impl.InitialiserFiltre;
 import dev.cruding.engine.action.inViewOnly.ActionConsulterElement;
@@ -105,12 +106,12 @@ public abstract class ElementComposer {
         return new ActionSpecifique(ActionType.NORMALE, ltype, entite, element);
     }
 
-    public Action actionConfirmer(Entite entite, String ltype) {
-        return new ActionSpecifique(ActionType.CONFIRMER, ltype, entite, element);
+    public Action actionNormaleVide(Entite entite, String ltype) {
+        return new ActionVide(ActionType.NORMALE, ltype, entite, element);
     }
 
-    public Action actionUc(Entite entite, String ltype) {
-        return new ActionSpecifique(ActionType.UCA, ltype, entite, element);
+    public Action actionConfirmer(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.CONFIRMER, ltype, entite, element);
     }
 
     public Action actionUcSpec(Entite entite, String ltype) {
@@ -125,7 +126,7 @@ public abstract class ElementComposer {
         return new ActionCreer(entite, element);
     }
 
-    public Action supprimer(Entite entite) {
+    public Action actionSupprimer(Entite entite) {
         return new ActionSupprimer(entite, element);
     }
 
@@ -133,8 +134,20 @@ public abstract class ElementComposer {
         return new ActionEnregistrer(entite, element);
     }
 
+    public Action actionAjouter(Entite entite, String targePage) {
+        return new ActionVide(ActionType.UCA, "ajouter", entite, element).targetPage(targePage).inViewOnly();
+    }
+
+    public Action actionModifier(Entite entite, String targePage) {
+        return new ActionVide(ActionType.UCA, "modifier", entite, element).targetPage(targePage).inViewOnly();
+    }
+
     public Action actionRetourListe(Entite entite, String targePage) {
-        return actionUc(entite, "retourListe").targetPage(targePage);
+        return new ActionVide(ActionType.UCA, "retourListe", entite, element).targetPage(targePage).inViewOnly();
+    }
+
+    public Action actionRetourConsulter(Entite entite, String targePage) {
+        return new ActionVide(ActionType.UCA, "retourConsulter", entite, element).targetPage(targePage).inViewOnly();
     }
 
     public Action recupererParChamp(Entite entite, Champ field) {

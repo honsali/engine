@@ -11,7 +11,6 @@ public class ActionChangerPageChercher extends Action {
 
     public ActionChangerPageChercher(Entite entite, Element element) {
         super(ActionType.NOUI, "changerPageChercher", entite, element);
-        init();
     }
 
     public void overrideActionInjection() {

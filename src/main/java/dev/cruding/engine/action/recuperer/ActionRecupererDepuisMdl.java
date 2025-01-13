@@ -15,7 +15,6 @@ public class ActionRecupererDepuisMdl extends Action {
     public ActionRecupererDepuisMdl(Entite entite, Element element, String mdlName) {
         super(ActionType.NOUI, "recupererEnSession", entite, element);
         this.mdlName = mdlName;
-        init();
     }
 
     public void overrideActionInjection() {

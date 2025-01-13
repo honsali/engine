@@ -10,11 +10,10 @@ public class ActionCreer extends ActionSpecifique {
     public ActionCreer(Entite entite, Element element) {
         super(ActionType.UCA, "creer", entite, element);
         confirmer().byForm().resultatInId().lrest("post");
-        init();
     }
 
     public void overrideActionInjection() {
-
+        super.overrideActionInjection();
         resourceActionInjection = new ResourceCreerInjection();
 
     }

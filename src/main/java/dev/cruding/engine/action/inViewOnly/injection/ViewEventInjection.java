@@ -21,7 +21,7 @@ public class ViewEventInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
         f.useEventBus();
-        f.totalScript().L____("const ").append(lcoreName()).append(" = (");
+        f.totalScript().L____("const ").append(lnameSansEntite()).append(" = (");
         if (byRow()) {
             f.totalScript().__(entite().lname);
         }

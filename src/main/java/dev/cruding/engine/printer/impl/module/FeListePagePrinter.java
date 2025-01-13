@@ -19,7 +19,7 @@ public class FeListePagePrinter extends Printer {
         Collections.sort(listePage);
         int idx = module.path.length();
         f.addJsImport("IconeMenuCarre", "commun/composants/IconeMenuCarre");
-        f.addJsImport("{ ContexteeViewProvider, PageDefinition }", "waxant");
+        f.addJsImport("{ ContexteViewProvider, PageDefinition }", "waxant");
         for (Page page : listePage) {
             if (page.estReelle()) {
                 f.addJsImport("View" + page.uc, "." + page.path.substring(idx) + "/View" + page.uc);
@@ -35,9 +35,9 @@ public class FeListePagePrinter extends Printer {
                 f.L____("toPath: (args) => '", getToPath(module, page), "',");
                 f.L____("icone: <IconeMenuCarre />,");
                 f.L____("view: (");
-                f.L________("<ContexteeViewProvider uc=\"Uc", page.uc, "\">");
+                f.L________("<ContexteViewProvider uc=\"Uc", page.uc, "\">");
                 f.L____________("<View", page.uc, " />");
-                f.L________("</ContexteeViewProvider>");
+                f.L________("</ContexteViewProvider>");
                 f.L____("),");
                 f.L("};");
                 f.L("");

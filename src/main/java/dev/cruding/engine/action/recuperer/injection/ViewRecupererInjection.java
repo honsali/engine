@@ -9,7 +9,7 @@ public class ViewRecupererInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".", lname(), ");");
+        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".", lnameAvecEntite(), ");");
         f.totalScript().L____("}, [", f.getPretArray(), "]);");
         f.useExecute();
         f.useEffect();

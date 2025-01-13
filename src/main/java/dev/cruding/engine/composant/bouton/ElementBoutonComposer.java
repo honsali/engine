@@ -8,7 +8,7 @@ public class ElementBoutonComposer extends ElementComposer {
     private Action action;
 
     public ElementBoutonComposer(Action action) {
-        super("Action" + action.uname, "/element");
+        super("Action" + action.unameAvecEntite, "/element");
         this.action = action;
         this.element.page(action.page);
         this.action.inElement();

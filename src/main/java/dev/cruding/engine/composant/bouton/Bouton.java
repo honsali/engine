@@ -63,7 +63,7 @@ public class Bouton extends Composant {
             flow.addToUi(" modele={").append(action.modele).append("}");
         }
         if (!action.isVide) {
-            flow.addToUi(" action={").append(action.lname).append("}");
+            flow.addToUi(" action={").append(action.lnameAvecEntite).append("}");
         }
         if (action.nfc() && action.icone != null) {
             flow.addToUi(" icone={<").append(action.icone).append(" />}");

@@ -23,7 +23,7 @@ public class ResourceCreerInjection extends ResourceSpecifiqueInjection {
         if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || byId()) {
             f.__("\")");
         }
-        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(");
+        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lnameSansEntite(), "(");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("@PathVariable Long id" + entite().ugrandPere, ",");
         }

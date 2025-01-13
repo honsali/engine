@@ -27,12 +27,12 @@ public class MdlListerInjection extends MdlActionInjection {
         f.addMdlStateAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
     }
 
-    public void addMdlSelector(MdlFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f) {
         f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.liste", entite().uname, ");");
     }
 
     public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
+        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.liste", entite().uname, " = action.payload.liste", entite().uname, ";");
         f.L____________("})");

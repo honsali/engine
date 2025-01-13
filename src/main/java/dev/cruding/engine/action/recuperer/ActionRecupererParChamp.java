@@ -19,9 +19,9 @@ public class ActionRecupererParChamp extends Action {
         super(ActionType.NOUI, "recupererPar" + unameField, entite, element);
         this.lnameField = StringUtils.uncapitalize(unameField);
         this.unameField = unameField;
-        lcoreName("recupererPar" + unameField);
-        lname("recuperer" + entite.uname + "Par" + unameField);
-        init();
+        lcoreName("recuperer");
+        lnameAvecEntite("recuperer" + entite.uname + "Par" + unameField);
+        lnameSansEntite("recupererPar" + unameField);
     }
 
     public void overrideActionInjection() {

@@ -69,7 +69,7 @@ public class FeMdlPrinter extends Printer {
             action.mdlActionInjection.addMdlExtraReducer(f);
         }
 
-        String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly).map(action -> "Ctrl" + page.uc + "." + action.lname).collect(Collectors.joining(", "));
+        String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly).map(action -> "Ctrl" + page.uc + "." + action.lnameAvecEntite).collect(Collectors.joining(", "));
 
         f.L____________(".addMatcher(isPending(", listeNomAction, "), (state) => {");
         f.L________________("state.resultat = {} as Res", page.uc, ";");

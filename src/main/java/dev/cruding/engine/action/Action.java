@@ -31,8 +31,10 @@ public abstract class Action implements Comparable<Action> {
     public ActionType type;
     public String lcoreName;
     public String ucoreName;
-    public String lname;
-    public String uname;
+    public String lnameAvecEntite;
+    public String unameAvecEntite;
+    public String lnameSansEntite;
+    public String unameSansEntite;
     public String icone = null;
     public boolean byId = false;
     public boolean parIdPere = false;
@@ -60,7 +62,7 @@ public abstract class Action implements Comparable<Action> {
     public String orderBy;
     public String mvcPath = ".";
     public String modele;
-    public boolean isVide = true;
+    public boolean isVide = false;
     public boolean hasReussi = false;
     public String lrest = "get";
     public String urest = "Get";
@@ -78,8 +80,6 @@ public abstract class Action implements Comparable<Action> {
         }
         element(element);
         Contexte.getInstance().addAction(this);
-
-
     }
 
     public void init() {
@@ -109,16 +109,21 @@ public abstract class Action implements Comparable<Action> {
         } else {
             n = n + this.page.entiteUname;
         }
-        this.lname(n);
+        this.lnameSansEntite(this.lcoreName);
+        this.lnameAvecEntite(n);
         return this;
     }
 
-    public Action lname(String lname) {
+    public Action lnameSansEntite(String lnameSansEntite) {
+        this.lnameSansEntite = lnameSansEntite;
+        this.unameSansEntite = StringUtils.capitalize(this.lnameSansEntite);
+        return this;
+    }
 
-        this.lname = lname;
-        this.uname = StringUtils.capitalize(this.lname);
-        this.actionKey = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(this.lname), "_").toUpperCase();
-
+    public Action lnameAvecEntite(String lnameAvecEntite) {
+        this.lnameAvecEntite = lnameAvecEntite;
+        this.unameAvecEntite = StringUtils.capitalize(this.lnameAvecEntite);
+        this.actionKey = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(this.lnameAvecEntite), "_").toUpperCase();
         return this;
     }
 
@@ -311,17 +316,17 @@ public abstract class Action implements Comparable<Action> {
 
         Action other = (Action) obj;
 
-        return lname.equals(other.lname);
+        return lnameAvecEntite.equals(other.lnameAvecEntite);
     }
 
 
     public int hashCode() {
-        return Objects.hash(lname);
+        return Objects.hash(lnameAvecEntite);
     }
 
     @Override
     public int compareTo(Action o) {
-        return this.lname.compareTo(o.lname);
+        return this.lnameAvecEntite.compareTo(o.lnameAvecEntite);
     }
 
 }

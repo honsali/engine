@@ -26,7 +26,7 @@ public class CtrlInitEditionInjection extends CtrlActionInjection {
 
     public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
-        f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
+        f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.", entite().lname, " = {");
         String result = Arrays.asList(fieldList).stream().filter(field -> field.init != null).map(field -> " " + field.lname + ": " + field.init).collect(Collectors.joining(","));
         f.__(result, StringUtils.isNotBlank(result) ? " " : "");

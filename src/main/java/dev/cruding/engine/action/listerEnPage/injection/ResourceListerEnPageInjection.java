@@ -13,7 +13,7 @@ public class ResourceListerEnPageInjection extends ResourceActionInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@GetMapping(\"/", lcoreName());
+        f.L____("@GetMapping(\"/", lnameSansEntite());
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("/", entite().lgrandPere, "/{id", entite().ugrandPere, "}");
         }
@@ -21,7 +21,7 @@ public class ResourceListerEnPageInjection extends ResourceActionInjection {
             f.__("/", entite().lpere, "/{id", entite().upere, "}");
         }
         f.__("\")");
-        f.L____("public Page<", entite().uname, "Dto> ", lcoreName());
+        f.L____("public Page<", entite().uname, "Dto> ", lnameSansEntite());
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("@PathVariable Long id", entite().ugrandPere, ", ");
         }

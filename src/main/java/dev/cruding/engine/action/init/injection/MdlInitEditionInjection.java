@@ -49,7 +49,7 @@ public class MdlInitEditionInjection extends MdlActionInjection {
 
 
     public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
+        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 

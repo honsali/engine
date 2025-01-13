@@ -9,7 +9,6 @@ public class InitialiserFiltre extends Action {
     public InitialiserFiltre(Entite entite, Element element) {
         super(ActionType.UCA, "initialiserFiltre", entite, element);
         inViewOnly();
-        init();
     }
 
 

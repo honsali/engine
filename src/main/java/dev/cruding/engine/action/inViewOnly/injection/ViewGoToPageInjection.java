@@ -34,17 +34,17 @@ public class ViewGoToPageInjection extends ViewActionInjection {
     public void addI18n(Flow f) {
         String key = "";
         String label = "";
-        String uAction = LabelMapper.getInstance().nomAction(lcoreName());
+        String uAction = LabelMapper.getInstance().nomAction(lnameSansEntite());
         if (entite() == null) {
-            key = lcoreName() + page().entiteUname;
+            key = lnameSansEntite() + page().entiteUname;
             label = uAction;
         } else if (!entite().lname.equals(page().entiteLname)) {
             String entiteLabel = entite().setting.libelle;
-            key = lcoreName() + entite().uname;
+            key = lnameSansEntite() + entite().uname;
             label = uAction + " " + entiteLabel;
         } else {
             String entiteLabel = entite().setting.libelle;
-            key = lcoreName() + entite().uname;
+            key = lnameSansEntite() + entite().uname;
             label = uAction + " " + entiteLabel;
         }
 

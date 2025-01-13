@@ -24,6 +24,7 @@ public class Launcher {
         loadPage("src\\main\\java\\modules");
         Contexte.getInstance().initPages();
 
+        Contexte.getInstance().initActions();
         Processeur processeur = new Processeur();
         processeur.executer();
 

@@ -11,7 +11,7 @@ public class CtrlActionInjection extends ActionWrapper {
 
     public void addCtrlDeclaration(CtrlFlow f) {
         if (uc() != null && !inViewOnly()) {
-            f.L____(lname(), ": action<Req", uc(), ", Res", uc(), ">(", lname(), "Impl, Action", page().module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
+            f.L____(lnameAvecEntite(), ": action<Req", uc(), ", Res", uc(), ">(", lnameAvecEntite(), "Impl, Action", page().module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
         }
     }
 

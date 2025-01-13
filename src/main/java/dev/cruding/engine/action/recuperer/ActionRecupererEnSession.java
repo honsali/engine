@@ -12,7 +12,6 @@ public class ActionRecupererEnSession extends Action {
     public ActionRecupererEnSession(Entite entite, Element element, String variable) {
         super(ActionType.NOUI, "recupererEnSession", entite, element);
         this.variable = variable;
-        init();
     }
 
     public void overrideActionInjection() {

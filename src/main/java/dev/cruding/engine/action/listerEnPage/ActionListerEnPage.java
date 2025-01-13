@@ -14,7 +14,6 @@ public class ActionListerEnPage extends Action {
 
     public ActionListerEnPage(Entite entite, Element element) {
         super(ActionType.NOUI, "listerEnPage", entite, element);
-        init();
     }
 
     public void overrideActionInjection() {

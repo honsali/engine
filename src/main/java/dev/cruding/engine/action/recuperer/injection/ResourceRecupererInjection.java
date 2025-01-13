@@ -27,7 +27,7 @@ public class ResourceRecupererInjection extends ResourceActionInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@GetMapping(\"/{" + lnameField + "}\")");
-        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lcoreName(), "(@PathVariable ", entite().id_.jtype, " ", lnameField, ") {");
+        f.L____("public ResponseEntity<", entite().uname, "Dto> ", lnameSansEntite(), "(@PathVariable ", entite().id_.jtype, " ", lnameField, ") {");
         f.L________("Optional<", entite().uname, "> ", entite().lname, " = ", entite().lname, "Repository.findById(id);");
         f.L________("return ", entite().lname, ".map(response -> ResponseEntity.ok().body(", entite().uname, "Dto.asEntity(response))).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));");
         f.L____("}");

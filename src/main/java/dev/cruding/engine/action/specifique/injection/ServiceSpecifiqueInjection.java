@@ -8,7 +8,7 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lcoreName(), " = async (");
+        f.L("const ", lnameSansEntite(), " = async (");
         boolean withComma = false;
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("id" + entite().ugrandPere, ", ");
@@ -62,6 +62,6 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
     }
 
     public void addServiceDeclaration(Flow f) {
-        f.L____(lcoreName(), ",");
+        f.L____(lnameSansEntite(), ",");
     }
 }

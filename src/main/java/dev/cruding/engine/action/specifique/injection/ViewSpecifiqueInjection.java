@@ -17,8 +17,8 @@ public class ViewSpecifiqueInjection extends ViewActionInjection {
         }
         if (!this.inViewOnly()) {
             flow.useExecute();
-            flow.totalScript().L____("const " + lname() + " = () => {");
-            flow.totalScript().L________("execute(Ctrl" + page().uc + "." + lname());
+            flow.totalScript().L____("const " + lnameAvecEntite() + " = () => {");
+            flow.totalScript().L________("execute(Ctrl" + page().uc + "." + lnameAvecEntite());
             if (this.byForm()) {
                 flow.totalScript().__(", { form }");
             }
@@ -66,10 +66,10 @@ public class ViewSpecifiqueInjection extends ViewActionInjection {
             Entite e = entite() == null ? Contexte.getInstance().getEntite(page().entiteUname) : entite();
             if (e != null) {
 
-                String nomAction = LabelMapper.getInstance().nomAction(lcoreName(), e);
-                String titreConfirmation = LabelMapper.getInstance().titreConfirmation(lcoreName(), e);
-                String enteteConfirmation = LabelMapper.getInstance().enteteConfirmation(lcoreName(), e);
-                String messageSuccess = LabelMapper.getInstance().messageSuccess(lcoreName(), e);
+                String nomAction = LabelMapper.getInstance().nomAction(lnameSansEntite(), e);
+                String titreConfirmation = LabelMapper.getInstance().titreConfirmation(lnameSansEntite(), e);
+                String enteteConfirmation = LabelMapper.getInstance().enteteConfirmation(lnameSansEntite(), e);
+                String messageSuccess = LabelMapper.getInstance().messageSuccess(lnameSansEntite(), e);
 
 
                 String key = "Action" + page().module.unameLast + "." + "Uc" + uc() + "." + actionKey();

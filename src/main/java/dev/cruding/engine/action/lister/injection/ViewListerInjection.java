@@ -6,8 +6,12 @@ import dev.cruding.engine.injection.ViewActionInjection;
 public class ViewListerInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
+
+        f.useExecute();
+        f.useEffect();
+        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("execute(Ctrl", uc(), ".", lname());
+        f.totalScript().L________("execute(Ctrl", uc(), ".", lnameAvecEntite());
         if (byProp()) {
             f.totalScript().append(", { ").append(element().byProp).append(" }");
         }
@@ -17,9 +21,6 @@ public class ViewListerInjection extends ViewActionInjection {
             f.totalScript().append(element().byProp);
         }
         f.totalScript().append("]);");
-        f.useExecute();
-        f.useEffect();
-        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
         return true;
     }
 }

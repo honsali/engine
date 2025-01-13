@@ -21,7 +21,6 @@ public class ActionInitModification extends Action {
     public ActionInitModification(Entite entite, Element element, Champ... fieldList) {
         super(ActionType.NOUI, type, entite, element);
         this.fieldList = fieldList;
-        init();
     }
 
     public void overrideActionInjection() {

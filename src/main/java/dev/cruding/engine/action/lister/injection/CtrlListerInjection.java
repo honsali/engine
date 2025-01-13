@@ -12,8 +12,8 @@ public class CtrlListerInjection extends CtrlActionInjection {
 
     public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
-        f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lcoreName(), "(");
+        f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
+        f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "(");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("requete.id" + entite().ugrandPere, ", ");
         }

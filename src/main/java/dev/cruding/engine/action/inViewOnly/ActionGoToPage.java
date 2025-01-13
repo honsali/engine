@@ -16,7 +16,6 @@ public class ActionGoToPage extends Action {
         super(ActionType.NOUI, "goToPage" + targetPage, entite, element);
         this.targetPage = Contexte.getInstance().getPage(targetPage);
         inViewOnly();
-        init();
     }
 
     public void overrideActionInjection() {

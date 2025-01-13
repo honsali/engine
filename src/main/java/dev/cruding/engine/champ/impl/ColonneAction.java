@@ -12,7 +12,7 @@ public class ColonneAction extends Champ {
 
     public ColonneAction(Bouton b) {
         super(true);
-        lname(b.action.lname);
+        lname(b.action.lnameAvecEntite);
         this.bouton = b;
     }
 

@@ -14,10 +14,10 @@ public class ServiceChercherInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lcoreName(), " = async (", entite().lname, ": I", entite().uname, ", pageCourante: number) => {");
+        f.L("const ", lnameSansEntite(), " = async (", entite().lname, ": I", entite().uname, ", pageCourante: number) => {");
         f.L____("const listePaginee", entite().uname, ": IListePaginee", entite().uname, " = {} as IListePaginee", entite().uname, ";");
         f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entite().uname, ": Page<I", entite().uname, "> = (await axios.post<Page<I", entite().uname, ">>(`${resourceUri}/", lcoreName(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entite().lname).__(")).data;");
+        f.L____("const page()", entite().uname, ": Page<I", entite().uname, "> = (await axios.post<Page<I", entite().uname, ">>(`${resourceUri}/", lnameSansEntite(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entite().lname).__(")).data;");
         f.L____("listePaginee", entite().uname, ".liste = page()", entite().uname, ".content;");
         f.L____("listePaginee", entite().uname, ".pagination = MapperPagination.creerPagination(page()", entite().uname, ");");
         f.L____("return listePaginee", entite().uname, ";");
@@ -26,6 +26,6 @@ public class ServiceChercherInjection extends ServiceActionInjection {
     }
 
     public void addServiceDeclaration(Flow f) {
-        f.L____(lcoreName(), ",");
+        f.L____(lnameSansEntite(), ",");
     }
 }

@@ -12,7 +12,7 @@ public class ServiceListerInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lcoreName(), " = async (");
+        f.L("const ", lnameSansEntite(), " = async (");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("id" + entite().ugrandPere, ": string, ");
         }
@@ -33,6 +33,6 @@ public class ServiceListerInjection extends ServiceActionInjection {
     }
 
     public void addServiceDeclaration(Flow f) {
-        f.L____(lcoreName(), ",");
+        f.L____(lnameSansEntite(), ",");
     }
 }

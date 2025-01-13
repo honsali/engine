@@ -14,7 +14,7 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
 
     public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
-        f.L("const ", lname(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
+        f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         if (byEntite()) {
             f.L____("const { mdl", uc(), " } = thunkAPI.getState() as any;");
             f.L____("const ", entite().lname, " = mdl", uc(), ".", entite().lname, ";");
@@ -28,7 +28,7 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
         if (resultatInId()) {
             f.__("resultat.id", entite().uname, " = ");
         }
-        f.__("await Service", entite().uname, ".", lcoreName(), "(");
+        f.__("await Service", entite().uname, ".", lnameSansEntite(), "(");
         boolean withComma = false;
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("requete.id" + entite().ugrandPere, ", ");

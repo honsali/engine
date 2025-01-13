@@ -14,10 +14,20 @@ public class ActionLister extends Action {
 
     public ActionLister(Entite entite, Element element) {
         super(ActionType.NOUI, "lister", entite, element);
-        init();
     }
 
     public void overrideActionInjection() {
+        String lcn = "";
+        if (parIdGrandPere && entite.haveGrandPere) {
+            lcn = lcn + "ParId" + entite.ugrandPere;
+        }
+        if (parIdPere && entite.havePere) {
+            lcn = lcn + "ParId" + entite.upere;
+        }
+        lcoreName("lister");
+        lnameAvecEntite("lister" + entite.uname + lcn);
+        lnameSansEntite("lister" + lcn);
+
         ctrlActionInjection = new CtrlListerInjection();
         mdlActionInjection = new MdlListerInjection();
         repoActionInjection = new RepoListerInjection();

@@ -53,11 +53,12 @@ public class ViewFlow extends JsFlow {
         totalScript.clean();
         String ts = totalScript.toString();
         if (ts != null && ts.length() > 0) {
-            if (afterInit) {
+            if (afterInit && !ts.startsWith("\n\n")) {
                 L("");
             }
             __(ts);
         }
+        afterInit = false;
     }
 
     public void flushUiBloc() {

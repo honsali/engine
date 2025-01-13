@@ -9,7 +9,6 @@ public class ActionChangerSelection extends Action {
     public ActionChangerSelection(ActionType type, String lcoreName, Entite entite, Element element) {
         super(ActionType.NOUI, "changerSelection", entite, element);
         inViewOnly();
-        init();
     }
 
 }

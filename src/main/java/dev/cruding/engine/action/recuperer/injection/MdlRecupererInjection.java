@@ -28,12 +28,12 @@ public class MdlRecupererInjection extends MdlActionInjection {
         f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
     }
 
-    public void addMdlSelector(MdlFlow f, String uc) {
+    public void addMdlSelector(MdlFlow f) {
         f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
     }
 
     public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lname(), ".fulfilled, (state, action) => {");
+        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
         f.L____________("})");

@@ -7,7 +7,7 @@ public class ViewChangerPageChercherInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("const actionChangementPage = (pageCourante: number) => {");
-        f.totalScript().L________("execute(Ctrl", uc(), ".", lname(), ", { pageCourante });");
+        f.totalScript().L________("execute(Ctrl", uc(), ".", lnameAvecEntite(), ", { pageCourante });");
         f.totalScript().L____("};");
         f.useExecute();
         f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());

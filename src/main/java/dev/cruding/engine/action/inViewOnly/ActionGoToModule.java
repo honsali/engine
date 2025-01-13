@@ -13,8 +13,9 @@ public class ActionGoToModule extends Action {
         super(ActionType.NOUI, "goToModule", entite, element);
         this.targetModule = targetModule;
         inViewOnly();
-        lcoreName("goToModule" + targetModule);
-        lname("goToModule" + targetModule);
+        lcoreName("goToModule");
+        lnameSansEntite("goToModule" + targetModule);
+        lnameAvecEntite("goToModule" + targetModule);
     }
 
     public void init() {
