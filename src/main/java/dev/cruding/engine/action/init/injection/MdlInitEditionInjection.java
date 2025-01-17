@@ -7,14 +7,14 @@ import dev.cruding.engine.injection.MdlActionInjection;
 
 public class MdlInitEditionInjection extends MdlActionInjection {
 
-    protected Champ[] fieldList = new Champ[0];
+    protected Champ[] listeChamp = new Champ[0];
 
-    public MdlInitEditionInjection(Champ[] fieldList) {
-        this.fieldList = fieldList;
+    public MdlInitEditionInjection(Champ[] listeChamp) {
+        this.listeChamp = listeChamp;
     };
 
     public void addMdlImport(MdlFlow f) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addMdlImport(f);
             }
@@ -24,7 +24,7 @@ public class MdlInitEditionInjection extends MdlActionInjection {
     public void addMdlRequestAttribute(MdlFlow f) {}
 
     public void addMdlResultAttribute(MdlFlow f) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addMdlResultAttribute(f);
             }
@@ -32,7 +32,7 @@ public class MdlInitEditionInjection extends MdlActionInjection {
     }
 
     public void addMdlStateAttribute(MdlFlow f) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addMdlStateAttribute(f);
             }
@@ -40,7 +40,7 @@ public class MdlInitEditionInjection extends MdlActionInjection {
     }
 
     public void addMdlSelector(MdlFlow f, String uc) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addMdlSelector(f, uc);
             }
@@ -53,7 +53,7 @@ public class MdlInitEditionInjection extends MdlActionInjection {
         f.L________________("state.resultat = action.payload;");
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addMdlExtraReducer(f);
             }

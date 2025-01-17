@@ -6,12 +6,12 @@ import dev.cruding.engine.injection.ServiceActionInjection;
 
 public class ServiceRecupererInjection extends ServiceActionInjection {
 
-    public String lnameField;
-    public String unameField;
+    public String lnameChamp;
+    public String unameChamp;
 
-    public ServiceRecupererInjection(String lnameField, String unameField) {
-        this.lnameField = lnameField;
-        this.unameField = unameField;
+    public ServiceRecupererInjection(String lnameChamp, String unameChamp) {
+        this.lnameChamp = lnameChamp;
+        this.unameChamp = unameChamp;
     }
 
     public void addServiceImport(JsFlow f) {
@@ -20,14 +20,14 @@ public class ServiceRecupererInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const recupererPar", unameField, " = async (", lnameField, entite().uname, ": string) => {");
-        f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname, ">(`${resourceUri}/${", lnameField, entite().uname, "}`)).data;");
+        f.L("const recupererPar", unameChamp, " = async (", lnameChamp, entite().uname, ": string) => {");
+        f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname, ">(`${resourceUri}/${", lnameChamp, entite().uname, "}`)).data;");
         f.L____("return ", entite().lname, ";");
         f.L("};");
 
     }
 
     public void addServiceDeclaration(Flow f) {
-        f.L____("recupererPar" + unameField + ",");
+        f.L____("recupererPar" + unameChamp + ",");
     }
 }

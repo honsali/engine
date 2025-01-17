@@ -9,7 +9,6 @@ import dev.cruding.engine.gen.LabelMapper;
 
 public class ViewActionInjection extends ActionWrapper {
 
-
     public boolean addViewScript(ViewFlow flow) {
         return false;
     }

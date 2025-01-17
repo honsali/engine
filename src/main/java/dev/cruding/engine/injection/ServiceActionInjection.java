@@ -6,7 +6,6 @@ import dev.cruding.engine.flow.JsFlow;
 
 public class ServiceActionInjection extends ActionWrapper {
 
-
     public void addServiceImport(JsFlow f) {}
 
     public void addServiceDeclaration(Flow f) {}

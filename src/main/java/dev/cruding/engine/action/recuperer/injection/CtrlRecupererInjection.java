@@ -5,12 +5,12 @@ import dev.cruding.engine.injection.CtrlActionInjection;
 
 public class CtrlRecupererInjection extends CtrlActionInjection {
 
-    public String lnameField;
-    public String unameField;
+    public String lnameChamp;
+    public String unameChamp;
 
-    public CtrlRecupererInjection(String lnameField, String unameField) {
-        this.lnameField = lnameField;
-        this.unameField = unameField;
+    public CtrlRecupererInjection(String lnameChamp, String unameChamp) {
+        this.lnameChamp = lnameChamp;
+        this.unameChamp = unameChamp;
     }
 
     public void addCtrlImport(CtrlFlow f) {
@@ -20,14 +20,14 @@ public class CtrlRecupererInjection extends CtrlActionInjection {
     public void addCtrlImplementation(CtrlFlow f) {
         f.L("");
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererPar", unameField, "(");
+        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererPar", unameChamp, "(");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("requete.id" + entite().ugrandPere, ", ");
         }
         if (parIdPere() && entite().havePere) {
             f.__("requete.id" + entite().upere, ", ");
         }
-        f.__("requete.", lnameField, entite().uname, ");");
+        f.__("requete.", lnameChamp, entite().uname, ");");
         f.L("};");
     }
 

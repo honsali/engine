@@ -10,7 +10,6 @@ import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.RefMany;
 import dev.cruding.engine.champ.impl.Setting;
 import dev.cruding.engine.gen.Contexte;
-import dev.cruding.engine.service.Service;
 
 public class Entite extends ChampFactory {
 
@@ -37,8 +36,7 @@ public class Entite extends ChampFactory {
 
     public Setting setting;
 
-    public ArrayList<Champ> fieldList = new ArrayList<>();
-    public ArrayList<Service> serviceList = new ArrayList<>();
+    public ArrayList<Champ> listeChamp = new ArrayList<>();
 
     public Entite() {
         this.uname = this.getClass().getSimpleName();
@@ -64,24 +62,24 @@ public class Entite extends ChampFactory {
                         field.containingEntite(this);
                         if (field instanceof Ref) {
                             field.lname(f.getName());
-                            fieldList.add(field);
+                            listeChamp.add(field);
                         } else if (field instanceof RefMany) {
                             field.lname(f.getName());
-                            fieldList.add(field);
+                            listeChamp.add(field);
                             haveRefMany = true;
                         } else if (field instanceof Pere) {
                             tempPere = field.lname(f.getName());
                             this.lpere = tempPere.lname;
-                            fieldList.add(field);
+                            listeChamp.add(field);
                         } else if (field instanceof GrandPere) {
                             tempGrandPere = field.lname(f.getName());
                             this.lgrandPere = tempGrandPere.lname;
-                            fieldList.add(field);
+                            listeChamp.add(field);
 
                         } else if (field instanceof Setting) {
                             tempId = (Setting) field;
                         } else if (field != null) {
-                            fieldList.add(field);
+                            listeChamp.add(field);
                         }
                         if (field.isId) {
                             tempIdentifiant = field;

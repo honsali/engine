@@ -13,10 +13,10 @@ public class BeRefDomainePrinter extends Printer {
         JavaFlow f = new JavaFlow();
 
         /* *********************************************************************** */
-        List<Champ> isIdChampList = entite.fieldList.stream().filter(p -> p.isId).toList();
+        List<Champ> isIdChampList = entite.listeChamp.stream().filter(p -> p.isId).toList();
         f.addJavaImport("jakarta.persistence.Id");
-        for (Champ fld : isIdChampList) {
-            fld.addJavaImport(f);
+        for (Champ champ : isIdChampList) {
+            champ.addJavaImport(f);
         }
 
         f.addJavaImport("jakarta.persistence.Column");
@@ -40,8 +40,8 @@ public class BeRefDomainePrinter extends Printer {
         f.L____("private static final long serialVersionUID = 1L;");
         f.L("");
         entite.id_.addJavaDeclaration(f, entite.uname);
-        for (Champ fld : isIdChampList) {
-            fld.addJavaDeclaration(f);
+        for (Champ champ : isIdChampList) {
+            champ.addJavaDeclaration(f);
         }
         f.L("");
 
@@ -49,15 +49,15 @@ public class BeRefDomainePrinter extends Printer {
         if (!entite.isReferenceData()) {
             f.L("");
             f.L____("public String getDisplayString() {");
-            f.L________("return ", isIdChampList.stream().map(fld -> fld.lname).collect(Collectors.joining(" + \" \" + ", "", "")), ";");
+            f.L________("return ", isIdChampList.stream().map(champ -> champ.lname).collect(Collectors.joining(" + \" \" + ", "", "")), ";");
             f.L____("}");
         }
         f.L("");
         f.L____("public Long getId", entite.uname, "() {");
         f.L________("return this.id;");
         f.L____("}");
-        for (Champ fld : isIdChampList) {
-            fld.addGetterSetter(f);
+        for (Champ champ : isIdChampList) {
+            champ.addGetterSetter(f);
         }
         f.L("");
         f.L____("@Override");

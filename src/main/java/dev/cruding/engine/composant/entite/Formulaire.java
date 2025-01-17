@@ -18,12 +18,12 @@ public class Formulaire extends Composant {
     public boolean enModification = false;
     public Action fillFrom;
 
-    public Formulaire(Element element, Entite entite, Champ... fieldList) {
-        super(element, entite, fieldList);
+    public Formulaire(Element element, Entite entite, Champ... listeChamp) {
+        super(element, entite, listeChamp);
     }
 
     public void addImport(ViewFlow flow) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c.siChange != null) {
                 if (c.siChange.length() > 0) {
                     flow.addJsImport("{ useState }", "react");
@@ -39,14 +39,14 @@ public class Formulaire extends Composant {
             }
         }
 
-        StringBuilder fieldImportList = Util.processListeChamp(fieldList, Element.FORM);
+        StringBuilder fieldImportList = Util.processListeChamp(listeChamp, Element.FORM);
 
         flow.addJsImport("{ Formulaire }", "waxant");
         flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
     }
 
     public void addScript(ViewFlow flow) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addViewScript(flow, element.page.uc, "..");
             }
@@ -75,7 +75,7 @@ public class Formulaire extends Composant {
             flow.addToUi(" nombreColonne={" + colNumber + "}");
         }
         flow.addToUi(">");
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             indent(flow, level + 1).append("<" + c.ui(Element.FORM) + " nom=\"" + c.lname + "\"");
             if (c.libelle != null) {
                 flow.addToUi(" libelle=\"" + c.libelle + "\"");

@@ -6,8 +6,8 @@ import dev.cruding.engine.flow.MdlFlow;
 public class MdlInitModificationInjection extends MdlInitEditionInjection {
 
 
-    public MdlInitModificationInjection(Champ[] fieldList) {
-        super(fieldList);
+    public MdlInitModificationInjection(Champ[] listeChamp) {
+        super(listeChamp);
     };
 
 

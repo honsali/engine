@@ -28,9 +28,9 @@ public class BeLiqTablePrinter extends Printer {
         f.L____________("<column name=\"", entite.id_.getDbName(entite.uname), "\" type=\"bigint\">");
         f.L________________("<constraints primaryKey=\"true\" nullable=\"false\" />");
         f.L____________("</column>");
-        for (Champ fld : entite.fieldList) {
-            if (fld.isBasic || fld.isRef || fld.isPere) {
-                fld.addLiqDeclaration(f);
+        for (Champ champ : entite.listeChamp) {
+            if (champ.isBasic || champ.isRef || champ.isPere) {
+                champ.addLiqDeclaration(f);
             }
         }
         f.L________("</createTable>");
@@ -45,11 +45,11 @@ public class BeLiqTablePrinter extends Printer {
         f.L____________("usePreparedStatements=\"true\">");
         f.L____________("<column name=\"id\" type=\"numeric\" />");
 
-        for (Champ fld : entite.fieldList) {
-            if (fld.isBasic) {
-                f.L____________("<column name=\"", fld.dbName, "\" type=\"", fld.stype, "\" />");
-            } else if (fld.isRef) {
-                f.L____________("<column name=\"", fld.dbName, "\" type=\"numeric\" />");
+        for (Champ champ : entite.listeChamp) {
+            if (champ.isBasic) {
+                f.L____________("<column name=\"", champ.dbName, "\" type=\"", champ.stype, "\" />");
+            } else if (champ.isRef) {
+                f.L____________("<column name=\"", champ.dbName, "\" type=\"numeric\" />");
             }
         }
         f.L________("</loadData>");

@@ -301,16 +301,16 @@ public class Champ {
 
     public String getReferenceNameList(String entiteName) {
         Entite entite = Contexte.getInstance().getEntite(entiteName);
-        if (entite != null && entite.fieldList.size() > 0) {
-            return entite.fieldList.stream().filter(p -> p.isRef || p.isRefMany).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
+        if (entite != null && entite.listeChamp.size() > 0) {
+            return entite.listeChamp.stream().filter(p -> p.isRef || p.isRefMany).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
         }
         return null;
     }
 
     public String getReferenceName(String entiteName, String c) {
         Entite entite = Contexte.getInstance().getEntite(entiteName);
-        if (entite != null && entite.fieldList.size() > 0) {
-            Optional<String> o = entite.fieldList.stream().filter(p -> p.isRef || p.isRefMany).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
+        if (entite != null && entite.listeChamp.size() > 0) {
+            Optional<String> o = entite.listeChamp.stream().filter(p -> p.isRef || p.isRefMany).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
             if (o.isPresent()) {
                 return o.get();
             }

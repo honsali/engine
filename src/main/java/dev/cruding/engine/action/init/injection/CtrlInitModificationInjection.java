@@ -7,15 +7,15 @@ import dev.cruding.engine.injection.CtrlActionInjection;
 
 public class CtrlInitModificationInjection extends CtrlActionInjection {
 
-    private Champ[] fieldList = new Champ[0];
+    private Champ[] listeChamp = new Champ[0];
 
-    public CtrlInitModificationInjection(Champ[] fieldList) {
-        this.fieldList = fieldList;
+    public CtrlInitModificationInjection(Champ[] listeChamp) {
+        this.listeChamp = listeChamp;
     };
 
     public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addCtrlImport(f);
             }
@@ -33,7 +33,7 @@ public class CtrlInitModificationInjection extends CtrlActionInjection {
             f.__("requete.id" + entite().upere, ", ");
         }
         f.__("requete.id", entite().uname, ");");
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addCtrlImplementation(f);
             }

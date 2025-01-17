@@ -12,14 +12,14 @@ public class BeDtoPrinter extends Printer {
         JavaFlow f = new JavaFlow();
 
         /* *********************************************************************** */
-        List<Champ> fieldList = entite.fieldList;
-        for (Champ fld : fieldList) {
-            fld.addDtoImport(f);
+        List<Champ> listeChamp = entite.listeChamp;
+        for (Champ champ : listeChamp) {
+            champ.addDtoImport(f);
         }
 
 
         /* *********************************************************************** */
-        Champ idChamp = entite.fieldList.stream().filter(p -> p.isId).findFirst().get();
+        Champ idChamp = entite.listeChamp.stream().filter(p -> p.isId).findFirst().get();
 
         f.__("package app.domain.", entite.pkg, ".", entite.lname, ";");
         f.L("");
@@ -31,14 +31,14 @@ public class BeDtoPrinter extends Printer {
         if (!idChamp.lname.equals("libelle")) {
             f.L________("String libelle, //");
         }
-        for (int i = 0; i < fieldList.size(); i++) {
-            Champ fld = fieldList.get(i);
-            String end = i == fieldList.size() - 1 ? " //" : ", //";
-            if (fld.isRef || fld.isPere) {
-                f.L________(fld.jtype, "Dto ", fld.lname, end);
+        for (int i = 0; i < listeChamp.size(); i++) {
+            Champ champ = listeChamp.get(i);
+            String end = i == listeChamp.size() - 1 ? " //" : ", //";
+            if (champ.isRef || champ.isPere) {
+                f.L________(champ.jtype, "Dto ", champ.lname, end);
 
             } else {
-                f.L________(fld.jtype, " ", fld.lname, end);
+                f.L________(champ.jtype, " ", champ.lname, end);
             }
         }
         f.L(") {");
@@ -53,13 +53,13 @@ public class BeDtoPrinter extends Printer {
             if (!idChamp.lname.equals("libelle")) {
                 f.L________________________("entity.get", idChamp.uname, "(), //");
             }
-            for (int i = 0; i < fieldList.size(); i++) {
-                Champ fld = fieldList.get(i);
-                String end = i == fieldList.size() - 1 ? " //" : ", //";
-                if (fld.isRef || fld.isPere) {
-                    f.L________________________(fld.jtype, "Dto.asRef(entity.get", fld.uname, "())", end);
+            for (int i = 0; i < listeChamp.size(); i++) {
+                Champ champ = listeChamp.get(i);
+                String end = i == listeChamp.size() - 1 ? " //" : ", //";
+                if (champ.isRef || champ.isPere) {
+                    f.L________________________(champ.jtype, "Dto.asRef(entity.get", champ.uname, "())", end);
                 } else {
-                    f.L________________________("entity.get", fld.uname, "()", end);
+                    f.L________________________("entity.get", champ.uname, "()", end);
 
                 }
             }
@@ -75,11 +75,11 @@ public class BeDtoPrinter extends Printer {
         if (!idChamp.lname.equals("libelle")) {
             f.L________________________("entity.get", idChamp.uname, "(), //");
         }
-        for (int i = 0; i < fieldList.size(); i++) {
-            Champ fld = fieldList.get(i);
-            String end = i == fieldList.size() - 1 ? " //" : ", //";
-            if (fld.isId) {
-                f.L________________________("entity.get", fld.uname, "()", end);
+        for (int i = 0; i < listeChamp.size(); i++) {
+            Champ champ = listeChamp.get(i);
+            String end = i == listeChamp.size() - 1 ? " //" : ", //";
+            if (champ.isId) {
+                f.L________________________("entity.get", champ.uname, "()", end);
             } else {
                 f.L________________________("null", end);
             }

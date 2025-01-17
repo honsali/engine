@@ -154,16 +154,16 @@ public abstract class ElementComposer {
         return new ActionRecupererParChamp(entite, element, field.uname);
     }
 
-    public Action initCreation(Entite entite, Champ... fieldList) {
-        return new ActionInitCreation(entite, element, fieldList);
+    public Action initCreation(Entite entite, Champ... listeChamp) {
+        return new ActionInitCreation(entite, element, listeChamp);
     }
 
     public Action initModification(Entite entite) {
         return new ActionInitModification(entite, element);
     }
 
-    public Action initModification(Entite entite, Champ... fieldList) {
-        return new ActionInitModification(entite, element, fieldList);
+    public Action initModification(Entite entite, Champ... listeChamp) {
+        return new ActionInitModification(entite, element, listeChamp);
     }
 
     public Action goToModule(Entite entite, String target) {
@@ -248,20 +248,20 @@ public abstract class ElementComposer {
         return new MenuOnglet(element, ComposantList);
     }
 
-    public Etat etat(Entite e, Champ... fieldList) {
-        return new Etat(e, element, fieldList);
+    public Etat etat(Entite e, Champ... listeChamp) {
+        return new Etat(e, element, listeChamp);
     }
 
-    public Etat etat(Champ f, Entite e, Champ... fieldList) {
-        return new Etat(f, e, element, fieldList);
+    public Etat etat(Champ f, Entite e, Champ... listeChamp) {
+        return new Etat(f, e, element, listeChamp);
     }
 
-    public Formulaire formulaire(Entite e, Champ... fieldList) {
-        return new Formulaire(element, e, fieldList);
+    public Formulaire formulaire(Entite e, Champ... listeChamp) {
+        return new Formulaire(element, e, listeChamp);
     }
 
-    public Filtre filtre(Entite e, Champ... fieldList) {
-        return new Filtre(element, e, fieldList);
+    public Filtre filtre(Entite e, Champ... listeChamp) {
+        return new Filtre(element, e, listeChamp);
     }
 
     public Composant separateur() {
@@ -288,16 +288,16 @@ public abstract class ElementComposer {
         return new Separateur(element, height);
     }
 
-    public Tableau tableauPagine(Entite e, Champ... fieldList) {
-        return new Tableau(element, e, new ActionChangerPageLister(e, element), fieldList);
+    public Tableau tableauPagine(Entite e, Champ... listeChamp) {
+        return new Tableau(element, e, new ActionChangerPageLister(e, element), listeChamp);
     }
 
-    public Tableau tableauResultatPagine(Entite e, Champ... fieldList) {
-        return new Tableau(element, e, new ActionChangerPageChercher(e, element), fieldList);
+    public Tableau tableauResultatPagine(Entite e, Champ... listeChamp) {
+        return new Tableau(element, e, new ActionChangerPageChercher(e, element), listeChamp);
     }
 
-    public Tableau tableau(Entite e, Champ... fieldList) {
-        return new Tableau(element, e, fieldList);
+    public Tableau tableau(Entite e, Champ... listeChamp) {
+        return new Tableau(element, e, listeChamp);
     }
 
     public Composant blocAction(Composant... ComposantList) {

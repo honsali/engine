@@ -14,24 +14,24 @@ public class Etat extends Composant {
     public int largeur = 0;
     public Champ field;
 
-    public Etat(Entite entite, Element element, Champ... fieldList) {
-        super(element, entite, fieldList);
+    public Etat(Entite entite, Element element, Champ... listeChamp) {
+        super(element, entite, listeChamp);
     }
 
 
-    public Etat(Champ field, Entite entite, Element element, Champ... fieldList) {
-        super(element, entite, fieldList);
+    public Etat(Champ field, Entite entite, Element element, Champ... listeChamp) {
+        super(element, entite, listeChamp);
         this.field = field;
     }
 
     public void addImport(ViewFlow flow) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c.videSi != null) {
                 flow.addJsImport("{ ChampVide }", "waxant");
             }
         }
 
-        StringBuilder fieldImportList = Util.processListeChamp(fieldList, Element.DETAIL);
+        StringBuilder fieldImportList = Util.processListeChamp(listeChamp, Element.DETAIL);
 
         flow.addJsImport("{ FormulaireConsultation }", "waxant");
         flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
@@ -51,7 +51,7 @@ public class Etat extends Composant {
             flow.addToUi(" nombreColonne={" + colNumber + "}");
         }
         flow.addToUi(">");
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             indent(flow, level + 1).append("<" + c.ui(Element.DETAIL) + " nom=\"" + c.lname + "\"");
             if (c.libelle != null) {
                 flow.addToUi(" libelle=\"" + c.libelle + "\"");

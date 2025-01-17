@@ -12,7 +12,7 @@ public abstract class Composant {
     public static final String[] indent = new String[] {"\n" + tab, "\n" + tab + tab, "\n" + tab + tab + tab, "\n" + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab + tab, "\n" + tab + tab + tab + tab + tab + tab + tab};
 
     public Composant[] ComposantList;
-    public Champ[] fieldList;
+    public Champ[] listeChamp;
     public Entite entite;
     public Element element;
     public Composant pereComposant;
@@ -34,9 +34,9 @@ public abstract class Composant {
         this.ComposantList = ComposantList;
     }
 
-    public Composant(Element element, Entite entite, Champ... fieldList) {
+    public Composant(Element element, Entite entite, Champ... listeChamp) {
         this(element, entite);
-        this.fieldList = clean(fieldList);
+        this.listeChamp = clean(listeChamp);
     }
 
     public Composant(Element element, Composant... ComposantList) {
@@ -44,9 +44,9 @@ public abstract class Composant {
         this.ComposantList = ComposantList;
     }
 
-    public Composant(Element element, Champ... fieldList) {
+    public Composant(Element element, Champ... listeChamp) {
         this(element);
-        this.fieldList = clean(fieldList);
+        this.listeChamp = clean(listeChamp);
     }
 
     public void addLabel(String key, String value) {
@@ -122,8 +122,8 @@ public abstract class Composant {
 
     public void addScript(ViewFlow c) {}
 
-    private Champ[] clean(Champ[] fieldList) {
-        return Arrays.stream(fieldList).filter(Objects::nonNull).toArray(Champ[]::new);
+    private Champ[] clean(Champ[] listeChamp) {
+        return Arrays.stream(listeChamp).filter(Objects::nonNull).toArray(Champ[]::new);
     }
 
 

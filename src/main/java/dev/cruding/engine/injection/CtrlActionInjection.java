@@ -14,6 +14,4 @@ public class CtrlActionInjection extends ActionWrapper {
             f.L____(lnameAvecEntite(), ": action<Req", uc(), ", Res", uc(), ">(", lnameAvecEntite(), "Impl, Action", page().module.unameLast, ".Uc", uc(), ".", actionKey(), "),");
         }
     }
-
-
 }

@@ -20,12 +20,12 @@ public class Tableau extends Composant {
     public String sourceDonnee = "liste";
 
 
-    public Tableau(Element element, Entite entite, Champ... fieldList) {
-        this(element, entite, null, fieldList);
+    public Tableau(Element element, Entite entite, Champ... listeChamp) {
+        this(element, entite, null, listeChamp);
     }
 
-    public Tableau(Element element, Entite entite, Action action, Champ... fieldList) {
-        super(element, entite, fieldList);
+    public Tableau(Element element, Entite entite, Action action, Champ... listeChamp) {
+        super(element, entite, listeChamp);
         inElement = true;
         /*
          * if (action != null) { this.actionPagination = new ActionChangerPage(ActionType.NOUI,
@@ -68,7 +68,7 @@ public class Tableau extends Composant {
     }
 
     public void addScript(ViewFlow flow) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addViewScript(flow, element.page.uc, "..");
             }
@@ -100,7 +100,7 @@ public class Tableau extends Composant {
         flow.addToUi(" texteAucunResultat=\"").append("aucun.").append(entite.lname).append("\"");
         flow.addToUi(">");
 
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             String prefix = c.of == null ? "" : c.of.lname + ".";
             indent(flow, level + 1).append("<").append(c.ui(Element.TABLEAU)).append(" nom=\"").append(prefix).append(c.lname).append("\"");
             if (c.libelle != null) {

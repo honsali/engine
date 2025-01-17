@@ -22,8 +22,8 @@ public class Filtre extends Composant {
     public Action fillFrom;
     public boolean inLine = true;
 
-    public Filtre(Element element, Entite entite, Champ... fieldList) {
-        super(element, entite, fieldList);
+    public Filtre(Element element, Entite entite, Champ... listeChamp) {
+        super(element, entite, listeChamp);
         new ActionChercher(entite, element);
         new ActionVide(ActionType.UCA, "appliquerFiltre", entite, element).inViewOnly();
         new ActionVide(ActionType.UCA, "initialiserFiltre", entite, element).inViewOnly();
@@ -46,7 +46,7 @@ public class Filtre extends Composant {
         flow.addJsImport("{ ActionUcInitialiserFiltre }", "waxant");
         flow.addJsImport("{ ActionUcAppliquerFiltre }", "waxant");
         flow.addJsImport("Ctrl" + element.page.uc, "../Ctrl" + element.page.uc);
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c.siChange != null) {
                 if (c.siChange.length() > 0) {
                     flow.addJsImport("{ useState }", "react");
@@ -62,14 +62,14 @@ public class Filtre extends Composant {
             }
         }
 
-        StringBuilder fieldImportList = Util.processListeChamp(fieldList, Element.FORM);
+        StringBuilder fieldImportList = Util.processListeChamp(listeChamp, Element.FORM);
 
         flow.addJsImport("{ FormulaireInline }", "waxant");
         flow.addJsImport(" { " + fieldImportList.toString() + " } ", "waxant");
     }
 
     public void addScript(ViewFlow flow) {
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
                 ((ChampRef) c).addViewScript(flow, element.page.uc, "..");
             }
@@ -82,7 +82,7 @@ public class Filtre extends Composant {
                 flow.totalScript().L("");
             }
         }
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             if (c.siChange != null) {
                 flow.totalScript().L____("useOnChange('" + c.lname + "', form, (valeur) => {");
                 if (c.siChange.length() > 0) {
@@ -128,7 +128,7 @@ public class Filtre extends Composant {
             }
         }
         flow.addToUi(">");
-        for (Champ c : fieldList) {
+        for (Champ c : listeChamp) {
             indent(flow, level + 1).append("<" + c.ui(Element.FORM) + " nom=\"" + c.lname + "\"");
             if (c.libelle != null) {
                 flow.addToUi(" libelle=\"" + c.libelle + "\"");

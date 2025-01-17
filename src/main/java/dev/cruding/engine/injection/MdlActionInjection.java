@@ -5,8 +5,6 @@ import dev.cruding.engine.flow.MdlFlow;
 
 public class MdlActionInjection extends ActionWrapper {
 
-
-
     public void addMdlImport(MdlFlow f) {}
 
     public void addMdlRequestAttribute(MdlFlow f) {}

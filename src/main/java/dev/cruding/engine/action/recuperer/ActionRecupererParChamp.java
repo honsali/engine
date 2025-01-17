@@ -12,23 +12,23 @@ import dev.cruding.engine.entite.Entite;
 
 public class ActionRecupererParChamp extends Action {
 
-    public String lnameField;
-    public String unameField;
+    public String lnameChamp;
+    public String unameChamp;
 
-    public ActionRecupererParChamp(Entite entite, Element element, String unameField) {
-        super(ActionType.NOUI, "recupererPar" + unameField, entite, element);
-        this.lnameField = StringUtils.uncapitalize(unameField);
-        this.unameField = unameField;
+    public ActionRecupererParChamp(Entite entite, Element element, String unameChamp) {
+        super(ActionType.NOUI, "recupererPar" + unameChamp, entite, element);
+        this.lnameChamp = StringUtils.uncapitalize(unameChamp);
+        this.unameChamp = unameChamp;
         lcoreName("recuperer");
-        lnameAvecEntite("recuperer" + entite.uname + "Par" + unameField);
-        lnameSansEntite("recupererPar" + unameField);
+        lnameAvecEntite("recuperer" + entite.uname + "Par" + unameChamp);
+        lnameSansEntite("recupererPar" + unameChamp);
     }
 
     public void overrideActionInjection() {
-        ctrlActionInjection = new CtrlRecupererInjection(lnameField, unameField);
+        ctrlActionInjection = new CtrlRecupererInjection(lnameChamp, unameChamp);
         mdlActionInjection = new MdlRecupererInjection();
-        resourceActionInjection = new ResourceRecupererInjection(lnameField, unameField);
-        serviceActionInjection = new ServiceRecupererInjection(lnameField, unameField);
+        resourceActionInjection = new ResourceRecupererInjection(lnameChamp, unameChamp);
+        serviceActionInjection = new ServiceRecupererInjection(lnameChamp, unameChamp);
         viewActionInjection = new ViewRecupererInjection();
     }
 

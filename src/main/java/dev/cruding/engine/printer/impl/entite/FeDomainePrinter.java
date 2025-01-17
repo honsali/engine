@@ -11,8 +11,8 @@ public class FeDomainePrinter extends Printer {
         JsFlow f = new JsFlow();
 
         /* *********************************************************************** */
-        for (Champ fld : entite.fieldList) {
-            fld.addJsImport(f, entite);
+        for (Champ champ : entite.listeChamp) {
+            champ.addJsImport(f, entite);
         }
         f.addJsImport("{ IPagination }", "modele/commun/pagination/DomainePagination");
         f.flushJsImportBloc();
@@ -20,8 +20,8 @@ public class FeDomainePrinter extends Printer {
         f.L("export interface I", entite.uname, " {");
         f.L____("id?: number;");
         f.L____("id", entite.uname, "?: number;");
-        for (Champ fld : entite.fieldList) {
-            fld.addJsDeclaration(f);
+        for (Champ champ : entite.listeChamp) {
+            champ.addJsDeclaration(f);
         }
         f.L("}");
         f.L("");

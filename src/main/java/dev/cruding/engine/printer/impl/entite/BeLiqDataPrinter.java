@@ -12,9 +12,9 @@ public class BeLiqDataPrinter extends Printer {
         /* *********************************************************************** */
 
         f.__("id");
-        for (Champ fld : entite.fieldList) {
-            if (fld.isBasic || fld.isRef) {
-                f.__(";", fld.dbName);
+        for (Champ champ : entite.listeChamp) {
+            if (champ.isBasic || champ.isRef) {
+                f.__(";", champ.dbName);
             }
         }
 

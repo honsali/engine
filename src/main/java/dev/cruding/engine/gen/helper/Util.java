@@ -30,11 +30,11 @@ public class Util {
         return p;
     }
 
-    public static StringBuilder processListeChamp(Champ[] fieldList, String elementType) {
+    public static StringBuilder processListeChamp(Champ[] listeChamp, String elementType) {
 
         HashSet<String> listeType = new HashSet<>();
 
-        for (Champ field : fieldList) {
+        for (Champ field : listeChamp) {
             if (field != null) {
                 listeType.add(field.ui(elementType));
             } else {

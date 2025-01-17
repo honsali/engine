@@ -11,22 +11,22 @@ import dev.cruding.engine.entite.Entite;
 public class ActionInitModification extends Action {
 
     private static final String type = "initModification";
-    private Champ[] fieldList = new Champ[0];
+    private Champ[] listeChamp = new Champ[0];
 
     public ActionInitModification(Entite entite, Element element) {
         this(entite, element, new Champ[0]);
     }
 
 
-    public ActionInitModification(Entite entite, Element element, Champ... fieldList) {
+    public ActionInitModification(Entite entite, Element element, Champ... listeChamp) {
         super(ActionType.NOUI, type, entite, element);
-        this.fieldList = fieldList;
+        this.listeChamp = listeChamp;
     }
 
     public void overrideActionInjection() {
         viewActionInjection = new ViewInitEditionInjection(type);
-        ctrlActionInjection = new CtrlInitModificationInjection(fieldList);
-        mdlActionInjection = new MdlInitModificationInjection(fieldList);
+        ctrlActionInjection = new CtrlInitModificationInjection(listeChamp);
+        mdlActionInjection = new MdlInitModificationInjection(listeChamp);
     }
 
 }
