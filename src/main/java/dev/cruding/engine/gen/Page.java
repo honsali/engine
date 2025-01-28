@@ -12,7 +12,6 @@ public class Page implements Comparable<Page> {
     public String path;
     public String name;
     public String uc;
-    public String route;
 
     public Module module;
     public String actionUname;
