@@ -20,7 +20,7 @@ public class BeLiqTablePrinter extends Printer {
         f.L________________________("http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
         f.L("");
         f.L____("<changeSet id=\"", entite.key, "-0\" author=\"app_core\">");
-        f.L________("<createSequence sequenceName=\"", entite.seqName, "\" startValue=\"1050\" incrementBy=\"50\" />");
+        f.L________("<createSequence sequenceName=\"", entite.seqName, "\" startValue=\"100\" incrementBy=\"10\" />");
         f.L____("</changeSet>");
 
         f.L____("<changeSet id=\"", entite.key, "-1\" author=\"app_core\">");

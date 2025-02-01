@@ -17,7 +17,6 @@ public class BeDtoPrinter extends Printer {
             champ.addDtoImport(f);
         }
 
-
         /* *********************************************************************** */
         Champ idChamp = entite.listeChamp.stream().filter(p -> p.isId).findFirst().get();
 
@@ -51,7 +50,7 @@ public class BeDtoPrinter extends Printer {
             f.L________________________("entity.getId(), //");
             f.L________________________("entity.getId(), //");
             if (!idChamp.lname.equals("libelle")) {
-                f.L________________________("entity.get", idChamp.uname, "(), //");
+                f.L________________________("entity.getDisplayString(), //");
             }
             for (int i = 0; i < listeChamp.size(); i++) {
                 Champ champ = listeChamp.get(i);
@@ -73,7 +72,7 @@ public class BeDtoPrinter extends Printer {
         f.L________________________("entity.getId(), //");
         f.L________________________("entity.getId(), //");
         if (!idChamp.lname.equals("libelle")) {
-            f.L________________________("entity.get", idChamp.uname, "(), //");
+            f.L________________________("entity.getDisplayString(), //");
         }
         for (int i = 0; i < listeChamp.size(); i++) {
             Champ champ = listeChamp.get(i);
