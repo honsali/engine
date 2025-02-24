@@ -6,6 +6,7 @@ import dev.cruding.engine.printer.impl.commun.BeLiqMasterPrinter;
 import dev.cruding.engine.printer.impl.commun.FeGoToPrinter;
 import dev.cruding.engine.printer.impl.commun.FeHasRightPrinter;
 import dev.cruding.engine.printer.impl.commun.FeMenuPrinter;
+import dev.cruding.engine.printer.impl.commun.FeRoutesPrinter;
 import dev.cruding.engine.printer.impl.commun.FeStorePrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.entite.BeDomainePrinter;
@@ -41,6 +42,7 @@ public class Processeur {
     private final BeLiqMasterPrinter beLiqMasterPrinter = new BeLiqMasterPrinter();
     private final BeLiqTablePrinter beLiqTablePrinter = new BeLiqTablePrinter();
     private final FeStorePrinter feStorePrinter = new FeStorePrinter();
+    private final FeRoutesPrinter feRoutesPrinter = new FeRoutesPrinter();
     private final FeMenuPrinter feMenuPrinter = new FeMenuPrinter();
     private final FeHasRightPrinter feHasRightPrinter = new FeHasRightPrinter();
     private final FeGoToPrinter feGoToPrinter = new FeGoToPrinter();
@@ -84,6 +86,7 @@ public class Processeur {
 
     private void printFeGlobalFiles() {
         feStorePrinter.print();
+        feRoutesPrinter.print();
         feMenuPrinter.print();
         feHasRightPrinter.print();
         feGoToPrinter.print();

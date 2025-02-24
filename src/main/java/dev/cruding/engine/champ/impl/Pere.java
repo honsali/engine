@@ -14,7 +14,7 @@ public class Pere<T extends Entite> extends ChampRef<T> {
     }
 
     public void addJsDeclaration(JsFlow f) {
-        f.addJsDeclaration(lname, "I" + uname);
+        f.addJsDeclaration(lname, "I" + referencedEntite.uname);
     }
 
     public void addDtoImport(JavaFlow flow) {
