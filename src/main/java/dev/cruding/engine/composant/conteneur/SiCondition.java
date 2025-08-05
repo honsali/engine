@@ -9,9 +9,18 @@ public class SiCondition extends Composant {
     public String condition = null;
     public String type = "siVrai";
     public boolean childInLine = false;
+    public String nomVariable;
 
-    public SiCondition(Element element, String condition, String type, boolean childInLine, Composant... ComposantList) {
-        super(element, ComposantList);
+    public SiCondition(String nomVariable, Element element, String condition, String type, boolean childInLine, Composant... listeComposant) {
+        super(element, listeComposant);
+        this.condition = condition;
+        this.type = type;
+        this.childInLine = childInLine;
+        this.nomVariable = nomVariable;
+    }
+
+    public SiCondition(Element element, String condition, String type, boolean childInLine, Composant... listeComposant) {
+        super(element, listeComposant);
         this.condition = condition;
         this.type = type;
         this.childInLine = childInLine;
@@ -21,11 +30,15 @@ public class SiCondition extends Composant {
         indent(flow, level).append("{");
         String open = childInLine ? "" : "(";
         if (type.equals("siVrai")) {
-            flow.addToUi(condition).append(" && " + open);
+            flow.totalUi().__(condition).append(" && " + open);
         } else if (type.equals("siFaux")) {
-            flow.addToUi("!").append(condition).append(" && (");
+            flow.totalUi().__("!").append(condition).append(" && (");
         } else {
-            flow.addToUi("util." + type + "(").append(condition).append(") && (");
+            flow.totalUi().__("util." + type + "(").append(condition).append(") && " + open);
+            flow.addJsImport("{ util }", "waxant");
+        }
+        if (nomVariable != null) {
+            flow.addSelector(nomVariable);
         }
         return childInLine;
     }
@@ -33,10 +46,10 @@ public class SiCondition extends Composant {
     public void addCloseTag(ViewFlow flow, int level) {
 
         if (childInLine) {
-            flow.addToUi("}");
+            flow.totalUi().__("}");
         } else {
             indent(flow, level);
-            flow.addToUi(")}");
+            flow.totalUi().__(")}");
         }
     }
 }

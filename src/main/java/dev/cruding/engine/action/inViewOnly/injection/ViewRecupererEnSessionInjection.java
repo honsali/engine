@@ -1,4 +1,4 @@
-package dev.cruding.engine.action.recuperer.injection;
+package dev.cruding.engine.action.inViewOnly.injection;
 
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.injection.ViewActionInjection;
@@ -12,11 +12,7 @@ public class ViewRecupererEnSessionInjection extends ViewActionInjection {
     }
 
     public boolean addViewScript(ViewFlow f) {
-        if (variable != null) {
-            f.addSpecificSelector(variable, mvcPath() + "/Mdl" + uc());
-        } else {
-            f.addSpecificSelector(entite().lname, entite().uname, mvcPath() + "/Mdl" + uc());
-        }
+        f.addSelector(variable);
         return false;
     }
 }

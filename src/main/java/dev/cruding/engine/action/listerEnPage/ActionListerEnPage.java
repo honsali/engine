@@ -1,6 +1,7 @@
 package dev.cruding.engine.action.listerEnPage;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.action.changerPage.ActionChangerPageLister;
 import dev.cruding.engine.action.lister.injection.ViewListerInjection;
 import dev.cruding.engine.action.listerEnPage.injection.CtrlListerEnPageInjection;
 import dev.cruding.engine.action.listerEnPage.injection.MdlListerEnPageInjection;
@@ -14,6 +15,7 @@ public class ActionListerEnPage extends Action {
 
     public ActionListerEnPage(Entite entite, Element element) {
         super(ActionType.NOUI, "listerEnPage", entite, element);
+        actionPagination(new ActionChangerPageLister(entite, element));
     }
 
     public void overrideActionInjection() {

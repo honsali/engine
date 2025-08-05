@@ -11,22 +11,22 @@ public class FeElementPrinter extends Printer {
 
 
     public void print(Element element) {
-        ViewFlow f = new ViewFlow();
+        ViewFlow f = new ViewFlow(element);
 
         /* *********************************************************************** */
-        if (element.byForm) {
+        if (element.parForm) {
             f.addProp("form");
         }
-        f.addProp(element.byProp);
-
-        element.addContent(f);
+        f.addProp(element.parProp);
 
         List<Action> listeAction = Contexte.getInstance().actionElement(element);
+
         for (Action action : listeAction) {
             if (action.viewActionInjection.addViewScript(f)) {
                 f.totalScript().L("");
             }
         }
+        element.addContent(f);
         /* *********************************************************************** */
 
         f.flushViewImportBloc();

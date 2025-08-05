@@ -7,18 +7,17 @@ public class ViewListerInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
 
-        f.useExecute();
+        f.addSelector(lnameAvecEntite());
         f.useEffect();
-        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("execute(Ctrl", uc(), ".", lnameAvecEntite());
-        if (byProp()) {
-            f.totalScript().append(", { ").append(element().byProp).append(" }");
+        f.totalScript().L________(lnameAvecEntite(), "(");
+        if (parProp() != null) {
+            f.totalScript().append("{ ").append(parProp()).append(" }");
         }
         f.totalScript().append(");");
         f.totalScript().L____("}, [");
-        if (byProp()) {
-            f.totalScript().append(element().byProp);
+        if (parProp() != null) {
+            f.totalScript().append(parProp());
         }
         f.totalScript().append("]);");
         return true;

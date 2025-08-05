@@ -19,6 +19,9 @@ public class CtrlListerEnPageInjection extends CtrlActionInjection {
         if (parIdPere() && entite().havePere) {
             f.__("requete.id", entite().upere, ", ");
         }
+        if (parChamp() != null) {
+            f.__("requete.", parChamp().lname, ", ");
+        }
         f.__("0);");
         f.L("};");
     }

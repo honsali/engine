@@ -17,7 +17,7 @@ public class Int extends Champ {
             case Element.DETAIL:
                 return "Texte";
             case Element.TABLEAU:
-                return "Colonne";
+                return "Colonne tc=\"entier\"";
             default:
                 return "";
         }

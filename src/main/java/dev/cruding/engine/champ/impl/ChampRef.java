@@ -61,7 +61,7 @@ public class ChampRef<T extends Entite> extends Champ {
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"bigint\">");
-        f.L________________("<constraints nullable=\"" + !required + "\" />");
+        f.L________________("<constraints nullable=\"" + !requis + "\" />");
         f.L____________("</column>");
     }
 
@@ -82,17 +82,19 @@ public class ChampRef<T extends Entite> extends Champ {
     public void addCtrlImplementation(CtrlFlow f) {
         if (init == null) {
             Entite entite = Contexte.getInstance().getEntite(jtype);
-            f.L____("resultat.liste", jtype, " = await Service", jtype, ".lister(");
+            f.L____("resultat.liste", jtype, " = await Service", jtype);
             if (entite.havePere) {
-                f.__("requete.id" + entite.upere);
+                f.__(".listerParId", entite.upere, "(requete.id" + entite.upere, ");");
+            } else {
+                f.__(".lister();");
             }
-            f.__(");");
+
         }
     }
 
     public void addViewScript(ViewFlow f, String uc, String mvcPath) {
         if (initFromMdl) {
-            f.addSpecificSelector("liste" + jtype, mvcPath + "/Mdl" + uc);
+            f.addSelector("liste" + jtype);
         }
     }
 
@@ -111,12 +113,14 @@ public class ChampRef<T extends Entite> extends Champ {
     public void addMdlStateAttribute(MdlFlow f) {
         if (init == null) {
             f.addMdlStateAttribute("liste" + jtype, "IReference[]");
+            f.addMdlSelectorAttribute("liste" + jtype, "Liste" + jtype);
         }
     }
 
-    public void addMdlSelector(MdlFlow f, String uc) {
+
+    public void addUseSelector(MdlFlow f) {
         if (init == null) {
-            f.L("export const selectListe", jtype, " = createSelector([selectMdl", uc, "], (state: ", uc, "Type) => state.liste", jtype, ");");
+            f.L________("liste", jtype, ",");
         }
     }
 

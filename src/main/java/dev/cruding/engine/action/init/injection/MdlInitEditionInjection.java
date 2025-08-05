@@ -14,9 +14,10 @@ public class MdlInitEditionInjection extends MdlActionInjection {
     };
 
     public void addMdlImport(MdlFlow f) {
+        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addMdlImport(f);
+                ((ChampRef<?>) c).addMdlImport(f);
             }
         }
     }
@@ -24,41 +25,43 @@ public class MdlInitEditionInjection extends MdlActionInjection {
     public void addMdlRequestAttribute(MdlFlow f) {}
 
     public void addMdlResultAttribute(MdlFlow f) {
+        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addMdlResultAttribute(f);
+                ((ChampRef<?>) c).addMdlResultAttribute(f);
             }
         }
     }
 
     public void addMdlStateAttribute(MdlFlow f) {
+        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addMdlStateAttribute(f);
+                ((ChampRef<?>) c).addMdlStateAttribute(f);
             }
         }
-    }
-
-    public void addMdlSelector(MdlFlow f, String uc) {
-        for (Champ c : listeChamp) {
-            if (c instanceof ChampRef) {
-                ((ChampRef) c).addMdlSelector(f, uc);
-            }
-        }
+        f.addMdlSelectorAttribute(entite().lname, entite().uname);
     }
 
 
-    public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
-        f.L________________("state.resultat = action.payload;");
+
+    public void addUseSelector(MdlFlow f) {
+        for (Champ c : listeChamp) {
+            if (c instanceof ChampRef) {
+                ((ChampRef<?>) c).addUseSelector(f);
+            }
+        }
+        f.L________(entite().lname, ",");
+    }
+
+    public void addMdlExtraReducerAffectation(MdlFlow f) {
         f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
 
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addMdlExtraReducer(f);
+                ((ChampRef<?>) c).addMdlExtraReducer(f);
             }
         }
 
-        f.L____________("})");
     }
 }

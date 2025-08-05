@@ -1,6 +1,8 @@
 package dev.cruding.engine.element;
 
+import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class ComposantRepresentantUnElement extends Composant {
@@ -12,6 +14,8 @@ public class ComposantRepresentantUnElement extends Composant {
         super(parentElement);
         this.subElement = subElement;
         this.parentElement = parentElement;
+        this.nom = subElement.name;
+
     }
 
     public void addImport(ViewFlow flow) {
@@ -23,38 +27,55 @@ public class ComposantRepresentantUnElement extends Composant {
             flow.addJsImport(subElement.name, "./" + subElement.name);
         } else if (subElement.page == null) {
             flow.addJsImport(subElement.name, subElement.relativePath + "/" + subElement.name);
+        } else if (subElement.relativePath.startsWith("modules")) {
+            flow.addJsImport(subElement.name, subElement.relativePath + "/" + subElement.name);
         } else {
             flow.addJsImport(subElement.name, "." + subElement.relativePath + "/" + subElement.name);
         }
     }
 
-    public ComposantRepresentantUnElement byForm() {
-        this.subElement.byForm = true;
+    public ComposantRepresentantUnElement parForm() {
+        this.subElement.parForm = true;
         return this;
     }
 
-    public ComposantRepresentantUnElement byProp(String byProp) {
-        this.subElement.byProp = byProp;
+    public ComposantRepresentantUnElement parProp(String parProp) {
+        this.subElement.parProp = parProp;
         return this;
     }
 
+    public ComposantRepresentantUnElement parEntite() {
+        this.subElement.parEntite();
+        return this;
+    }
 
     public void addScript(ViewFlow f) {
-        if (this.subElement.byForm) {
+        if (this.subElement.parForm) {
             f.useForm(false);
         }
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
         indent(flow, level).append("<").append(subElement.name);
-        if (subElement.byForm) {
-            flow.addToUi(" form={form}");
+        if (subElement.parForm) {
+            flow.totalUi().__(" form={form}");
         }
-        if (subElement.byProp != null) {
-            flow.addToUi(" " + subElement.byProp + "={" + subElement.byProp + "}");
+        if (subElement.parProp != null) {
+            flow.totalUi().__(" " + subElement.parProp + "={" + subElement.parProp + "}");
         }
-        flow.addToUi(" />");
+        flow.totalUi().__(" />");
         return false;
     }
 
+    public void appendContent(ViewFlow vf, Flow flow) {
+        addImport(vf);
+        flow.__("<").append(subElement.name);
+        if (subElement.parForm) {
+            flow.__(" form={form}");
+        }
+        if (subElement.parProp != null) {
+            flow.__(" " + StringUtils.substringBefore(subElement.parProp, ":") + "={" + StringUtils.substringAfter(subElement.parProp, ":") + "}");
+        }
+        flow.__(" />");
+    }
 }

@@ -7,9 +7,9 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class MenuOnglet extends Composant {
 
-    public MenuOnglet(Element element, Composant... ComposantList) {
+    public MenuOnglet(Element element, Composant... listeComposant) {
         super(element);
-        this.ComposantList = Arrays.asList(ComposantList).stream().map(c -> new Onglet(element, c)).toArray(Onglet[]::new);
+        this.listeComposant = Arrays.asList(listeComposant).stream().map(c -> new Onglet(element, c).titre(c.nom)).toArray(Onglet[]::new);
     }
 
     public void addImport(ViewFlow flow) {

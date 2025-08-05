@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.element.Element;
 
 public class ViewFlow extends JsFlow {
 
@@ -12,11 +12,8 @@ public class ViewFlow extends JsFlow {
     private HashSet<String> propSet = new HashSet<>();
     private HashSet<String> selectorSet = new HashSet<>();
     private HashMap<String, String> stateSet = new HashMap<>();
-    private HashMap<String, String> specificSelectorSet = new HashMap<>();
-    private HashMap<String, String> specificSelectorImportSet = new HashMap<>();
     private Flow totalScript = new Flow();
-    private StringBuilder uiBuilder = new StringBuilder();
-    private StringBuilder uiTotalBuilder = new StringBuilder();
+    private Flow totalUi = new Flow();
 
     private boolean navigate;
     private boolean goToPage;
@@ -26,27 +23,22 @@ public class ViewFlow extends JsFlow {
     private String execute;
     private String form;
     private boolean effect;
-    private boolean selector;
     private boolean inlineForm;
+    private boolean horizontalForm;
     private boolean eventBus;
     private boolean addImportForm = true;
     private boolean afterInit = false;
+    private boolean onChange = false;
+    private String faIcone = null;
+
+    private Element element;
 
     StringBuilder sb = new StringBuilder();
 
-    public void flush(Composant composant) {
-        String sui = uiBuilder.toString();
-        uiTotalBuilder.append(sui);
-        uiBuilder = new StringBuilder();
-    }
+    public ViewFlow() {}
 
-
-    public StringBuilder indent(int level) {
-        return addToUi(Composant.indent[level]);
-    }
-
-    public StringBuilder addToUi(String s) {
-        return uiBuilder.append(s);
+    public ViewFlow(Element element) {
+        this.element = element;
     }
 
     public void flushScriptBloc() {
@@ -62,7 +54,13 @@ public class ViewFlow extends JsFlow {
     }
 
     public void flushUiBloc() {
-        __(uiTotalBuilder);
+        totalUi.clean();
+        String ts = totalUi.toString();
+        if (ts != null && ts.length() > 0) {
+
+            __(ts);
+        }
+
     }
 
     public void flushInitBloc() {
@@ -83,11 +81,10 @@ public class ViewFlow extends JsFlow {
             initFlow.L____("const { emit } = useEventBus();");
         }
 
-        for (String varName : specificSelectorSet.keySet()) {
-            initFlow.L____("const ", varName, " = useSelector(select", specificSelectorSet.get(varName), ");");
-        }
-        if (hasExecute()) {
-            initFlow.L____("const { ", execute, " } = useExecute(", execute.indexOf("rid") > 0 || execute.indexOf("success") > 0 ? "resultat" : "", ");");
+        if (selectorSet.size() > 0) {
+            initFlow.L____("const { ");
+            initFlow.__(selectorSet.stream().sorted().collect(Collectors.joining(", ")));
+            initFlow.__(" } = use", element.page.uc, "();");
         }
         if (hasForm()) {
             initFlow.L____("const [", form, "] = Form.useForm();");
@@ -105,6 +102,9 @@ public class ViewFlow extends JsFlow {
     }
 
     public void flushViewImportBloc() {
+        if (hasOnChange()) {
+            addJsImport("{ useOnChange }", "waxant");
+        }
         if (hasEffect()) {
             addJsImport("{ useEffect }", "react");
         }
@@ -122,20 +122,15 @@ public class ViewFlow extends JsFlow {
             addJsImport("{ useNavigate }", "react-router");
         }
         if (hasSelector()) {
-            addJsImport("{ useAppSelector }", "waxant");
-        }
-        if (hasSpecificSelector()) {
-            addJsImport("{ useSelector }", "react-redux");
-
-            for (String varName : specificSelectorImportSet.keySet()) {
-                addJsImport("{ select" + varName + " }", specificSelectorImportSet.get(varName));
-            }
+            addJsImport("use" + element.page.uc, (element.path.endsWith("element") ? ".." : ".") + "/use" + element.page.uc);
         }
         if (hasForm()) {
             addJsImport("{ Form }", "antd");
 
             if (addImportForm && inlineForm) {
                 addJsImport("{ FormulaireInline }", "waxant");
+            } else if (addImportForm && horizontalForm) {
+                addJsImport("{ FormulaireHorizontal }", "waxant");
             } else if (addImportForm) {
                 addJsImport("{ Formulaire }", "waxant");
             }
@@ -143,13 +138,17 @@ public class ViewFlow extends JsFlow {
         if (hasState()) {
             addJsImport("{ useState }", "react");
         }
-        if (hasExecute()) {
-            addJsImport("{ useExecute }", "waxant");
-        }
+
 
         if (hasEventBus()) {
             addJsImport("{ useEventBus }", "waxant");
             addJsImport("{ APP_EVENT }", "commun");
+        }
+
+        if (faIcone != null) {
+            addJsImport("{ " + faIcone + " }", "@fortawesome/free-solid-svg-icons");
+            addJsImport("{ FontAwesomeIcon }", "@fortawesome/react-fontawesome");
+
         }
         super.flushJsImportBloc();
     }
@@ -186,18 +185,23 @@ public class ViewFlow extends JsFlow {
         this.dispatch = true;
     }
 
+    public boolean hasOnChange() {
+        return onChange;
+    }
+
+    public void useOnChange() {
+        this.onChange = true;
+    }
+
     public void usePret() {
         this.pret = true;
         addState("pret", "false");
     }
 
-    public String getPretCondition() {
-        return this.pret ? "pret && " : "";
+    public boolean hasPret() {
+        return this.pret;
     }
 
-    public String getPretArray() {
-        return this.pret ? "pret" : "";
-    }
 
     public boolean hasEventBus() {
         return eventBus;
@@ -215,30 +219,17 @@ public class ViewFlow extends JsFlow {
         this.effect = true;
     }
 
-    public void useSelector() {
-        this.selector = true;
+
+    public void useFontAwesome(String faIcone) {
+        this.faIcone = faIcone;
     }
 
     public boolean hasSelector() {
         return selectorSet.size() > 0;
     }
 
-    public boolean hasSpecificSelector() {
-        return selector || specificSelectorSet.size() > 0;
-    }
-
     public void addSelector(String selector) {
         selectorSet.add(selector);
-    }
-
-    public void addSpecificSelector(String varName, String importPath) {
-        specificSelectorSet.put(varName, StringUtils.capitalize(varName));
-        specificSelectorImportSet.put(StringUtils.capitalize(varName), importPath);
-    }
-
-    public void addSpecificSelector(String varName, String selectorName, String importPath) {
-        specificSelectorSet.put(varName, selectorName);
-        specificSelectorImportSet.put(selectorName, importPath);
     }
 
     public boolean hasState() {
@@ -249,13 +240,6 @@ public class ViewFlow extends JsFlow {
         return execute != null;
     }
 
-    public void useExecute() {
-        this.execute = "execute";
-    }
-
-    public void useExecute(String type) {
-        this.execute = type;
-    }
 
     public boolean hasForm() {
         return form != null;
@@ -267,6 +251,11 @@ public class ViewFlow extends JsFlow {
 
     public void useInLineForm() {
         this.inlineForm = true;
+        this.form = "form";
+    }
+
+    public void useHorizontalForm() {
+        this.horizontalForm = true;
         this.form = "form";
     }
 
@@ -297,7 +286,7 @@ public class ViewFlow extends JsFlow {
 
     public void addProp(String prop) {
         if (prop != null) {
-            propSet.add(prop);
+            propSet.add(StringUtils.substringBefore(prop, ":"));
         }
     }
 
@@ -316,11 +305,9 @@ public class ViewFlow extends JsFlow {
         return totalScript;
     }
 
-
-
-    public void cleanUiBuilder() {
-        if (uiBuilder.length() > 0 && uiBuilder.charAt(uiBuilder.length() - 1) == '\n') {
-            uiBuilder.deleteCharAt(uiBuilder.length() - 1);
-        }
+    public Flow totalUi() {
+        return totalUi;
     }
+
+
 }

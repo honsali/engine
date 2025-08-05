@@ -2,24 +2,27 @@ package dev.cruding.engine.gen;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.Action.ActionType;
-import dev.cruding.engine.action.changerPage.ActionChangerPageChercher;
-import dev.cruding.engine.action.changerPage.ActionChangerPageLister;
 import dev.cruding.engine.action.chercher.ActionChercher;
 import dev.cruding.engine.action.crud.ActionCreer;
 import dev.cruding.engine.action.crud.ActionEnregistrer;
+import dev.cruding.engine.action.crud.ActionModifierParDialogue;
 import dev.cruding.engine.action.crud.ActionSupprimer;
+import dev.cruding.engine.action.filtrer.ActionFiltrer;
 import dev.cruding.engine.action.impl.ActionVide;
-import dev.cruding.engine.action.impl.AppliquerFiltre;
-import dev.cruding.engine.action.impl.InitialiserFiltre;
 import dev.cruding.engine.action.inViewOnly.ActionConsulterElement;
 import dev.cruding.engine.action.inViewOnly.ActionEvent;
 import dev.cruding.engine.action.inViewOnly.ActionGoToModule;
 import dev.cruding.engine.action.inViewOnly.ActionGoToPage;
+import dev.cruding.engine.action.inViewOnly.ActionInitialiserMdl;
+import dev.cruding.engine.action.inViewOnly.ActionRecupererEnSession;
+import dev.cruding.engine.action.inViewOnly.AppliquerFiltre;
+import dev.cruding.engine.action.inViewOnly.InitialiserFiltre;
 import dev.cruding.engine.action.init.ActionInitCreation;
 import dev.cruding.engine.action.init.ActionInitModification;
 import dev.cruding.engine.action.lister.ActionLister;
+import dev.cruding.engine.action.listerEnPage.ActionListerEnPage;
+import dev.cruding.engine.action.rechargerPage.ActionRechargerPageFiltrer;
 import dev.cruding.engine.action.recuperer.ActionRecupererDepuisMdl;
-import dev.cruding.engine.action.recuperer.ActionRecupererEnSession;
 import dev.cruding.engine.action.recuperer.ActionRecupererParChamp;
 import dev.cruding.engine.action.specifique.ActionSpecifique;
 import dev.cruding.engine.champ.Champ;
@@ -36,9 +39,12 @@ import dev.cruding.engine.composant.bouton.Bouton;
 import dev.cruding.engine.composant.bouton.ElementBoutonComposer;
 import dev.cruding.engine.composant.conteneur.Bloc;
 import dev.cruding.engine.composant.conteneur.BlocAction;
+import dev.cruding.engine.composant.conteneur.BlocInline;
 import dev.cruding.engine.composant.conteneur.CadreBas;
 import dev.cruding.engine.composant.conteneur.CadreHaut;
 import dev.cruding.engine.composant.conteneur.Conteneur;
+import dev.cruding.engine.composant.conteneur.Div;
+import dev.cruding.engine.composant.conteneur.EnColonne;
 import dev.cruding.engine.composant.conteneur.FilAriane;
 import dev.cruding.engine.composant.conteneur.MenuOnglet;
 import dev.cruding.engine.composant.conteneur.Panneau;
@@ -48,8 +54,11 @@ import dev.cruding.engine.composant.conteneur.PlaqueEtat;
 import dev.cruding.engine.composant.conteneur.Section;
 import dev.cruding.engine.composant.conteneur.Separateur;
 import dev.cruding.engine.composant.conteneur.SiCondition;
+import dev.cruding.engine.composant.conteneur.Space;
+import dev.cruding.engine.composant.conteneur.Span;
+import dev.cruding.engine.composant.entite.ActionDialogue;
+import dev.cruding.engine.composant.entite.ContexteBoutonProvider;
 import dev.cruding.engine.composant.entite.Etat;
-import dev.cruding.engine.composant.entite.Filtre;
 import dev.cruding.engine.composant.entite.Formulaire;
 import dev.cruding.engine.composant.entite.Tableau;
 import dev.cruding.engine.element.ComposantRepresentantUnElement;
@@ -106,20 +115,25 @@ public abstract class ElementComposer {
         return new ActionSpecifique(ActionType.NORMALE, ltype, entite, element);
     }
 
-    public Action actionNormaleVide(Entite entite, String ltype) {
-        return new ActionVide(ActionType.NORMALE, ltype, entite, element);
+    public Action actionNormaleInViewOnly(Entite entite, String ltype) {
+        return new ActionVide(ActionType.NORMALE, ltype, entite, element).isVide(false);
     }
 
     public Action actionConfirmer(Entite entite, String ltype) {
         return new ActionSpecifique(ActionType.CONFIRMER, ltype, entite, element);
     }
 
-    public Action actionUcSpec(Entite entite, String ltype) {
+
+    public Action actionUca(Entite entite, String ltype) {
         return new ActionSpecifique(ActionType.UCA, ltype, entite, element);
     }
 
-    public Action recupererParId(Entite entite) {
-        return new ActionRecupererParChamp(entite, element, "Id");
+    public Action actionNoui(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.NOUI, ltype, entite, element);
+    }
+
+    public Action actionDansDialogue(Entite entite, String ltype) {
+        return new ActionSpecifique(ActionType.DIALOGUE, ltype, entite, element);
     }
 
     public Action actionCreer(Entite entite) {
@@ -154,6 +168,10 @@ public abstract class ElementComposer {
         return new ActionRecupererParChamp(entite, element, field.uname);
     }
 
+    public Action initialiserMdl(Entite entite) {
+        return new ActionInitialiserMdl(entite, element);
+    }
+
     public Action initCreation(Entite entite, Champ... listeChamp) {
         return new ActionInitCreation(entite, element, listeChamp);
     }
@@ -182,9 +200,24 @@ public abstract class ElementComposer {
         return new ActionLister(entite, element);
     }
 
+    public Action listerToutEnPage(Entite entite) {
+        return new ActionListerEnPage(entite, element);
+    }
 
     public Action consulterElement(Entite entite) {
         return new ActionConsulterElement(entite, element).inViewOnly();
+    }
+
+    public Action modifierParDialogue(Entite entite) {
+        return new ActionModifierParDialogue(entite, element).inViewOnly();
+    }
+
+    public Action recupererEnSession(Entite entite) {
+        return new ActionRecupererEnSession(entite, element, null);
+    }
+
+    public Action recupererEnSession(String variable) {
+        return new ActionRecupererEnSession(null, element, variable);
     }
 
     public Action recupererEnSession(Entite entite, String variable) {
@@ -199,53 +232,97 @@ public abstract class ElementComposer {
         return new ActionChercher(entite, element);
     }
 
-    public Action appliquerFiltre(Entite entite) {
-        return new AppliquerFiltre(entite, element);
+    public ActionFiltrer filtrer(Entite entite) {
+        return new ActionFiltrer(entite, element, true);
     }
 
-    public Action initialiserFiltre(Entite entite) {
-        return new InitialiserFiltre(entite, element);
+    public ActionFiltrer filtrerSansPagination(Entite entite) {
+        return new ActionFiltrer(entite, element, false);
     }
 
 
-    public Section section(Composant... ComposantList) {
-        return new Section(element, ComposantList);
+    public Action rechargerPageFiltrer(Entite entite) {
+        return new ActionRechargerPageFiltrer(entite, element);
     }
 
-    public Section section(Entite entite, Composant... ComposantList) {
-        return new Section(element, entite, ComposantList);
+    public AppliquerFiltre appliquerFiltre(Entite entite, Action a) {
+        return new AppliquerFiltre(entite, element, a);
     }
 
-    public Bloc bloc(Composant... ComposantList) {
-        return new Bloc(element, ComposantList);
+
+    public Action initialiserFiltre(Entite entite, Action action) {
+        return new InitialiserFiltre(entite, element, action);
     }
 
-    public CadreBas cadreBas(Composant... ComposantList) {
-        return new CadreBas(element, ComposantList);
+    public Section section(Composant... listeComposant) {
+        return new Section(element, listeComposant);
     }
 
-    public Conteneur cadreHaut(Composant... ComposantList) {
-        return new CadreHaut(element, ComposantList);
+    public Section section(Entite entite, Composant... listeComposant) {
+        return new Section(element, entite, listeComposant);
+    }
+
+    public Bloc bloc(Composant... listeComposant) {
+        return new Bloc(element, listeComposant);
+    }
+
+    public BlocInline blocInline(Composant... listeComposant) {
+        return new BlocInline(element, listeComposant);
+    }
+
+
+    public EnColonne enColonne(Composant... listeComposant) {
+        return new EnColonne(element, listeComposant);
+    }
+
+    public Div div(Composant... listeComposant) {
+        return new Div(element, listeComposant);
+    }
+
+    public Span span(String texte) {
+        return new Span(element, texte);
+    }
+
+    public Space space(Composant... listeComposant) {
+        return new Space(element, listeComposant);
+    }
+
+
+    public CadreBas cadreBas(Composant... listeComposant) {
+        return new CadreBas(element, listeComposant);
+    }
+
+    public Conteneur cadreHaut(Composant... listeComposant) {
+        return new CadreHaut(element, listeComposant);
     }
 
     public Composant plaqueEtat(Entite e) {
         return new PlaqueEtat(element, e);
     }
 
-    public Panneau panneau(Composant... ComposantList) {
-        return new Panneau(element, ComposantList);
+    public Panneau panneau(Composant... listeComposant) {
+        return new Panneau(element, listeComposant);
     }
 
-    public PanneauFiltre panneauFiltre(Entite entite, Composant... ComposantList) {
-        return new PanneauFiltre(element, entite, ComposantList);
+    public Panneau panneau(Entite entite, Composant... listeComposant) {
+        return new Panneau(element, entite, listeComposant);
     }
 
-    public PanneauEtendable panneauEtendable(Composant... ComposantList) {
-        return new PanneauEtendable(element, ComposantList);
+
+    public PanneauFiltre panneauFiltre(Entite entite, Composant... listeComposant) {
+        return new PanneauFiltre(element, entite, false, listeComposant);
     }
 
-    public MenuOnglet menuOnglet(Composant... ComposantList) {
-        return new MenuOnglet(element, ComposantList);
+    public PanneauFiltre panneauFiltre(Entite entite, boolean initialiserRecherche, Composant... listeComposant) {
+        return new PanneauFiltre(element, entite, initialiserRecherche, listeComposant);
+    }
+
+    public PanneauEtendable panneauEtendable(Composant... listeComposant) {
+        return new PanneauEtendable(element, listeComposant);
+    }
+
+    public MenuOnglet menuOnglet(Composant... listeComposant) {
+        return new MenuOnglet(element, listeComposant);
     }
 
     public Etat etat(Entite e, Champ... listeChamp) {
@@ -260,52 +337,65 @@ public abstract class ElementComposer {
         return new Formulaire(element, e, listeChamp);
     }
 
-    public Filtre filtre(Entite e, Champ... listeChamp) {
-        return new Filtre(element, e, listeChamp);
-    }
-
     public Composant separateur() {
         return new Separateur(element);
     }
 
-    public Composant siVrai(String condition, Composant... ComposantList) {
-        return new SiCondition(element, condition, "siVrai", false, ComposantList);
+    public ContexteBoutonProvider actionDialogue(Entite e, String typeBouton, Champ... listeChamp) {
+        return new ContexteBoutonProvider(element, typeBouton, new ActionDialogue(element, e, listeChamp));
     }
 
-    public Composant siVraiInLine(String condition, Composant... ComposantList) {
-        return new SiCondition(element, condition, "siVrai", true, ComposantList);
+    public ActionDialogue actionDialogue(Entite e, Champ... listeChamp) {
+        return new ActionDialogue(element, e, listeChamp);
     }
 
-    public Composant siFaux(String condition, Composant... ComposantList) {
-        return new SiCondition(element, condition, "siFaux", false, ComposantList);
+    public Composant siVrai(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "siVrai", false, listeComposant);
     }
 
-    public Composant siNonVide(String condition, Composant... ComposantList) {
-        return new SiCondition(element, condition, "siNonVide", false, ComposantList);
+    public Composant siVraiInLine(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "siVrai", true, listeComposant);
+    }
+
+    public Composant siFaux(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "siFaux", false, listeComposant);
+    }
+
+    public Composant siNonVide(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "nonVide", false, listeComposant);
+    }
+
+    public Composant siNonVideInLine(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "nonVide", true, listeComposant);
+    }
+
+    public Composant siVide(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "estVide", false, listeComposant);
+    }
+
+    public Composant siVideInLine(String condition, Composant... listeComposant) {
+        return new SiCondition(element, condition, "estVide", true, listeComposant);
     }
 
     public Composant separateur(int height) {
         return new Separateur(element, height);
     }
 
-    public Tableau tableauPagine(Entite e, Champ... listeChamp) {
-        return new Tableau(element, e, new ActionChangerPageLister(e, element), listeChamp);
-    }
-
-    public Tableau tableauResultatPagine(Entite e, Champ... listeChamp) {
-        return new Tableau(element, e, new ActionChangerPageChercher(e, element), listeChamp);
-    }
 
     public Tableau tableau(Entite e, Champ... listeChamp) {
         return new Tableau(element, e, listeChamp);
     }
 
-    public Composant blocAction(Composant... ComposantList) {
-        return new BlocAction(element, ComposantList);
+    public Composant blocAction(Composant... listeComposant) {
+        return new BlocAction(element, listeComposant);
     }
 
-    public Champ liste(Champ f) {
-        return new Liste((Ref<?>) (f));
+
+    public Liste<?> liste(Champ f) {
+        if (f instanceof Ref) {
+            return new Liste<>((Ref<?>) f);
+        }
+        return null;
     }
 
     public Champ tag(Champ f) {
@@ -324,9 +414,27 @@ public abstract class ElementComposer {
         return new Custom(lname);
     }
 
-    public Champ action(Bouton b) {
-        return new ColonneAction(b);
+    public Champ colonneAction(Entite entite, Bouton bouton) {
+        return new ColonneAction(entite, bouton);
     }
+
+
+    public Champ colonneAction(Entite entite, Action action) {
+        return new ColonneAction(entite, action);
+    }
+
+    public Champ colonneAction(Entite entite, String lname, ComposantRepresentantUnElement c) {
+        return new ColonneAction(entite, lname + entite.uname, c);
+    }
+
+    public Champ colonneActionModifier(Entite entite, ComposantRepresentantUnElement c) {
+        return new ColonneAction(entite, "modifier" + entite.uname, c);
+    }
+
+    public Champ colonneActionSupprimer(Entite entite, ComposantRepresentantUnElement c) {
+        return new ColonneAction(entite, "supprimer" + entite.uname, c);
+    }
+
 
     public Champ cache(Champ f) {
         return new Cache(f);
@@ -336,8 +444,8 @@ public abstract class ElementComposer {
         return new Rendu(lname);
     }
 
-    public FilAriane filAriane(String uname, Composant... ComposantList) {
-        return new FilAriane(element, uname, ComposantList);
+    public FilAriane filAriane(String uname, Composant... listeComposant) {
+        return new FilAriane(element, uname, listeComposant);
     }
 
 }

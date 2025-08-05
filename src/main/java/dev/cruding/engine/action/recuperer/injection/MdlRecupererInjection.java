@@ -5,13 +5,14 @@ import dev.cruding.engine.injection.MdlActionInjection;
 
 public class MdlRecupererInjection extends MdlActionInjection {
 
-
     public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
-        f.addMdlRequestAttribute("id" + entite().uname, "string");
+        if (!enTantQueListe()) {
+            f.addMdlRequestAttribute("id" + entite().uname, "string");
+        }
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
         }
@@ -21,22 +22,29 @@ public class MdlRecupererInjection extends MdlActionInjection {
     }
 
     public void addMdlResultAttribute(MdlFlow f) {
-        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
+        if (enTantQueListe()) {
+            f.addMdlResultAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
+        } else {
+            f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
+        }
     }
 
     public void addMdlStateAttribute(MdlFlow f) {
-        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
+        if (enTantQueListe()) {
+            f.addMdlStateAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
+            f.addMdlSelectorAttribute("liste" + entite().uname, "Liste" + entite().uname);
+        } else {
+            f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
+            f.addMdlSelectorAttribute(entite().lname, entite().uname);
+        }
     }
 
-    public void addMdlSelector(MdlFlow f) {
-        f.L("export const select", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.", entite().lname, ");");
-    }
-
-    public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
-        f.L________________("state.resultat = action.payload;");
-        f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
-        f.L____________("})");
+    public void addMdlExtraReducerAffectation(MdlFlow f) {
+        if (enTantQueListe()) {
+            f.L________________("state.liste", entite().uname, " = action.payload.liste", entite().uname, ";");
+        } else {
+            f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
+        }
     }
 
 }

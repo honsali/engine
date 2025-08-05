@@ -1,5 +1,8 @@
 package dev.cruding.engine.action.specifique.injection;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
@@ -11,54 +14,87 @@ import dev.cruding.engine.injection.ViewActionInjection;
 public class ViewSpecifiqueInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow flow) {
-        flow.addJsImport("Ctrl" + uc(), "../Ctrl" + uc());
-        if (byEntite()) {
+        List<Action> siReussiUiActionList = null;
+
+        if (hasReussi()) {
+            ArrayList<Action> siReussiActionList = siReussi();
+            siReussiUiActionList = siReussiActionList;// .stream().filter(sr -> sr.inViewOnly).toList();
+        }
+        if (parEntite()) {
             flow.addProp(entite().lname);
         }
-        if (!this.inViewOnly()) {
-            flow.useExecute();
-            flow.totalScript().L____("const " + lnameAvecEntite() + " = () => {");
-            flow.totalScript().L________("execute(Ctrl" + page().uc + "." + lnameAvecEntite());
-            if (this.byForm()) {
-                flow.totalScript().__(", { form }");
+
+
+        if (!this.inViewOnly() && !this.noUi() && !this.ucDialogue()) {
+            flow.addSelector(lnameAvecEntite());
+
+            if (hasReussi() || confirmer()) {
+                flow.addSelector("etat" + unameAvecEntite());
             }
-            if (byEntite()) {
-                flow.totalScript().__(", { " + entite().lname + " }");
+            flow.totalScript().__("\n");
+
+            if (this.parForm() || siReussi().stream().anyMatch(a -> a.parForm)) {
+                flow.addParam("form");
+                flow.useForm();
             }
-            flow.totalScript().__(");");
+            if (parProp() != null) {
+                flow.addParam(parProp());
+            }
+            if (element().parProp != null) {
+                String p = StringUtils.substringBefore(element().parProp, ":");
+                if (parId()) {
+                    flow.addParam("id" + StringUtils.capitalize(p) + ": " + p + ".id");
+                } else {
+                    flow.addParam(p);
+                }
+            }
+            if (parEntite()) {
+                if (parId()) {
+                    flow.addParam("id" + entite().uname + ": " + entite().lname + ".id");
+                } else {
+                    flow.addParam(entite().lname);
+                }
+            }
+            if (parChamp() != null) {
+                flow.addParam(parChamp().lname);
+            }
+            if (flow.hasParams()) {
+                flow.totalScript().L____("const ", lnameSansEntite(), " = () => {");
+                flow.totalScript().L________(lnameAvecEntite(), "({ ", flow.joinParams(), " });");
+                flow.totalScript().L____("};");
+            }
+
+        } else if (this.inViewOnly()) {
+            flow.totalScript().L____("const ", lnameAvecEntite(), " = () => {");
             flow.totalScript().L____("};");
         }
 
-        if (hasReussi()) {
-            flow.useExecute("execute, success, rid");
-        } else if (this.confirmer()) {
-            flow.useExecute("execute, rid");
-        } else {
-            flow.useExecute("execute");
-        }
-        if (this.confirmer() || hasReussi()) {
-            flow.addSpecificSelector("resultat", page().uc + "Resultat", "../Mdl" + page().uc);
-        }
-
-        if (hasReussi()) {
+        if (siReussiUiActionList != null && siReussiUiActionList.size() > 0) {
+            String args = null;
+            if (resultatIn() != null) {
+                flow.addSelector(resultatIn().lname + entite().uname);
+                args = resultatIn().lname + entite().uname;
+            }
             flow.useEffect();
             flow.totalScript().__("\n");
             flow.totalScript().L____("useEffect(() => {");
-
-            flow.totalScript().L________("if (success) {");
-            for (Action siReussiAction : siReussi()) {
-                siReussiAction.viewActionInjection.addFlowScript(flow, 2);
+            flow.totalScript().L________("if (etat", unameAvecEntite(), ".succes) {");
+            flow.totalScript().L____________("resetEtat", unameAvecEntite(), "();");
+            for (Action siReussiAction : siReussiUiActionList) {
+                if (siReussiAction.viewActionInjection != null) {
+                    siReussiAction.viewActionInjection.addFlowScript(flow, 2, args);
+                } else {
+                    flow.totalScript().L____________(siReussiAction.lnameAvecEntite);
+                    System.out.println(siReussiAction.lnameAvecEntite);
+                }
             }
             flow.totalScript().L________("}");
-            flow.totalScript().L____("}, [success]);");
-        }
+            flow.totalScript().L____("}, [etat", unameAvecEntite(), ".succes]);");
 
+            flow.addSelector("resetEtat" + unameAvecEntite());
+        }
         return false;
     }
-
-    public void addFlowScript(ViewFlow flow, int level) {}
-
-
 
     public void addI18n(Flow f) {
         if (!noUi()) {
@@ -70,7 +106,6 @@ public class ViewSpecifiqueInjection extends ViewActionInjection {
                 String titreConfirmation = LabelMapper.getInstance().titreConfirmation(lnameSansEntite(), e);
                 String enteteConfirmation = LabelMapper.getInstance().enteteConfirmation(lnameSansEntite(), e);
                 String messageSuccess = LabelMapper.getInstance().messageSuccess(lnameSansEntite(), e);
-
 
                 String key = "Action" + page().module.unameLast + "." + "Uc" + uc() + "." + actionKey();
                 f.L____("[", key, "]", ": '", nomAction, "',");

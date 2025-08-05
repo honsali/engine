@@ -24,9 +24,11 @@ public class FeAclModule extends Printer {
             if (page.estReelle()) {
 
 
-                List<Action> listeAction = new ArrayList<>(Contexte.getInstance().allActionPage(page));
+                List<Action> listeAction = new ArrayList<>(Contexte.getInstance().actionPage(page));
                 for (Action action : listeAction) {
-                    f.L____("Action", module.unameLast, ".Uc", page.uc, ".", action.actionKey, ",//");
+                    if (!action.actionKey.startsWith("#")) {
+                        f.L____("Action", module.unameLast, ".Uc", page.uc, ".", action.actionKey, ",//");
+                    }
                 }
                 f.L("");
             }

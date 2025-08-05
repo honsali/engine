@@ -9,7 +9,8 @@ public class ActionCreer extends ActionSpecifique {
 
     public ActionCreer(Entite entite, Element element) {
         super(ActionType.UCA, "creer", entite, element);
-        confirmer().byForm().resultatInId().lrest("post");
+        icone("faAdd");
+        confirmer().parForm().resultatIn(entite.id_).lrest("post");
     }
 
     public void overrideActionInjection() {

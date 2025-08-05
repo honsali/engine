@@ -16,8 +16,10 @@ public class CtrlChangerPageListerInjection extends CtrlActionInjection {
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("requete.id" + entite().ugrandPere, ", ");
         }
-        f.__("requete.id", entite().upere);
-        f.__(", requete.pageCourante);");
+        if (parIdPere() && entite().havePere) {
+            f.__("requete.id", entite().upere, ", ");
+        }
+        f.__("requete.pageCourante);");
         f.L("};");
     }
 

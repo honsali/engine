@@ -15,7 +15,7 @@ public class Liste<T extends Entite> extends Ref<T> {
     }
 
     public String getExtension() {
-        return " liste={liste" + jtype + "}";
+        return " liste={liste" + uname + "}";
     }
 
     @Override
@@ -33,6 +33,6 @@ public class Liste<T extends Entite> extends Ref<T> {
     }
 
     protected Ref<T> initCopy() {
-        return new Liste(type, lname);
+        return new Liste<T>(type, lname);
     }
 }

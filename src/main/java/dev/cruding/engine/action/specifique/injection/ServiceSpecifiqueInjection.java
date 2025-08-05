@@ -18,19 +18,15 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
             f.__("id" + entite().upere, ": string, ");
             withComma = true;
         }
-        if (byId()) {
+        if (parId()) {
             f.__("id", entite().uname, ": string, ");
             withComma = true;
         }
-        if (byChamp() != null) {
-            f.__("", byChamp().lname, ", ");
+        if (parChamp() != null) {
+            f.__("", parChamp().lname, ", ");
             withComma = true;
         }
-        if (child() != null) {
-            f.__("liste" + child().uname, ", ");
-            withComma = true;
-        }
-        if (byForm()) {
+        if (parForm()) {
             f.__(entite().lname, ": I", entite().uname, ", ");
             withComma = true;
         }
@@ -45,16 +41,16 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
         if (parIdPere() && entite().havePere) {
             f.__("/", entite().lpere, "/${id" + entite().upere, "}");
         }
-        if (byId()) {
+        if (parId()) {
             f.__("/${id", entite().uname, "}");
         }
         f.__("`");
-        if (byForm() || byEntite()) {
+        if (parForm() || parEntite()) {
             f.__(", ", entite().lname);
         }
         f.__(")).data");
-        if (resultatInId()) {
-            f.__(".id");
+        if (resultatIn() != null) {
+            f.__(".", resultatIn().lname);
         }
         f.__(";");
         f.L("};");

@@ -9,6 +9,7 @@ public class ActionVide extends Action {
     public ActionVide(ActionType type, String lcoreName, Entite entite, Element element) {
         super(type, lcoreName, entite, element);
         this.isVide = true;
+        inViewOnly();
     }
 
 

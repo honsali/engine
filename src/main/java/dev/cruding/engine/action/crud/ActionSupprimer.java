@@ -10,7 +10,7 @@ public class ActionSupprimer extends ActionSpecifique {
 
     public ActionSupprimer(Entite entite, Element element) {
         super(ActionType.UCA, "supprimer", entite, element);
-        confirmer().byId().lrest("delete");
+        confirmer().lrest("delete");
     }
 
     public void overrideActionInjection() {

@@ -7,11 +7,9 @@ public class ViewListerEnPageInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("execute(Ctrl", uc(), ".", lnameAvecEntite(), ");");
+        f.totalScript().L________(lnameAvecEntite(), "();");
         f.totalScript().L____("}, []);");
-        f.useExecute();
         f.useEffect();
-        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
         return true;
     }
 }

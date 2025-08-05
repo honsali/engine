@@ -3,12 +3,14 @@ package dev.cruding.engine.champ;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
+import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Contexte;
 
 public class Champ {
@@ -21,7 +23,7 @@ public class Champ {
     public String jtype;
     public String stype;
     public String jstype;
-    public boolean required;
+    public boolean requis;
 
     public boolean isRef;
     public boolean isRefMany;
@@ -33,12 +35,13 @@ public class Champ {
     public boolean cloned = false;
 
     public String libelle;
-    public int width;
-    public boolean readOnly;
-    public String readOnlyIf;
+    public int largeur;
+    public boolean lectureSeule;
+    public String lectureSeuleSi;
     public String invisibleSi;
     public String videSi;
     public String siChange;
+    public Action siChangeAction;
     public boolean avecVariable;
     public boolean seulDansLaLigne;
     public boolean surTouteLaLigne;
@@ -91,9 +94,9 @@ public class Champ {
         return this;
     }
 
-    public Champ width(int width) {
+    public Champ largeur(int largeur) {
         Champ p = makeCopy();
-        p.width = width;
+        p.largeur = largeur;
         return p;
     }
 
@@ -103,9 +106,9 @@ public class Champ {
         return p;
     }
 
-    public Champ required() {
+    public Champ requis() {
         Champ p = makeCopy();
-        p.required = true;
+        p.requis = true;
         return p;
     }
 
@@ -121,7 +124,6 @@ public class Champ {
         return p;
     }
 
-
     public Champ reference(String reference) {
         Champ p = makeCopy();
         p.reference = reference;
@@ -131,19 +133,19 @@ public class Champ {
     public Champ isId() {
         Champ p = makeCopy();
         p.isId = true;
-        p.required = true;
+        // p.requis = true;
         return p;
     }
 
-    public Champ readOnly() {
+    public Champ lectureSeule() {
         Champ p = makeCopy();
-        p.readOnly = true;
+        p.lectureSeule = true;
         return p;
     }
 
-    public Champ readOnlyIf(String readOnlyIf) {
+    public Champ lectureSeuleSi(String lectureSeuleSi) {
         Champ p = makeCopy();
-        p.readOnlyIf = readOnlyIf;
+        p.lectureSeuleSi = lectureSeuleSi;
         return p;
     }
 
@@ -168,6 +170,13 @@ public class Champ {
     public Champ siChange(String siChange) {
         Champ p = makeCopy();
         p.siChange = siChange;
+        return p;
+    }
+
+    public Champ siChange(Action action) {
+        Champ p = makeCopy();
+        p.siChange = "";
+        p.siChangeAction = action;
         return p;
     }
 
@@ -249,7 +258,7 @@ public class Champ {
     }
 
     public void addJavaImport(JavaFlow f) {
-        if (required) {
+        if (requis) {
             f.addJavaImport("jakarta.validation.constraints.NotNull");
         }
         if (tranzient) {
@@ -265,16 +274,18 @@ public class Champ {
 
     }
 
+    public void addViewScript(ViewFlow f, String uc, String mvcPath) {}
+
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
-        if (required) {
+        if (requis) {
             f.L____("@NotNull");
         }
         if (tranzient) {
             f.L____("@Transient");
         } else {
             f.L____("@Column(name = \"" + dbName + "\"");
-            if (required) {
+            if (requis) {
                 f.__(", nullable = false");
             }
             f.__(")");
@@ -295,7 +306,7 @@ public class Champ {
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"" + stype + "\">");
-        f.L________________("<constraints nullable=\"" + !required + "\" />");
+        f.L________________("<constraints nullable=\"" + !requis + "\" />");
         f.L____________("</column>");
     }
 
@@ -339,7 +350,7 @@ public class Champ {
         to.stype = from.stype;
         to.jstype = from.jstype;
 
-        to.required = from.required;
+        to.requis = from.requis;
         to.isRef = from.isRef;
         to.isRefMany = from.isRefMany;
         to.isChild = from.isChild;
@@ -348,12 +359,13 @@ public class Champ {
         to.isId = from.isId;
 
         to.libelle = from.libelle;
-        to.width = from.width;
-        to.readOnly = from.readOnly;
-        to.readOnlyIf = from.readOnlyIf;
+        to.largeur = from.largeur;
+        to.lectureSeule = from.lectureSeule;
+        to.lectureSeuleSi = from.lectureSeuleSi;
         to.invisibleSi = from.invisibleSi;
         to.videSi = from.videSi;
         to.siChange = from.siChange;
+        to.siChangeAction = from.siChangeAction;
         to.avecVariable = from.avecVariable;
         to.seulDansLaLigne = from.seulDansLaLigne;
         to.surTouteLaLigne = from.surTouteLaLigne;

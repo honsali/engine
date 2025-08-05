@@ -17,8 +17,10 @@ public class Element {
     public String name;
     public Page page;
     public Composant composantRacine;
-    public boolean byForm = false;
-    public String byProp = null;
+    public boolean parForm = false;
+    public boolean parEntite = false;
+    public String parProp = null;
+    public boolean fake = false;
 
 
     public Element(String name, String relativePath) {
@@ -47,13 +49,18 @@ public class Element {
         this.composantRacine = composant;
     }
 
-    public Element byForm() {
-        this.byForm = true;
+    public Element parForm() {
+        this.parForm = true;
         return this;
     }
 
-    public Element byProp(String byProp) {
-        this.byProp = byProp;
+    public Element parEntite() {
+        this.parEntite = true;
+        return this;
+    }
+
+    public Element parProp(String parProp) {
+        this.parProp = parProp;
         return this;
     }
 

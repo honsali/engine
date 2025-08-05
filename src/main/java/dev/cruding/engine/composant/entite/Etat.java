@@ -6,18 +6,18 @@ import dev.cruding.engine.composant.Composant;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.ViewFlow;
+import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.helper.Util;
 
 public class Etat extends Composant {
 
-    public int colNumber = 2;
+    public int nombreColonne = 2;
     public int largeur = 0;
     public Champ field;
 
     public Etat(Entite entite, Element element, Champ... listeChamp) {
         super(element, entite, listeChamp);
     }
-
 
     public Etat(Champ field, Entite entite, Element element, Champ... listeChamp) {
         super(element, entite, listeChamp);
@@ -38,7 +38,7 @@ public class Etat extends Composant {
     }
 
     public void addScript(ViewFlow flow) {
-        flow.addSpecificSelector(entite.lname, "../Mdl" + element.page.uc);
+        flow.addSelector(entite.lname);
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
@@ -47,35 +47,36 @@ public class Etat extends Composant {
         } else {
             indent(flow, level).append("<FormulaireConsultation modele={" + entite.lname + "}");
         }
-        if (colNumber != 2) {
-            flow.addToUi(" nombreColonne={" + colNumber + "}");
+        if (nombreColonne != 2) {
+            flow.totalUi().__(" nombreColonne={" + nombreColonne + "}");
         }
-        flow.addToUi(">");
+        flow.totalUi().__(">");
         for (Champ c : listeChamp) {
             indent(flow, level + 1).append("<" + c.ui(Element.DETAIL) + " nom=\"" + c.lname + "\"");
             if (c.libelle != null) {
-                flow.addToUi(" libelle=\"" + c.libelle + "\"");
+                flow.totalUi().__(" libelle=\"" + c.libelle + "\"");
             }
-            if (c.width > 0) {
-                flow.addToUi(" width={" + c.width + "}");
+            if (c.largeur > 0) {
+                flow.totalUi().__(" width={" + c.largeur + "}");
             }
-            flow.addToUi(c.getExtension());
+            flow.totalUi().__(c.getExtension());
             if (c.invisibleSi != null) {
-                flow.addToUi(" invisible={" + c.invisibleSi + "}");
+                flow.totalUi().__(" invisible={" + c.invisibleSi + "}");
             }
             if (c.videSi != null) {
-                flow.addToUi(" invisible={" + c.videSi + "}");
+                flow.totalUi().__(" invisible={" + c.videSi + "}");
             }
             if (c.seulDansLaLigne) {
-                flow.addToUi(" seulDansLaLigne");
+                flow.totalUi().__(" seulDansLaLigne");
             }
             if (c.surTouteLaLigne) {
-                flow.addToUi(" surTouteLaLigne");
+                flow.totalUi().__(" surTouteLaLigne");
             }
-            flow.addToUi(" />");
-            if (c.videSi != null && colNumber == 2) {
+            flow.totalUi().__(" />");
+            if (c.videSi != null && nombreColonne == 2) {
                 indent(flow, level + 1).append("<ChampVide invisible={!" + c.videSi + "} />");
             }
+            Contexte.getInstance().addLabelPourChamp(element.page.module.uname, c);
         }
         return false;
     }
@@ -84,8 +85,8 @@ public class Etat extends Composant {
         indent(flow, level).append("</FormulaireConsultation>");
     }
 
-    public Etat colNumber(int colNumber) {
-        this.colNumber = colNumber;
+    public Etat nombreColonne(int nombreColonne) {
+        this.nombreColonne = nombreColonne;
         return this;
     }
 

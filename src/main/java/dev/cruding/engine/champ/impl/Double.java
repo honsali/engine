@@ -10,7 +10,6 @@ public class Double extends Champ {
         lname(lname).jtype("Double").jstype("number").stype("double");
     }
 
-
     public String ui(String element) {
         switch (element) {
             case Element.FORM:

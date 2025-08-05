@@ -1,8 +1,8 @@
 package dev.cruding.engine.composant.entite;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.action.inViewOnly.ActionSelectionDansMdl;
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.composant.Composant;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
@@ -15,37 +15,40 @@ public class Tableau extends Composant {
     public Action fillFrom;
     public int largeur = 0;
     public Action actionPagination;
-    public Action selection;
+    public boolean selection;
     public boolean pagine = false;
     public String sourceDonnee = "liste";
 
 
     public Tableau(Element element, Entite entite, Champ... listeChamp) {
-        this(element, entite, null, listeChamp);
-    }
-
-    public Tableau(Element element, Entite entite, Action action, Champ... listeChamp) {
         super(element, entite, listeChamp);
         inElement = true;
-        /*
-         * if (action != null) { this.actionPagination = new ActionChangerPage(ActionType.NOUI,
-         * "changerPage", entite, element).action(action); this.pagine = actionPagination != null; if
-         * (this.actionPagination != null) { actionPagination.inElement(inElement); } }
-         */
-        sourceDonnee = "liste" + (pagine ? "Paginee" : "") + entite.uname;
         Contexte.getInstance().addLabel(element.page.module.uname, "aucun." + entite.lname, (entite.setting.feminin ? "Aucune " : "Aucun ") + entite.setting.libelle);
+
     }
 
-    public Tableau onRowClick(Action action) {
+    public Tableau gererSelection(Entite e) {
+        this.selection = true;
+        new ActionSelectionDansMdl(e, element);
+        return this;
+    }
+
+    public Tableau siCliqueLigne(Action action) {
         action.inElement(inElement);
         action.byRow();
         this.onRowClickAction = action;
         return this;
     }
 
-    public Tableau fillFrom(Action action) {
+    public Tableau remplirPar(Action action) {
+        if (action.actionPagination != null) {
+            this.pagine = true;
+            action.actionPagination.element(this.element);
+        }
+
+        sourceDonnee = action.nomVariable != null ? action.nomVariable : "liste" + (pagine ? "Paginee" : "") + entite.uname;
         action.inElement(inElement);
-        action.paginee(this.pagine);
+        action.enTantQueListe();
         this.fillFrom = action;
         if (this.fillFrom.sourceDonnee != null) {
             sourceDonnee = this.fillFrom.sourceDonnee;
@@ -58,58 +61,49 @@ public class Tableau extends Composant {
         return this;
     }
 
-
     public void addImport(ViewFlow flow) {
-        flow.addJsImport("{ Bloc, Colonne, Tableau }", "waxant");
-        flow.addSpecificSelector(sourceDonnee, "../Mdl" + element.page.uc);
-        if (selection != null) {
-            flow.useDispatch();
-        }
+        flow.addJsImport("{ Colonne, Tableau }", "waxant");
+        flow.addSelector(sourceDonnee);
     }
 
     public void addScript(ViewFlow flow) {
         for (Champ c : listeChamp) {
-            if (c instanceof ChampRef) {
-                ((ChampRef) c).addViewScript(flow, element.page.uc, "..");
-            }
+            c.addViewScript(flow, element.page.uc, "..");
         }
-        if (selection != null) {
-            flow.totalScript().L____("const changerSelection = (liste) => {");
-            flow.totalScript().L________("dispatch(Mdl", element.page.uc, ".modifier", selection.unameAvecEntite, "(liste));");
-            flow.totalScript().L____("};");
-        }
+
         flow.totalScript().L("");
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
         if (pagine) {
             indent(flow, level).append("<Tableau listeDonnee={").append(sourceDonnee).append(".liste}");
-            flow.addToUi(" pagination={").append(sourceDonnee).append(".pagination}");
+            flow.totalUi().__(" pagination={").append(sourceDonnee).append(".pagination}");
         } else {
             indent(flow, level).append("<Tableau listeDonnee={").append(sourceDonnee).append("}");
         }
         if (onRowClickAction != null) {
-            flow.addToUi(" siClicLigne={").append(onRowClickAction.lnameAvecEntite).append("}");
+            flow.totalUi().__(" siClicLigne={").append(onRowClickAction.lnameAvecEntite).append("}");
         }
         if (pagine) {
-            flow.addToUi(" siChangementPage={actionChangementPage}");
+            flow.totalUi().__(" siChangementPage={actionChangementPage}");
         }
-        if (selection != null) {
-            flow.addToUi(" siSelectionChange={changerSelection}");
+        if (selection) {
+            flow.totalUi().__(" siSelectionChange={changerSelection}");
         }
-        flow.addToUi(" texteAucunResultat=\"").append("aucun.").append(entite.lname).append("\"");
-        flow.addToUi(">");
+        flow.totalUi().__(" texteAucunResultat=\"").append("aucun.").append(entite.lname).append("\"");
+        flow.totalUi().__(">");
 
         for (Champ c : listeChamp) {
             String prefix = c.of == null ? "" : c.of.lname + ".";
             indent(flow, level + 1).append("<").append(c.ui(Element.TABLEAU)).append(" nom=\"").append(prefix).append(c.lname).append("\"");
             if (c.libelle != null) {
-                flow.addToUi(" libelle=\"").append(c.libelle).append("\"");
+                flow.totalUi().__(" libelle=\"").append(c.libelle).append("\"");
             }
-            if (c.width > 0) {
-                flow.addToUi(" width={").append(c.width).append("}");
+            if (c.largeur > 0) {
+                flow.totalUi().__(" largeur={", c.largeur, "}");
             }
-            flow.addToUi(" />");
+            flow.totalUi().__(" />");
+            Contexte.getInstance().addLabelPourChamp(element.page.module.uname, c);
         }
         return false;
     }

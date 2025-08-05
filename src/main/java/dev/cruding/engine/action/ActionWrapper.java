@@ -22,11 +22,6 @@ public class ActionWrapper {
         action.inElement(inElement);
     }
 
-    public void setPaginee(boolean paginee) {
-        action.paginee(paginee);
-    }
-
-
     public ActionType type() {
         return action.type;
     };
@@ -56,12 +51,17 @@ public class ActionWrapper {
         return action.unameAvecEntite;
     };
 
+
+    public String unameSansEntite() {
+        return action.unameSansEntite;
+    };
+
     public String icone() {
         return action.icone;
     };
 
-    public boolean byId() {
-        return action.byId;
+    public boolean parId() {
+        return action.parId;
     };
 
     public boolean parIdPere() {
@@ -72,20 +72,20 @@ public class ActionWrapper {
         return action.parIdGrandPere;
     };
 
-    public boolean byForm() {
-        return action.byForm;
+    public boolean parForm() {
+        return action.parForm;
     };
 
-    public boolean byEntite() {
-        return action.byEntite;
+    public boolean parEntite() {
+        return action.parEntite;
     };
 
-    public boolean byProp() {
-        return action.byProp;
+    public String parProp() {
+        return action.parProp;
     };
 
-    public Champ byChamp() {
-        return action.byChamp;
+    public Champ parChamp() {
+        return action.parChamp;
     };
 
     public boolean recharger() {
@@ -105,6 +105,18 @@ public class ActionWrapper {
         return action.hasReussi;
     };
 
+
+    public boolean enTantQueListe() {
+        return action.enTantQueListe;
+    };
+
+    public boolean hasReussiInViewOnly() {
+        return action.hasReussiInViewOnly;
+    };
+
+    public boolean estActionReussi() {
+        return action.estActionReussi;
+    };
 
     public String actionKey() {
         return action.actionKey;
@@ -134,21 +146,12 @@ public class ActionWrapper {
         return action.inViewOnly;
     };
 
-    public Champ child() {
-        return action.child;
-    };
-
     public String sourceDonnee() {
         return action.sourceDonnee;
     };
 
-    public boolean resultatInId() {
-        return action.resultatInId;
-    };
-
-
-    public String paginee() {
-        return action.paginee;
+    public Champ resultatIn() {
+        return action.resultatIn;
     };
 
     public String orderBy() {
@@ -164,10 +167,6 @@ public class ActionWrapper {
         return action.inElement;
     }
 
-    public boolean noUi() {
-        return action.type == ActionType.NOUI;
-    };
-
     public String lrest() {
         return action.lrest;
     }
@@ -176,4 +175,28 @@ public class ActionWrapper {
         return action.urest;
     }
 
+    public boolean flow() {
+        return action.flow();
+    }
+
+    public boolean noUi() {
+        return action.noUi();
+    }
+
+    public boolean ucDialogue() {
+        return action.ucDialogue();
+    }
+
+    public boolean pagine() {
+        return action.actionPagination != null || action.pagine;
+    };
+
+    public boolean attendreSiPret() {
+        return action.attendreSiPret;
+    }
+
+
+    public boolean inInit() {
+        return action.inInit;
+    }
 }

@@ -18,8 +18,8 @@ public class FeDomainePrinter extends Printer {
         f.flushJsImportBloc();
         f.L("");
         f.L("export interface I", entite.uname, " {");
-        f.L____("id?: number;");
-        f.L____("id", entite.uname, "?: number;");
+        f.L____("id?: string;");
+        f.L____("id", entite.uname, "?: string;");
         for (Champ champ : entite.listeChamp) {
             champ.addJsDeclaration(f);
         }

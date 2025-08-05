@@ -1,33 +1,24 @@
 package dev.cruding.engine.gen;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 
 public class Contexte {
+
     private final static Contexte instance = new Contexte();
 
     public static final Contexte getInstance() {
         return instance;
-    }
-
-    public static void add(Object instance) {
-        if (instance instanceof Page) {
-            Page page = (Page) instance;
-            getInstance().pageMap.put(page.name, page);
-        } else if (instance instanceof Entite) {
-            Entite entite = (Entite) instance;
-            getInstance().entiteMap.put(entite.uname, entite);
-        } else if (instance instanceof Module) {
-            Module module = (Module) instance;
-            getInstance().moduleMap.put(module.packge, module);
-        }
-
     }
 
     private HashMap<String, Entite> entiteMap = new HashMap<>();
@@ -35,14 +26,26 @@ public class Contexte {
     private HashMap<String, Page> pageMap = new HashMap<>();
 
     private HashMap<String, Module> moduleMap = new HashMap<>();
-    private HashMap<String, HashMap<String, String>> labelMap = new HashMap<>();
 
+    private HashMap<String, HashMap<String, String>> labelMap = new HashMap<>();
     private HashMap<String, String> legacyDbMap = new HashMap<>();
 
-    private ArrayList<Action> actionList = new ArrayList<>();
+    private HashSet<Action> actionList = new HashSet<>();
+
     private String basePath;
 
-    private Contexte() {}
+    private Contexte() {
+    }
+
+    public <T> void add(T instance) {
+        if (instance instanceof Page page) {
+            getInstance().pageMap.put(page.name, page);
+        } else if (instance instanceof Entite entite) {
+            getInstance().entiteMap.put(entite.uname, entite);
+        } else if (instance instanceof Module module) {
+            getInstance().moduleMap.put(module.packge, module);
+        }
+    }
 
     public void addPage(Page page) {
         pageMap.put(page.name, page);
@@ -72,9 +75,16 @@ public class Contexte {
         return pageMap.values().stream().filter(page -> page.actionUname != null && page.module.uname.equals(module.uname)).toList();
     }
 
-    public void addLabel(String module, String key, String label) {
-        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(key, label);
+    public void addLabelPourChamp(String module, Champ c) {
+        if (c.lname.startsWith("code") || c.lname.startsWith("id") || c.lname.startsWith("libelle")) {
+            return;
+        }
+        addLabel(module, c.lname, StringUtils.capitalize(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(c.lname), " ")));
+    }
 
+    public void addLabel(String module, String key, String label) {
+        String newKey = key.indexOf(".") > 0 ? "'" + key + "'" : key;
+        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(newKey, label);
     }
 
     public HashMap<String, String> getLabelMap(String module) {
@@ -108,21 +118,16 @@ public class Contexte {
     }
 
     public List<Action> actionPage(Page page) {
-        return actionList.stream().filter(as -> !as.flow() && !as.isVide && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
-    }
-
-    public List<Action> allActionPage(Page page) {
-        return actionList.stream().filter(as -> !as.flow() && as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> as.page != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionElement(Element element) {
-        return actionList.stream().filter(as -> !as.flow() && as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
     }
 
     public List<Action> actionEntite(Entite entite) {
-        return actionList.stream().filter(as -> !as.flow() && as.entite != null && as.entite.lname.equals(entite.lname)).filter(Objects::nonNull).distinct().sorted().toList();
+        return actionList.stream().filter(as -> as.entite != null && as.entite.lname.equals(entite.lname)).filter(Objects::nonNull).distinct().sorted().toList();
     }
-
 
     public void initEntities() {
         entiteMap.values().stream().forEach(e -> e.init());
@@ -147,5 +152,4 @@ public class Contexte {
 
         return moduleMap.get(key);
     }
-
 }

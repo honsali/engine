@@ -18,8 +18,7 @@ public class ActionGoToModule extends Action {
         lnameAvecEntite("goToModule" + targetModule);
     }
 
-    public void init() {
-
+    public void overrideActionInjection() {
         viewActionInjection = new ViewGoToModuleInjection(targetModule);
     }
 }

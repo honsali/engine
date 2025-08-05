@@ -9,7 +9,8 @@ public class ActionEnregistrer extends ActionSpecifique {
 
     public ActionEnregistrer(Entite entite, Element element) {
         super(ActionType.UCA, "enregistrer", entite, element);
-        confirmer().byForm().lrest("put");
+        icone("faEdit");
+        confirmer().parForm().lrest("put");
     }
 
     public void overrideActionInjection() {

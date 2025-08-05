@@ -15,7 +15,8 @@ public class MdlFlow extends Flow {
     private HashMap<String, Imp> importMdlSet = new HashMap<>();
     private HashSet<Attribute> mdlRequestAttributeSet = new HashSet<>();
     private HashSet<Attribute> mdlResultAttributeSet = new HashSet<>();
-    private HashSet<Attribute> mdlStateAttributeSet = new HashSet<>();
+    public HashSet<Attribute> mdlStateAttributeSet = new HashSet<>();
+    public HashSet<Attribute> mdlSelectorAttributeSet = new HashSet<>();
 
     private final ImpProcessor impProcessor = new ImpProcessor();
     private final AttributeSorter attributeSorter = new AttributeSorter();
@@ -35,6 +36,10 @@ public class MdlFlow extends Flow {
 
     public void addMdlStateAttribute(String name, String type) {
         mdlStateAttributeSet.add(new Attribute(name, type));
+    }
+
+    public void addMdlSelectorAttribute(String lname, String uname) {
+        mdlSelectorAttributeSet.add(new Attribute(uname, lname));
     }
 
     public void flushMdlImportBloc() {
@@ -68,7 +73,20 @@ public class MdlFlow extends Flow {
         Collections.sort(mdlStateAttributeList, attributeSorter);
 
         for (Attribute att : mdlStateAttributeList) {
-            L____(att.name, ": ", att.type.endsWith("[]") ? "[]" : "{}", " as ", att.type, ",");
+            if (att.type.endsWith("[]")) {
+                L____(att.name, ": ", "[] as ", att.type, ",");
+            } else if ("string".equals(att.type)) {
+                L____(att.name, ": ", "null,");
+
+            } else if ("number".equals(att.type)) {
+                L____(att.name, ": ", "0,");
+
+            } else if (att.type.endsWith("()")) {
+                L____(att.name, ": ", att.type + ",");
+
+            } else {
+                L____(att.name, ": ", "{} as ", att.type, ",");
+            }
         }
     }
 }

@@ -25,16 +25,14 @@ public class MdlListerEnPageInjection extends MdlActionInjection {
 
     public void addMdlStateAttribute(MdlFlow f) {
         f.addMdlStateAttribute("listePaginee" + entite().uname, "IListePaginee" + entite().uname);
+        f.addMdlSelectorAttribute("listePaginee" + entite().uname, "ListePaginee" + entite().uname);
     }
 
-    public void addMdlSelector(MdlFlow f) {
-        f.L("export const selectListePaginee", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.listePaginee", entite().uname, ");");
+    public void addUseSelector(MdlFlow f) {
+        f.L________("listePaginee", entite().uname, ",");
     }
 
-    public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
-        f.L________________("state.resultat = action.payload;");
+    public void addMdlExtraReducerAffectation(MdlFlow f) {
         f.L________________("state.listePaginee", entite().uname, " = action.payload.listePaginee", entite().uname, ";");
-        f.L____________("})");
     }
 }

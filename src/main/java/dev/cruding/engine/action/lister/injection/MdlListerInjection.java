@@ -5,7 +5,6 @@ import dev.cruding.engine.injection.MdlActionInjection;
 
 public class MdlListerInjection extends MdlActionInjection {
 
-
     public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
@@ -25,17 +24,14 @@ public class MdlListerInjection extends MdlActionInjection {
 
     public void addMdlStateAttribute(MdlFlow f) {
         f.addMdlStateAttribute("liste" + entite().uname, "I" + entite().uname + "[]");
+        f.addMdlSelectorAttribute("liste" + entite().uname, "Liste" + entite().uname);
     }
 
-    public void addMdlSelector(MdlFlow f) {
-        f.L("export const selectListe", entite().uname, " = createSelector([selectMdl", uc(), "], (state: ", uc(), "Type) => state.liste", entite().uname, ");");
+    public void addUseSelector(MdlFlow f) {
+        f.L________("liste", entite().uname, ",");
     }
 
-    public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
-        f.L________________("state.resultat = action.payload;");
+    public void addMdlExtraReducerAffectation(MdlFlow f) {
         f.L________________("state.liste", entite().uname, " = action.payload.liste", entite().uname, ";");
-        f.L____________("})");
     }
-
 }

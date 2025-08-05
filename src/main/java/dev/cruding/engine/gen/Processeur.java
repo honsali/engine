@@ -25,12 +25,14 @@ import dev.cruding.engine.printer.impl.module.FeListePagePrinter;
 import dev.cruding.engine.printer.impl.module.FeModulePrinter;
 import dev.cruding.engine.printer.impl.module.FeReducerPrinter;
 import dev.cruding.engine.printer.impl.page.FeCtrlPrinter;
+import dev.cruding.engine.printer.impl.page.FeHookPrinter;
 import dev.cruding.engine.printer.impl.page.FeMdlPrinter;
 
 public class Processeur {
 
     private final FeCtrlPrinter feCtrlPrinter = new FeCtrlPrinter();
     private final FeMdlPrinter feMdlPrinter = new FeMdlPrinter();
+    private final FeHookPrinter feHookPrinter = new FeHookPrinter();
     private final FeDomainePrinter feDomainePrinter = new FeDomainePrinter();
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainePrinter beDomainePrinter = new BeDomainePrinter();
@@ -66,6 +68,7 @@ public class Processeur {
                 }
                 feCtrlPrinter.print(page);
                 feMdlPrinter.print(page);
+                feHookPrinter.print(page);
             }
         }
 
@@ -81,7 +84,9 @@ public class Processeur {
     }
 
     private void printFeElementFiles(Element element) {
-        feElementPrinter.print(element);
+        if (!element.fake) {
+            feElementPrinter.print(element);
+        }
     }
 
     private void printFeGlobalFiles() {

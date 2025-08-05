@@ -2,7 +2,10 @@ package dev.cruding.engine.action;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
+
+import dev.cruding.engine.action.rechargerPage.ActionRechargerPageFiltrer;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
@@ -18,16 +21,16 @@ import dev.cruding.engine.injection.ViewActionInjection;
 public abstract class Action implements Comparable<Action> {
 
     public enum ActionType {
-        NOUI, UCA, NORMALE, FORTE, FLOW, CONFIRMER
+        NOUI, UCA, NORMALE, FORTE, FLOW, CONFIRMER, DIALOGUE
     }
 
+    private static int ordre = 0;
     public CtrlActionInjection ctrlActionInjection;
     public MdlActionInjection mdlActionInjection;
     public RepoActionInjection repoActionInjection;
     public ResourceActionInjection resourceActionInjection;
     public ServiceActionInjection serviceActionInjection;
     public ViewActionInjection viewActionInjection;
-
     public ActionType type;
     public String lcoreName;
     public String ucoreName;
@@ -36,14 +39,14 @@ public abstract class Action implements Comparable<Action> {
     public String lnameSansEntite;
     public String unameSansEntite;
     public String icone = null;
-    public boolean byId = false;
+    public boolean parId = false;
     public boolean parIdPere = false;
     public boolean parIdGrandPere = false;
-    public boolean byForm = false;
-    public boolean byEntite = false;
+    public boolean parForm = false;
+    public boolean parEntite = false;
     public boolean byRow = false;
-    public boolean byProp = false;
-    public Champ byChamp = null;
+    public String parProp = null;
+    public Champ parChamp = null;
     public boolean recharger = false;
     public boolean confirmer;
     public ArrayList<Action> siReussi = new ArrayList<>();
@@ -54,28 +57,39 @@ public abstract class Action implements Comparable<Action> {
     public Page targetPage;
     public String uc;
     public boolean inViewOnly = false;
+    public boolean sansSecurite = false;
     public boolean inElement = false;
-    public Champ child;
     public String sourceDonnee;
-    public boolean resultatInId = false;
-    public String paginee = "";
+    public Champ resultatIn = null;
     public String orderBy;
     public String mvcPath = ".";
     public String modele;
     public boolean isVide = false;
     public boolean hasReussi = false;
+    public boolean hasReussiInViewOnly = false;
     public String lrest = "get";
     public String urest = "Get";
+    public Action actionPagination = null;
+    public boolean pagine = false;
+    public boolean estActionReussi = false;
+    public boolean enTantQueListe = false;
+    public boolean attendreSiPret = false;
+    private String id;
+    public String nomVariable;
+    public boolean inInit;
 
 
     public Action(ActionType type, String lcoreName, Entite entite, Element element) {
+        this.id = "" + ordre++;
         this.type = type;
         this.entite = entite;
-        this.orderBy = entite.uid;
+        if (this.entite != null) {
+            this.orderBy = entite.uid;
+        }
         this.page = element.page;
         this.uc = page.uc;
         lcoreName(lcoreName);
-        if (ucConfirmer()) {
+        if (ucConfirmer() || ucDialogue()) {
             this.confirmer();
         }
         element(element);
@@ -98,15 +112,16 @@ public abstract class Action implements Comparable<Action> {
         viewActionInjection.action(this);
     }
 
-    public void overrideActionInjection() {}
+    public void overrideActionInjection() {
+    }
 
     public Action lcoreName(String lcoreName) {
         this.lcoreName = lcoreName;
         this.ucoreName = StringUtils.capitalize(lcoreName);
         String n = this.lcoreName;
-        if (this.entite != null) {
+        if (this.entite != null && !n.endsWith(this.entite.uname)) {
             n = n + this.entite.uname;
-        } else {
+        } else if (!n.endsWith(this.page.entiteUname)) {
             n = n + this.page.entiteUname;
         }
         this.lnameSansEntite(this.lcoreName);
@@ -130,31 +145,39 @@ public abstract class Action implements Comparable<Action> {
     public Action element(Element element) {
         this.element = element;
         for (Action a : siReussi) {
+            // if (a.element == null) {
             a.element(element);
+            // }
         }
         return this;
     }
 
-
-
-    public Action byId() {
-        this.byId = true;
+    public Action parId() {
+        this.parId = true;
         return this;
     }
 
-
     public Action parIdPere() {
         this.parIdPere = true;
+        if (actionPagination != null) {
+            actionPagination.parIdPere();
+        }
         return this;
     }
 
     public Action inElement(boolean inElement) {
         this.inElement = inElement;
+        for (Action a : siReussi) {
+            a.inElement(inElement);
+        }
+        if (actionPagination != null) {
+            actionPagination.inElement(inElement);
+        }
         return this;
     }
 
     public Action inElement() {
-        this.inElement = true;
+        this.inElement(true);
         return this;
     }
 
@@ -163,8 +186,18 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-    public Action resultatInId() {
-        this.resultatInId = true;
+    public Action inViewOnly(boolean inViewOnly) {
+        this.inViewOnly = inViewOnly;
+        return this;
+    }
+
+    public Action sansSecurite() {
+        this.sansSecurite = true;
+        return this;
+    }
+
+    public Action resultatIn(Champ resultatIn) {
+        this.resultatIn = resultatIn;
         return this;
     }
 
@@ -173,30 +206,33 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-    public Action byForm() {
-        this.byForm = true;
+    public Action parForm(boolean parForm) {
+        this.parForm = parForm;
         return this;
     }
 
-
-    public Action byEntite() {
-        this.byEntite = true;
+    public Action parForm() {
+        this.parForm = true;
         return this;
     }
 
+    public Action parEntite() {
+        this.parEntite = true;
+        return this;
+    }
 
     public Action byRow() {
         this.byRow = true;
         return this;
     }
 
-    public Action byProp() {
-        this.byProp = true;
+    public Action parProp(String parProp) {
+        this.parProp = parProp;
         return this;
     }
 
-    public Action byChamp(Champ field) {
-        this.byChamp = field;
+    public Action parChamp(Champ field) {
+        this.parChamp = field;
         return this;
     }
 
@@ -215,20 +251,19 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-
     public Action siReussi(Action... listeAction) {
         for (Action action : listeAction) {
             this.siReussi.add(action);
-            action.type(ActionType.FLOW);
-            if (action.element != null) {
+            action.estActionReussi = true;
+            // action.type(ActionType.FLOW);
+            if (action.element == null) {
                 action.element(this.element);
             }
+            hasReussiInViewOnly = hasReussiInViewOnly || action.inViewOnly;
             hasReussi = true;
         }
         return this;
     }
-
-
 
     public Action confirmer() {
         this.confirmer = true;
@@ -242,17 +277,6 @@ public abstract class Action implements Comparable<Action> {
 
     public Action modele(String modele) {
         this.modele = modele;
-        return this;
-    }
-
-    public Action child(Champ child) {
-        this.child = child;
-        return this;
-    }
-
-
-    public Action paginee(boolean paginee) {
-        this.paginee = paginee ? "Paginee" : "";
         return this;
     }
 
@@ -297,16 +321,36 @@ public abstract class Action implements Comparable<Action> {
         return type == ActionType.CONFIRMER;
     };
 
+    public boolean ucDialogue() {
+        return type == ActionType.DIALOGUE;
+    };
 
     public boolean flow() {
         return type == ActionType.FLOW;
+    };
+
+    public Action isVide(boolean isVide) {
+        this.isVide = isVide;
+        return this;
+    };
+
+    public Action enTantQueListe() {
+        enTantQueListe = true;
+        return this;
     };
 
     public boolean nfc() {
         return normale() || forte() || ucConfirmer();
     };
 
+    public Action actionPagination(Action action) {
+        this.actionPagination = action;
+        return this;
+    }
 
+    public Action actionRecharger() {
+        return new ActionRechargerPageFiltrer(entite, element);
+    }
 
     public boolean equals(Object obj) {
         if (this == obj)
@@ -319,9 +363,8 @@ public abstract class Action implements Comparable<Action> {
         return lnameAvecEntite.equals(other.lnameAvecEntite);
     }
 
-
     public int hashCode() {
-        return Objects.hash(lnameAvecEntite);
+        return Objects.hash(id);
     }
 
     @Override
@@ -329,4 +372,14 @@ public abstract class Action implements Comparable<Action> {
         return this.lnameAvecEntite.compareTo(o.lnameAvecEntite);
     }
 
+    public Action attendreSiPret() {
+        attendreSiPret = true;
+        return this;
+    };
+
+
+    public Action inInit() {
+        inInit = true;
+        return this;
+    };
 }

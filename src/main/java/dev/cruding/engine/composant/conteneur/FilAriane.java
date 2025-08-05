@@ -10,13 +10,13 @@ public class FilAriane extends Composant {
 
     private String uname;
 
-    public FilAriane(Element element, String uname, Composant... ComposantList) {
-        super(element, ComposantList);
+    public FilAriane(Element element, String uname, Composant... listeComposant) {
+        super(element, listeComposant);
         this.uname = uname;
     }
 
-    public FilAriane(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public FilAriane(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {

@@ -10,12 +10,12 @@ public class Panneau extends Conteneur {
     public boolean plaqueEtat = false;
     public BlocAction blocAction = null;
 
-    public Panneau(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public Panneau(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
-    public Panneau(Element element, Entite entite, Composant... ComposantList) {
-        super(element, entite, ComposantList);
+    public Panneau(Element element, Entite entite, Composant... listeComposant) {
+        super(element, entite, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {
@@ -27,7 +27,7 @@ public class Panneau extends Conteneur {
         indent(flow, level).append("<Panneau").append(titre());
 
         if (plaqueEtat) {
-            flow.addToUi(" etat={").append(entite.lname).append("?.etat?.libelle}");
+            flow.totalUi().__(" etat={").append(entite.lname).append("?.etat?.libelle}");
         }
 
         if (blocAction != null) {
@@ -36,7 +36,7 @@ public class Panneau extends Conteneur {
             indent(flow, level + 1).append("}");
             indent(flow, level).append(">");
         } else {
-            flow.addToUi(">");
+            flow.totalUi().__(">");
         }
         return false;
     }
@@ -50,8 +50,8 @@ public class Panneau extends Conteneur {
         return this;
     }
 
-    public Panneau blocAction(Composant... ComposantList) {
-        this.blocAction = new BlocAction(element, ComposantList);
+    public Panneau blocAction(Composant... listeComposant) {
+        this.blocAction = new BlocAction(element, listeComposant);
         return this;
     }
 

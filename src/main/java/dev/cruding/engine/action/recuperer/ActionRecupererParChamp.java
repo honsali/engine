@@ -1,12 +1,13 @@
 package dev.cruding.engine.action.recuperer;
 
 import org.apache.commons.lang3.StringUtils;
+
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.recuperer.injection.CtrlRecupererInjection;
-import dev.cruding.engine.action.recuperer.injection.MdlRecupererInjection;
+import dev.cruding.engine.action.recuperer.injection.CtrlRecupererParChampInjection;
+import dev.cruding.engine.action.recuperer.injection.MdlRecupererInjectionParChamp;
 import dev.cruding.engine.action.recuperer.injection.ResourceRecupererInjection;
 import dev.cruding.engine.action.recuperer.injection.ServiceRecupererInjection;
-import dev.cruding.engine.action.recuperer.injection.ViewRecupererInjection;
+import dev.cruding.engine.action.recuperer.injection.ViewRecupererParChampInjection;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 
@@ -25,11 +26,11 @@ public class ActionRecupererParChamp extends Action {
     }
 
     public void overrideActionInjection() {
-        ctrlActionInjection = new CtrlRecupererInjection(lnameChamp, unameChamp);
-        mdlActionInjection = new MdlRecupererInjection();
+        ctrlActionInjection = new CtrlRecupererParChampInjection(lnameChamp, unameChamp);
+        mdlActionInjection = new MdlRecupererInjectionParChamp(lnameChamp, unameChamp);
         resourceActionInjection = new ResourceRecupererInjection(lnameChamp, unameChamp);
         serviceActionInjection = new ServiceRecupererInjection(lnameChamp, unameChamp);
-        viewActionInjection = new ViewRecupererInjection();
-    }
+        viewActionInjection = new ViewRecupererParChampInjection(lnameChamp, unameChamp);
 
+    }
 }

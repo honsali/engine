@@ -8,18 +8,23 @@ public class Module {
     public String id;
     public String uname;
     public String unameLast;
+    public String lnameLast;
     public String path;
     public String packge;
-    private String listePage;
+    public String listePage;
     public String pageIndex;
+    public boolean estParent;
+    public boolean estMenuOnglet;
+    public String icone;
+    public int dernierePostion = 0;
 
-    public Module(String pageIndex) {
+    public Module() {
         uname = this.getClass().getSimpleName();
         packge = StringUtils.substringAfter(this.getClass().getPackageName(), "modules.");
         this.path = "modules/" + packge.replace('.', '/');
         this.unameLast = uname.substring(6);
+        this.lnameLast = StringUtils.uncapitalize(this.unameLast);
         this.listePage = "ListePage" + unameLast;
-        this.pageIndex = pageIndex;
     }
 
     public String listePage(String path_, boolean inElement) {
@@ -33,8 +38,13 @@ public class Module {
 
     public Page addPage(String name, ElementComposer elementComposer) {
         Page page = new Page(this, name, elementComposer);
+        page.position = dernierePostion++;
         Contexte.getInstance().addPage(page);
         return page;
     }
 
+    public Module menuIcone(String icone) {
+        this.icone = icone;
+        return this;
+    }
 }

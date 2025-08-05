@@ -1,6 +1,8 @@
 package dev.cruding.engine.printer.impl.entite;
 
 import java.util.List;
+import java.util.Optional;
+
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.JavaFlow;
@@ -18,7 +20,7 @@ public class BeDtoPrinter extends Printer {
         }
 
         /* *********************************************************************** */
-        Champ idChamp = entite.listeChamp.stream().filter(p -> p.isId).findFirst().get();
+        Optional<Champ> idChamp = entite.listeChamp.stream().filter(p -> p.isId).findFirst();
 
         f.__("package app.domain.", entite.pkg, ".", entite.lname, ";");
         f.L("");
@@ -27,7 +29,7 @@ public class BeDtoPrinter extends Printer {
         f.L("public record ", entite.uname, "Dto(//");
         f.L________("Long id, //");
         f.L________("Long id", entite.uname, ", //");
-        if (!idChamp.lname.equals("libelle")) {
+        if (idChamp.isPresent() && !idChamp.get().lname.equals("libelle")) {
             f.L________("String libelle, //");
         }
         for (int i = 0; i < listeChamp.size(); i++) {
@@ -49,7 +51,7 @@ public class BeDtoPrinter extends Printer {
             f.L________________(": new ", entite.uname, "Dto(//");
             f.L________________________("entity.getId(), //");
             f.L________________________("entity.getId(), //");
-            if (!idChamp.lname.equals("libelle")) {
+            if (idChamp.isPresent() && !idChamp.get().lname.equals("libelle")) {
                 f.L________________________("entity.getDisplayString(), //");
             }
             for (int i = 0; i < listeChamp.size(); i++) {
@@ -71,7 +73,7 @@ public class BeDtoPrinter extends Printer {
         f.L________________(": new ", entite.uname, "Dto(//");
         f.L________________________("entity.getId(), //");
         f.L________________________("entity.getId(), //");
-        if (!idChamp.lname.equals("libelle")) {
+        if (idChamp.isPresent() && !idChamp.get().lname.equals("libelle")) {
             f.L________________________("entity.getDisplayString(), //");
         }
         for (int i = 0; i < listeChamp.size(); i++) {

@@ -2,12 +2,14 @@ package dev.cruding.engine.composant.bouton;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.helper.Util;
 
 public class Bouton extends Composant {
 
     public Action action;
+    public String typeBouton;
 
     public Bouton(Action action) {
         super(action.element);
@@ -17,16 +19,23 @@ public class Bouton extends Composant {
     public void addImport(ViewFlow flow) {
         if (action.noUi()) {
             return;
+        } else if (action.normale() && action.sansSecurite) {
+            typeBouton = "BoutonNormal";
         } else if (action.normale()) {
-            flow.addJsImport("{ActionUcNormale}", "waxant");
+            typeBouton = "ActionUcNormale";
+        } else if (action.forte() && action.sansSecurite) {
+            typeBouton = "BoutonFort";
         } else if (action.forte()) {
-            flow.addJsImport("{ActionUcForte}", "waxant");
+            typeBouton = "ActionUcForte";
         } else if (action.ucConfirmer()) {
-            flow.addJsImport("{ActionUcConfirmer}", "waxant");
+            typeBouton = "ActionUcConfirmer";
+        } else if (action.ucDialogue()) {
+            typeBouton = "ActionUcDialogue";
         } else {
-            flow.addJsImport("{ActionUc" + action.ucoreName + "}", "waxant");
+            typeBouton = "ActionUc" + action.ucoreName;
         }
 
+        flow.addJsImport("{ " + typeBouton + " }", "waxant");
         if (action.nfc() && action.icone != null) {
             flow.addJsImport("{ " + action.icone + " }", "@ant-design/icons");
         }
@@ -38,40 +47,61 @@ public class Bouton extends Composant {
         flow.addJsImport("{ Action" + action.page.module.unameLast + " }", s + "/Action" + action.page.module.unameLast);
     }
 
-    public void addInlineTag(ViewFlow flow) {
-        addOpenTag(flow, 0);
+    public void appendContent(ViewFlow vf, Flow flow) {
+
+        String nomAction = "Action" + action.page.module.unameLast + "." + "Uc" + action.page.uc + "." + action.actionKey;
+        if (action.noUi()) {
+            return;
+        }
+        flow.__("<").append(typeBouton);
+
+        flow.__(" nom={").append(nomAction).append("}");
+        if (action.targetPage != null) {
+            flow.__(" page={").append(action.targetPage.name).append("}");
+        }
+        if (action.uca() && action.modele != null) {
+            flow.__(" modele={").append(action.modele).append("}");
+        }
+        if (!action.isVide) {
+            flow.__(" action={").append(action.lnameAvecEntite).append("}");
+        }
+        if (action.nfc() && action.icone != null) {
+            flow.__(" icone={<").append(action.icone).append(" />}");
+        }
+        if (action.confirmer || action.hasReussiInViewOnly) {
+            flow.__(" rid={rid}");
+        }
+        flow.__(" />");
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
         String nomAction = "Action" + action.page.module.unameLast + "." + "Uc" + action.page.uc + "." + action.actionKey;
         if (action.noUi()) {
             return false;
-        } else if (action.normale()) {
-            indent(flow, level).append("<ActionUcNormale");
-        } else if (action.forte()) {
-            indent(flow, level).append("<ActionUcForte");
-        } else if (action.ucConfirmer()) {
-            indent(flow, level).append("<ActionUcConfirmer");
-        } else {
-            indent(flow, level).append("<ActionUc").append(action.ucoreName);
         }
-        flow.addToUi(" nom={").append(nomAction).append("}");
+        indent(flow, level).append("<").append(typeBouton);
+
+        flow.totalUi().__(" nom={").append(nomAction).append("}");
         if (action.targetPage != null) {
-            flow.addToUi(" page={").append(action.targetPage.name).append("}");
+            flow.totalUi().__(" page={").append(action.targetPage.name).append("}");
         }
         if (action.uca() && action.modele != null) {
-            flow.addToUi(" modele={").append(action.modele).append("}");
+            flow.totalUi().__(" modele={").append(action.modele).append("}");
         }
         if (!action.isVide) {
-            flow.addToUi(" action={").append(action.lnameAvecEntite).append("}");
+            if (flow.hasParams()) {
+                flow.totalUi().__(" action={").append(action.lnameSansEntite).append("}");
+            } else {
+                flow.totalUi().__(" action={").append(action.lnameAvecEntite).append("}");
+            }
         }
         if (action.nfc() && action.icone != null) {
-            flow.addToUi(" icone={<").append(action.icone).append(" />}");
+            flow.totalUi().__(" icone={<").append(action.icone).append(" />}");
         }
-        if (action.confirmer || action.hasReussi) {
-            flow.addToUi(" rid={rid}");
+        if (action.confirmer || action.hasReussiInViewOnly) {
+            flow.totalUi().__(" rid={etat", action.unameAvecEntite, ".rid}");
         }
-        flow.addToUi(" />");
+        flow.totalUi().__(" />");
         return false;
     }
 }

@@ -9,34 +9,39 @@ public class ViewEventInjection extends ViewActionInjection {
 
     private String targetEvent;
 
-
     public ViewEventInjection(String targetEvent) {
         this.targetEvent = targetEvent;
     };
 
-    public void addFlowScript(ViewFlow f, int level) {
-        f.totalScript().__(Composant.indent[level]).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase()).append(", resultat);");
+    public void addFlowScript(ViewFlow f, int level, String args) {
         f.useEventBus();
+        f.totalScript().__(Composant.indent[level]).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
+        if (args != null) {
+            f.totalScript().__(", { ", args, " }");
+        }
+        f.totalScript().__(");");
     }
 
     public boolean addViewScript(ViewFlow f) {
         f.useEventBus();
-        f.totalScript().L____("const ").append(lnameSansEntite()).append(" = (");
-        if (byRow()) {
-            f.totalScript().__(entite().lname);
+        if (!estActionReussi()) {
+            f.totalScript().L____("const ").append(lnameAvecEntite()).append(" = (");
+            if (byRow()) {
+                f.totalScript().__(entite().lname);
+            }
+            f.totalScript().append(") => {");
+            f.totalScript().L________("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
+            if (parEntite()) {
+                f.totalScript().__(", ").__(entite().lname);
+                f.addSelector(entite().lname);
+            } else if (element().parProp != null) {
+                f.totalScript().__(", ").__(element().parProp);
+            } else if (byRow()) {
+                f.totalScript().__(", ").__(entite().lname);
+            }
+            f.totalScript().__(");");
+            f.totalScript().L____("};");
         }
-        f.totalScript().append(") => {");
-        f.totalScript().L________("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
-        if (byEntite()) {
-            f.totalScript().__(", ").__(entite().lname);
-            f.addSpecificSelector(entite().lname, entite().uname, mvcPath() + "/Mdl" + uc());
-        } else if (element().byProp != null) {
-            f.totalScript().__(", ").__(element().byProp);
-        } else if (byRow()) {
-            f.totalScript().__(", ").__(entite().lname);
-        }
-        f.totalScript().__(");");
-        f.totalScript().L____("};");
         return true;
     }
 }

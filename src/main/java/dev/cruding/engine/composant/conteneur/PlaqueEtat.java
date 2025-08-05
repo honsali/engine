@@ -12,6 +12,6 @@ public class PlaqueEtat extends Composant {
     }
 
     public void addScript(ViewFlow f) {
-        f.addSpecificSelector(entite.lname, "./Mdl" + element.page.uc);
+        f.addSelector(entite.lname);
     }
 }

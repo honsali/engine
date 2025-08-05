@@ -13,7 +13,7 @@ public class ViewActionInjection extends ActionWrapper {
         return false;
     }
 
-    public void addFlowScript(ViewFlow flow, int level) {}
+    public void addFlowScript(ViewFlow flow, int level, String args) {}
 
 
     public void addI18n(Flow f) {

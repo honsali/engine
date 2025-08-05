@@ -12,6 +12,8 @@ public class Code extends Champ {
     public String ui(String element) {
         if (element.equals(Element.TABLEAU)) {
             return "Colonne tc=\"code\"";
+        } else if (element.equals(Element.DETAIL)) {
+            return "Texte";
         }
         return super.ui(element);
     }

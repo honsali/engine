@@ -3,6 +3,7 @@ package dev.cruding.engine.action.init;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.init.injection.CtrlInitModificationInjection;
 import dev.cruding.engine.action.init.injection.MdlInitModificationInjection;
+import dev.cruding.engine.action.init.injection.ServiceInitModificationInjection;
 import dev.cruding.engine.action.init.injection.ViewInitEditionInjection;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
@@ -17,14 +18,14 @@ public class ActionInitModification extends Action {
         this(entite, element, new Champ[0]);
     }
 
-
     public ActionInitModification(Entite entite, Element element, Champ... listeChamp) {
         super(ActionType.NOUI, type, entite, element);
         this.listeChamp = listeChamp;
     }
 
     public void overrideActionInjection() {
-        viewActionInjection = new ViewInitEditionInjection(type);
+        viewActionInjection = new ViewInitEditionInjection();
+        serviceActionInjection = new ServiceInitModificationInjection();
         ctrlActionInjection = new CtrlInitModificationInjection(listeChamp);
         mdlActionInjection = new MdlInitModificationInjection(listeChamp);
     }

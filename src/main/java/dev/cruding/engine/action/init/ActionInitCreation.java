@@ -24,7 +24,7 @@ public class ActionInitCreation extends Action {
     }
 
     public void overrideActionInjection() {
-        viewActionInjection = new ViewInitEditionInjection(type);
+        viewActionInjection = new ViewInitEditionInjection();
         ctrlActionInjection = new CtrlInitEditionInjection(listeChamp);
         mdlActionInjection = new MdlInitEditionInjection(listeChamp);
     }

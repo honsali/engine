@@ -17,17 +17,23 @@ public class ViewGoToPageInjection extends ViewActionInjection {
     };
 
     public boolean addViewScript(ViewFlow f) {
-        f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, inElement()));
-        f.totalScript().L____("const goToPage", targetPage.name, " = (", entite().lname, ") => {");
-        f.totalScript().L________("goToPage(", targetPage.name + ", ", entite().lname, ");");
-        f.totalScript().L____("};");
-        f.useGoToModule();
+        if (!estActionReussi()) {
+            f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, inElement()));
+            f.totalScript().L____("const goTo", targetPage.name, " = (", entite().lname, ") => {");
+            f.totalScript().L________("goToPage(", targetPage.name + ", ", entite().lname, ");");
+            f.totalScript().L____("};");
+            f.useGoToPage();
+        }
         return true;
     }
 
-    public void addFlowScript(ViewFlow f, int level) {
-        f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, inElement()));
-        f.totalScript().__(Composant.indent[level]).__("goToPage(", targetPage.name, ", resultat);");
+    public void addFlowScript(ViewFlow f, int level, String args) {
+        f.addJsImport("{ " + targetPage.name + " }", targetPage.module.listePage(element().path, false));
+        f.totalScript().__(Composant.indent[level]).__("goToPage(", targetPage.name);
+        if (args != null) {
+            f.totalScript().__(", { ", args, " }");
+        }
+        f.totalScript().__(");");
         f.useGoToPage();
     }
 

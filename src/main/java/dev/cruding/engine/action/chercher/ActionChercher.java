@@ -12,8 +12,11 @@ import dev.cruding.engine.injection.ViewActionInjection;
 
 public class ActionChercher extends Action {
 
+
     public ActionChercher(Entite entite, Element element) {
         super(ActionType.NOUI, "chercher", entite, element);
+        new ActionInitialiserChercher(entite, element);
+
     }
 
     public void overrideActionInjection() {

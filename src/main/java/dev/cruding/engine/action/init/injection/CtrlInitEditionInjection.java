@@ -19,7 +19,7 @@ public class CtrlInitEditionInjection extends CtrlActionInjection {
     public void addCtrlImport(CtrlFlow f) {
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addCtrlImport(f);
+                ((ChampRef<?>) c).addCtrlImport(f);
             }
         }
     }
@@ -33,7 +33,7 @@ public class CtrlInitEditionInjection extends CtrlActionInjection {
         f.__("};");
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addCtrlImplementation(f);
+                ((ChampRef<?>) c).addCtrlImplementation(f);
             }
         }
         f.L("};");

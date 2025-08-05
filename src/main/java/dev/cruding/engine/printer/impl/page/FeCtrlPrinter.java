@@ -31,13 +31,17 @@ public class FeCtrlPrinter extends Printer {
         f.flushCtrlImportBloc();
 
         for (Action action : actionList) {
-            action.ctrlActionInjection.addCtrlImplementation(f);
+            if (action.uc != null && !action.inViewOnly) {
+                action.ctrlActionInjection.addCtrlImplementation(f);
+            }
         }
 
         f.L("");
         f.L("const Ctrl", page.uc, " = {");
         for (Action action : actionList) {
-            action.ctrlActionInjection.addCtrlDeclaration(f);
+            if (action.uc != null && !action.inViewOnly) {
+                action.ctrlActionInjection.addCtrlDeclaration(f);
+            }
         }
         f.L("};");
 

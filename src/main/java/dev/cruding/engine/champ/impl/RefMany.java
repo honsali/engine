@@ -57,7 +57,7 @@ public class RefMany<T extends Entite> extends ChampRef<T> {
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"", dbName, "_id\" type=\"bigint\">");
-        f.L________________("<constraints nullable=\"", "" + !required, "\" />");
+        f.L________________("<constraints nullable=\"", "" + !requis, "\" />");
         f.L____________("</column>");
     }
 

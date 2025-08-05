@@ -6,8 +6,8 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class CadreHaut extends Conteneur {
 
-    public CadreHaut(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public CadreHaut(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {

@@ -7,51 +7,57 @@ import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Page;
 
-public class Section extends Composant {
+public class Section extends Conteneur {
 
     public String pageRetour = null;
     public boolean plaqueEtat = false;
-    public BlocAction blocAction = null;
+    public Composant blocAction = null;
 
-    public Section(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public Section(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
-    public Section(Element element, Entite entite, Composant... ComposantList) {
-        super(element, entite, ComposantList);
+    public Section(Element element, Entite entite, Composant... listeComposant) {
+        super(element, entite, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {
-        flow.addJsImport("{Section}", "waxant");
+        flow.addJsImport("{ Section }", "waxant");
         if (pageRetour != null) {
             Page pr = Contexte.getInstance().getPage(pageRetour);
             flow.addJsImport("{ " + pr.name + " }", pr.module.listePage(element.path, inElement));
         }
         if (plaqueEtat) {
-            flow.addJsImport("{PlaqueEtat}", "waxant");
+            flow.addJsImport("{ PlaqueEtat }", "waxant");
         }
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<Section");
+        indent(flow, level).append("<Section").append(titre());
         if (pageRetour != null) {
             if (blocAction != null) {
                 indent(flow, level + 1);
             }
-            flow.addToUi(" pageRetour={").append(pageRetour).append("}");
+            flow.totalUi().__(" pageRetour={").append(pageRetour).append("}");
             Contexte.getInstance().addLabel(element.page.module.uname, "Uc" + element.page.uc + ".retour" + pageRetour, "Retour");
 
         }
         if (plaqueEtat) {
-            flow.addToUi(" blocAction={<PlaqueEtat entite={").append(entite.lname).append("} />}");
+            flow.totalUi().__(" blocAction={<PlaqueEtat entite={").append(entite.lname).append("} />}");
         }
         if (blocAction != null) {
-            indent(flow, level + 1).append(" blocAction={");
-            blocAction.addContent(this, flow, level + 2);
-            indent(flow, level + 1).append("}");
-            indent(flow, level).append(">");
+            if (blocAction.listeComposant != null) {
+                indent(flow, level + 1).append(" blocAction={");
+                blocAction.addContent(this, flow, level + 2);
+                indent(flow, level + 1).append("}");
+                indent(flow, level).append(">");
+            } else {
+                flow.totalUi().__(" blocAction={");
+                blocAction.appendContent(flow, flow.totalUi());
+                flow.totalUi().__("} >");
+            }
         } else {
-            flow.addToUi(">");
+            flow.totalUi().__(">");
         }
         return false;
     }
@@ -65,17 +71,13 @@ public class Section extends Composant {
         return this;
     }
 
-    public Section blocAction(Composant... ComposantList) {
-        this.blocAction = new BlocAction(element, ComposantList);
+    public Section blocAction(Composant blocAction) {
+        this.blocAction = blocAction;
         return this;
     }
 
     public Section pageRetour(String pageRetour) {
         this.pageRetour = pageRetour;
-        return this;
-    }
-
-    public Section label(String label) {
         return this;
     }
 

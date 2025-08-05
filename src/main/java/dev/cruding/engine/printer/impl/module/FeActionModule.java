@@ -25,9 +25,11 @@ public class FeActionModule extends Printer {
 
                 f.L____("Uc", page.uc, ": {");
 
-                List<Action> listeAction = new ArrayList<>(Contexte.getInstance().allActionPage(page));
+                List<Action> listeAction = Contexte.getInstance().actionPage(page);
                 for (Action action : listeAction) {
-                    f.L________(action.actionKey, ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(action.lnameAvecEntite), "',");
+                    if (!action.actionKey.startsWith("#")) {
+                        f.L________(action.actionKey, ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(action.lnameAvecEntite), "',");
+                    }
                 }
                 f.L____("},");
             }

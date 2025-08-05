@@ -9,12 +9,12 @@ public class PanneauEtendable extends Conteneur {
 
     public boolean open = false;
 
-    public PanneauEtendable(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public PanneauEtendable(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
-    public PanneauEtendable(Element element, Entite entite, Composant... ComposantList) {
-        super(element, entite, ComposantList);
+    public PanneauEtendable(Element element, Entite entite, Composant... listeComposant) {
+        super(element, entite, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {
@@ -26,10 +26,10 @@ public class PanneauEtendable extends Conteneur {
         indent(flow, level).append("<PanneauEtendable").append(titre());
 
         if (open) {
-            flow.addToUi(" open={true}");
+            flow.totalUi().__(" open={true}");
         }
 
-        flow.addToUi(">");
+        flow.totalUi().__(">");
         return false;
     }
 

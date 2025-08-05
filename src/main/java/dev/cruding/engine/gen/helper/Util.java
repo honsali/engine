@@ -8,7 +8,6 @@ import dev.cruding.engine.champ.Champ;
 
 public class Util {
     public static int findFirstCapitalIndex(String word) {
-        int j = 1;
         for (int i = 1; i < word.length(); i++) {
             char c = word.charAt(i);
             if (Character.isUpperCase(c)) {

@@ -8,7 +8,7 @@ public class ResourceEnregistrerInjection extends ResourceSpecifiqueInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || byId()) {
+        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || parId()) {
             f.__("(\"");
         }
         if (parIdGrandPere() && entite().haveGrandPere) {
@@ -17,10 +17,10 @@ public class ResourceEnregistrerInjection extends ResourceSpecifiqueInjection {
         if (parIdPere() && entite().havePere) {
             f.__("/", entite().lpere, "/{id" + entite().upere, "}");
         }
-        if (byId()) {
+        if (parId()) {
             f.__("/${id", entite().uname, "}");
         }
-        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || byId()) {
+        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || parId()) {
             f.__("\")");
         }
         f.L____("public ResponseEntity<Void> ", lnameSansEntite(), "(");

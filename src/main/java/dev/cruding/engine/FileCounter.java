@@ -5,7 +5,7 @@ import java.io.File;
 public class FileCounter {
 
     public static void main(String[] args) {
-        File directory = new File("C:\\singen\\engineBeFe02.12.2024\\result\\fe\\src\\modules\\instruction\\tiers"); // Replace "path/to/directory" with the actual directory path
+        File directory = new File("C:\\Projets\\enginev07052025\\result\\fe\\src\\modules\\instruction\\tiers"); // Replace "path/to/directory" with the actual directory path
         int count = countFiles(directory);
         System.out.println("Total number of files: " + count);
     }

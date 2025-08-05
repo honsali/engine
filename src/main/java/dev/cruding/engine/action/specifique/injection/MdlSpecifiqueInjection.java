@@ -1,26 +1,24 @@
 package dev.cruding.engine.action.specifique.injection;
 
+import java.util.ArrayList;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.injection.MdlActionInjection;
 
 public class MdlSpecifiqueInjection extends MdlActionInjection {
 
-
     public void addMdlImport(MdlFlow f) {
-        f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
-        if (child() != null) {
-            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
-            f.addMdlImport("{ I" + child().uname + " }", "modele/" + child().lname + "/Domaine" + child().uname);
-            f.addMdlImport("{ PayloadAction }", "@reduxjs/toolkit");
+        if (parEntite()) {
+            f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
+        }
+        if (parForm()) {
+            f.addMdlImport("{ FormInstance }", "antd");
         }
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
-        if (byForm()) {
-            f.addMdlRequestAttribute("form", "any");
-        }
-        if (child() != null) {
-            f.addMdlRequestAttribute("liste" + child().uname, "I" + child().uname + "[]");
+        if (parForm()) {
+            f.addMdlRequestAttribute("form", "FormInstance");
         }
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
@@ -29,44 +27,47 @@ public class MdlSpecifiqueInjection extends MdlActionInjection {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }
 
-        if (byId()) {
+        if (parId()) {
             f.addMdlRequestAttribute("id" + entite().uname, "string");
+        }
+
+        if (parChamp() != null) {
+            f.addMdlRequestAttribute(parChamp().lname, "string");
         }
     }
 
     public void addMdlResultAttribute(MdlFlow f) {
-        f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
-        if (resultatInId()) {
-            f.addMdlResultAttribute("id" + entite().uname, "string");
+        if (parEntite()) {
+            f.addMdlResultAttribute(entite().lname, "I" + entite().uname);
+        }
+        if (resultatIn() != null) {
+            f.addMdlResultAttribute(resultatIn().lname + entite().uname, resultatIn().jstype);
         }
 
     }
 
     public void addMdlStateAttribute(MdlFlow f) {
-        f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
-        if (child() != null) {
-            f.addMdlStateAttribute("liste" + child().uname, "I" + child().uname + "[]");
+        if (parEntite()) {
+            f.addMdlStateAttribute(entite().lname, "I" + entite().uname);
+            f.addMdlSelectorAttribute(entite().lname, entite().uname);
         }
     }
 
 
-    public boolean addMdlReducer(MdlFlow f) {
-        if (child() != null) {
-            f.L________("setListe", child().uname, ": (state, action: PayloadAction<I", child().uname, "[]>) => {");
-            f.L________________("state.liste", child().uname, " = action.payload;");
-            f.L________("},");
-            return true;
-        }
-        return false;
-    }
+    public void addMdlExtraReducerAffectation(MdlFlow f) {
 
-    public void addMdlExtraReducer(MdlFlow f) {
-        f.L____________(".addCase(Ctrl", uc(), ".", lnameAvecEntite(), ".fulfilled, (state, action) => {");
-        f.L________________("state.resultat = action.payload;");
-        if (recharger()) {
-            f.L________________("state.", entite().lname, " = action.payload.", entite().lname, ";");
+        if (hasReussi()) {
+            ArrayList<Action> siReussiActionList = siReussi();
+            if (siReussiActionList.size() > 0) {
+                for (Action siReussiAction : siReussiActionList) {
+                    if (siReussiAction.mdlActionInjection != null) {
+                        siReussiAction.mdlActionInjection.addMdlExtraReducerAffectation(f);
+                    }
+                    if (siReussiAction.resultatIn != null) {
+                        f.L________________("state." + siReussiAction.resultatIn.lname + siReussiAction.entite.uname + " = action.payload." + siReussiAction.resultatIn.lname + siReussiAction.entite.uname + ";");
+                    }
+                }
+            }
         }
-        f.L____________("})");
     }
-
 }

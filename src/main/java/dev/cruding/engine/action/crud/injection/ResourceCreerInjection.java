@@ -5,10 +5,19 @@ import dev.cruding.engine.flow.JavaFlow;
 
 public class ResourceCreerInjection extends ResourceSpecifiqueInjection {
 
+    public void addResourceImport(JavaFlow f) {
+        super.addResourceImport(f);
+        if (entite().havePere) {
+            f.addJavaImport("java.util.Optional");
+            f.addJavaImport("org.springframework.http.HttpStatus");
+            f.addJavaImport("org.springframework.web.server.ResponseStatusException");
+        }
+    }
+
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@", urest(), "Mapping");
-        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || byId()) {
+        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || parId()) {
             f.__("(\"");
         }
         if (parIdGrandPere() && entite().haveGrandPere) {
@@ -17,10 +26,10 @@ public class ResourceCreerInjection extends ResourceSpecifiqueInjection {
         if (parIdPere() && entite().havePere) {
             f.__("/", entite().lpere, "/{id" + entite().upere, "}");
         }
-        if (byId()) {
+        if (parId()) {
             f.__("/${id", entite().uname, "}");
         }
-        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || byId()) {
+        if ((parIdGrandPere() && entite().haveGrandPere) || (parIdPere() && entite().havePere) || parId()) {
             f.__("\")");
         }
         f.L____("public ResponseEntity<", entite().uname, "Dto> ", lnameSansEntite(), "(");

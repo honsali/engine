@@ -5,25 +5,28 @@ import dev.cruding.engine.injection.ViewActionInjection;
 
 public class ViewInitEditionInjection extends ViewActionInjection {
 
-    private String type;
-
-    public ViewInitEditionInjection(String type) {
-        this.type = type;
-    };
-
     public boolean addViewScript(ViewFlow f) {
+        f.addSelector(lnameAvecEntite());
+        f.addSelector("etat" + unameAvecEntite());
+        f.addSelector(entite().lname);
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________(f.getPretCondition(), "execute(Ctrl", uc(), ".", type, entite().uname, ");");
-        f.totalScript().L____("}, [", f.getPretArray(), "]);");
+        if (attendreSiPret()) {
+            f.totalScript().L________("if (pret) {");
+            f.totalScript().L____________(lnameAvecEntite(), "();");
+            f.totalScript().L________("}");
+            f.totalScript().L____("}, [pret]);");
+        } else {
+            f.totalScript().L________(lnameAvecEntite(), "();");
+            f.totalScript().L____("}, []);");
+        }
         f.totalScript().L("");
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("success && form.setFieldsValue(resultat.", entite().lname, ");");
-        f.totalScript().L____("}, [success]);");
-        f.addSpecificSelector("resultat", uc() + "Resultat", mvcPath() + "/Mdl" + uc());
-        f.useExecute("execute, success");
+        f.totalScript().L________("if (etat", unameAvecEntite(), ".succes) {");
+        f.totalScript().L____________("form.setFieldsValue(", entite().lname, ");");
+        f.totalScript().L________("}");
+        f.totalScript().L____("}, [etat", unameAvecEntite(), ".succes]);");
         f.useEffect();
-
-        f.addJsImport("Ctrl" + uc(), mvcPath() + "/Ctrl" + uc());
+        f.addJsImport("use" + uc(), mvcPath() + "/use" + uc());
         return true;
     }
 }

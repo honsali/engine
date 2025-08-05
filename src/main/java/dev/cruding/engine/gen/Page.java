@@ -19,9 +19,10 @@ public class Page implements Comparable<Page> {
     public String actionLname;
     public String entiteUname;
     public String entiteLname;
+    public String icone;
+    public int position;
 
     public ElementComposer elementComposer;
-
 
     public Page(Module module, String name, ElementComposer elementComposer) {
         this.name = name;
@@ -39,6 +40,8 @@ public class Page implements Comparable<Page> {
 
         if (module.path.endsWith(entiteLname)) {
             this.path = module.path + "/" + actionLname;
+        } else if (module.path.endsWith(actionLname)) {
+            this.path = module.path + "/" + entiteLname;
         } else {
             this.path = module.path + "/" + entiteLname + "/" + actionLname;
         }
@@ -61,14 +64,20 @@ public class Page implements Comparable<Page> {
     }
 
     public boolean estReelle() {
-        return listeElement.size() > 1 || listeElement.get(0).composantRacine != null;
+        return listeElement.size() > 0 && listeElement.get(0).composantRacine != null;
     }
-
 
     public void addElement(Element element) {
         listeElement.add(element);
     }
 
+    public Page menuIcone(String icone) {
+        this.icone = icone;
+        this.module.pageIndex = this.name;
+        return this;
+    }
 
-
+    public int getPosition() {
+        return position;
+    }
 }

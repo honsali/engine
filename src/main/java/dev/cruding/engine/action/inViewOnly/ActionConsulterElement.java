@@ -9,6 +9,7 @@ public class ActionConsulterElement extends Action {
 
     public ActionConsulterElement(Entite entite, Element element) {
         super(ActionType.NOUI, "consulter", entite, element);
+        inViewOnly();
     }
 
     public void overrideActionInjection() {

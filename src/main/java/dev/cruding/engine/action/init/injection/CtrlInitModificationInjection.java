@@ -17,25 +17,39 @@ public class CtrlInitModificationInjection extends CtrlActionInjection {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addCtrlImport(f);
+                ((ChampRef<?>) c).addCtrlImport(f);
             }
         }
     }
 
     public void addCtrlImplementation(CtrlFlow f) {
+        String lcn = "";
+        if (parId()) {
+            lcn = lcn + "ParId";
+        }
+        if (parIdGrandPere() && entite().haveGrandPere) {
+            lcn = lcn + "ParId" + entite().ugrandPere;
+        }
+        if (parIdPere() && entite().havePere) {
+            lcn = lcn + "ParId" + entite().upere;
+        }
         f.L("");
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
-        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
+        f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recuperer", lcn, "(");
         if (parIdGrandPere() && entite().haveGrandPere) {
             f.__("requete.id" + entite().ugrandPere, ", ");
         }
         if (parIdPere() && entite().havePere) {
             f.__("requete.id" + entite().upere, ", ");
         }
-        f.__("requete.id", entite().uname, ");");
+        if (parId()) {
+            f.__("requete.id", entite().uname, ", ");
+        }
+        f.removeLastComma();
+        f.__(");");
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {
-                ((ChampRef) c).addCtrlImplementation(f);
+                ((ChampRef<?>) c).addCtrlImplementation(f);
             }
         }
         f.L("};");

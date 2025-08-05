@@ -3,12 +3,12 @@ package dev.cruding.engine.action.recuperer.injection;
 import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.injection.CtrlActionInjection;
 
-public class CtrlRecupererInjection extends CtrlActionInjection {
+public class CtrlRecupererParChampInjection extends CtrlActionInjection {
 
     public String lnameChamp;
     public String unameChamp;
 
-    public CtrlRecupererInjection(String lnameChamp, String unameChamp) {
+    public CtrlRecupererParChampInjection(String lnameChamp, String unameChamp) {
         this.lnameChamp = lnameChamp;
         this.unameChamp = unameChamp;
     }
@@ -27,9 +27,7 @@ public class CtrlRecupererInjection extends CtrlActionInjection {
         if (parIdPere() && entite().havePere) {
             f.__("requete.id" + entite().upere, ", ");
         }
-        f.__("requete.", lnameChamp, entite().uname, ");");
+        f.__("requete.", lnameChamp.equals("id") ? "id" + entite().uname : lnameChamp, ");");
         f.L("};");
     }
-
-
 }

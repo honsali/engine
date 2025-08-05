@@ -1,7 +1,9 @@
 package dev.cruding.engine.gen;
 
 import java.util.HashMap;
+
 import org.apache.commons.lang3.StringUtils;
+
 import dev.cruding.engine.entite.Entite;
 
 public class LabelMapper {
@@ -14,8 +16,8 @@ public class LabelMapper {
 
     private static final HashMap<String, String> actionPpMap = new HashMap<>();
     public static final String listeActionSansPermission = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
-    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#" + listeActionSansPermission;
-
+    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#supprimer#"
+            + listeActionSansPermission;
 
     static {
 
@@ -40,10 +42,11 @@ public class LabelMapper {
         verbeActionDansBoutonMap.put("initialiserFiltre", "Initialiser");
         verbeActionDansBoutonMap.put("appliquerFiltre", "Filtrer");
 
-
         actionPpMap.put("creer", "créé");
         actionPpMap.put("enregistrer", "enregistré");
         actionPpMap.put("Enregistrer", "enregistré");
+        actionPpMap.put("supprimer", "supprimé");
+        actionPpMap.put("Supprimer", "supprimé");
     }
 
     public static LabelMapper getInstance() {
@@ -53,9 +56,8 @@ public class LabelMapper {
     private String pluriels = "#lister#Lister#";
     private String avecEntite = "#ajouter#Ajouter#";
 
-
-    private LabelMapper() {}
-
+    private LabelMapper() {
+    }
 
     public String nomAction(String key) {
         if (verbeActionDansBoutonMap.containsKey(key)) {
@@ -82,8 +84,6 @@ public class LabelMapper {
         }
         return nom;
     }
-
-
 
     public String titreConfirmation(String key, Entite entite) {
         String verbe = key;
@@ -124,7 +124,6 @@ public class LabelMapper {
         }
         return StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(label)), " ");
     }
-
 
     public String getTitre(Page page) {
         String titre = uLabel(page.actionUname);

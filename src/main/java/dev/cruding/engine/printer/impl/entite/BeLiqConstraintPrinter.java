@@ -34,7 +34,7 @@ public class BeLiqConstraintPrinter extends Printer {
         }
         for (Champ champ : entite.listeChamp) {
             if (champ.isRef) {
-                ChampRef<?> ref = (ChampRef) champ;
+                ChampRef<?> ref = (ChampRef<?>) champ;
                 f.L________("<addForeignKeyConstraint");
                 f.L____________("baseColumnNames=\"", ref.dbName, "\"");
                 f.L____________("baseTableName=\"", entite.dbName, "\"");
@@ -42,7 +42,7 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L____________("referencedColumnNames=\"", entite.id_.getDbName(entite.uname), "\"");
                 f.L____________("referencedTableName=\"", ref.dbTypeName, "\" />");
             } else if (champ.isRefMany) {
-                ChampRef<?> ref = (ChampRef) champ;
+                ChampRef<?> ref = (ChampRef<?>) champ;
                 f.L________("<addForeignKeyConstraint");
                 f.L____________("baseColumnNames=\"", ref.jcDbName, "\"");
                 f.L____________("baseTableName=\"", ref.jtDbName, "\"");

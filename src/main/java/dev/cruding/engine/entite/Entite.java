@@ -95,8 +95,8 @@ public class Entite extends ChampFactory {
         this.setting = this.id_.init(uname);
         Champ identifiant = tempIdentifiant;
         if (identifiant == null) {
-            System.out.println("L'entite " + uname + " n'a pas d'identifiant");
-            System.exit(0);
+            this.lid = "id";
+            this.uid = "Id";
         } else {
             this.lid = identifiant.lname;
             this.uid = identifiant.uname;
@@ -115,6 +115,10 @@ public class Entite extends ChampFactory {
 
     public boolean isReferenceData() {
         return false;
+    }
+
+    public String idPere() {
+        return "Id" + pere.uname;
     }
 
 }

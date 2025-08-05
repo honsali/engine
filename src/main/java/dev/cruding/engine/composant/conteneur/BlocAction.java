@@ -6,8 +6,8 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class BlocAction extends Composant {
 
-    public BlocAction(Element element, Composant... ComposantList) {
-        super(element, ComposantList);
+    public BlocAction(Element element, Composant... listeComposant) {
+        super(element, listeComposant);
     }
 
     public void addImport(ViewFlow flow) {

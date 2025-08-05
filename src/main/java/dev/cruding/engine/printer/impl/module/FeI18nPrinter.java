@@ -18,29 +18,37 @@ public class FeI18nPrinter extends Printer {
         ViewFlow f = new ViewFlow();
 
         /* *********************************************************************** */
-
-        f.__("import { enteteConfirmation, messageSuccess, titreConfirmation } from 'waxant';");
-        f.L("import { Action", module.unameLast, " } from './Action", module.unameLast, "';");
-        f.L("");
-        f.L("export const I18n", module.unameLast, " = {");
-        List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
-        Collections.sort(listePage);
-        for (Page page : listePage) {
-            f.L____("Page", page.uc, ": '", LabelMapper.getInstance().getTitre(page), "',");
-            f.L____("'Uc", page.uc, ".titre': '", LabelMapper.getInstance().getTitre(page), "',");
-
-            for (Action action : Contexte.getInstance().allActionPage(page)) {
-                action.viewActionInjection.addI18n(f);
-            }
+        if (!module.estParent) {
+            f.__("import { enteteConfirmation, messageSuccess, titreConfirmation } from 'waxant';");
+            f.L("import { Action", module.unameLast, " } from './Action", module.unameLast, "';");
+            f.L("");
         }
+        f.L("export const I18n", module.unameLast, " = {");
+        if (!module.estParent) {
+            List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
+            Collections.sort(listePage);
+            for (Page page : listePage) {
+                f.L____("Page", page.uc, ": '", LabelMapper.getInstance().getTitre(page), "',");
+                f.L____("'Uc", page.uc, ".titre': '", LabelMapper.getInstance().getTitre(page), "',");
 
-        HashMap<String, String> labelMap = Contexte.getInstance().getLabelMap(module.uname);
-        if (labelMap != null) {
-            List<String> keySet = new ArrayList<>(labelMap.keySet());
-            Collections.sort(keySet);
-            for (String key : keySet) {
-                f.L____("'", key, "': '", labelMap.get(key), "',");
+                for (Action action : Contexte.getInstance().actionPage(page)) {
+                    if (!action.noUi() && !action.flow()) {
+                        action.viewActionInjection.addI18n(f);
+                    }
+                }
+
             }
+
+            HashMap<String, String> labelMap = Contexte.getInstance().getLabelMap(module.uname);
+            if (labelMap != null) {
+                List<String> keySet = new ArrayList<>(labelMap.keySet());
+                Collections.sort(keySet);
+                for (String key : keySet) {
+                    f.L____("", key, ": '", labelMap.get(key), "',");
+                }
+            }
+        } else {
+            f.L____("Page", module.unameLast, ": '", LabelMapper.getInstance().uLabel(module.unameLast), "',");
         }
         f.L("};");
         /* *********************************************************************** */
