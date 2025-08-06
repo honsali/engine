@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.entite;
 
+import java.util.HashSet;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entite.Entite;
@@ -26,14 +27,21 @@ public class FeServicePrinter extends Printer {
         f.L("");
         f.L("const resourceUri = API_URL + '/", entite.lname, "';");
 
+        HashSet<String> actionName = new HashSet<>();
         for (Action action : actionList) {
-            action.serviceActionInjection.addServiceImplementation(f);
+            if (!actionName.contains(action.lnameSansEntite)) {
+                action.serviceActionInjection.addServiceImplementation(f);
+                actionName.add(action.lnameSansEntite);
+            }
         }
         f.L("");
         f.L("const Service", entite.uname, " = {");
-
+        actionName = new HashSet<>();
         for (Action action : actionList) {
-            action.serviceActionInjection.addServiceDeclaration(f);
+            if (!actionName.contains(action.lnameSansEntite)) {
+                action.serviceActionInjection.addServiceDeclaration(f);
+                actionName.add(action.lnameSansEntite);
+            }
         }
         f.L("};");
         f.L("");

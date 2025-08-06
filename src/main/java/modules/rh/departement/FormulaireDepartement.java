@@ -16,7 +16,7 @@ public class FormulaireDepartement extends ElementComposer {
     public Composant composantRacine() {
         Departement e = (Departement) getEntite("Departement");
         if (enModification) {
-            initModification(e).parId();
+            initModification(e, e.id_).inInit();
         }
 
         return bloc(//
@@ -24,14 +24,14 @@ public class FormulaireDepartement extends ElementComposer {
                         e.nom, //
                         e.description, //
                         enModification ? cache(e.id_) : null //
-                ), //
+                ).nombreColonne(1), //
                 blocAction(//
                         enModification ? element(actionEnregistrer(e).siReussi(goToPage(e, "PageConsulterDepartement"))).parForm() : //
                                 element(actionCreer(e).siReussi(goToPage(e, "PageConsulterDepartement").parChamp(e.id_))).parForm(), //
 
                         enModification ? bouton(actionRetourConsulter(e, "PageConsulterDepartement")) : bouton(actionRetourListe(e, "PageListerDepartement"))//
                 )//
-        ).largeur("600px").marge("20px");//
+        ).largeur("600px").marge("20px").fond("blanc");//
     }
 
 }

@@ -18,6 +18,10 @@ public class FeAclModule extends Printer {
         /* *********************************************************************** */
         List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
         Collections.sort(listePage);
+        f.addJsImport("{ Action" + module.unameLast + " }", module.path + "/Action" + module.unameLast);
+        f.flushJsImportBloc();
+        f.L("");
+        f.L("");
         f.__("export const acl", module.unameLast, " = [");
         f.L("");
         for (Page page : listePage) {

@@ -23,7 +23,7 @@ public class Util {
         Path pathImported = Paths.get(importedFile);
         Path pathRelative = pathLocal.relativize(pathImported);
         String p = pathRelative.toString().replace('\\', '/');
-        if (inElement) {
+        if (inElement && !localPath.endsWith("element")) {
             return "../" + p;
         }
         return p;

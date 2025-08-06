@@ -18,7 +18,7 @@ public class ActionDialogue extends Composant {
     public ActionDialogue(Element element, Entite entite, Champ... listeChamp) {
         super(element, entite);
         formulaire = new Formulaire(element, entite, listeChamp);
-        listeComposant = new Composant[] { formulaire };
+        listeComposant = new Composant[] {formulaire};
 
     }
 

@@ -3,7 +3,7 @@ package dev.cruding.engine.action.init.injection;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.injection.ViewActionInjection;
 
-public class ViewInitEditionInjection extends ViewActionInjection {
+public class ViewInitCreationInjection extends ViewActionInjection {
 
     public boolean addViewScript(ViewFlow f) {
         f.addSelector(lnameAvecEntite());

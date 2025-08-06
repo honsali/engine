@@ -3,7 +3,7 @@ package dev.cruding.engine.action.init.injection;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.MdlFlow;
 
-public class MdlInitModificationInjection extends MdlInitEditionInjection {
+public class MdlInitModificationInjection extends MdlInitCreationInjection {
 
 
     public MdlInitModificationInjection(Champ[] listeChamp) {

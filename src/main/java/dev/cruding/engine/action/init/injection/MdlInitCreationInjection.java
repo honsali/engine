@@ -5,11 +5,11 @@ import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.injection.MdlActionInjection;
 
-public class MdlInitEditionInjection extends MdlActionInjection {
+public class MdlInitCreationInjection extends MdlActionInjection {
 
     protected Champ[] listeChamp = new Champ[0];
 
-    public MdlInitEditionInjection(Champ[] listeChamp) {
+    public MdlInitCreationInjection(Champ[] listeChamp) {
         this.listeChamp = listeChamp;
     };
 

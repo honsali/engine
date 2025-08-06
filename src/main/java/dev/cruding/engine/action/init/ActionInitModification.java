@@ -1,33 +1,25 @@
 package dev.cruding.engine.action.init;
 
-import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.init.injection.CtrlInitModificationInjection;
-import dev.cruding.engine.action.init.injection.MdlInitModificationInjection;
-import dev.cruding.engine.action.init.injection.ServiceInitModificationInjection;
-import dev.cruding.engine.action.init.injection.ViewInitEditionInjection;
-import dev.cruding.engine.champ.Champ;
+import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.action.init.injection.ViewInitModificationInjection;
+import dev.cruding.engine.action.recuperer.ActionRecupererParChamp;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 
-public class ActionInitModification extends Action {
+public class ActionInitModification extends ActionRecupererParChamp {
 
-    private static final String type = "initModification";
-    private Champ[] listeChamp = new Champ[0];
+    public String lnameChamp;
+    public String unameChamp;
 
-    public ActionInitModification(Entite entite, Element element) {
-        this(entite, element, new Champ[0]);
-    }
-
-    public ActionInitModification(Entite entite, Element element, Champ... listeChamp) {
-        super(ActionType.NOUI, type, entite, element);
-        this.listeChamp = listeChamp;
+    public ActionInitModification(Entite entite, Element element, String unameChamp) {
+        super(entite, element, unameChamp);
+        this.lnameChamp = StringUtils.uncapitalize(unameChamp);
+        this.unameChamp = unameChamp;
     }
 
     public void overrideActionInjection() {
-        viewActionInjection = new ViewInitEditionInjection();
-        serviceActionInjection = new ServiceInitModificationInjection();
-        ctrlActionInjection = new CtrlInitModificationInjection(listeChamp);
-        mdlActionInjection = new MdlInitModificationInjection(listeChamp);
+        super.overrideActionInjection();
+        viewActionInjection = new ViewInitModificationInjection(lnameChamp, unameChamp);
     }
 
 }

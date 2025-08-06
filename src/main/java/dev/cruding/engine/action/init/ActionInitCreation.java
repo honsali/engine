@@ -1,9 +1,9 @@
 package dev.cruding.engine.action.init;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.action.init.injection.CtrlInitEditionInjection;
-import dev.cruding.engine.action.init.injection.MdlInitEditionInjection;
-import dev.cruding.engine.action.init.injection.ViewInitEditionInjection;
+import dev.cruding.engine.action.init.injection.CtrlInitCreationInjection;
+import dev.cruding.engine.action.init.injection.MdlInitCreationInjection;
+import dev.cruding.engine.action.init.injection.ViewInitCreationInjection;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
@@ -24,9 +24,9 @@ public class ActionInitCreation extends Action {
     }
 
     public void overrideActionInjection() {
-        viewActionInjection = new ViewInitEditionInjection();
-        ctrlActionInjection = new CtrlInitEditionInjection(listeChamp);
-        mdlActionInjection = new MdlInitEditionInjection(listeChamp);
+        viewActionInjection = new ViewInitCreationInjection();
+        ctrlActionInjection = new CtrlInitCreationInjection(listeChamp);
+        mdlActionInjection = new MdlInitCreationInjection(listeChamp);
     }
 
 

@@ -20,7 +20,7 @@ public class ServiceRecupererInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const recupererPar", unameChamp, " = async (", lnameChamp, entite().uname, ": string) => {");
+        f.L("const ", lnameSansEntite(), " = async (", lnameChamp, entite().uname, ": string) => {");
         f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname, ">(`${resourceUri}/${", lnameChamp, entite().uname, "}`)).data;");
         f.L____("return ", entite().lname, ";");
         f.L("};");
@@ -28,6 +28,6 @@ public class ServiceRecupererInjection extends ServiceActionInjection {
     }
 
     public void addServiceDeclaration(Flow f) {
-        f.L____("recupererPar" + unameChamp + ",");
+        f.L____(lnameSansEntite(), ",");
     }
 }

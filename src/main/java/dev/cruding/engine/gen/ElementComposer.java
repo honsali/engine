@@ -164,8 +164,8 @@ public abstract class ElementComposer {
         return new ActionVide(ActionType.UCA, "retourConsulter", entite, element).targetPage(targePage).inViewOnly();
     }
 
-    public Action recupererParChamp(Entite entite, Champ field) {
-        return new ActionRecupererParChamp(entite, element, field.uname);
+    public Action recupererParChamp(Entite entite, Champ champ) {
+        return new ActionRecupererParChamp(entite, element, champ.uname);
     }
 
     public Action initialiserMdl(Entite entite) {
@@ -176,13 +176,10 @@ public abstract class ElementComposer {
         return new ActionInitCreation(entite, element, listeChamp);
     }
 
-    public Action initModification(Entite entite) {
-        return new ActionInitModification(entite, element);
+    public Action initModification(Entite entite, Champ champ) {
+        return new ActionInitModification(entite, element, champ.uname);
     }
 
-    public Action initModification(Entite entite, Champ... listeChamp) {
-        return new ActionInitModification(entite, element, listeChamp);
-    }
 
     public Action goToModule(Entite entite, String target) {
         return new ActionGoToModule(entite, element, target);

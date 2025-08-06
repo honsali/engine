@@ -8,11 +8,11 @@ import dev.cruding.engine.champ.impl.ChampRef;
 import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.injection.CtrlActionInjection;
 
-public class CtrlInitEditionInjection extends CtrlActionInjection {
+public class CtrlInitCreationInjection extends CtrlActionInjection {
 
     private Champ[] listeChamp = new Champ[0];
 
-    public CtrlInitEditionInjection(Champ[] listeChamp) {
+    public CtrlInitCreationInjection(Champ[] listeChamp) {
         this.listeChamp = listeChamp;
     };
 

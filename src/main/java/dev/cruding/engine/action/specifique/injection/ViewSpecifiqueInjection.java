@@ -35,7 +35,7 @@ public class ViewSpecifiqueInjection extends ViewActionInjection {
 
             if (this.parForm() || siReussi().stream().anyMatch(a -> a.parForm)) {
                 flow.addParam("form");
-                flow.useForm();
+                // flow.useForm();
             }
             if (parProp() != null) {
                 flow.addParam(parProp());

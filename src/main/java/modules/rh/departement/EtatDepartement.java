@@ -18,8 +18,8 @@ public class EtatDepartement extends ElementComposer {
                 etat(e, //
                         e.nom, //
                         e.description//
-                )//
-        ).largeur("600px").marge("20px");//
+                ).nombreColonne(1)//
+        ).largeur("600px").marge("20px").fond("blanc");//
     }
 
 }
