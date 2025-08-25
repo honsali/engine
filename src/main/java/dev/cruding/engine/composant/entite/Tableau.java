@@ -100,7 +100,7 @@ public class Tableau extends Composant {
                 flow.totalUi().__(" libelle=\"").append(c.libelle).append("\"");
             }
             if (c.largeur > 0) {
-                flow.totalUi().__(" largeur={", c.largeur, "}");
+                flow.totalUi().__(" largeur={", "" + c.largeur, "}");
             }
             flow.totalUi().__(" />");
             Contexte.getInstance().addLabelPourChamp(element.page.module.uname, c);

@@ -68,7 +68,7 @@ public class BeRefDomainePrinter extends Printer {
         f.L________("if (!(o instanceof ", entite.uname, "Ref)) {");
         f.L____________("return false;");
         f.L________("}");
-        f.L________("return getId() != null && getId().equals(((", entite.uname, "Ref) o).id);");
+        f.L________("return getId() != null && getId().equals(((", entite.uname, "Ref) o).getId());");
         f.L____("}");
         f.L("");
         f.L____("@Override");
