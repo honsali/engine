@@ -31,7 +31,7 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
             withComma = true;
         }
         if (withComma) {
-            f.removeLastComma();
+            f.removeAfterLastComma();
         }
         f.__(") => {");
         f.L____("return (await axios.", lrest(), "(`${resourceUri}");

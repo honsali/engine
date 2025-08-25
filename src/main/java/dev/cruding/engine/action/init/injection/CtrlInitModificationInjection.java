@@ -45,7 +45,7 @@ public class CtrlInitModificationInjection extends CtrlActionInjection {
         if (parId()) {
             f.__("requete.id", entite().uname, ", ");
         }
-        f.removeLastComma();
+        f.removeAfterLastComma();
         f.__(");");
         for (Champ c : listeChamp) {
             if (c instanceof ChampRef) {

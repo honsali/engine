@@ -57,7 +57,7 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
             withComma = true;
         }
         if (withComma) {
-            f.removeLastComma();
+            f.removeAfterLastComma();
         }
         f.__(");");
         if (recharger()) {

@@ -12,24 +12,30 @@ public class JavaFlow extends Flow {
     }
 
     public void flushJavaImportBloc() {
-        TreeSet<String> ts = new TreeSet<String>(importJavaSet);
-        for (String s : ts) {
-            if (s.startsWith("java")) {
-                L("import ", s, ";");
+        if (importJavaSet.isEmpty()) {
+            return;
+        }
+
+        TreeSet<String> ts = new TreeSet<>(importJavaSet);
+        String[] packagePrefixes = {"java", "org", "com"};
+
+        for (String prefix : packagePrefixes) {
+            for (String s : ts) {
+                if (s.startsWith(prefix)) {
+                    L("import ", s, ";");
+                }
             }
         }
+
         for (String s : ts) {
-            if (s.startsWith("org")) {
-                L("import ", s, ";");
+            boolean isStandardPackage = false;
+            for (String prefix : packagePrefixes) {
+                if (s.startsWith(prefix)) {
+                    isStandardPackage = true;
+                    break;
+                }
             }
-        }
-        for (String s : ts) {
-            if (s.startsWith("com")) {
-                L("import ", s, ";");
-            }
-        }
-        for (String s : ts) {
-            if (!s.startsWith("java") && !s.startsWith("org") && !s.startsWith("com")) {
+            if (!isStandardPackage) {
                 L("import ", s, ";");
             }
         }

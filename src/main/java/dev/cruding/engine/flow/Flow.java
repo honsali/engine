@@ -2,62 +2,35 @@ package dev.cruding.engine.flow;
 
 public class Flow {
 
+
     private StringBuilder sb = new StringBuilder();
 
-    public Flow appendTab(int level) {
-        sb.append("    ".repeat(level));
-        return this;
-    }
-
+    // core methods
     public Flow append(String s) {
-        sb.append(s);
-        return this;
-    }
-
-
-    public Flow append(StringBuilder sb_) {
-        sb.append(sb_);
-        return this;
-    }
-
-    public Flow __(StringBuilder sb_) {
-        sb.append(sb_);
-        return this;
-    }
-
-    public Flow __(String s) {
-        sb.append(s);
-        return this;
-    }
-
-    public Flow __(String s1, int i, String s2) {
-        sb.append(s1).append(i).append(s2);
-        return this;
-    }
-
-    public Flow __(String s, int i) {
-        sb.append(s).append(i);
-        return this;
-    }
-
-    public Flow __(String s, StringBuilder sb_) {
-        sb.append(s).append(sb_);
-        return this;
-    }
-
-    public Flow __(String s1, StringBuilder sb_, String s2) {
-        sb.append(s1).append(sb_).append(s2);
-        return this;
-    }
-
-    public Flow __(String... ss) {
-        for (String s : ss) {
+        if (s != null) {
             sb.append(s);
         }
         return this;
     }
 
-    public Flow removeLastComma() {
+    public Flow append(StringBuilder sb_) {
+        if (sb_ != null) {
+            sb.append(sb_);
+        }
+        return this;
+    }
+
+
+    public Flow append(String... ss) {
+        if (ss != null) {
+            for (String s : ss) {
+                append(s);
+            }
+        }
+        return this;
+    }
+
+    public Flow removeAfterLastComma() {
         int idx = sb.lastIndexOf(",");
         if (idx != -1) {
             sb.delete(idx, sb.length());
@@ -65,146 +38,28 @@ public class Flow {
         return this;
     }
 
-    public Flow L____(String s) {
-        sb.append("\n").append("    ").append(s);
-        return this;
-    }
-
-    public Flow L____(String... ss) {
-        sb.append("\n").append("    ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________(String... ss) {
-        sb.append("\n").append("        ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L____________(String... ss) {
-        sb.append("\n").append("            ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________________(String... ss) {
-        sb.append("\n").append("                ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L____________________(String... ss) {
-        sb.append("\n").append("                    ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________________________(String... ss) {
-        sb.append("\n").append("                        ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L____________________________(String... ss) {
-        sb.append("\n").append("                            ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________________________________(String... ss) {
-        sb.append("\n").append("                                ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L____________________________________(String... ss) {
-        sb.append("\n").append("                                    ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________________________________________(String... ss) {
-        sb.append("\n").append("                                        ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L____________________________________________(String... ss) {
-        sb.append("\n").append("                                            ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L________________________________________________(String... ss) {
-        sb.append("\n").append("                                                ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-
-    public Flow ______(String... ss) {
-        sb.append("    ");
-        for (String s : ss) {
-            sb.append(s);
-        }
-        return this;
-    }
-
-    public Flow L(String s) {
-        sb.append("\n").append(s);
-        return this;
-    }
-
-    public Flow L(String s, StringBuilder sb_) {
-        sb.append("\n").append(s).append(sb_);
-        return this;
-    }
-
-    public Flow L(String s1, StringBuilder sb_, String s2) {
-        sb.append("\n").append(s1).append(sb_).append(s2);
-        return this;
-    }
-
-    public Flow L(String... ss) {
+    public Flow newLine() {
         sb.append("\n");
-        for (String s : ss) {
-            sb.append(s);
+        return this;
+    }
+
+    public Flow spaces(int spaces) {
+        if (spaces > 0) {
+            sb.append(" ".repeat(spaces));
         }
         return this;
+    }
+
+    public Flow newLineWithIndent(int spaces, String s) {
+        return newLine().spaces(spaces).append(s);
+    }
+
+    public Flow newLineWithIndent(int spaces, String... ss) {
+        return newLine().spaces(spaces).append(ss);
     }
 
     public String toString() {
         return sb.toString();
-    }
-
-    public Flow ap(StringBuilder s) {
-        sb.append(s);
-        return this;
     }
 
     public void clean() {
@@ -214,8 +69,103 @@ public class Flow {
     }
 
     public void cleanComma() {
-        if (sb.length() > 0) {
+        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ',') {
             sb.deleteCharAt(sb.length() - 1);
         }
+    }
+
+    // alias methods for appending
+    public Flow __(String s) {
+        return append(s);
+    }
+
+    public Flow __(String... ss) {
+        return append(ss);
+    }
+
+
+    public Flow L(String s) {
+        return newLine().append(s);
+    }
+
+    public Flow L____(String s) {
+        return newLineWithIndent(4, s);
+    }
+
+    public Flow L________(String s) {
+        return newLineWithIndent(8, s);
+    }
+
+    public Flow L____________(String s) {
+        return newLineWithIndent(12, s);
+    }
+
+    public Flow L________________(String s) {
+        return newLineWithIndent(16, s);
+    }
+
+    public Flow L____________________(String s) {
+        return newLineWithIndent(20, s);
+    }
+
+    public Flow L________________________(String s) {
+        return newLineWithIndent(24, s);
+    }
+
+    public Flow L____________________________(String s) {
+        return newLineWithIndent(28, s);
+    }
+
+    public Flow L________________________________(String s) {
+        return newLineWithIndent(32, s);
+    }
+
+    public Flow L____________________________________(String s) {
+        return newLineWithIndent(36, s);
+    }
+
+    public Flow L________________________________________(String s) {
+        return newLineWithIndent(40, s);
+    }
+
+    public Flow L____________________________________________(String s) {
+        return newLineWithIndent(44, s);
+    }
+
+    public Flow L________________________________________________(String s) {
+        return newLineWithIndent(48, s);
+    }
+
+    public Flow L(String... ss) {
+        return newLine().append(ss);
+    }
+
+    public Flow L____(String... ss) {
+        return newLineWithIndent(4, ss);
+    }
+
+    public Flow L________(String... ss) {
+        return newLineWithIndent(8, ss);
+    }
+
+    public Flow L____________(String... ss) {
+        return newLineWithIndent(12, ss);
+    }
+
+    public Flow L________________(String... ss) {
+        return newLineWithIndent(16, ss);
+    }
+
+
+    public Flow L____________________(String... ss) {
+        return newLineWithIndent(20, ss);
+    }
+
+    public Flow L________________________(String... ss) {
+        return newLineWithIndent(24, ss);
+    }
+
+    public Flow L____________________________(String... ss) {
+        return newLineWithIndent(28, ss);
     }
 }

@@ -33,8 +33,6 @@ public class ViewFlow extends JsFlow {
 
     private Element element;
 
-    StringBuilder sb = new StringBuilder();
-
     public ViewFlow() {}
 
     public ViewFlow(Element element) {
@@ -122,7 +120,8 @@ public class ViewFlow extends JsFlow {
             addJsImport("{ useNavigate }", "react-router");
         }
         if (hasSelector()) {
-            addJsImport("use" + element.page.uc, (element.path.endsWith("element") ? ".." : ".") + "/use" + element.page.uc);
+            String relativePath = (element.path != null && element.path.endsWith("element") ? ".." : ".") + "/use" + element.page.uc;
+            addJsImport("use" + element.page.uc, relativePath);
         }
         if (hasForm()) {
             addJsImport("{ Form }", "antd");
