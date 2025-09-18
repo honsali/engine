@@ -18,7 +18,7 @@ public class CtrlFiltrerInjection extends CtrlActionInjection {
         f.L____("await requete.form.validateFields();");
         f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
         if (pagine()) {
-            f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "({ ...dataForm, pageCourante: 0 });");
+            f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "(dataForm);");
         } else {
             f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "(dataForm);");
         }

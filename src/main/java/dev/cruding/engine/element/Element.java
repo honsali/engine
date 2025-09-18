@@ -2,6 +2,7 @@
 package dev.cruding.engine.element;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.composant.Composant;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Page;
@@ -34,7 +35,7 @@ public class Element {
     }
 
     public Element page(Page page) {
-        if (StringUtils.startsWith(relativePath, "../")) {
+        if (Strings.CS.startsWith(relativePath, "../")) {
             this.path = StringUtils.substringBeforeLast(page.path, "/") + "/" + StringUtils.substringAfter(relativePath, "/");
         } else if (page == null) {
             this.path = relativePath;

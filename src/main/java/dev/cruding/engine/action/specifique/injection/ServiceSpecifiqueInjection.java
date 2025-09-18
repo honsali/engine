@@ -1,5 +1,6 @@
 package dev.cruding.engine.action.specifique.injection;
 
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.injection.ServiceActionInjection;
 
@@ -10,10 +11,6 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
         f.L("");
         f.L("const ", lnameSansEntite(), " = async (");
         boolean withComma = false;
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("id" + entite().ugrandPere, ", ");
-            withComma = true;
-        }
         if (parIdPere() && entite().havePere) {
             f.__("id" + entite().upere, ": string, ");
             withComma = true;
@@ -23,7 +20,9 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
             withComma = true;
         }
         if (parChamp() != null) {
-            f.__("", parChamp().lname, ", ");
+            for (Champ c : parChamp()) {
+                f.__("", c.lname, ", ");
+            }
             withComma = true;
         }
         if (parForm()) {
@@ -34,10 +33,7 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
             f.removeAfterLastComma();
         }
         f.__(") => {");
-        f.L____("return (await axios.", lrest(), "(`${resourceUri}");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("/", entite().lgrandPere, "/${id" + entite().ugrandPere, "}");
-        }
+        f.L____("const { data } = await axios.", lrest(), "(`${API_URL}/", entite().lname, "/");
         if (parIdPere() && entite().havePere) {
             f.__("/", entite().lpere, "/${id" + entite().upere, "}");
         }
@@ -48,7 +44,10 @@ public class ServiceSpecifiqueInjection extends ServiceActionInjection {
         if (parForm() || parEntite()) {
             f.__(", ", entite().lname);
         }
-        f.__(")).data");
+        f.__(")");
+        f.__(";");
+
+        f.L____("return data");
         if (resultatIn() != null) {
             f.__(".", resultatIn().lname);
         }

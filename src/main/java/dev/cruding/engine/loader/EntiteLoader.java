@@ -4,15 +4,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.Contexte;
 
 public class EntiteLoader {
 
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EntiteLoader.class);
 
     public void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {

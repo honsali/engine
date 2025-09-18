@@ -16,6 +16,7 @@ public class BeRepositoryPrinter extends Printer {
         }
 
         f.addJavaImport("org.springframework.data.jpa.repository.JpaRepository");
+        f.addJavaImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor");
         f.addJavaImport("org.springframework.stereotype.Repository");
 
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
@@ -31,7 +32,7 @@ public class BeRepositoryPrinter extends Printer {
 
         f.L("");
         f.L("@Repository");
-        f.L("public interface ", entite.uname, "Repository extends JpaRepository<", entite.uname, ", ", entite.id_.jtype, "> {");
+        f.L("public interface ", entite.uname, "Repository extends JpaRepository<", entite.uname, ", ", entite.id_.jtype, ">, JpaSpecificationExecutor<", entite.uname, "> {");
 
         for (Action action : Contexte.getInstance().actionEntite(entite)) {
             action.repoActionInjection.addRepositoryDeclaration(f);

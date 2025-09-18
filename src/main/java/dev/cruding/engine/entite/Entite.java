@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.champ.Champ;
-import dev.cruding.engine.champ.impl.GrandPere;
 import dev.cruding.engine.champ.impl.Pere;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.RefMany;
@@ -30,10 +29,7 @@ public class Entite extends ChampFactory {
     public Pere<?> pere;
     public String lpere;
     public String upere;
-    public boolean haveGrandPere = false;
     public boolean haveRefMany = false;
-    public String lgrandPere;
-    public String ugrandPere;
 
     public Setting setting;
 
@@ -46,7 +42,6 @@ public class Entite extends ChampFactory {
 
     public void init() {
         Champ tempPere = null;
-        Champ grandPere = null;
         Champ identifiant = null;
         Setting tempId = null;
 
@@ -78,10 +73,6 @@ public class Entite extends ChampFactory {
                             tempPere = field.lname(f.getName());
                             this.lpere = tempPere.lname;
                             listeChamp.add(field);
-                        } else if (field instanceof GrandPere) {
-                            grandPere = field.lname(f.getName());
-                            this.lgrandPere = grandPere.lname;
-                            listeChamp.add(field);
                         } else if (field instanceof Setting) {
                             tempId = (Setting) field;
                         } else {
@@ -109,10 +100,6 @@ public class Entite extends ChampFactory {
         if (this.lpere != null) {
             this.havePere = true;
             this.upere = StringUtils.capitalize(lpere);
-            if (this.lgrandPere != null) {
-                this.haveGrandPere = true;
-                this.ugrandPere = StringUtils.capitalize(lgrandPere);
-            }
         }
     }
 

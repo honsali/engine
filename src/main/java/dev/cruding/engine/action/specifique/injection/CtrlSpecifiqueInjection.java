@@ -1,6 +1,7 @@
 package dev.cruding.engine.action.specifique.injection;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.injection.CtrlActionInjection;
 
@@ -32,10 +33,6 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
         }
         f.__("await Service", entite().uname, ".", lnameSansEntite(), "(");
         boolean withComma = false;
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("requete.id" + entite().ugrandPere, ", ");
-            withComma = true;
-        }
         if (parIdPere() && entite().havePere) {
             f.__("requete.id" + entite().upere, ", ");
             withComma = true;
@@ -45,7 +42,9 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
             withComma = true;
         }
         if (parChamp() != null) {
-            f.__("requete.", parChamp().lname, ", ");
+            for (Champ c : parChamp()) {
+                f.__("requete.", c.lname, ", ");
+            }
             withComma = true;
         }
         if (parForm()) {
@@ -62,9 +61,6 @@ public class CtrlSpecifiqueInjection extends CtrlActionInjection {
         f.__(");");
         if (recharger()) {
             f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recupererParId(");
-            if (parIdGrandPere() && entite().haveGrandPere) {
-                f.__("requete.id" + entite().ugrandPere, ", ");
-            }
             if (parIdPere() && entite().havePere) {
                 f.__("requete.id" + entite().upere, ", ");
             }

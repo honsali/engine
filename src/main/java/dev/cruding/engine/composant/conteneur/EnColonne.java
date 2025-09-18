@@ -9,7 +9,8 @@ public class EnColonne extends Composant {
     public int nombreColonne = 2;
     public String marge = "20";
     public String largeur;
-    public String[] tableauLargeur;
+    public String[] flexLargeur;
+    public int[] spanLargeur;
 
     public EnColonne(Element element, Composant... listeComposant) {
         super(element, listeComposant);
@@ -43,8 +44,10 @@ public class EnColonne extends Composant {
             if (listeComposant != null) {
                 for (int i = 0; i < listeComposant.length; i++) {
                     Composant composant = listeComposant[i];
-                    if (tableauLargeur != null) {
-                        indent(flow, level + 1).append("<Col flex=\"").append(tableauLargeur[i]).append("\">");
+                    if (flexLargeur != null) {
+                        indent(flow, level + 1).append("<Col flex=\"").append(flexLargeur[i]).append("\">");
+                    } else if (spanLargeur != null) {
+                        indent(flow, level + 1).append("<Col span={").append(String.valueOf(spanLargeur[i])).append("}>");
                     } else {
                         indent(flow, level + 1).append("<Col span={").append(largeur).append("}>");
                     }
@@ -71,14 +74,24 @@ public class EnColonne extends Composant {
     public EnColonne largeur(int nombreColonne) {
         this.nombreColonne = nombreColonne;
         this.largeur = Integer.toString(24 / nombreColonne);
-        this.tableauLargeur = null;
+        this.flexLargeur = null;
+        this.spanLargeur = null;
         return this;
     }
 
     public EnColonne largeur(String... tableauLargeur) {
         this.nombreColonne = tableauLargeur.length;
         this.largeur = null;
-        this.tableauLargeur = tableauLargeur;
+        this.flexLargeur = tableauLargeur;
+        this.spanLargeur = null;
+        return this;
+    }
+
+    public EnColonne largeur(int... tableauLargeur) {
+        this.nombreColonne = tableauLargeur.length;
+        this.largeur = null;
+        this.flexLargeur = null;
+        this.spanLargeur = tableauLargeur;
         return this;
     }
 

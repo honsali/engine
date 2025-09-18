@@ -7,7 +7,6 @@ import dev.cruding.engine.champ.impl.Date;
 import dev.cruding.engine.champ.impl.Double;
 import dev.cruding.engine.champ.impl.Email;
 import dev.cruding.engine.champ.impl.File;
-import dev.cruding.engine.champ.impl.GrandPere;
 import dev.cruding.engine.champ.impl.Heure;
 import dev.cruding.engine.champ.impl.Int;
 import dev.cruding.engine.champ.impl.ListeStatique;
@@ -78,10 +77,6 @@ public class ChampFactory {
 
     public <T extends Entite> Pere<T> Pere(Class<T> type) {
         return new Pere<T>(type);
-    }
-
-    public <T extends Entite> GrandPere<T> GrandPere(Class<T> type) {
-        return new GrandPere<T>(type);
     }
 
     public <T extends Entite> Ref<T> Ref(Class<T> type) {

@@ -13,9 +13,6 @@ public class CtrlChangerPageListerInjection extends CtrlActionInjection {
         f.L("");
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".listerEnPage(");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("requete.id" + entite().ugrandPere, ", ");
-        }
         if (parIdPere() && entite().havePere) {
             f.__("requete.id", entite().upere, ", ");
         }

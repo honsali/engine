@@ -1,6 +1,7 @@
 package dev.cruding.engine.action.specifique;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.action.specifique.injection.BusinessSpecifiqueInjection;
 import dev.cruding.engine.action.specifique.injection.CtrlSpecifiqueInjection;
 import dev.cruding.engine.action.specifique.injection.MdlSpecifiqueInjection;
 import dev.cruding.engine.action.specifique.injection.RepoSpecifiqueInjection;
@@ -17,12 +18,13 @@ public class ActionSpecifique extends Action {
     }
 
     public void overrideActionInjection() {
-        ctrlActionInjection = new CtrlSpecifiqueInjection();
-        mdlActionInjection = new MdlSpecifiqueInjection();
-        repoActionInjection = new RepoSpecifiqueInjection();
-        resourceActionInjection = new ResourceSpecifiqueInjection();
-        serviceActionInjection = new ServiceSpecifiqueInjection();
         viewActionInjection = new ViewSpecifiqueInjection();
+        mdlActionInjection = new MdlSpecifiqueInjection();
+        ctrlActionInjection = new CtrlSpecifiqueInjection();
+        serviceActionInjection = new ServiceSpecifiqueInjection();
+        resourceActionInjection = new ResourceSpecifiqueInjection();
+        businessActionInjection = new BusinessSpecifiqueInjection();
+        repoActionInjection = new RepoSpecifiqueInjection();
     }
 
 }

@@ -5,27 +5,20 @@ import dev.cruding.engine.injection.MdlActionInjection;
 
 public class MdlRecupererInjectionParChamp extends MdlActionInjection {
 
-    public String lnameChamp;
-    public String unameChamp;
 
-    public MdlRecupererInjectionParChamp(String lnameChamp, String unameChamp) {
-        this.lnameChamp = lnameChamp;
-        this.unameChamp = unameChamp;
-    }
 
     public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entite().uname + " }", "modele/" + entite().path + "/Domaine" + entite().uname);
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
+        String lnameChamp = parChamp()[0].lname;
         if (lnameChamp.equals("id")) {
             f.addMdlRequestAttribute("id" + entite().uname, "string");
         } else {
             f.addMdlRequestAttribute(lnameChamp, "string");
         }
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
-        }
+
         if (parIdPere() && entite().havePere) {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }

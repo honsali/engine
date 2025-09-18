@@ -26,7 +26,7 @@ public class FormulaireDepartement extends ElementComposer {
                         enModification ? cache(e.id_) : null //
                 ).nombreColonne(1), //
                 blocAction(//
-                        enModification ? element(actionEnregistrer(e).siReussi(goToPage(e, "PageConsulterDepartement"))).parForm() : //
+                        enModification ? element(actionMaj(e).siReussi(goToPage(e, "PageConsulterDepartement"))).parForm() : //
                                 element(actionCreer(e).siReussi(goToPage(e, "PageConsulterDepartement").parChamp(e.id_))).parForm(), //
 
                         enModification ? bouton(actionRetourConsulter(e, "PageConsulterDepartement")) : bouton(actionRetourListe(e, "PageListerDepartement"))//

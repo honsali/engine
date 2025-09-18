@@ -3,7 +3,6 @@ package dev.cruding.engine.champ.impl;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.gen.Contexte;
@@ -29,6 +28,14 @@ public class Ref<T extends Entite> extends ChampRef<T> {
         flow.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Dto");
     }
 
+
+    public void addFiltreImport(JavaFlow f) {
+        if (!jtype.equals(containingEntite)) {
+            Entite re = Contexte.getInstance().getEntite(jtype);
+            f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Dto");
+        }
+    }
+
     public void addJavaImport(JavaFlow f) {
         super.addJavaImport(f);
         if (!jtype.equals(containingEntite)) {
@@ -43,6 +50,10 @@ public class Ref<T extends Entite> extends ChampRef<T> {
         }
     }
 
+    public void addFiltreJavaDeclaration(JavaFlow f) {
+        f.L____("private " + uname + "Dto " + lname + ";");
+    }
+
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
         if (tranzient) {
@@ -55,7 +66,26 @@ public class Ref<T extends Entite> extends ChampRef<T> {
 
     }
 
-    public void addGetterSetter(Flow f) {
+    public void addSpecification(JavaFlow f) {
+        f.L("");
+        f.L____________("if (condition.get" + uname + "() != null && condition.get" + uname + "().id() != null) {");
+        f.L________________("predicates.add(criteriaBuilder.equal(root.get(\"" + lname + "\").get(\"id\"), condition.get" + uname + "().id()));");
+        f.L____________("}");
+    }
+
+
+    public void addFiltreGetterSetter(JavaFlow f) {
+        f.L("");
+        f.L____("public " + uname + "Dto get" + uname + "() {");
+        f.L________("return this." + lname + ";");
+        f.L____("}");
+        f.L("");
+        f.L____("public void set" + uname + "(" + uname + "Dto " + lname + ") {");
+        f.L________("this." + lname + " = " + lname + ";");
+        f.L____("}");
+    }
+
+    public void addGetterSetter(JavaFlow f) {
         f.L("");
         f.L____("public " + jtype + " get" + uname + "() {");
         f.L________("return this." + lname + ";");

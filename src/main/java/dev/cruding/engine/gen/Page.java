@@ -22,6 +22,8 @@ public class Page implements Comparable<Page> {
     public String icone;
     public int position;
 
+    public boolean pathById = false;
+
     public ElementComposer elementComposer;
 
     public Page(Module module, String name, ElementComposer elementComposer) {
@@ -77,7 +79,14 @@ public class Page implements Comparable<Page> {
         return this;
     }
 
+    public Page pathById() {
+        this.pathById = true;
+        return this;
+    }
+
+
     public int getPosition() {
         return position;
     }
+
 }

@@ -46,6 +46,7 @@ public class Champ {
     public boolean seulDansLaLigne;
     public boolean surTouteLaLigne;
     public boolean tranzient;
+    public boolean filtre;
     public String reference;
     public String oui;
     public String non;
@@ -204,6 +205,12 @@ public class Champ {
         return p;
     }
 
+    public Champ filtre() {
+        Champ p = makeCopy();
+        p.filtre = true;
+        return p;
+    }
+
     public Champ oui(String oui) {
         Champ p = makeCopy();
         p.oui = oui;
@@ -257,6 +264,10 @@ public class Champ {
         f.addJsDeclaration(lname, jstype);
     }
 
+    public void addFiltreImport(JavaFlow f) {
+        addJavaImport(f);
+    }
+
     public void addJavaImport(JavaFlow f) {
         if (requis) {
             f.addJavaImport("jakarta.validation.constraints.NotNull");
@@ -276,7 +287,14 @@ public class Champ {
 
     public void addViewScript(ViewFlow f, String uc, String mvcPath) {}
 
+    public void addFiltreJavaDeclaration(JavaFlow f) {
+        f.L____("private " + jtype + " " + lname + ";");
+    }
+
     public void addJavaDeclaration(JavaFlow f) {
+        if (filtre) {
+            return;
+        }
         f.L("");
         if (requis) {
             f.L____("@NotNull");
@@ -293,7 +311,21 @@ public class Champ {
         f.L____("private " + jtype + " " + lname + ";");
     }
 
-    public void addGetterSetter(Flow f) {
+    public void addFiltreGetterSetter(JavaFlow f) {
+        addGetterSetter(f);
+    }
+
+    public void addSpecification(JavaFlow f) {
+        f.L("");
+        f.L____________("if (condition.get" + uname + "() != null && !condition.get" + uname + "().trim().isEmpty()) {");
+        f.L________________("predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(\"" + lname + "\")), \"%\" + condition.get" + uname + "().toLowerCase() + \"%\"));");
+        f.L____________("}");
+    }
+
+    public void addGetterSetter(JavaFlow f) {
+        if (filtre) {
+            return;
+        }
         f.L("");
         f.L____("public " + jtype + " get" + uname + "() {");
         f.L________("return this." + lname + ";");
@@ -371,6 +403,7 @@ public class Champ {
         to.surTouteLaLigne = from.surTouteLaLigne;
 
         to.tranzient = from.tranzient;
+        to.filtre = from.filtre;
         to.reference = from.reference;
         to.oui = from.oui;
         to.non = from.non;

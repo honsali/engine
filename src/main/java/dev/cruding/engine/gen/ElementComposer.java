@@ -3,10 +3,7 @@ package dev.cruding.engine.gen;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.action.chercher.ActionChercher;
-import dev.cruding.engine.action.crud.ActionCreer;
-import dev.cruding.engine.action.crud.ActionEnregistrer;
-import dev.cruding.engine.action.crud.ActionModifierParDialogue;
-import dev.cruding.engine.action.crud.ActionSupprimer;
+import dev.cruding.engine.action.creer.ActionCreer;
 import dev.cruding.engine.action.filtrer.ActionFiltrer;
 import dev.cruding.engine.action.impl.ActionVide;
 import dev.cruding.engine.action.inViewOnly.ActionConsulterElement;
@@ -21,16 +18,20 @@ import dev.cruding.engine.action.init.ActionInitCreation;
 import dev.cruding.engine.action.init.ActionInitModification;
 import dev.cruding.engine.action.lister.ActionLister;
 import dev.cruding.engine.action.listerEnPage.ActionListerEnPage;
+import dev.cruding.engine.action.maj.ActionMaj;
+import dev.cruding.engine.action.maj.ActionModifierParDialogue;
 import dev.cruding.engine.action.rechargerPage.ActionRechargerPageFiltrer;
 import dev.cruding.engine.action.recuperer.ActionRecupererDepuisMdl;
 import dev.cruding.engine.action.recuperer.ActionRecupererParChamp;
 import dev.cruding.engine.action.specifique.ActionSpecifique;
+import dev.cruding.engine.action.supprimer.ActionSupprimer;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.champ.impl.Cache;
 import dev.cruding.engine.champ.impl.Code;
 import dev.cruding.engine.champ.impl.ColonneAction;
 import dev.cruding.engine.champ.impl.Custom;
 import dev.cruding.engine.champ.impl.Liste;
+import dev.cruding.engine.champ.impl.ListeStatique;
 import dev.cruding.engine.champ.impl.Ref;
 import dev.cruding.engine.champ.impl.Rendu;
 import dev.cruding.engine.champ.impl.Tag;
@@ -144,8 +145,8 @@ public abstract class ElementComposer {
         return new ActionSupprimer(entite, element);
     }
 
-    public Action actionEnregistrer(Entite entite) {
-        return new ActionEnregistrer(entite, element);
+    public Action actionMaj(Entite entite) {
+        return new ActionMaj(entite, element);
     }
 
     public Action actionAjouter(Entite entite, String targePage) {
@@ -164,8 +165,8 @@ public abstract class ElementComposer {
         return new ActionVide(ActionType.UCA, "retourConsulter", entite, element).targetPage(targePage).inViewOnly();
     }
 
-    public Action recupererParChamp(Entite entite, Champ champ) {
-        return new ActionRecupererParChamp(entite, element, champ.uname);
+    public Action recupererParChamp(Entite entite, Champ... listeChamp) {
+        return (new ActionRecupererParChamp(entite, element)).parChamp(listeChamp);
     }
 
     public Action initialiserMdl(Entite entite) {
@@ -177,9 +178,8 @@ public abstract class ElementComposer {
     }
 
     public Action initModification(Entite entite, Champ champ) {
-        return new ActionInitModification(entite, element, champ.uname);
+        return (new ActionInitModification(entite, element)).parChamp(champ);
     }
-
 
     public Action goToModule(Entite entite, String target) {
         return new ActionGoToModule(entite, element, target);
@@ -393,6 +393,10 @@ public abstract class ElementComposer {
             return new Liste<>((Ref<?>) f);
         }
         return null;
+    }
+
+    public ListeStatique listeStatique(String lname) {
+        return new ListeStatique(lname);
     }
 
     public Champ tag(Champ f) {

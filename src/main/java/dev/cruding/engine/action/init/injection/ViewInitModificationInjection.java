@@ -5,9 +5,7 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class ViewInitModificationInjection extends ViewRecupererParChampInjection {
 
-    public ViewInitModificationInjection(String lnameChamp, String unameChamp) {
-        super(lnameChamp, unameChamp);
-    }
+
 
     public boolean addViewScript(ViewFlow f) {
         super.addViewScript(f);

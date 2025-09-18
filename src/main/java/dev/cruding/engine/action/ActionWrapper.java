@@ -11,6 +11,7 @@ import dev.cruding.engine.gen.Page;
 
 public class ActionWrapper {
 
+    private static final Champ[] listeChampVide = new Champ[] {};
 
     public Action action;
 
@@ -68,10 +69,6 @@ public class ActionWrapper {
         return action.parIdPere;
     };
 
-    public boolean parIdGrandPere() {
-        return action.parIdGrandPere;
-    };
-
     public boolean parForm() {
         return action.parForm;
     };
@@ -84,8 +81,8 @@ public class ActionWrapper {
         return action.parProp;
     };
 
-    public Champ parChamp() {
-        return action.parChamp;
+    public Champ[] parChamp() {
+        return action.parChamp == null ? listeChampVide : action.parChamp;
     };
 
     public boolean recharger() {

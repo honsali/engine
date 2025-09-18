@@ -6,7 +6,7 @@ import dev.cruding.engine.entite.Entite;
 
 public class Departement extends Entite {
 
-    public final Champ nom = Texte("nom").isId();
+    public final Champ nom = Texte("nom").requis().isId();
     public final Champ description = TexteLong("description");
 
 }

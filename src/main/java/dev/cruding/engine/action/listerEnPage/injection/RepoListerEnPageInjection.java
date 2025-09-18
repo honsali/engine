@@ -11,20 +11,14 @@ public class RepoListerEnPageInjection extends RepoActionInjection {
     }
 
     public void addRepositoryDeclaration(JavaFlow f) {
-        String and = "";
         f.L("");
         f.L____("Page<", entite().uname, "> findAllBy");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__(entite().ugrandPere, "_Id");
-            and = "And";
-        }
+
         if (parIdPere() && entite().havePere) {
-            f.__(and, entite().upere, "_Id");
+            f.__(entite().upere, "_Id");
         }
         f.__("OrderBy", orderBy(), "(");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("Long id", entite().ugrandPere, ", ");
-        }
+
         if (parIdPere() && entite().havePere) {
             f.__("Long id", entite().upere, ", ");
         }

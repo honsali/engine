@@ -16,7 +16,8 @@ public class ViewConsulterDepartement extends ElementComposer {
                 element(new EtatDepartement()), //
                 blocAction(//
                         bouton(actionModifier(e, "PageModifierDepartement")), //
-                        bouton(actionRetourListe(e, "PageListerDepartement"))//
+                        bouton(actionRetourListe(e, "PageListerDepartement")), //
+                        bouton(actionSupprimer(e).siReussi(goToPage(e, "PageListerDepartement")))//
                 )//
         );
     }

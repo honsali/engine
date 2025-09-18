@@ -6,7 +6,7 @@ import dev.cruding.engine.injection.ResourceActionInjection;
 public class ResourceChercherInjection extends ResourceActionInjection {
 
     public void addResourceImport(JavaFlow f) {
-        f.addJavaImport("org.springdoc.core.annotations.ParameterObject");
+        f.addJavaImport("org.springdoc.api.annotations.ParameterObject");
         f.addJavaImport("org.springframework.data.domain.Page");
         f.addJavaImport("org.springframework.data.domain.Pageable");
         f.addJavaImport("org.springframework.web.bind.annotation.PostMapping");

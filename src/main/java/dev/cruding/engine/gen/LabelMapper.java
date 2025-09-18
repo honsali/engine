@@ -1,9 +1,7 @@
 package dev.cruding.engine.gen;
 
 import java.util.HashMap;
-
 import org.apache.commons.lang3.StringUtils;
-
 import dev.cruding.engine.entite.Entite;
 
 public class LabelMapper {
@@ -16,8 +14,7 @@ public class LabelMapper {
 
     private static final HashMap<String, String> actionPpMap = new HashMap<>();
     public static final String listeActionSansPermission = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
-    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#supprimer#"
-            + listeActionSansPermission;
+    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#supprimer#" + listeActionSansPermission;
 
     static {
 
@@ -27,12 +24,12 @@ public class LabelMapper {
         verbeActionDansTitreMap.put("enregistrer", "enregistrer");
 
         verbeActionDansTitreMap.put("Creer", "créer");
-        verbeActionDansTitreMap.put("Enregistrer", "enregistrer");
+        verbeActionDansTitreMap.put("Maj", "enregistrer");
 
         verbeActionDansBoutonMap.put("creer", "Enregistrer");
         verbeActionDansBoutonMap.put("Creer", "Enregistrer");
-        verbeActionDansBoutonMap.put("enregistrer", "Enregistrer");
-        verbeActionDansBoutonMap.put("Enregistrer", "Enregistrer");
+        verbeActionDansBoutonMap.put("maj", "Enregistrer");
+        verbeActionDansBoutonMap.put("Maj", "Enregistrer");
         verbeActionDansBoutonMap.put("ajouterce", "Nouveau");
         verbeActionDansBoutonMap.put("ajoutercet", "Nouvel");
         verbeActionDansBoutonMap.put("ajoutercette", "Nouvelle");
@@ -43,8 +40,8 @@ public class LabelMapper {
         verbeActionDansBoutonMap.put("appliquerFiltre", "Filtrer");
 
         actionPpMap.put("creer", "créé");
-        actionPpMap.put("enregistrer", "enregistré");
-        actionPpMap.put("Enregistrer", "enregistré");
+        actionPpMap.put("maj", "enregistré");
+        actionPpMap.put("Maj", "enregistré");
         actionPpMap.put("supprimer", "supprimé");
         actionPpMap.put("Supprimer", "supprimé");
     }
@@ -56,8 +53,7 @@ public class LabelMapper {
     private String pluriels = "#lister#Lister#";
     private String avecEntite = "#ajouter#Ajouter#";
 
-    private LabelMapper() {
-    }
+    private LabelMapper() {}
 
     public String nomAction(String key) {
         if (verbeActionDansBoutonMap.containsKey(key)) {

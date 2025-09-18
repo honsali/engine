@@ -14,13 +14,28 @@ public class ServiceListerEnPageInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lnameSansEntite(), " = async (pageCourante: number) => {");
+        f.L("const ", lnameSansEntite(), " = async (");
+        if (parIdPere() && entite().havePere) {
+            f.__("id" + entite().upere, ": string, ");
+        }
+
+        f.__("pageCourante: number) => {");
         f.L____("const listePaginee", entite().uname, ": IListePaginee", entite().uname, " = {} as IListePaginee", entite().uname, ";");
         f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entite().uname, ": Page<I", entite().uname, "> = (await axios.get<Page<I", entite().uname, ">>(`${resourceUri}/", lnameSansEntite(), "?page()=${requetePage.page()}&size=${requetePage.size}`)).data;");
+        f.L____("const page()", entite().uname, ": Page<I", entite().uname, "> = (await axios.get<Page<I", entite().uname, ">>(`${API_URL}/", entite().lname, "/", lcoreName());
+
+        if (parIdPere() && entite().havePere) {
+            f.__("/", entite().lpere, "/${id", entite().upere, "}");
+        }
+
+        f.__("?page()=${requetePage.page()}&size=${requetePage.size}");
+
+        f.__("`)).data;");
+
         f.L____("listePaginee", entite().uname, ".liste = page()", entite().uname, ".content;");
         f.L____("listePaginee", entite().uname, ".pagination = MapperPagination.creerPagination(page()", entite().uname, ");");
         f.L____("return listePaginee", entite().uname, ";");
+
         f.L("};");
     }
 

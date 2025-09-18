@@ -11,9 +11,7 @@ public class MdlListerEnPageInjection extends MdlActionInjection {
 
     public void addMdlRequestAttribute(MdlFlow f) {
         f.addMdlRequestAttribute("pageCourante", "number");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
-        }
+
         if (parIdPere() && entite().havePere) {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }

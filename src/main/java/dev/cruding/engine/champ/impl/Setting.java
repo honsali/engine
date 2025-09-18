@@ -24,6 +24,7 @@ public class Setting extends Champ {
             libelle = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), " ");
         }
         voyelle = uname.startsWith("A") || uname.startsWith("E") || uname.startsWith("I") || uname.startsWith("O") || uname.startsWith("U");
+
         return this;
     }
 

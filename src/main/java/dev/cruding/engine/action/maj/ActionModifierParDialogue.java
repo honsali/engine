@@ -1,4 +1,4 @@
-package dev.cruding.engine.action.crud;
+package dev.cruding.engine.action.maj;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;

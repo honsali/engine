@@ -13,9 +13,6 @@ public class MdlRecupererInjection extends MdlActionInjection {
         if (!enTantQueListe()) {
             f.addMdlRequestAttribute("id" + entite().uname, "string");
         }
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
-        }
         if (parIdPere() && entite().havePere) {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }

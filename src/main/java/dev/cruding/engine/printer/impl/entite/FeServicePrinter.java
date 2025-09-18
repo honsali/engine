@@ -25,7 +25,6 @@ public class FeServicePrinter extends Printer {
         f.flushJsImportBloc();
 
         f.L("");
-        f.L("const resourceUri = API_URL + '/", entite.lname, "';");
 
         HashSet<String> actionName = new HashSet<>();
         for (Action action : actionList) {

@@ -18,7 +18,6 @@ public class Liste<T extends Entite> extends Ref<T> {
         return " liste={liste" + uname + "}";
     }
 
-    @Override
     public String ui(String element) {
         switch (element) {
             case Element.FORM:

@@ -10,9 +10,7 @@ public class MdlListerInjection extends MdlActionInjection {
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
-        }
+
         if (parIdPere() && entite().havePere) {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }

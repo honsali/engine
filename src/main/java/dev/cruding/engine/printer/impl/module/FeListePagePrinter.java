@@ -102,8 +102,13 @@ public class FeListePagePrinter extends Printer {
                 for (Page page : listePage) {
                     f.L("export const Page", page.uc, ": PageDefinition = {");
                     f.L____("key: 'Page", page.uc, "',");
-                    f.L____("path: '/", getPath(module, page), "',");
-                    f.L____("toPath: (args) => '", getToPath(module, page), "',");
+                    if (page.pathById) {
+                        f.L____("path: '/", getPath(module, page), "/:id", page.entiteUname, "',");
+                        f.L____("toPath: (args) => `", getToPath(module, page), "/${args.id", page.entiteUname, "}`,");
+                    } else {
+                        f.L____("path: '/", getPath(module, page), "',");
+                        f.L____("toPath: (args) => '", getToPath(module, page), "',");
+                    }
                     if (page.name.equals(pageIndex.name)) {
                         f.L____("icone: <FontAwesomeIcon icon={", pageIndex.icone, "} />,");
                         f.L____("menu: '", getMenuPath(module), "',");

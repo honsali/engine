@@ -9,13 +9,16 @@ import dev.cruding.engine.printer.impl.commun.FeMenuPrinter;
 import dev.cruding.engine.printer.impl.commun.FeRoutesPrinter;
 import dev.cruding.engine.printer.impl.commun.FeStorePrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
+import dev.cruding.engine.printer.impl.entite.BeBusinessPrinter;
 import dev.cruding.engine.printer.impl.entite.BeDomainePrinter;
 import dev.cruding.engine.printer.impl.entite.BeDtoPrinter;
+import dev.cruding.engine.printer.impl.entite.BeFiltrePrinter;
 import dev.cruding.engine.printer.impl.entite.BeLiqConstraintPrinter;
 import dev.cruding.engine.printer.impl.entite.BeLiqDataPrinter;
 import dev.cruding.engine.printer.impl.entite.BeLiqTablePrinter;
 import dev.cruding.engine.printer.impl.entite.BeRepositoryPrinter;
 import dev.cruding.engine.printer.impl.entite.BeResourcePrinter;
+import dev.cruding.engine.printer.impl.entite.BeSpecificationPrinter;
 import dev.cruding.engine.printer.impl.entite.FeDomainePrinter;
 import dev.cruding.engine.printer.impl.entite.FeServicePrinter;
 import dev.cruding.engine.printer.impl.module.FeAclModule;
@@ -37,8 +40,11 @@ public class Processeur {
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainePrinter beDomainePrinter = new BeDomainePrinter();
     private final BeDtoPrinter beDtoPrinter = new BeDtoPrinter();
+    private final BeFiltrePrinter beFiltrePrinter = new BeFiltrePrinter();
+    private final BeSpecificationPrinter beSpecificationPrinter = new BeSpecificationPrinter();
     private final BeRepositoryPrinter beRepositoryPrinter = new BeRepositoryPrinter();
     private final BeResourcePrinter beResourcePrinter = new BeResourcePrinter();
+    private final BeBusinessPrinter beBusinessPrinter = new BeBusinessPrinter();
     private final BeLiqConstraintPrinter beLiqConstraintPrinter = new BeLiqConstraintPrinter();
     private final BeLiqDataPrinter beLiqDataPrinter = new BeLiqDataPrinter();
     private final BeLiqMasterPrinter beLiqMasterPrinter = new BeLiqMasterPrinter();
@@ -110,9 +116,12 @@ public class Processeur {
         beDomainePrinter.print(entite);
         if (!entite.isReferenceData()) {
             beResourcePrinter.print(entite);
+            beBusinessPrinter.print(entite);
             beRepositoryPrinter.print(entite);
         }
         beDtoPrinter.print(entite);
+        beFiltrePrinter.print(entite);
+        beSpecificationPrinter.print(entite);
         beLiqConstraintPrinter.print(entite);
         beLiqDataPrinter.print(entite);
         beLiqTablePrinter.print(entite);

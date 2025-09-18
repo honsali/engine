@@ -2,6 +2,7 @@ package dev.cruding.engine.action.specifique.injection;
 
 import java.util.ArrayList;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.injection.MdlActionInjection;
 
@@ -20,9 +21,6 @@ public class MdlSpecifiqueInjection extends MdlActionInjection {
         if (parForm()) {
             f.addMdlRequestAttribute("form", "FormInstance");
         }
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.addMdlRequestAttribute("id" + entite().ugrandPere, "string");
-        }
         if (parIdPere() && entite().havePere) {
             f.addMdlRequestAttribute("id" + entite().upere, "string");
         }
@@ -32,7 +30,10 @@ public class MdlSpecifiqueInjection extends MdlActionInjection {
         }
 
         if (parChamp() != null) {
-            f.addMdlRequestAttribute(parChamp().lname, "string");
+            for (Champ c : parChamp()) {
+                f.addMdlRequestAttribute(c.lname, "string");
+            }
+
         }
     }
 

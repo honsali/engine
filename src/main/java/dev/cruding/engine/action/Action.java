@@ -2,15 +2,14 @@ package dev.cruding.engine.action;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
 import org.apache.commons.lang3.StringUtils;
-
 import dev.cruding.engine.action.rechargerPage.ActionRechargerPageFiltrer;
 import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.injection.BusinessActionInjection;
 import dev.cruding.engine.injection.CtrlActionInjection;
 import dev.cruding.engine.injection.MdlActionInjection;
 import dev.cruding.engine.injection.RepoActionInjection;
@@ -29,6 +28,7 @@ public abstract class Action implements Comparable<Action> {
     public MdlActionInjection mdlActionInjection;
     public RepoActionInjection repoActionInjection;
     public ResourceActionInjection resourceActionInjection;
+    public BusinessActionInjection businessActionInjection;
     public ServiceActionInjection serviceActionInjection;
     public ViewActionInjection viewActionInjection;
     public ActionType type;
@@ -41,12 +41,11 @@ public abstract class Action implements Comparable<Action> {
     public String icone = null;
     public boolean parId = false;
     public boolean parIdPere = false;
-    public boolean parIdGrandPere = false;
     public boolean parForm = false;
     public boolean parEntite = false;
     public boolean byRow = false;
     public String parProp = null;
-    public Champ parChamp = null;
+    public Champ[] parChamp = null;
     public boolean recharger = false;
     public boolean confirmer;
     public ArrayList<Action> siReussi = new ArrayList<>();
@@ -101,6 +100,7 @@ public abstract class Action implements Comparable<Action> {
         mdlActionInjection = new MdlActionInjection();
         repoActionInjection = new RepoActionInjection();
         resourceActionInjection = new ResourceActionInjection();
+        businessActionInjection = new BusinessActionInjection();
         serviceActionInjection = new ServiceActionInjection();
         viewActionInjection = new ViewActionInjection();
         overrideActionInjection();
@@ -108,12 +108,12 @@ public abstract class Action implements Comparable<Action> {
         mdlActionInjection.action(this);
         repoActionInjection.action(this);
         resourceActionInjection.action(this);
+        businessActionInjection.action(this);
         serviceActionInjection.action(this);
         viewActionInjection.action(this);
     }
 
-    public void overrideActionInjection() {
-    }
+    public void overrideActionInjection() {}
 
     public Action lcoreName(String lcoreName) {
         this.lcoreName = lcoreName;
@@ -201,11 +201,6 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-    public Action parIdGrandPere() {
-        this.parIdGrandPere = true;
-        return this;
-    }
-
     public Action parForm(boolean parForm) {
         this.parForm = parForm;
         return this;
@@ -231,7 +226,7 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-    public Action parChamp(Champ field) {
+    public Action parChamp(Champ... field) {
         this.parChamp = field;
         return this;
     }

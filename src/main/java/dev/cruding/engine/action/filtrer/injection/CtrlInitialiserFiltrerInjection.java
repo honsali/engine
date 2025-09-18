@@ -15,7 +15,7 @@ public class CtrlInitialiserFiltrerInjection extends CtrlActionInjection {
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         if (filtrerAuDepart) {
             if (pagine()) {
-                f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".filtrer({ pageCourante: 0 });");
+                f.L____("resultat.listePaginee", entite().uname, " = await Service", entite().uname, ".filtrer({});");
             } else {
                 f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".filtrer();");
             }

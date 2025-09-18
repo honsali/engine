@@ -6,6 +6,13 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class Div extends Composant {
 
+    private String texte;
+
+    public Div(Element element, String texte) {
+        super(element);
+        this.texte = texte;
+    }
+
     public Div(Element element, Composant... listeComposant) {
         super(element, listeComposant);
     }
@@ -15,12 +22,18 @@ public class Div extends Composant {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<div>");
+        if (texte == null) {
+            indent(flow, level).append("<div>");
+        } else {
+            indent(flow, level).append("<div>").append(texte).append("</div>");
+        }
         return false;
     }
 
     public void addCloseTag(ViewFlow flow, int level) {
-        indent(flow, level).append("</div>");
+        if (texte == null) {
+            indent(flow, level).append("</div>");
+        }
     }
 
 }

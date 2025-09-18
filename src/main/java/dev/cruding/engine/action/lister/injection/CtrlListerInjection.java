@@ -5,7 +5,6 @@ import dev.cruding.engine.injection.CtrlActionInjection;
 
 public class CtrlListerInjection extends CtrlActionInjection {
 
-
     public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entite().uname, "modele/" + entite().path + "/Service" + entite().uname);
     }
@@ -14,9 +13,7 @@ public class CtrlListerInjection extends CtrlActionInjection {
         f.L("");
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.liste", entite().uname, " = await Service", entite().uname, ".", lnameSansEntite(), "(");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("requete.id" + entite().ugrandPere, ", ");
-        }
+
         if (parIdPere() && entite().havePere) {
             f.__("requete.id", entite().upere);
         }

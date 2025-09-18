@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.entite.Entite;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.ViewFlow;
@@ -56,7 +57,9 @@ public class ViewSpecifiqueInjection extends ViewActionInjection {
                 }
             }
             if (parChamp() != null) {
-                flow.addParam(parChamp().lname);
+                for (Champ c : parChamp()) {
+                    flow.addParam(c.lname);
+                }
             }
             if (flow.hasParams()) {
                 flow.totalScript().L____("const ", lnameSansEntite(), " = () => {");

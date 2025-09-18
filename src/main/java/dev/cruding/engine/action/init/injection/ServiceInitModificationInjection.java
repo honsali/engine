@@ -26,11 +26,6 @@ public class ServiceInitModificationInjection extends ServiceActionInjection {
             params = params + "id" + entite().uname + " :string";
             url = url + "/${id" + entite().uname + "}";
         }
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            nom = nom + "ParId" + entite().ugrandPere;
-            params = params + "id" + entite().ugrandPere + " :string";
-            url = url + "/" + entite().lgrandPere + "/${id" + entite().ugrandPere + "}";
-        }
         if (parIdPere() && entite().havePere) {
             nom = nom + "ParId" + entite().upere;
             params = params + "id" + entite().upere + " :string";
@@ -42,8 +37,7 @@ public class ServiceInitModificationInjection extends ServiceActionInjection {
 
         f.L("");
         f.L("const recuperer", nom, " = async (", params, ") => {");
-        f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname,
-                ">(`${resourceUri}", url, "`)).data;");
+        f.L____("const ", entite().lname, ": I", entite().uname, " = (await axios.get<I", entite().uname, ">(`${API_URL}/", entite().lname, "/", url, "`)).data;");
         f.L____("return ", entite().lname, ";");
         f.L("};");
 

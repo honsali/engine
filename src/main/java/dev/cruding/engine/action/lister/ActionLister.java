@@ -1,6 +1,7 @@
 package dev.cruding.engine.action.lister;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.action.lister.injection.BusinessListerInjection;
 import dev.cruding.engine.action.lister.injection.CtrlListerInjection;
 import dev.cruding.engine.action.lister.injection.MdlListerInjection;
 import dev.cruding.engine.action.lister.injection.RepoListerInjection;
@@ -18,9 +19,7 @@ public class ActionLister extends Action {
 
     public void overrideActionInjection() {
         String lcn = "";
-        if (parIdGrandPere && entite.haveGrandPere) {
-            lcn = lcn + "ParId" + entite.ugrandPere;
-        }
+
         if (parIdPere && entite.havePere) {
             lcn = lcn + "ParId" + entite.upere;
         }
@@ -32,6 +31,7 @@ public class ActionLister extends Action {
         mdlActionInjection = new MdlListerInjection();
         repoActionInjection = new RepoListerInjection();
         resourceActionInjection = new ResourceListerInjection();
+        businessActionInjection = new BusinessListerInjection();
         serviceActionInjection = new ServiceListerInjection();
         viewActionInjection = new ViewListerInjection();
     }

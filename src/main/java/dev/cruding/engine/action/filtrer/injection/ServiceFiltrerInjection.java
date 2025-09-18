@@ -14,13 +14,13 @@ public class ServiceFiltrerInjection extends ServiceActionInjection {
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lnameSansEntite(), " = async (", entite().lname, ": I", entite().uname, ", pageCourante: number) => {");
-        f.L____("const listePaginee", entite().uname, ": IListePaginee", entite().uname, " = {} as IListePaginee", entite().uname, ";");
-        f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entite().uname, ": Page<I", entite().uname, "> = (await axios.post<Page<I", entite().uname, ">>(`${resourceUri}/", lnameSansEntite(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entite().lname).__(")).data;");
-        f.L____("listePaginee", entite().uname, ".liste = page()", entite().uname, ".content;");
-        f.L____("listePaginee", entite().uname, ".pagination = MapperPagination.creerPagination(page()", entite().uname, ");");
-        f.L____("return listePaginee", entite().uname, ";");
+        f.L("const ", lnameSansEntite(), " = async (", entite().lname, ": I", entite().uname, ", pageCourante = 0): Promise<IListePaginee" + entite().uname + "> => {");
+        f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
+        f.L____("const { data } = await axios.post<Page<I", entite().uname, ">>(`${API_URL}/", entite().lname, "/", lnameSansEntite(), "`, ", entite().lname).__(", { params: { page: pageable.page, size: pageable.size } });");
+        f.L____("return {");
+        f.L________("liste: data.content,");
+        f.L________("pagination: MapperPagination.creerPagination<I", entite().uname, ">(data),");
+        f.L____("};");
         f.L("};");
 
     }

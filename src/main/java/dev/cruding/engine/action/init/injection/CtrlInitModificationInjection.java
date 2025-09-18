@@ -27,18 +27,12 @@ public class CtrlInitModificationInjection extends CtrlActionInjection {
         if (parId()) {
             lcn = lcn + "ParId";
         }
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            lcn = lcn + "ParId" + entite().ugrandPere;
-        }
         if (parIdPere() && entite().havePere) {
             lcn = lcn + "ParId" + entite().upere;
         }
         f.L("");
         f.L("const ", lnameAvecEntite(), "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
         f.L____("resultat.", entite().lname, " = await Service", entite().uname, ".recuperer", lcn, "(");
-        if (parIdGrandPere() && entite().haveGrandPere) {
-            f.__("requete.id" + entite().ugrandPere, ", ");
-        }
         if (parIdPere() && entite().havePere) {
             f.__("requete.id" + entite().upere, ", ");
         }

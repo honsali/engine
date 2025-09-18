@@ -6,15 +6,9 @@ import dev.cruding.engine.injection.ViewActionInjection;
 public class ViewRecupererParChampInjection extends ViewActionInjection {
 
 
-    public String lnameChamp;
-    public String unameChamp;
-
-    public ViewRecupererParChampInjection(String lnameChamp, String unameChamp) {
-        this.lnameChamp = lnameChamp;
-        this.unameChamp = unameChamp;
-    }
 
     public boolean addViewScript(ViewFlow f) {
+        String lnameChamp = parChamp()[0].lname;
         if (flow()) {
             f.addSelector(lnameAvecEntite());
         } else if (inInit()) {

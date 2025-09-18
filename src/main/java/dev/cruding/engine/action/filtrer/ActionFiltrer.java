@@ -2,6 +2,7 @@ package dev.cruding.engine.action.filtrer;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.changerPage.ActionChangerPageFiltrer;
+import dev.cruding.engine.action.filtrer.injection.BusinessFiltrerInjection;
 import dev.cruding.engine.action.filtrer.injection.CtrlFiltrerInjection;
 import dev.cruding.engine.action.filtrer.injection.MdlFiltrerInjection;
 import dev.cruding.engine.action.filtrer.injection.MdlFiltrerPagineInjection;
@@ -40,6 +41,7 @@ public class ActionFiltrer extends Action {
         }
         repoActionInjection = new RepoFiltrerInjection();
         resourceActionInjection = new ResourceFiltrerInjection();
+        businessActionInjection = new BusinessFiltrerInjection();
         serviceActionInjection = new ServiceFiltrerInjection();
         viewActionInjection = new ViewActionInjection();
     }
