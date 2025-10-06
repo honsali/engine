@@ -34,7 +34,7 @@ public class ListeStatique extends Champ {
 
     public String getExtension() {
         String s = " liste={liste" + uname + "}";
-        if ("radioVertical".equals(type)) {
+        if (type != null && type.endsWith("ertical")) {
             s += " direction=\"vertical\"";
         }
         return s;
@@ -51,6 +51,8 @@ public class ListeStatique extends Champ {
             return "";
         } else if (type.startsWith("radio")) {
             return "Radio";
+        } else if (type.startsWith("check")) {
+            return "Check";
         } else {
             return "";
         }

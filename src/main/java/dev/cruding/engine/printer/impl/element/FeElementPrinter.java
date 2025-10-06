@@ -21,9 +21,11 @@ public class FeElementPrinter extends Printer {
 
         List<Action> listeAction = Contexte.getInstance().actionElement(element);
 
-        for (Action action : listeAction) {
-            if (action.viewActionInjection.addViewScript(f)) {
-                f.totalScript().L("");
+        for (int i = 0; i < listeAction.size(); i++) {
+            Action action = listeAction.get(i);
+            boolean retourLigne = action.viewActionInjection.addViewScript(f);
+            if (retourLigne && i < listeAction.size() - 1) {
+                f.totalScript().L();
             }
         }
         element.addContent(f);

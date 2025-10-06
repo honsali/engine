@@ -23,8 +23,9 @@ public class ViewGoToPageInjection extends ViewActionInjection {
             f.totalScript().L________("goToPage(", targetPage.name + ", ", entite().lname, ");");
             f.totalScript().L____("};");
             f.useGoToPage();
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void addFlowScript(ViewFlow f, int level, String args) {

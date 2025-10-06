@@ -1,18 +1,16 @@
-package dev.cruding.engine.loader;
+package dev.cruding.engine;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Processeur;
+import dev.cruding.engine.loader.EntiteLoader;
+import dev.cruding.engine.loader.GeneratorException;
+import dev.cruding.engine.loader.ModuleLoader;
 
-public class Launcher {
+public class App {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
-    public static final String ELEMENT_TYPES = "#Form#Etat#Action#Tableau#Filtre#";
-    public static final String BASE_PATH = "src/main/java";
+    public static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     public static final String MODEL_PATH = "src/main/java/modele";
     public static final String MODULES_PATH = "src/main/java/modules";
 
@@ -48,16 +46,5 @@ public class Launcher {
             System.exit(1);
         }
     }
-
-    public static String resolveClassName(Path file) {
-        Path relativePath = Paths.get(BASE_PATH).relativize(file);
-        return relativePath.toString().replace(File.separator, ".").replace(".java", "");
-    }
-
-    public static boolean isJavaFile(Path file) {
-        return file.toString().endsWith(".java");
-    }
-
-
 
 }

@@ -120,6 +120,11 @@ public abstract class ElementComposer {
         return new ActionVide(ActionType.NORMALE, ltype, entite, element).isVide(false);
     }
 
+
+    public Action actionLocale(Entite entite, String ltype) {
+        return new ActionVide(ActionType.NOUI, ltype, entite, element).isVide(true);
+    }
+
     public Action actionConfirmer(Entite entite, String ltype) {
         return new ActionSpecifique(ActionType.CONFIRMER, ltype, entite, element);
     }
@@ -276,6 +281,10 @@ public abstract class ElementComposer {
         return new Div(element, listeComposant);
     }
 
+    public Div div(String texte) {
+        return new Div(element, texte);
+    }
+
     public Span span(String texte) {
         return new Span(element, texte);
     }
@@ -397,6 +406,10 @@ public abstract class ElementComposer {
 
     public ListeStatique listeStatique(String lname) {
         return new ListeStatique(lname);
+    }
+
+    public ListeStatique listeStatique(String lname, String type) {
+        return new ListeStatique(lname, type);
     }
 
     public Champ tag(Champ f) {

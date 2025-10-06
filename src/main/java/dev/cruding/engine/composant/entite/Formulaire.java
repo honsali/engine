@@ -93,6 +93,7 @@ public class Formulaire extends Composant {
                     flow.totalScript().L________("if (valeur) {");
                     flow.totalScript().L____________(c.siChangeAction.lnameAvecEntite, "(valeur);");
                     flow.totalScript().L________("}");
+                    flow.addSelector(c.siChangeAction.lnameAvecEntite);
                 }
                 flow.totalScript().L____("});");
                 flow.totalScript().L("");

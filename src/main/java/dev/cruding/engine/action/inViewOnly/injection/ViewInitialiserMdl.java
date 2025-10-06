@@ -15,7 +15,6 @@ public class ViewInitialiserMdl extends ViewActionInjection {
         f.useDispatch();
 
         f.addJsImport("{ Mdl" + uc() + " }", mvcPath() + "/Mdl" + uc());
-
         return true;
     }
 

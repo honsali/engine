@@ -12,7 +12,6 @@ public class ViewRecupererParChampInjection extends ViewActionInjection {
         if (flow()) {
             f.addSelector(lnameAvecEntite());
         } else if (inInit()) {
-            f.totalScript().L("");
             f.totalScript().L____("useEffect(() => {");
             f.totalScript().L________(lnameAvecEntite(), "();");
             f.totalScript().L____("}, [", lnameChamp.equals("id") ? "" : lnameChamp, "]);");

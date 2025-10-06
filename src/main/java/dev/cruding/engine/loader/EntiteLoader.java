@@ -13,7 +13,7 @@ public class EntiteLoader {
 
     public void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).filter(Launcher::isJavaFile).map(file -> loadEntityClass(file)).forEach(Contexte.getInstance()::add);
+            files.filter(Files::isRegularFile).filter(LoaderUtils::isJavaFile).map(file -> loadEntityClass(file)).forEach(Contexte.getInstance()::add);
         } catch (Exception e) {
             throw new GeneratorException(String.format("Failed to load entities from directory: %s", path), e);
         }
@@ -23,11 +23,11 @@ public class EntiteLoader {
 
     private Object loadEntityClass(Path file) {
         try {
-            String className = Launcher.resolveClassName(file);
+            String className = LoaderUtils.resolveClassName(file);
             Class<?> clazz = Class.forName(className);
 
             if (!Entite.class.isAssignableFrom(clazz)) {
-                throw new GeneratorException(String.format("Entity class '%s' must extend Entite base class.", clazz.getSimpleName(), file));
+                throw new GeneratorException(String.format("Entity class '%s' must extend Entite base class.", clazz.getSimpleName()));
             }
 
             return clazz.getDeclaredConstructor().newInstance();

@@ -38,7 +38,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>dev.cruding.engine.Launcher</mainClass>
+                            <mainClass>dev.cruding.engine.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

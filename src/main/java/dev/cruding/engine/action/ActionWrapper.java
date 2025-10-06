@@ -196,4 +196,14 @@ public class ActionWrapper {
     public boolean inInit() {
         return action.inInit;
     }
+
+
+    public boolean filtrerAuDepart() {
+        return action.filtrerAuDepart;
+    }
+
+
+    public boolean appelDecale() {
+        return action.appelDecale;
+    }
 }

@@ -89,7 +89,7 @@ public class Bouton extends Composant {
             flow.totalUi().__(" modele={").append(action.modele).append("}");
         }
         if (!action.isVide) {
-            if (flow.hasParams()) {
+            if (flow.hasParams() || action.appelDecale) {
                 flow.totalUi().__(" action={").append(action.lnameSansEntite).append("}");
             } else {
                 flow.totalUi().__(" action={").append(action.lnameAvecEntite).append("}");

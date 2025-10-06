@@ -76,6 +76,8 @@ public abstract class Action implements Comparable<Action> {
     private String id;
     public String nomVariable;
     public boolean inInit;
+    public boolean filtrerAuDepart;
+    public boolean appelDecale;
 
 
     public Action(ActionType type, String lcoreName, Entite entite, Element element) {
@@ -228,6 +230,9 @@ public abstract class Action implements Comparable<Action> {
 
     public Action parChamp(Champ... field) {
         this.parChamp = field;
+        if (actionPagination != null) {
+            actionPagination.parChamp(field);
+        }
         return this;
     }
 

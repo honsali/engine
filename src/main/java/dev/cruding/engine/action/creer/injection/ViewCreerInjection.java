@@ -68,7 +68,7 @@ public class ViewCreerInjection extends ViewActionInjection {
 
             flow.addSelector("resetEtat" + unameAvecEntite());
         }
-        return false;
+        return true;
     }
 
     public void addI18n(Flow f) {

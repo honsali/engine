@@ -4,18 +4,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import dev.cruding.engine.gen.Contexte;
 import dev.cruding.engine.gen.Module;
 
 public class ModuleLoader {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(Launcher.class);
 
     public void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).filter(Launcher::isJavaFile).filter(file -> isModule(file)).map(file -> loadModuleClass(file)).forEach(Contexte.getInstance()::add);
+            files.filter(Files::isRegularFile).filter(LoaderUtils::isJavaFile).filter(file -> isModule(file)).map(file -> loadModuleClass(file)).forEach(Contexte.getInstance()::add);
         } catch (Exception e) {
             throw new GeneratorException(String.format("Failed to load modules from directory: %s.", path), e);
         }
@@ -25,11 +22,11 @@ public class ModuleLoader {
 
     private Object loadModuleClass(Path file) {
         try {
-            String className = Launcher.resolveClassName(file);
+            String className = LoaderUtils.resolveClassName(file);
             Class<?> clazz = Class.forName(className);
 
             if (!Module.class.isAssignableFrom(clazz)) {
-                throw new GeneratorException(String.format("Module class '%s' must extend  Module base class.", clazz.getSimpleName(), file));
+                throw new GeneratorException(String.format("Module class '%s' must extend Module base class.", clazz.getSimpleName()));
             }
 
             return clazz.getDeclaredConstructor().newInstance();
