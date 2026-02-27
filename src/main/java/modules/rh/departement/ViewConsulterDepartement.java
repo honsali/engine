@@ -1,24 +1,26 @@
 package modules.rh.departement;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Departement;
+import model.rh.Departement;
 
 public class ViewConsulterDepartement extends ElementComposer {
     public ViewConsulterDepartement() {
         super("ViewConsulterDepartement", "/");
     }
 
-    public Composant composantRacine() {
+    public Component rootComponent() {
 
-        Departement e = (Departement) getEntite("Departement");
+        Departement e = (Departement) getEntity("Departement");
         return section( //
-                element(new EtatDepartement()), //
-                blocAction(//
-                        bouton(actionModifier(e, "PageModifierDepartement")), //
-                        bouton(actionRetourListe(e, "PageListerDepartement")), //
-                        bouton(actionSupprimer(e).siReussi(goToPage(e, "PageListerDepartement")))//
-                )//
+                block(//
+                        element(new EtatDepartement()), //
+                        actionBlock(//
+                                button(editAction(e, "PageModifierDepartement")), //
+                                button(backToListAction(e, "PageListerDepartement")), //
+                                button(deleteAction(e).onSuccess(goToPage(e, "PageListerDepartement")))//
+                        )//
+                ).width("600px").margin("20px").background("blanc")//
         );
     }
 

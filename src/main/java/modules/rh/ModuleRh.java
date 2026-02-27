@@ -1,10 +1,10 @@
 package modules.rh;
 
-import dev.cruding.engine.gen.ModuleParent;
+import dev.cruding.engine.gen.ParentModule;
 
-public class ModuleRh extends ModuleParent {
+public class ModuleRh extends ParentModule {
     public ModuleRh() {
-        menuIcone("faPeopleLine");
+        menuIcon("faPeopleLine");
     }
 
 }

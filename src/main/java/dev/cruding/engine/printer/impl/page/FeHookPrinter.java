@@ -3,40 +3,42 @@ package dev.cruding.engine.printer.impl.page;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.flow.helper.Attribute;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.helper.Attribute;
 import dev.cruding.engine.printer.Printer;
 
 public class FeHookPrinter extends Printer {
 
     public void print(Page page) {
         MdlFlow f = new MdlFlow();
-        List<Action> actionList = Contexte.getInstance().actionPage(page);
+        List<Action> actionList = Context.getInstance().actionPage(page);
         /* *********************************************************************** */
         for (Action action : actionList) {
             action.mdlActionInjection.addMdlStateAttribute(f);
-            if (!action.inViewOnly && !action.isVide) {
-                f.addMdlStateAttribute("etat" + action.unameAvecEntite, "createEtatInit()");
-                f.addMdlSelectorAttribute("etat" + action.unameAvecEntite, "Etat" + action.unameAvecEntite);
+            if (!action.inViewOnly && !action.isEmpty) {
+                f.addMdlStateAttribute("etat" + action.unameWithEntity, "createEtatInit()");
+                f.addMdlSelectorAttribute("etat" + action.unameWithEntity, "Etat" + action.unameWithEntity);
             }
-            if (action.resultatIn != null) {
-                f.addMdlStateAttribute(action.resultatIn.lname + action.entite.uname, action.resultatIn.jstype);
-                f.addMdlSelectorAttribute(action.resultatIn.lname + action.entite.uname, action.resultatIn.uname + action.entite.uname);
+            if (action.resultIn != null) {
+                f.addMdlStateAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.jstype);
+                f.addMdlSelectorAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.uname + action.entity.uname);
             }
 
         }
         f.addMdlImport("{ useSelector }", "react-redux");
         f.addMdlImport("{ useParams }", "react-router");
         f.addMdlImport("{ useAppDispatch }", "waxant");
+        f.addMdlImport("type { AsyncThunk, AsyncThunkConfig }", "@reduxjs/toolkit");
 
         for (Attribute att : f.mdlSelectorAttributeSet) {
             f.addMdlImport("{ select" + att.name + " }", "./Mdl" + page.uc);
         }
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
-        f.addMdlImport("{ Mdl" + page.uc + ", Req" + page.uc + " }", "./Mdl" + page.uc);
+
+        f.addMdlImport("{ Mdl" + page.uc + ", Req" + page.uc + ", Res" + page.uc + " }", "./Mdl" + page.uc);
         /* *********************************************************************** */
-        f.flushMdlImportBloc();
+        f.flushMdlImportBlock();
 
         f.L("");
         f.L("const use", page.uc, " = () => {");
@@ -53,19 +55,19 @@ public class FeHookPrinter extends Printer {
 
 
         f.L("");
-        f.L____("const createAction = (action: any) => (req?: Req", page.uc, ") => dispatch(action({ ...req, ...params }));");
+        f.L____("const createAction = (action: AsyncThunk<Res", page.uc, ", Req", page.uc, ", AsyncThunkConfig>) => (req?: Req", page.uc, ") => dispatch(action({ ...req, ...params } as Req", page.uc, "));");
         f.L("");
         f.L____("return {");
         f.L________("// Actions");
 
         for (Action action : actionList) {
-            if (!action.inViewOnly && !action.isVide) {
-                f.L________(action.lnameAvecEntite, ": createAction(Ctrl", page.uc, ".", action.lnameAvecEntite, "),");
+            if (!action.inViewOnly && !action.isEmpty) {
+                f.L________(action.lnameWithEntity, ": createAction(Ctrl", page.uc, ".", action.lnameWithEntity, "),");
             }
         }
         for (Action action : actionList) {
-            if (!action.inViewOnly && !action.isVide) {
-                f.L________("resetEtat", action.unameAvecEntite, ": () => dispatch(Mdl", page.uc, ".resetEtat", action.unameAvecEntite, "()),");
+            if (!action.inViewOnly && !action.isEmpty) {
+                f.L________("resetEtat", action.unameWithEntity, ": () => dispatch(Mdl", page.uc, ".resetEtat", action.unameWithEntity, "()),");
             }
         }
         f.L("");

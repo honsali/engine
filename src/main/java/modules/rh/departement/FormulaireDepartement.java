@@ -1,8 +1,8 @@
 package modules.rh.departement;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Departement;
+import model.rh.Departement;
 
 public class FormulaireDepartement extends ElementComposer {
 
@@ -13,25 +13,25 @@ public class FormulaireDepartement extends ElementComposer {
         this.enModification = enModification;
     }
 
-    public Composant composantRacine() {
-        Departement e = (Departement) getEntite("Departement");
+    public Component rootComponent() {
+        Departement e = (Departement) getEntity("Departement");
         if (enModification) {
-            initModification(e, e.id_).inInit();
+            initUpdate(e, getByFieldAction(e, e.id_));
         }
 
-        return bloc(//
-                formulaire(e, //
+        return block(//
+                form(e, //
                         e.nom, //
                         e.description, //
-                        enModification ? cache(e.id_) : null //
-                ).nombreColonne(1), //
-                blocAction(//
-                        enModification ? element(actionMaj(e).siReussi(goToPage(e, "PageConsulterDepartement"))).parForm() : //
-                                element(actionCreer(e).siReussi(goToPage(e, "PageConsulterDepartement").parChamp(e.id_))).parForm(), //
+                        enModification ? hidden(e.id_) : null //
+                ).columnNumber(1), //
+                actionBlock(//
+                        enModification ? element(updateAction(e).onSuccess(goToPage(e, "PageConsulterDepartement"))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, "PageConsulterDepartement").byField(e.id_))).byForm(), //
 
-                        enModification ? bouton(actionRetourConsulter(e, "PageConsulterDepartement")) : bouton(actionRetourListe(e, "PageListerDepartement"))//
+                        enModification ? button(backToDetailAction(e, "PageConsulterDepartement")) : button(backToListAction(e, "PageListerDepartement"))//
                 )//
-        ).largeur("600px").marge("20px").fond("blanc");//
+        ).width("600px").margin("20px").background("blanc");//
     }
 
 }

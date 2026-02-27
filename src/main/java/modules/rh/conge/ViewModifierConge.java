@@ -1,6 +1,6 @@
 package modules.rh.conge;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 
 public class ViewModifierConge extends ElementComposer {
@@ -8,7 +8,7 @@ public class ViewModifierConge extends ElementComposer {
         super("ViewModifierConge", "/");
     }
 
-    public Composant composantRacine() {
+    public Component rootComponent() {
 
         return section( //
                 element(new FormulaireConge(true))//

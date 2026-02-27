@@ -1,36 +1,48 @@
 package dev.cruding.engine;
 
+import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.cruding.engine.gen.Contexte;
-import dev.cruding.engine.gen.Processeur;
-import dev.cruding.engine.loader.EntiteLoader;
+import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Processor;
+import dev.cruding.engine.loader.EntityLoader;
 import dev.cruding.engine.loader.GeneratorException;
+import dev.cruding.engine.loader.LoaderUtils;
 import dev.cruding.engine.loader.ModuleLoader;
 
 public class App {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(App.class);
-    public static final String MODEL_PATH = "src/main/java/modele";
-    public static final String MODULES_PATH = "src/main/java/modules";
 
     public static void main(final String[] args) {
         try {
             long startTime = System.nanoTime();
 
-            Contexte.getInstance().setBasePath("result");
+            Path basePath = LoaderUtils.getBasePath();
+            Path modelPath = LoaderUtils.getModelPath();
+            Path modulesPath = LoaderUtils.getModulesPath();
 
-            LOGGER.info("Loading entities from: {}", MODEL_PATH);
-            (new EntiteLoader()).load(MODEL_PATH);
+            Context.getInstance().setBasePath("result");
 
-            LOGGER.info("Loading modules from: {}", MODULES_PATH);
-            (new ModuleLoader()).load(MODULES_PATH);
+            LOGGER.info("Using engine base path: {}", basePath);
+
+            LOGGER.info("Loading entities from: {}", modelPath);
+            (new EntityLoader()).load(modelPath.toString());
+
+            LOGGER.info("Loading modules from: {}", modulesPath);
+            (new ModuleLoader()).load(modulesPath.toString());
+
+            LOGGER.info("Initializing entities");
+            Context.getInstance().initEntities();
+
+            LOGGER.info("Initializing pages");
+            Context.getInstance().initPages();
 
             LOGGER.info("Initializing actions");
-            Contexte.getInstance().initActions();
+            Context.getInstance().initActions();
 
             LOGGER.info("Start generation...");
-            (new Processeur()).executer();
+            (new Processor()).execute();
 
             long duration = (System.nanoTime() - startTime) / 1_000_000;
             LOGGER.info("Generation completed successfully in {} ms", duration);

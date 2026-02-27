@@ -1,6 +1,6 @@
 package modules.rh.departement;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 
 public class ViewModifierDepartement extends ElementComposer {
@@ -8,7 +8,7 @@ public class ViewModifierDepartement extends ElementComposer {
         super("ViewModifierDepartement", "/");
     }
 
-    public Composant composantRacine() {
+    public Component rootComponent() {
 
         return section( //
                 element(new FormulaireDepartement(true))//

@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.flow.helper.Attribute;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.helper.Attribute;
 import dev.cruding.engine.printer.Printer;
 
 public class FeMdlPrinter extends Printer {
 
     public void print(Page page) {
         MdlFlow f = new MdlFlow();
-        List<Action> actionList = Contexte.getInstance().actionPage(page);
+        List<Action> actionList = Context.getInstance().actionPage(page);
         /* *********************************************************************** */
         for (Action action : actionList) {
             action.mdlActionInjection.addMdlImport(f);
@@ -21,12 +21,13 @@ public class FeMdlPrinter extends Printer {
             action.mdlActionInjection.addMdlResultAttribute(f);
             action.mdlActionInjection.addMdlStateAttribute(f);
             if (!action.inViewOnly) {
-                f.addMdlStateAttribute("etat" + action.unameAvecEntite, "createEtatInit()");
-                f.addMdlSelectorAttribute("etat" + action.unameAvecEntite, "Etat" + action.unameAvecEntite);
+                f.addMdlImport("{ EtatMdl }", "waxant");
+                f.addMdlStateAttribute("etat" + action.unameWithEntity, "createEtatInit()");
+                f.addMdlSelectorAttribute("etat" + action.unameWithEntity, "Etat" + action.unameWithEntity);
             }
-            if (action.resultatIn != null) {
-                f.addMdlStateAttribute(action.resultatIn.lname + action.entite.uname, action.resultatIn.jstype);
-                f.addMdlSelectorAttribute(action.resultatIn.lname + action.entite.uname, action.resultatIn.uname + action.entite.uname);
+            if (action.resultIn != null) {
+                f.addMdlStateAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.jstype);
+                f.addMdlSelectorAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.uname + action.entity.uname);
             }
         }
         f.addMdlImport("{ createSelector, createSlice }", "@reduxjs/toolkit");
@@ -34,28 +35,32 @@ public class FeMdlPrinter extends Printer {
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
         /* *********************************************************************** */
 
-        f.flushMdlImportBloc();
+        f.flushMdlImportBlock();
 
         f.L("");// --------------------------------------------
 
         f.L("export interface Req", page.uc, " extends IRequete {");
-        f.flushMdlRequestAttributeBloc();
+        f.flushMdlRequestAttributeBlock();
         f.L("}");
 
         f.L("");// --------------------------------------------
 
         f.L("export interface Res", page.uc, " extends IResultat {");
-        f.flushMdlResultAttributeBloc();
+        f.flushMdlResultAttributeBlock();
         f.L("}");
 
+
+        f.L("");// --------------------------------------------
+        f.L("interface ", page.uc, "Type {");
+        f.flushMdlStateTypeBlock();
+        f.L("}");
         f.L("");// --------------------------------------------
 
-        f.L("const initialState = {");
-        f.flushMdlStateAttributeBloc();
+        f.L("const initialState: ", page.uc, "Type = {");
+        f.flushMdlStateAttributeBlock();
         f.L("};");
 
-        f.L("");// --------------------------------------------
-        f.L("type ", page.uc, "Type = typeof initialState;");
+
         f.L("");// --------------------------------------------
 
         f.L("const Slice", page.uc, " = createSlice({");
@@ -68,8 +73,8 @@ public class FeMdlPrinter extends Printer {
         }
         for (Action action : actionList) {
             if (!action.inViewOnly) {
-                f.L________("resetEtat" + action.unameAvecEntite, "(state) {");
-                f.L____________("state.etat" + action.unameAvecEntite, " = createEtatInit();");
+                f.L________("resetEtat" + action.unameWithEntity, "(state) {");
+                f.L____________("state.etat" + action.unameWithEntity, " = createEtatInit();");
                 f.L________("},");
             }
         }
@@ -87,7 +92,7 @@ public class FeMdlPrinter extends Printer {
         }
 
         // String listeNomAction = actionList.stream().filter(action -> !action.inViewOnly).map(action ->
-        // "Ctrl" + page.uc + "." + action.lnameAvecEntite).collect(Collectors.joining(", "));
+        // "Ctrl" + page.uc + "." + action.lnameWithEntity).collect(Collectors.joining(", "));
 
 
         f.__(";");

@@ -1,30 +1,29 @@
 package modules.rh.employe;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Employe;
+import model.rh.Employe;
 
 public class ViewFiltrerEmploye extends ElementComposer {
-    public ViewFiltrerEmploye() {
-        super("ViewFiltrerEmploye", "/");
-    }
+        public ViewFiltrerEmploye() {
+                super("ViewFiltrerEmploye", "/");
+        }
 
-    public Composant composantRacine() {
-        Employe e = (Employe) getEntite("Employe");
-        FiltreEmploye filtre = new FiltreEmploye();
-        Composant elementFiltre = element(filtre);
+        public Component rootComponent() {
+                Employe e = (Employe) getEntity("Employe");
+                FiltreEmploye filtre = new FiltreEmploye();
+                Component elementFiltre = element(filtre);
 
-        return section( //
-                enColonne(//
-                        panneau(//
-                                element(new TableauEmploye(filtre.action)), //
-                                blocAction(//
-                                        bouton(actionAjouter(e, "PageCreerEmploye"))//
-                                )//
-                        ).titre("listeEmploye"), //
-                        elementFiltre //
-                ).largeur(16, 8)//
-        );
-    }
+                return block(//
+                                inColumn(//
+                                                section( //
+                                                                primaryPanel(//
+                                                                                element(new TableauEmploye(filtre.action))//
+                                                                ).title("listeEmploye")).actionBlock(button(addAction(e, "PageCreerEmploye"))//
+                                                ).margin("0"), //
+                                                block(elementFiltre).margin("62px 0px")//
+                                ).width(16, 8)//
+                ).margin("20px 40px");
+        }
 
 }

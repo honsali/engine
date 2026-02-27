@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import dev.cruding.engine.gen.helper.Attribute;
-import dev.cruding.engine.gen.helper.AttributeSorter;
-import dev.cruding.engine.gen.helper.Imp;
-import dev.cruding.engine.gen.helper.ImpProcessor;
+import dev.cruding.engine.flow.helper.Attribute;
+import dev.cruding.engine.flow.helper.AttributeSorter;
+import dev.cruding.engine.flow.helper.Imp;
+import dev.cruding.engine.flow.helper.ImpProcessorForJS;
 
 public class MdlFlow extends Flow {
 
@@ -18,7 +18,7 @@ public class MdlFlow extends Flow {
     public HashSet<Attribute> mdlStateAttributeSet = new HashSet<>();
     public HashSet<Attribute> mdlSelectorAttributeSet = new HashSet<>();
 
-    private final ImpProcessor impProcessor = new ImpProcessor();
+    private final ImpProcessorForJS impProcessor = new ImpProcessorForJS();
     private final AttributeSorter attributeSorter = new AttributeSorter();
 
 
@@ -42,15 +42,15 @@ public class MdlFlow extends Flow {
         mdlSelectorAttributeSet.add(new Attribute(uname, lname));
     }
 
-    public void flushMdlImportBloc() {
-        addImportBloc(importMdlSet);
+    public void flushMdlImportBlock() {
+        addImportBlock(importMdlSet);
     }
 
-    public void addImportBloc(HashMap<String, Imp> importSet) {
+    public void addImportBlock(HashMap<String, Imp> importSet) {
         __(impProcessor.convert(importSet));
     }
 
-    public void flushMdlRequestAttributeBloc() {
+    public void flushMdlRequestAttributeBlock() {
         List<Attribute> mdlRequestAttributeList = new ArrayList<>(mdlRequestAttributeSet);
         Collections.sort(mdlRequestAttributeList, attributeSorter);
 
@@ -59,32 +59,44 @@ public class MdlFlow extends Flow {
         }
     }
 
-    public void flushMdlResultAttributeBloc() {
+    public void flushMdlResultAttributeBlock() {
         List<Attribute> mdlResultAttributeList = new ArrayList<>(mdlResultAttributeSet);
         Collections.sort(mdlResultAttributeList, attributeSorter);
 
         for (Attribute att : mdlResultAttributeList) {
-            L____(att.name, "?: ", att.type, ";");
+            if (att.type.length() > 1 && !att.type.endsWith("[]") && att.type.charAt(0) == 'I' && Character.isUpperCase(att.type.charAt(1))) {
+                L____(att.name, ": ", att.type, " | {};");
+            } else {
+                L____(att.name, "?: ", att.type, ";");
+            }
         }
     }
 
-    public void flushMdlStateAttributeBloc() {
+    public void flushMdlStateTypeBlock() {
         List<Attribute> mdlStateAttributeList = new ArrayList<>(mdlStateAttributeSet);
         Collections.sort(mdlStateAttributeList, attributeSorter);
 
         for (Attribute att : mdlStateAttributeList) {
-            if (att.type.endsWith("[]")) {
-                L____(att.name, ": ", "[] as ", att.type, ",");
-            } else if ("string".equals(att.type)) {
-                L____(att.name, ": ", "null,");
-
-            } else if ("number".equals(att.type)) {
-                L____(att.name, ": ", "0,");
-
-            } else if (att.type.endsWith("()")) {
-                L____(att.name, ": ", att.type + ",");
-
+            if (att.type.length() > 1 && !att.type.endsWith("[]") && att.type.charAt(0) == 'I' && Character.isUpperCase(att.type.charAt(1))) {
+                L____(att.name, "?: ", att.type, ";");
+            } else if ("createEtatInit()".equals(att.type)) {
+                L____(att.name, ": EtatMdl;");
             } else {
+                L____(att.name, "?: ", att.type, ";");
+            }
+        }
+    }
+
+    public void flushMdlStateAttributeBlock() {
+        List<Attribute> mdlStateAttributeList = new ArrayList<>(mdlStateAttributeSet);
+        Collections.sort(mdlStateAttributeList, attributeSorter);
+
+        for (Attribute att : mdlStateAttributeList) {
+            if ("createEtatInit()".equals(att.type)) {
+                L____(att.name, ": ", att.type + ",");
+            } else if (att.type.endsWith("[]")) {
+                L____(att.name, ": ", "[] as ", att.type, ",");
+            } else if (att.type.charAt(0) == 'I') {
                 L____(att.name, ": ", "{} as ", att.type, ",");
             }
         }

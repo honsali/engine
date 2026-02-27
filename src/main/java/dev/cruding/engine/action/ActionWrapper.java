@@ -2,16 +2,16 @@ package dev.cruding.engine.action;
 
 import java.util.ArrayList;
 import dev.cruding.engine.action.Action.ActionType;
-import dev.cruding.engine.champ.Champ;
 import dev.cruding.engine.element.Element;
-import dev.cruding.engine.entite.Entite;
+import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.field.Field;
 import dev.cruding.engine.gen.Page;
 
 
 
 public class ActionWrapper {
 
-    private static final Champ[] listeChampVide = new Champ[] {};
+    private static final Field[] emptyFieldList = new Field[] {};
 
     public Action action;
 
@@ -39,80 +39,80 @@ public class ActionWrapper {
         return action.ucoreName;
     };
 
-    public String lnameAvecEntite() {
-        return action.lnameAvecEntite;
+    public String lnameWithEntity() {
+        return action.lnameWithEntity;
     };
 
-    public String lnameSansEntite() {
-        return action.lnameSansEntite;
-    };
-
-
-    public String unameAvecEntite() {
-        return action.unameAvecEntite;
+    public String lnameWithoutEntity() {
+        return action.lnameWithoutEntity;
     };
 
 
-    public String unameSansEntite() {
-        return action.unameSansEntite;
-    };
-
-    public String icone() {
-        return action.icone;
-    };
-
-    public boolean parId() {
-        return action.parId;
-    };
-
-    public boolean parIdPere() {
-        return action.parIdPere;
-    };
-
-    public boolean parForm() {
-        return action.parForm;
-    };
-
-    public boolean parEntite() {
-        return action.parEntite;
-    };
-
-    public String parProp() {
-        return action.parProp;
-    };
-
-    public Champ[] parChamp() {
-        return action.parChamp == null ? listeChampVide : action.parChamp;
-    };
-
-    public boolean recharger() {
-        return action.recharger;
-    };
-
-    public boolean confirmer() {
-        return action.confirmer;
-    };
-
-    public ArrayList<Action> siReussi() {
-        return action.siReussi;
+    public String unameWithEntity() {
+        return action.unameWithEntity;
     };
 
 
-    public boolean hasReussi() {
-        return action.hasReussi;
+    public String unameWithoutEntity() {
+        return action.unameWithoutEntity;
+    };
+
+    public String icon() {
+        return action.icon;
+    };
+
+    public boolean byId() {
+        return action.byId;
+    };
+
+    public boolean byFatherId() {
+        return action.byFatherId;
+    };
+
+    public boolean byForm() {
+        return action.byForm;
+    };
+
+    public boolean byEntity() {
+        return action.byEntity;
+    };
+
+    public String byProp() {
+        return action.byProp;
+    };
+
+    public Field[] byField() {
+        return action.byField == null ? emptyFieldList : action.byField;
+    };
+
+    public boolean reload() {
+        return action.reload;
+    };
+
+    public boolean confirm() {
+        return action.confirm;
+    };
+
+    public ArrayList<Action> onSuccess() {
+        return action.onSuccess;
     };
 
 
-    public boolean enTantQueListe() {
-        return action.enTantQueListe;
+    public boolean hasSuccess() {
+        return action.hasSuccess;
     };
 
-    public boolean hasReussiInViewOnly() {
-        return action.hasReussiInViewOnly;
+
+    public boolean asList() {
+        return action.asList;
     };
 
-    public boolean estActionReussi() {
-        return action.estActionReussi;
+    public boolean hasSuccessInViewOnly() {
+        return action.hasSuccessInViewOnly;
+    };
+
+    public boolean onSuccessAction() {
+        return action.onSuccessAction;
     };
 
     public String actionKey() {
@@ -127,8 +127,8 @@ public class ActionWrapper {
         return action.page;
     };
 
-    public Entite entite() {
-        return action.entite;
+    public Entity entity() {
+        return action.entity;
     };
 
     public Page targetPage() {
@@ -143,12 +143,12 @@ public class ActionWrapper {
         return action.inViewOnly;
     };
 
-    public String sourceDonnee() {
-        return action.sourceDonnee;
+    public String dataSource() {
+        return action.dataSource;
     };
 
-    public Champ resultatIn() {
-        return action.resultatIn;
+    public Field resultIn() {
+        return action.resultIn;
     };
 
     public String orderBy() {
@@ -184,12 +184,12 @@ public class ActionWrapper {
         return action.ucDialogue();
     }
 
-    public boolean pagine() {
-        return action.actionPagination != null || action.pagine;
+    public boolean paginated() {
+        return action.paginationAction != null || action.paginated;
     };
 
-    public boolean attendreSiPret() {
-        return action.attendreSiPret;
+    public boolean waitUntilReady() {
+        return action.waitUntilReady;
     }
 
 
@@ -198,12 +198,12 @@ public class ActionWrapper {
     }
 
 
-    public boolean filtrerAuDepart() {
-        return action.filtrerAuDepart;
+    public boolean filterOnLoad() {
+        return action.filterOnLoad;
     }
 
 
-    public boolean appelDecale() {
-        return action.appelDecale;
+    public boolean delayedCall() {
+        return action.delayedCall;
     }
 }

@@ -4,24 +4,32 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
-
-import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.gen.Contexte;
+import java.util.Collections;
+import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 
 public abstract class Printer {
 
     protected String getBasePath() {
-        return Contexte.getInstance().getBasePath();
+        return Context.getInstance().getBasePath();
     }
 
-    protected Collection<Entite> entiteList() {
-        return Contexte.getInstance().getEntiteList();
+    protected Collection<Entity> entityList() {
+        return Context.getInstance().getEntityList();
     }
 
     protected Collection<Page> pageList() {
-        return Contexte.getInstance().getPageList();
+        return Context.getInstance().getPageList();
+    }
+
+
+    protected ArrayList<Page> sortedPageList(dev.cruding.engine.gen.Module module) {
+        ArrayList<Page> pageList = new ArrayList<>(Context.getInstance().getPageList(module));
+        Collections.sort(pageList);
+        return pageList;
     }
 
     protected void printFile(String content, String path) {

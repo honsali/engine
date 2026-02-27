@@ -1,8 +1,8 @@
 package modules.rh.conge;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Conge;
+import model.rh.Conge;
 
 public class FormulaireConge extends ElementComposer {
 
@@ -13,26 +13,30 @@ public class FormulaireConge extends ElementComposer {
         this.enModification = enModification;
     }
 
-    public Composant composantRacine() {
-        Conge e = (Conge) getEntite("Conge");
+    public Component rootComponent() {
+        Conge e = (Conge) getEntity("Conge");
         if (enModification) {
-            initModification(e, e.id_).inInit();
+            initUpdate(e, getByFieldAction(e, e.id_)).inInit();
         }
 
-        return bloc(//
-                formulaire(e, //
+        return block(//
+                form(e, //
                         e.typeConge, //
                         e.dateDebutConge, //
                         e.dateFinConge, //
-                        enModification ? cache(e.id_) : null //
-                ).nombreColonne(1), //
-                blocAction(//
-                        enModification ? element(actionMaj(e).siReussi(goToPage(e, "PageConsulterDepartement"))).parForm() : //
-                                element(actionCreer(e).siReussi(goToPage(e, "PageConsulterDepartement").parChamp(e.id_))).parForm(), //
+                        enModification ? hidden(e.id_) : null, //
+                        enModification ? hidden(e.father) : null //
+                ).columnNumber(1), //
+                actionBlock(//
+                        enModification ? //
+                                element(updateAction(e).onSuccess(goToPage(e, "PageConsulterConge"))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, "PageConsulterConge").byField(e.id_)).byFatherId()).byForm(), //
 
-                        enModification ? bouton(actionRetourConsulter(e, "PageConsulterDepartement")) : bouton(actionRetourListe(e, "PageListerDepartement"))//
+                        enModification ? //
+                                button(backToDetailAction(e, "PageConsulterConge")) : //
+                                button(backToListAction(e, "PageConsulterEmploye"))//
                 )//
-        ).largeur("600px").marge("20px").fond("blanc");//
+        ).width("600px").margin("20px").background("blanc");//
     }
 
 }

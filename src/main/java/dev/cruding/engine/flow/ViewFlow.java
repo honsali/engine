@@ -19,7 +19,7 @@ public class ViewFlow extends JsFlow {
     private boolean goToPage;
     private boolean goToModule;
     private boolean dispatch;
-    private boolean pret;
+    private boolean ready;
     private String execute;
     private String form;
     private boolean effect;
@@ -29,7 +29,7 @@ public class ViewFlow extends JsFlow {
     private boolean addImportForm = true;
     private boolean afterInit = false;
     private boolean onChange = false;
-    private String faIcone = null;
+    private String faIcon = null;
 
     private Element element;
 
@@ -39,7 +39,7 @@ public class ViewFlow extends JsFlow {
         this.element = element;
     }
 
-    public void flushScriptBloc() {
+    public void flushScriptBlock() {
         totalScript.clean();
         String ts = totalScript.toString();
         if (ts != null && ts.length() > 0) {
@@ -51,7 +51,7 @@ public class ViewFlow extends JsFlow {
         afterInit = false;
     }
 
-    public void flushUiBloc() {
+    public void flushUiBlock() {
         totalUi.clean();
         String ts = totalUi.toString();
         if (ts != null && ts.length() > 0) {
@@ -61,7 +61,7 @@ public class ViewFlow extends JsFlow {
 
     }
 
-    public void flushInitBloc() {
+    public void flushInitBlock() {
         Flow initFlow = new Flow();
         if (hasNavigate()) {
             initFlow.L____("const navigate = useNavigate();");
@@ -99,7 +99,7 @@ public class ViewFlow extends JsFlow {
         }
     }
 
-    public void flushViewImportBloc() {
+    public void flushViewImportBlock() {
         if (hasOnChange()) {
             addJsImport("{ useOnChange }", "waxant");
         }
@@ -144,12 +144,12 @@ public class ViewFlow extends JsFlow {
             addJsImport("{ APP_EVENT }", "commun");
         }
 
-        if (faIcone != null) {
-            addJsImport("{ " + faIcone + " }", "@fortawesome/free-solid-svg-icons");
+        if (faIcon != null) {
+            addJsImport("{ " + faIcon + " }", "@fortawesome/free-solid-svg-icons");
             addJsImport("{ FontAwesomeIcon }", "@fortawesome/react-fontawesome");
 
         }
-        super.flushJsImportBloc();
+        super.flushJsImportBlock();
     }
 
     public boolean hasNavigate() {
@@ -192,13 +192,13 @@ public class ViewFlow extends JsFlow {
         this.onChange = true;
     }
 
-    public void usePret() {
-        this.pret = true;
+    public void useReady() {
+        this.ready = true;
         addState("pret", "false");
     }
 
-    public boolean hasPret() {
-        return this.pret;
+    public boolean hasReady() {
+        return this.ready;
     }
 
 
@@ -219,8 +219,8 @@ public class ViewFlow extends JsFlow {
     }
 
 
-    public void useFontAwesome(String faIcone) {
-        this.faIcone = faIcone;
+    public void useFontAwesome(String faIcon) {
+        this.faIcon = faIcon;
     }
 
     public boolean hasSelector() {

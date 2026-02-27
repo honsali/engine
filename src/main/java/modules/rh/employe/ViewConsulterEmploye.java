@@ -1,9 +1,9 @@
 package modules.rh.employe;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Conge;
-import modele.rh.Employe;
+import model.rh.Conge;
+import model.rh.Employe;
 import modules.rh.conge.TableauConge;
 
 public class ViewConsulterEmploye extends ElementComposer {
@@ -11,26 +11,26 @@ public class ViewConsulterEmploye extends ElementComposer {
                 super("ViewConsulterEmploye", "/");
         }
 
-        public Composant composantRacine() {
+        public Component rootComponent() {
 
-                Employe e = (Employe) getEntite("Employe");
-                Conge c = (Conge) getEntite("Conge");
+                Employe e = (Employe) getEntity("Employe");
+                Conge c = (Conge) getEntity("Conge");
                 return section( //
-                                menuOnglet(//
-                                                bloc(//
+                                tabMenu(//
+                                                block(//
                                                                 element(new EtatEmploye()), //
-                                                                blocAction(//
-                                                                                bouton(actionModifier(e, "PageModifierEmploye")), //
-                                                                                bouton(actionRetourListe(e, "PageFiltrerEmploye")), //
-                                                                                bouton(actionSupprimer(e).siReussi(goToPage(e, "PageFiltrerEmploye")))//
+                                                                actionBlock(//
+                                                                                button(editAction(e, "PageModifierEmploye")), //
+                                                                                button(backToListAction(e, "PageFiltrerEmploye")), //
+                                                                                button(deleteAction(e).onSuccess(goToPage(e, "PageFiltrerEmploye")))//
                                                                 )//
-                                                ).marge("20px").nom("employe"), //
-                                                bloc(//
+                                                ).margin("20px").name("employe"), //
+                                                block(//
                                                                 element(new TableauConge()), //
-                                                                blocAction(//
-                                                                                bouton(actionAjouter(c, "PageModifierConge")) //
+                                                                actionBlock(//
+                                                                                button(addAction(c, "PageCreerConge")) //
                                                                 )//
-                                                ).nom("conge")//
+                                                ).margin("20px").name("conge")//
                                 )//
                 );
         }

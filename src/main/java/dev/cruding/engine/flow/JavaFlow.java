@@ -11,7 +11,7 @@ public class JavaFlow extends Flow {
         importJavaSet.add(clazz);
     }
 
-    public void flushJavaImportBloc() {
+    public void flushJavaImportBlock() {
         if (importJavaSet.isEmpty()) {
             return;
         }

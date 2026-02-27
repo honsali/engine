@@ -1,57 +1,68 @@
 package modules.rh.employe;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Employe;
+import model.rh.Employe;
 
 public class FormulaireEmploye extends ElementComposer {
 
-    private boolean enModification;
+        private boolean enModification;
 
-    public FormulaireEmploye(boolean enModification) {
-        super("FormulaireEmploye", "/element");
-        this.enModification = enModification;
-    }
-
-    public Composant composantRacine() {
-        Employe e = (Employe) getEntite("Employe");
-        if (enModification) {
-            initModification(e, e.id_).inInit();
+        public FormulaireEmploye(boolean enModification) {
+                super("FormulaireEmploye", "/element");
+                this.enModification = enModification;
         }
 
-        return bloc(//
-                cadreBas(//
-                        formulaire(e, //
-                                e.matricule, //
-                                e.dateEntree, //
-                                e.departement, //
-                                e.fonction, //
-                                e.description.surTouteLaLigne(), //
-                                enModification ? cache(e.id_) : null //
-                        )).titre("employe"), //
-                cadreBas(//
-                        formulaire(e, //
-                                e.nom, //
-                                e.prenom, //
-                                e.dateNaissance, //
-                                e.sexe, //
-                                e.situationFamiliale//
-                        )).titre("personnelle"), //
-                cadreBas(//
-                        formulaire(e, //
-                                e.email, //
-                                e.telephone, //
-                                e.ville.seulDansLaLigne(), //
-                                e.adresse.surTouteLaLigne())//
-                ).titre("contact"), //
-                blocAction(//
-                        enModification ? element(actionMaj(e).siReussi(goToPage(e, "PageConsulterEmploye"))).parForm() : //
-                                element(actionCreer(e).siReussi(goToPage(e, "PageConsulterEmploye").parChamp(e.id_))).parForm(), //
+        public Component rootComponent() {
+                Employe e = (Employe) getEntity("Employe");
+                if (enModification) {
+                        initUpdate(e, getByFieldAction(e, e.id_)).inInit();
+                }
 
-                        enModification ? bouton(actionRetourConsulter(e, "PageConsulterEmploye")) : bouton(actionRetourListe(e, "PageFiltrerEmploye"))//
-                )//
-        ).largeur("600px").marge("20px").fond("blanc");//
-    }
+                return block(//
+                                block(//
+                                                simplePanel(//
+                                                                block(//
+                                                                                form(e, //
+                                                                                                e.matricule, //
+                                                                                                e.dateEntree, //
+                                                                                                e.departement, //
+                                                                                                e.fonction, //
+                                                                                                e.description.wholeRow(), //
+                                                                                                enModification ? hidden(e.id_) : null //
+                                                                                )//
+                                                                ).width("400px")//
+                                                ).title("employe"), //
+                                                simplePanel(//
+                                                                block(//
+                                                                                form(e, //
+                                                                                                e.nom, //
+                                                                                                e.prenom, //
+                                                                                                e.dateNaissance, //
+                                                                                                e.sexe, //
+                                                                                                e.situationFamiliale//
+                                                                                )//
+                                                                ).width("400px")//
+                                                ).title("personnelle"), //
+                                                simplePanel(//
+                                                                block(//
+                                                                                form(e, //
+                                                                                                e.email, //
+                                                                                                e.telephone, //
+                                                                                                e.ville.aloneInRow(), //
+                                                                                                e.adresse.wholeRow()//
+                                                                                )//
+                                                                ).width("400px")//
+                                                ).title("contact"), //
+                                                actionBlock(//
+                                                                enModification ? element(updateAction(e).onSuccess(goToPage(e, "PageConsulterEmploye"))).byForm() : //
+                                                                                element(createAction(e).onSuccess(goToPage(e, "PageConsulterEmploye").byField(e.id_))).byForm(), //
+
+                                                                enModification ? button(backToDetailAction(e, "PageConsulterEmploye")) : button(backToListAction(e, "PageFiltrerEmploye"))//
+                                                )//
+                                ).width("1000px")//
+                ).margin("40px").background("blanc");//
+        }
 
 }
 //

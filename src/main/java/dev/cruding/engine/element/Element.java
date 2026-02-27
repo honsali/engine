@@ -3,7 +3,7 @@ package dev.cruding.engine.element;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Page;
 
@@ -11,16 +11,16 @@ public class Element {
 
     public static final String DETAIL = "DETAIL";
     public static final String FORM = "FORM";
-    public static final String TABLEAU = "TABLEAU";
+    public static final String TABLE = "TABLE";
 
     public String path;
     public String relativePath;
     public String name;
     public Page page;
-    public Composant composantRacine;
-    public boolean parForm = false;
-    public boolean parEntite = false;
-    public String parProp = null;
+    public Component rootComponent;
+    public boolean byForm = false;
+    public boolean byEntity = false;
+    public String byProp = null;
     public boolean fake = false;
 
 
@@ -46,30 +46,30 @@ public class Element {
         return this;
     }
 
-    public void setComposantRacine(Composant composant) {
-        this.composantRacine = composant;
+    public void setRootComponent(Component component) {
+        this.rootComponent = component;
     }
 
-    public Element parForm() {
-        this.parForm = true;
+    public Element byForm() {
+        this.byForm = true;
         return this;
     }
 
-    public Element parEntite() {
-        this.parEntite = true;
+    public Element byEntity() {
+        this.byEntity = true;
         return this;
     }
 
-    public Element parProp(String parProp) {
-        this.parProp = parProp;
+    public Element byProp(String byProp) {
+        this.byProp = byProp;
         return this;
     }
 
     public void addContent(ViewFlow flow) {
-        if (composantRacine == null) {
+        if (rootComponent == null) {
             return;
         }
-        composantRacine.addContent(null, flow, 1);
+        rootComponent.addContent(null, flow, 1);
     }
 
     public boolean equals(Object obj) {

@@ -4,7 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 
 public class ModuleLoader {
@@ -12,15 +12,14 @@ public class ModuleLoader {
 
     public void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile).filter(LoaderUtils::isJavaFile).filter(file -> isModule(file)).map(file -> loadModuleClass(file)).forEach(Contexte.getInstance()::add);
+            files.filter(Files::isRegularFile).filter(LoaderUtils::isJavaFile).filter(file -> isModule(file)).map(file -> loadModuleClass(file)).forEach(Context.getInstance()::addModule);
         } catch (Exception e) {
             throw new GeneratorException(String.format("Failed to load modules from directory: %s.", path), e);
         }
-        Contexte.getInstance().initPages();
     }
 
 
-    private Object loadModuleClass(Path file) {
+    private Module loadModuleClass(Path file) {
         try {
             String className = LoaderUtils.resolveClassName(file);
             Class<?> clazz = Class.forName(className);
@@ -29,7 +28,7 @@ public class ModuleLoader {
                 throw new GeneratorException(String.format("Module class '%s' must extend Module base class.", clazz.getSimpleName()));
             }
 
-            return clazz.getDeclaredConstructor().newInstance();
+            return (Module) clazz.getDeclaredConstructor().newInstance();
 
         } catch (ClassNotFoundException e) {
             throw new GeneratorException(String.format("Module class not found for file: %s.", file), e);

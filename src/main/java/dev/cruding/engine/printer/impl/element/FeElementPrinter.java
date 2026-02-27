@@ -4,7 +4,7 @@ import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class FeElementPrinter extends Printer {
@@ -14,31 +14,30 @@ public class FeElementPrinter extends Printer {
         ViewFlow f = new ViewFlow(element);
 
         /* *********************************************************************** */
-        if (element.parForm) {
+        if (element.byForm) {
             f.addProp("form");
         }
-        f.addProp(element.parProp);
+        f.addProp(element.byProp);
 
-        List<Action> listeAction = Contexte.getInstance().actionElement(element);
+        List<Action> actionList = Context.getInstance().actionElement(element);
 
-        for (int i = 0; i < listeAction.size(); i++) {
-            Action action = listeAction.get(i);
+        for (int i = 0; i < actionList.size(); i++) {
+            Action action = actionList.get(i);
             boolean retourLigne = action.viewActionInjection.addViewScript(f);
-            if (retourLigne && i < listeAction.size() - 1) {
+            if (retourLigne && i < actionList.size() - 1) {
                 f.totalScript().L();
             }
         }
         element.addContent(f);
-        /* *********************************************************************** */
 
-        f.flushViewImportBloc();
+        f.flushViewImportBlock();
         f.L("");
         f.L("const ", element.name, " = (", f.joinProps(), ") => {");
-        f.flushInitBloc();
-        f.flushScriptBloc();
+        f.flushInitBlock();
+        f.flushScriptBlock();
         f.L____("//");
         f.L____("return ");
-        f.flushUiBloc();
+        f.flushUiBlock();
         f.L("};");
         f.L("");
         f.L("export default ", element.name, ";");

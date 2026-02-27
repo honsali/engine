@@ -1,10 +1,7 @@
 package dev.cruding.engine.printer.impl.module;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -12,15 +9,14 @@ import dev.cruding.engine.printer.Printer;
 public class FeReducerPrinter extends Printer {
 
     public void print(Module module) {
-        ViewFlow f = new ViewFlow();
+        Flow f = new Flow();
 
         /* *********************************************************************** */
-        List<Page> listePage = new ArrayList<>(Contexte.getInstance().getPageList(module));
-        Collections.sort(listePage);
+        ArrayList<Page> pageList = sortedPageList(module);
         int idx = module.path.length();
         boolean first = true;
-        for (Page page : listePage) {
-            if (page.estReelle()) {
+        for (Page page : pageList) {
+            if (page.containsComponent()) {
                 if (first) {
                     first = false;
                 } else {
@@ -31,8 +27,8 @@ public class FeReducerPrinter extends Printer {
         }
         f.L("");
         f.L("const Reducer", module.unameLast, " = {");
-        for (Page page : listePage) {
-            if (page.estReelle()) {
+        for (Page page : pageList) {
+            if (page.containsComponent()) {
                 f.L____("mdl", page.uc, ": Mdl", page.uc, ",");
             }
         }

@@ -1,8 +1,8 @@
 package modules.rh.departement;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Departement;
+import model.rh.Departement;
 
 public class EtatDepartement extends ElementComposer {
 
@@ -11,15 +11,13 @@ public class EtatDepartement extends ElementComposer {
         super("EtatDepartement", "/element");
     }
 
-    public Composant composantRacine() {
-        Departement e = (Departement) getEntite("Departement");
-        recupererParChamp(e, e.id_).inInit();
-        return bloc(//
-                etat(e, //
-                        e.nom, //
-                        e.description//
-                ).nombreColonne(1)//
-        ).largeur("600px").marge("20px").fond("blanc");//
+    public Component rootComponent() {
+        Departement e = (Departement) getEntity("Departement");
+        getByFieldAction(e, e.id_).inInit();
+        return detail(e, //
+                e.nom, //
+                e.description//
+        ).columnNumber(1);//
     }
 
 }

@@ -2,42 +2,42 @@ package dev.cruding.engine.gen;
 
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.entite.Entite;
+import dev.cruding.engine.entity.Entity;
 
 public class LabelMapper {
 
     private static LabelMapper instance = new LabelMapper();
 
-    private static final HashMap<String, String> verbeActionDansTitreMap = new HashMap<>();
+    private static final HashMap<String, String> actionVerbInTitleMap = new HashMap<>();
 
-    private static final HashMap<String, String> verbeActionDansBoutonMap = new HashMap<>();
+    private static final HashMap<String, String> actionVerbInButtonMap = new HashMap<>();
 
     private static final HashMap<String, String> actionPpMap = new HashMap<>();
-    public static final String listeActionSansPermission = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
-    public static final String listeActionStandard = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#supprimer#" + listeActionSansPermission;
+    public static final String noPermissionActionList = "#goTo#appliquer#filtrer#lister#consulter#recupererParId#initCreation#initModification#changerPage#chercher#imprimer#retourListe#retourConsulter#";
+    public static final String normalActionList = "#refuser#modifier#ajouter#creer#enregistrer#valider#annuler#rejeter#verrouiller#deverrouiller#accepter#rejeter#confirmer#supprimer#" + noPermissionActionList;
 
     static {
 
-        verbeActionDansTitreMap.put("lister", "Liste");
-        verbeActionDansTitreMap.put("Lister", "Liste");
-        verbeActionDansTitreMap.put("creer", "créer");
-        verbeActionDansTitreMap.put("enregistrer", "enregistrer");
+        actionVerbInTitleMap.put("lister", "Liste");
+        actionVerbInTitleMap.put("Lister", "Liste");
+        actionVerbInTitleMap.put("creer", "créer");
+        actionVerbInTitleMap.put("enregistrer", "enregistrer");
 
-        verbeActionDansTitreMap.put("Creer", "créer");
-        verbeActionDansTitreMap.put("Maj", "enregistrer");
+        actionVerbInTitleMap.put("Creer", "créer");
+        actionVerbInTitleMap.put("Maj", "enregistrer");
 
-        verbeActionDansBoutonMap.put("creer", "Enregistrer");
-        verbeActionDansBoutonMap.put("Creer", "Enregistrer");
-        verbeActionDansBoutonMap.put("maj", "Enregistrer");
-        verbeActionDansBoutonMap.put("Maj", "Enregistrer");
-        verbeActionDansBoutonMap.put("ajouterce", "Nouveau");
-        verbeActionDansBoutonMap.put("ajoutercet", "Nouvel");
-        verbeActionDansBoutonMap.put("ajoutercette", "Nouvelle");
-        verbeActionDansBoutonMap.put("RetourListe", "Retour Liste");
-        verbeActionDansBoutonMap.put("RetourConsulter", "Retour");
-        verbeActionDansBoutonMap.put("retourConsulter", "Retour");
-        verbeActionDansBoutonMap.put("initialiserFiltre", "Initialiser");
-        verbeActionDansBoutonMap.put("appliquerFiltre", "Filtrer");
+        actionVerbInButtonMap.put("creer", "Enregistrer");
+        actionVerbInButtonMap.put("Creer", "Enregistrer");
+        actionVerbInButtonMap.put("maj", "Enregistrer");
+        actionVerbInButtonMap.put("Maj", "Enregistrer");
+        actionVerbInButtonMap.put("ajouterce", "Nouveau");
+        actionVerbInButtonMap.put("ajoutercet", "Nouvel");
+        actionVerbInButtonMap.put("ajoutercette", "Nouvelle");
+        actionVerbInButtonMap.put("RetourListe", "Retour Liste");
+        actionVerbInButtonMap.put("RetourConsulter", "Retour");
+        actionVerbInButtonMap.put("retourConsulter", "Retour");
+        actionVerbInButtonMap.put("initialiserFiltre", "Initialiser");
+        actionVerbInButtonMap.put("appliquerFiltre", "Filtrer");
 
         actionPpMap.put("creer", "créé");
         actionPpMap.put("maj", "enregistré");
@@ -50,88 +50,88 @@ public class LabelMapper {
         return instance;
     }
 
-    private String pluriels = "#lister#Lister#";
-    private String avecEntite = "#ajouter#Ajouter#";
+    private String plurals = "#lister#Lister#";
+    private String withEntity = "#ajouter#Ajouter#";
 
     private LabelMapper() {}
 
-    public String nomAction(String key) {
-        if (verbeActionDansBoutonMap.containsKey(key)) {
-            return verbeActionDansBoutonMap.get(key);
+    public String nameAction(String key) {
+        if (actionVerbInButtonMap.containsKey(key)) {
+            return actionVerbInButtonMap.get(key);
         }
         return StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
     }
 
-    public String nomAction(String key, Entite entite) {
-        String nom = key;
-        if (verbeActionDansBoutonMap.containsKey(key)) {
-            nom = verbeActionDansBoutonMap.get(key);
-        } else if (verbeActionDansBoutonMap.containsKey(key + entite.setting.ce())) {
-            nom = verbeActionDansBoutonMap.get(key + entite.setting.ce());
+    public String nameAction(String key, Entity entity) {
+        String name = key;
+        if (actionVerbInButtonMap.containsKey(key)) {
+            name = actionVerbInButtonMap.get(key);
+        } else if (actionVerbInButtonMap.containsKey(key + entity.setting.that())) {
+            name = actionVerbInButtonMap.get(key + entity.setting.that());
         } else {
-            nom = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
+            name = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
 
-        if (avecEntite.indexOf(key) > -1) {
-            nom = nom + " " + entite.setting.libelle;
-            if (pluriels.indexOf(key) > -1) {
-                nom = nom + "s";
+        if (withEntity.indexOf(key) > -1) {
+            name = name + " " + entity.setting.label;
+            if (plurals.indexOf(key) > -1) {
+                name = name + "s";
             }
         }
-        return nom;
+        return name;
     }
 
-    public String titreConfirmation(String key, Entite entite) {
-        String verbe = key;
-        if (verbeActionDansTitreMap.containsKey(key)) {
-            verbe = verbeActionDansTitreMap.get(key);
+    public String titleConfirmation(String key, Entity entity) {
+        String verb = key;
+        if (actionVerbInTitleMap.containsKey(key)) {
+            verb = actionVerbInTitleMap.get(key);
         } else {
-            verbe = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
+            verb = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return StringUtils.capitalize(verbe + " " + entite.setting.libelle);
+        return StringUtils.capitalize(verb + " " + entity.setting.label);
 
     }
 
-    public String enteteConfirmation(String key, Entite entite) {
-        String verbe = key;
-        if (verbeActionDansTitreMap.containsKey(key)) {
-            verbe = verbeActionDansTitreMap.get(key);
+    public String enteteConfirmation(String key, Entity entity) {
+        String verb = key;
+        if (actionVerbInTitleMap.containsKey(key)) {
+            verb = actionVerbInTitleMap.get(key);
         } else {
-            verbe = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
+            verb = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return "Etes vous sur de vouloir " + verbe + " " + entite.setting.ce() + " " + entite.setting.libelle;
+        return "Etes vous sur de vouloir " + verb + " " + entity.setting.that() + " " + entity.setting.label;
     }
 
-    public String messageSuccess(String key, Entite entite) {
+    public String messageSuccess(String key, Entity entity) {
         String lPp = key;
         if (actionPpMap.containsKey(key)) {
-            lPp = actionPpMap.get(key) + (entite.setting.feminin ? "e" : "");
+            lPp = actionPpMap.get(key) + (entity.setting.feminine ? "e" : "");
 
         } else {
             lPp = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return entite.setting.libelle + " " + lPp + " avec succès";
+        return entity.setting.label + " " + lPp + " avec succès";
     }
 
     public String uLabel(String key) {
         String label = key;
-        if (verbeActionDansTitreMap.containsKey(key)) {
-            label = verbeActionDansTitreMap.get(key);
+        if (actionVerbInTitleMap.containsKey(key)) {
+            label = actionVerbInTitleMap.get(key);
         }
         return StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(label)), " ");
     }
 
-    public String getTitre(Page page) {
-        String titre = uLabel(page.actionUname);
+    public String getTitle(Page page) {
+        String title = uLabel(page.actionUname);
 
-        Entite entite = Contexte.getInstance().getEntite(page.entiteUname);
-        if (entite != null) {
-            titre = titre + " " + entite.setting.libelle;
+        Entity entity = Context.getInstance().getEntity(page.entityUname);
+        if (entity != null) {
+            title = title + " " + entity.setting.label;
 
-            if (pluriels.indexOf(page.actionUname) > -1) {
-                titre = titre + "s";
+            if (plurals.indexOf(page.actionUname) > -1) {
+                title = title + "s";
             }
         }
-        return titre;
+        return title;
     }
 }

@@ -3,9 +3,9 @@ package dev.cruding.engine.printer.impl.page;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.CtrlFlow;
-import dev.cruding.engine.gen.Contexte;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.helper.Util;
+import dev.cruding.engine.gen.Util;
 import dev.cruding.engine.printer.Printer;
 
 public class FeCtrlPrinter extends Printer {
@@ -13,7 +13,7 @@ public class FeCtrlPrinter extends Printer {
     public void print(Page page) {
 
         CtrlFlow f = new CtrlFlow();
-        List<Action> actionList = Contexte.getInstance().actionPage(page);
+        List<Action> actionList = Context.getInstance().actionPage(page);
         /* *********************************************************************** */
 
         f.addCtrlImport("{ action }", "waxant");
@@ -28,7 +28,7 @@ public class FeCtrlPrinter extends Printer {
             action.ctrlActionInjection.addCtrlImport(f);
         }
 
-        f.flushCtrlImportBloc();
+        f.flushCtrlImportBlock();
 
         for (Action action : actionList) {
             if (action.uc != null && !action.inViewOnly) {

@@ -1,8 +1,8 @@
 package modules.rh.employe;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Employe;
+import model.rh.Employe;
 
 public class EtatEmploye extends ElementComposer {
 
@@ -11,34 +11,34 @@ public class EtatEmploye extends ElementComposer {
                 super("EtatEmploye", "/element");
         }
 
-        public Composant composantRacine() {
-                Employe e = (Employe) getEntite("Employe");
-                recupererParChamp(e, e.id_).inInit();
-                return bloc(//
-                                cadreBas(//
-                                                etat(e, //
+        public Component rootComponent() {
+                Employe e = (Employe) getEntity("Employe");
+                getByFieldAction(e, e.id_).inInit();
+                return inlineBlock(//
+                                primaryPanel(//
+                                                detail(e, //
                                                                 e.matricule, //
                                                                 e.dateEntree, //
                                                                 e.departement, //
                                                                 e.fonction, //
-                                                                e.description.surTouteLaLigne() //
-                                                )).titre("employe"), //
-                                cadreBas(//
-                                                etat(e, //
+                                                                e.description.wholeRow() //
+                                                )).title("employe").width("500px"), //
+                                primaryPanel(//
+                                                detail(e, //
                                                                 e.nom, //
                                                                 e.prenom, //
                                                                 e.dateNaissance, //
                                                                 e.sexe, //
                                                                 e.situationFamiliale//
-                                                )).titre("personnelle"), //
-                                cadreBas(//
-                                                etat(e, //
+                                                )).title("personnelle").width("500px"), //
+                                primaryPanel(//
+                                                detail(e, //
                                                                 e.email, //
                                                                 e.telephone, //
-                                                                e.ville.seulDansLaLigne(), //
-                                                                e.adresse.surTouteLaLigne())//
-                                ).titre("contact") //
-                ).largeur("600px");//
+                                                                e.ville.aloneInRow(), //
+                                                                e.adresse.wholeRow()//
+                                                )).title("contact").width("500px") //
+                ).width("600px");//
         }
 
 }

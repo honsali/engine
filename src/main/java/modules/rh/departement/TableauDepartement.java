@@ -1,8 +1,8 @@
 package modules.rh.departement;
 
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Departement;
+import model.rh.Departement;
 
 public class TableauDepartement extends ElementComposer {
 
@@ -11,13 +11,13 @@ public class TableauDepartement extends ElementComposer {
         super("TableauDepartement", "/element");
     }
 
-    public Composant composantRacine() {
-        Departement e = (Departement) getEntite("Departement");
-        return bloc(//
-                tableau(e, //
+    public Component rootComponent() {
+        Departement e = (Departement) getEntity("Departement");
+        return block(//
+                table(e, //
                         e.nom, //
                         e.description//
-                ).remplirPar(listerTout(e)).siCliqueLigne(goToPage(e, "PageConsulterDepartement")) //
+                ).fillWith(listAll(e)).onRowClick(goToPage(e, "PageConsulterDepartement")) //
         );
     }
 

@@ -1,9 +1,9 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.action.Action;
-import dev.cruding.engine.composant.Composant;
+import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
-import modele.rh.Employe;
+import model.rh.Employe;
 
 public class FiltreEmploye extends ElementComposer {
 
@@ -13,42 +13,42 @@ public class FiltreEmploye extends ElementComposer {
                 super("FiltreEmploye", "/element");
         }
 
-        public Composant composantRacine() {
-                Employe e = (Employe) getEntite("Employe");
-                action = filtrer(e).filtrerAuDepart();
+        public Component rootComponent() {
+                Employe e = (Employe) getEntity("Employe");
+                action = filter(e).filterOnLoad();
 
-                return panneauFiltre(e, true, //
-                                panneauEtendable(//
-                                                formulaire(e, //
-                                                                e.matricule.seulDansLaLigne(), //
-                                                                e.debutDateEntree, //
-                                                                e.finDateEntree, //
+                return filterPanel(e, true, //
+                                extendedPanel(//
+                                                form(e, //
+                                                                e.matricule.aloneInRow(), //
+                                                                dateRangeBegin(e.dateEntree), //
+                                                                dateRangeEnd(e.dateEntree), //
                                                                 e.departement, //
                                                                 e.fonction //
-                                                )).open().titre("employe"), //
-                                panneauEtendable(//
-                                                formulaire(e, //
+                                                )).open().title("employe"), //
+                                extendedPanel(//
+                                                form(e, //
                                                                 e.nom, //
                                                                 e.prenom, //
-                                                                e.debutDateNaissance, //
-                                                                e.finDateNaissance, //
+                                                                dateRangeBegin(e.dateNaissance), //
+                                                                dateRangeEnd(e.dateNaissance), //
                                                                 e.sexe, //
                                                                 e.situationFamiliale//
-                                                )).titre("personnelle"), //
-                                panneauEtendable(//
-                                                formulaire(e, //
+                                                )).title("personnelle"), //
+                                extendedPanel(//
+                                                form(e, //
                                                                 e.email, //
                                                                 e.telephone, //
                                                                 e.ville, //
                                                                 e.adresse)//
-                                ).titre("contact"), //
-                                separateur(), //
-                                blocAction(//
+                                ).title("contact"), //
+                                separator(), //
+                                actionBlock(//
 
-                                                bouton(appliquerFiltre(e, action)), //
-                                                bouton(initialiserFiltre(e, action))//
+                                                button(applyFilter(e, action)), //
+                                                button(initFilter(e, action))//
                                 )//
-                ).titre("filtreEmploye");
+                ).title("filtreEmploye");
         }
 
 }

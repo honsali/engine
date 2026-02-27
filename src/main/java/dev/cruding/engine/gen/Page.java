@@ -3,78 +3,73 @@ package dev.cruding.engine.gen;
 import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.element.Element;
-import dev.cruding.engine.entite.Entite;
-import dev.cruding.engine.gen.helper.Util;
 
 public class Page implements Comparable<Page> {
-    public ArrayList<Element> listeElement = new ArrayList<>();
+    public ArrayList<Element> elementList = new ArrayList<>();
 
-    public String path;
     public String name;
+    public String path;
     public String uc;
-    public String route;
+    public String icon;
+    public int position;// under tab menu module
 
     public Module module;
     public String actionUname;
     public String actionLname;
-    public String entiteUname;
-    public String entiteLname;
-    public String icone;
-    public int position;
+    public String entityUname;
+    public String entityLname;
 
     public boolean pathById = false;
 
     public ElementComposer elementComposer;
 
     public Page(Module module, String name, ElementComposer elementComposer) {
+        this.module = module;
         this.name = name;
+        this.elementComposer = elementComposer;
+
         this.uc = name.substring(4);
-        int idx1 = Util.findFirstCapitalIndex(name.substring(4));
+        entityUname = this.uc;
+
+        int idx1 = Util.findFirstCapitalIndex(this.uc);
         if (idx1 > -1) {
-            entiteUname = name.substring(idx1 + 4);
+            entityUname = name.substring(idx1 + 4);
             actionUname = name.substring(4, idx1 + 4);
             actionLname = StringUtils.uncapitalize(actionUname);
-        } else {
-            entiteUname = name.substring(4);
         }
-        this.uc = name.substring(4);
-        entiteLname = StringUtils.uncapitalize(entiteUname);
+        entityLname = StringUtils.uncapitalize(entityUname);
 
-        if (module.path.endsWith(entiteLname)) {
+        if (module.path.endsWith(entityLname)) {
             this.path = module.path + "/" + actionLname;
         } else if (module.path.endsWith(actionLname)) {
-            this.path = module.path + "/" + entiteLname;
+            this.path = module.path + "/" + entityLname;
         } else {
-            this.path = module.path + "/" + entiteLname + "/" + actionLname;
+            this.path = module.path + "/" + entityLname + "/" + actionLname;
         }
-        this.elementComposer = elementComposer;
         this.elementComposer.setPage(this);
-        this.module = module;
+
     }
 
     public void init() {
-        Element elementRacine = this.elementComposer.creerElement();
-        addElement(elementRacine);
+        Element rootElement = this.elementComposer.addElement();
+        addElement(rootElement);
     }
 
     public int compareTo(Page p) {
-        return actionUname.compareTo(p.actionUname) + entiteUname.compareTo(p.entiteUname);
+        return actionUname.compareTo(p.actionUname) + entityUname.compareTo(p.entityUname);
     }
 
-    public Entite getEntite(String uname) {
-        return Contexte.getInstance().getEntite(uname);
-    }
 
-    public boolean estReelle() {
-        return listeElement.size() > 0 && listeElement.get(0).composantRacine != null;
+    public boolean containsComponent() {
+        return elementList.size() > 0 && elementList.get(0).rootComponent != null;
     }
 
     public void addElement(Element element) {
-        listeElement.add(element);
+        elementList.add(element);
     }
 
-    public Page menuIcone(String icone) {
-        this.icone = icone;
+    public Page icon(String icon) {
+        this.icon = icon;
         this.module.pageIndex = this.name;
         return this;
     }
