@@ -45,7 +45,14 @@ public abstract class Printer {
                 Files.createDirectories(parentDir);
             }
             if (force || !Files.exists(filePath)) {
-                Files.write(filePath, content.getBytes(StandardCharsets.UTF_8));
+                String normalizedContent = content.endsWith("\n") ? content : content + "\n";
+                if (Files.exists(filePath)) {
+                    String existingContent = Files.readString(filePath, StandardCharsets.UTF_8);
+                    if (existingContent.contains("\r\n")) {
+                        normalizedContent = normalizedContent.replace("\n", "\r\n");
+                    }
+                }
+                Files.write(filePath, normalizedContent.getBytes(StandardCharsets.UTF_8));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

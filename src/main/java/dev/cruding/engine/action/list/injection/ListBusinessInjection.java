@@ -41,7 +41,7 @@ public class ListBusinessInjection extends ActionBusinessInjection {
         if (byFatherId() && entity().haveFather) {
             f.__("id", entity().ufather);
         }
-        f.__(").stream().map(", entity().uname, "Dto::toDto).toList();");
+        f.__(").stream().map(", entity().lname, "Mapper::toDto).toList();");
         f.L____("}");
     }
 }

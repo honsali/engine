@@ -41,7 +41,7 @@ public class BeFilterPrinter extends Printer {
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
-        f.L("public record ", entity.uname, "Filtre (");
+        f.L("public record ", entity.uname, "Filtre(");
         for (int i = 0; i < notManyList.size(); i++) {
             notManyList.get(i).addFilterJavaDeclaration(f);
             if (i < notManyList.size() - 1) {
@@ -49,7 +49,7 @@ public class BeFilterPrinter extends Printer {
             }
 
         }
-        f.__("){");
+        f.__(") {");
 
         f.L("}");
 

@@ -328,7 +328,7 @@ public class Field {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____(jtype + " " + lname);
+        f.L________(jtype + " " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
@@ -358,7 +358,7 @@ public class Field {
     }
 
     public void addSpecification(JavaFlow f) {
-        f.L________________("addLike(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition." + lname + "());");
+        f.L____________("addLike(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition." + lname + "());");
     }
 
     public void addGetterSetter(JavaFlow f) {

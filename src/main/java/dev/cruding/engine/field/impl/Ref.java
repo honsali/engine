@@ -49,7 +49,7 @@ public class Ref<T extends Entity> extends RefField<T> {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____(uname + "Dto " + lname);
+        f.L________(uname + "Dto " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
@@ -65,7 +65,7 @@ public class Ref<T extends Entity> extends RefField<T> {
     }
 
     public void addSpecification(JavaFlow f) {
-        f.L________________("addEqual(predicates, criteriaBuilder, root.get(\"" + lname + "\").get(\"id\"), condition." + lname + "() == null ? null : condition." + lname + "().id());");
+        f.L____________("addEqual(predicates, criteriaBuilder, root.get(\"" + lname + "\").get(\"id\"), condition." + lname + "() == null ? null : condition." + lname + "().id());");
     }
 
 

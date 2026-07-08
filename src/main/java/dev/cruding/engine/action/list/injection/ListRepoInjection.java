@@ -21,7 +21,7 @@ public class ListRepoInjection extends ActionRepoInjection {
         List<Field> refFieldList = entity().fieldList.stream().filter(p -> p.isRef || p.isFather).toList();
         if (refFieldList.size() > 0) {
             f.L____("@EntityGraph(attributePaths = { \"");
-            f.__(refFieldList.stream().map(field -> field.lname).collect(Collectors.joining("\",\"")));
+            f.__(refFieldList.stream().map(field -> field.lname).collect(Collectors.joining("\", \"")));
             f.__("\" })");
         }
         f.L____("List<", entity().uname, "> findAllBy");

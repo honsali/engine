@@ -15,6 +15,9 @@ public class BeDtoPrinter extends Printer {
         List<Field> fieldList = entity.fieldList;
         for (Field field : fieldList) {
             field.addDtoImport(f);
+            if (field.isFather) {
+                f.addJavaImport("com.fasterxml.jackson.annotation.JsonProperty");
+            }
             if (field.required) {
                 if (field.required && field.isText) {
                     f.addJavaImport("jakarta.validation.constraints.NotBlank");
@@ -36,7 +39,10 @@ public class BeDtoPrinter extends Printer {
         for (int i = 0; i < fieldList.size(); i++) {
             Field field = fieldList.get(i);
             String end = i == fieldList.size() - 1 ? "" : ",";
-            if (field.isRef || field.isFather) {
+            if (field.isFather) {
+                f.L________("@JsonProperty(access = JsonProperty.Access.READ_ONLY) ", field.jtype, "Dto ", field.lname, end);
+
+            } else if (field.isRef) {
                 f.L________(field.jtype, "Dto ", field.lname, end);
 
             } else {

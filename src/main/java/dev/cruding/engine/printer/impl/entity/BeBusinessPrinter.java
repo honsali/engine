@@ -15,9 +15,9 @@ public class BeBusinessPrinter extends Printer {
 
         /* *********************************************************************** */
 
+        List<Action> actionList = Context.getInstance().actionEntity(entity);
 
-
-        for (Action action : Context.getInstance().actionEntity(entity)) {
+        for (Action action : actionList) {
             action.businessActionInjection.addBusinessImport(f);
         }
         f.addJavaImport("org.springframework.transaction.annotation.Transactional");
@@ -37,20 +37,21 @@ public class BeBusinessPrinter extends Printer {
         if (entity.haveFather) {
             f.L____("private final ", entity.ufather, "Repository ", entity.lfather, "Repository;");
         }
+        f.L____("private final ", entity.uname, "Mapper ", entity.lname, "Mapper;");
         f.L("");
         f.L____("public ", entity.uname, "Service(", entity.uname, "Repository ", entity.lname, "Repository");
         if (entity.haveFather) {
             f.__(", ", entity.ufather, "Repository ", entity.lfather, "Repository");
         }
-        f.__(") {");
+        f.__(", ", entity.uname, "Mapper ", entity.lname, "Mapper) {");
         f.L________("this.", entity.lname, "Repository = ", entity.lname, "Repository;");
         if (entity.haveFather) {
 
             f.L________("this.", entity.lfather, "Repository = ", entity.lfather, "Repository;");
         }
+        f.L________("this.", entity.lname, "Mapper = ", entity.lname, "Mapper;");
         f.L____("}");
 
-        List<Action> actionList = Context.getInstance().actionEntity(entity);
         HashSet<String> actionName = new HashSet<>();
         for (Action action : actionList) {
             if (!actionName.contains(action.lnameWithoutEntity)) {
@@ -58,7 +59,6 @@ public class BeBusinessPrinter extends Printer {
                 actionName.add(action.lnameWithoutEntity);
             }
         }
-
 
         f.L("}");
 

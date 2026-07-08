@@ -28,8 +28,8 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
                 f.L________("}");
             }
         }
-        f.L________(entity().uname, "Dto.copyToEntity(dto, ", entity().lname, ");");
-        f.L________("return ", entity().uname, "Dto.toDto(", entity().lname, ");");
+        f.L________(entity().lname, "Mapper.copyToEntity(dto, ", entity().lname, ");");
+        f.L________("return ", entity().lname, "Mapper.toDto(", entity().lname, ");");
         f.L____("}");
 
 

@@ -24,7 +24,7 @@ public class RepoFilterInjection extends ActionRepoInjection {
         if (refFieldList.size() > 0) {
             f.L____("@Override");
             f.L____("@EntityGraph(attributePaths = { \"");
-            f.__(refFieldList.stream().map(field -> field.lname).collect(Collectors.joining("\",\"")));
+            f.__(refFieldList.stream().map(field -> field.lname).collect(Collectors.joining("\", \"")));
             f.__("\" })");
         }
         f.L____("Page<", entity().uname, "> findAll(");

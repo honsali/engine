@@ -53,8 +53,8 @@ public class BeSpecificationPrinter extends Printer {
         f.L____("private ", entity.uname, "Specification() {");
         f.L____("}");
         f.L("");
-        f.L____("public static Specification<Employe> buildSpecification(", entity.uname, "Filtre condition) {");
-        f.L________("return (Root<Employe> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {");
+        f.L____("public static Specification<", entity.uname, "> buildSpecification(", entity.uname, "Filtre condition) {");
+        f.L________("return (Root<", entity.uname, "> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {");
         f.L____________("if (condition == null) {");
         f.L________________("return criteriaBuilder.conjunction();");
         f.L____________("}");

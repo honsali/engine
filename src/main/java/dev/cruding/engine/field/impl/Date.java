@@ -43,8 +43,8 @@ public class Date extends Field {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____("LocalDate debut" + uname + ",");
-        f.L____("LocalDate fin" + uname);
+        f.L________("LocalDate debut" + uname + ",");
+        f.L________("LocalDate fin" + uname);
     }
 
 
