@@ -12,9 +12,9 @@ public class Date extends Field {
         lname(lname).jtype("LocalDate").jstype("string").stype("date");
     }
 
-    public void addJavaImport(JavaFlow flow) {
-        super.addJavaImport(flow);
-        flow.addJavaImport("java.time.LocalDate");
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        super.addJavaImport(f, addGlobal);
+        f.addJavaImport("java.time.LocalDate");
     }
 
     public void addDtoImport(JavaFlow flow) {
@@ -43,8 +43,8 @@ public class Date extends Field {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____("private LocalDate debut" + uname + ";");
-        f.L____("private LocalDate fin" + uname + ";");
+        f.L____("LocalDate debut" + uname + ",");
+        f.L____("LocalDate fin" + uname);
     }
 
 
@@ -69,14 +69,7 @@ public class Date extends Field {
 
 
     public void addSpecification(JavaFlow f) {
-        f.L("");
-        f.L____________("if (condition.getDebut" + uname + "() != null) {");
-        f.L________________("predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(\"" + lname + "\"), condition.getDebut" + uname + "()));");
-        f.L____________("}");
-        f.L("");
-        f.L____________("if (condition.getFin" + uname + "() != null) {");
-        f.L________________("predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(\"" + lname + "\"), condition.getFin" + uname + "()));");
-        f.L____________("}");
+        f.L____________("addDateRange(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition.debut" + uname + "(), condition.fin" + uname + "());");
     }
 
     protected Field initCopy() {

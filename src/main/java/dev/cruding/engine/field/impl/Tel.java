@@ -8,6 +8,7 @@ public class Tel extends Field {
     public Tel(String lname) {
         super(true);
         lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
+        isText = true;
     }
 
     public String ui(String element) {

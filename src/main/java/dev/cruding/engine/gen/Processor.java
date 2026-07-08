@@ -11,6 +11,7 @@ import dev.cruding.engine.printer.impl.entity.BeFilterPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqConstraintPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqDataPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
+import dev.cruding.engine.printer.impl.entity.BeMapperPrinter;
 import dev.cruding.engine.printer.impl.entity.BeRepositoryPrinter;
 import dev.cruding.engine.printer.impl.entity.BeResourcePrinter;
 import dev.cruding.engine.printer.impl.entity.BeSpecificationPrinter;
@@ -35,6 +36,7 @@ public class Processor {
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainPrinter beDomainPrinter = new BeDomainPrinter();
     private final BeDtoPrinter beDtoPrinter = new BeDtoPrinter();
+    private final BeMapperPrinter beMapperPrinter = new BeMapperPrinter();
     private final BeFilterPrinter beFilterPrinter = new BeFilterPrinter();
     private final BeSpecificationPrinter beSpecificationPrinter = new BeSpecificationPrinter();
     private final BeRepositoryPrinter beRepositoryPrinter = new BeRepositoryPrinter();
@@ -99,9 +101,10 @@ public class Processor {
         if (!entity.isReferenceData()) {
             beResourcePrinter.print(entity);
             beBusinessPrinter.print(entity);
-            beRepositoryPrinter.print(entity);
         }
+        beRepositoryPrinter.print(entity);
         beDtoPrinter.print(entity);
+        beMapperPrinter.print(entity);
         beFilterPrinter.print(entity);
         beSpecificationPrinter.print(entity);
         beLiqConstraintPrinter.print(entity);

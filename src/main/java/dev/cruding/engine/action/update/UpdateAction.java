@@ -3,6 +3,7 @@ package dev.cruding.engine.action.update;
 import dev.cruding.engine.action.specifique.BasicAction;
 import dev.cruding.engine.action.update.injection.UpdateBusinessInjection;
 import dev.cruding.engine.action.update.injection.UpdateCtrlInjection;
+import dev.cruding.engine.action.update.injection.UpdateRepoInjection;
 import dev.cruding.engine.action.update.injection.UpdateResourceInjection;
 import dev.cruding.engine.action.update.injection.UpdateServiceInjection;
 import dev.cruding.engine.element.Element;
@@ -22,5 +23,7 @@ public class UpdateAction extends BasicAction {
         businessActionInjection = new UpdateBusinessInjection();
         serviceActionInjection = new UpdateServiceInjection();
         ctrlActionInjection = new UpdateCtrlInjection();
+        repoActionInjection = new UpdateRepoInjection();
+
     }
 }

@@ -20,15 +20,17 @@ public class RefField<T extends Entity> extends Field {
     public String jcDbName;
     public String ijcDbName;
 
-    public RefField(Class<T> type, boolean many, String lname) {
+    public RefField(Class<T> type, boolean many, boolean father, String lname) {
         super(false);
         this.type = type;
         isRefMany = many;
+        isFather = father;
+        isRef = !father;
         lname(lname).jtype(type.getSimpleName());
     }
 
-    public RefField(Class<T> type, boolean many) {
-        this(type, many, StringUtils.uncapitalize(type.getSimpleName()));
+    public RefField(Class<T> type, boolean many, boolean father) {
+        this(type, many, father, StringUtils.uncapitalize(type.getSimpleName()));
     }
 
     public RefField<?> lname(String lname) {
@@ -134,7 +136,7 @@ public class RefField<T extends Entity> extends Field {
     }
 
     protected RefField<T> initCopy() {
-        return new RefField<T>(type, isRefMany);
+        return new RefField<T>(type, isRefMany, isFather);
     }
 
     protected RefField<T> makeCopy() {

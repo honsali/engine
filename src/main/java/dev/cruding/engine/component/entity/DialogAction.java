@@ -19,7 +19,10 @@ public class DialogAction extends Component {
         super(element, entity);
         form = new Form(element, entity, fieldList);
         componentList = new Component[] {form};
+    }
 
+    public DialogAction(Element element, Entity entity, Component... componentList) {
+        super(element, entity, componentList);
     }
 
     public DialogAction action(Action action) {

@@ -57,7 +57,6 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.ActionColumn;
-import dev.cruding.engine.field.impl.Code;
 import dev.cruding.engine.field.impl.Custom;
 import dev.cruding.engine.field.impl.DateRangeBegin;
 import dev.cruding.engine.field.impl.DateRangeEnd;
@@ -428,9 +427,7 @@ public abstract class ElementComposer {
         return new Tag(f);
     }
 
-    public Field code(Field f) {
-        return new Code(f);
-    }
+
 
     public Field custom(Field f) {
         return new Custom(f);

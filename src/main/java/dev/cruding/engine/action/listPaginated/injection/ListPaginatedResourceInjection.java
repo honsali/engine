@@ -6,7 +6,6 @@ import dev.cruding.engine.injection.ActionResourceInjection;
 public class ListPaginatedResourceInjection extends ActionResourceInjection {
 
     public void addResourceImport(JavaFlow f) {
-        f.addJavaImport("org.springdoc.api.annotations.ParameterObject");
         f.addJavaImport("org.springframework.data.domain.Page");
         f.addJavaImport("org.springframework.data.domain.Pageable");
     }
@@ -24,7 +23,7 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
         if (byFatherId() && entity().haveFather) {
             f.__("@PathVariable Long id", entity().ufather, ", ");
         }
-        f.__("@ParameterObject Pageable pageable) {");
+        f.__("Pageable pageable) {");
         f.L________("return ", entity().lname, "Repository.findAllBy");
 
         if (byFatherId() && entity().haveFather) {

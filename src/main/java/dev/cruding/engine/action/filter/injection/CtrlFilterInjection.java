@@ -13,8 +13,8 @@ public class CtrlFilterInjection extends ActionCtrlInjection {
     }
 
     public void addCtrlImplementationCore(CtrlFlow f) {
-        f.L____("await requete.form.validateFields();");
-        f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
+        f.L____("await requete.form?.validateFields();");
+        f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
         if (paginated()) {
             f.L____("resultat.listePaginee", entity().uname, " = await Service", entity().uname, ".", lnameWithoutEntity(), "(dataForm);");
         } else {

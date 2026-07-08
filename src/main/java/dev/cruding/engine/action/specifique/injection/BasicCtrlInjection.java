@@ -21,8 +21,8 @@ public class BasicCtrlInjection extends ActionCtrlInjection {
             f.L____("const ", entity().lname, " = mdl", uc(), ".", entity().lname, ";");
         }
         if (byForm()) {
-            f.L____("await requete.form.validateFields();");
-            f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
+            f.L____("await requete.form?.validateFields();");
+            f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
         }
 
         f.L____("");

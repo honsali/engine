@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.action.filter.FilterAction;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.gen.Context;
@@ -15,9 +16,18 @@ public class BeRepositoryPrinter extends Printer {
             f.addJavaImport("java.util.List");
         }
 
+        boolean estFiltre = false;
+        for (Action action : Context.getInstance().actionEntity(entity)) {
+            if (estFiltre = action instanceof FilterAction) {
+                break;
+            }
+        }
+
+
         f.addJavaImport("org.springframework.data.jpa.repository.JpaRepository");
-        f.addJavaImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor");
-        f.addJavaImport("org.springframework.stereotype.Repository");
+        if (estFiltre) {
+            f.addJavaImport("org.springframework.data.jpa.repository.JpaSpecificationExecutor");
+        }
 
         for (Action action : Context.getInstance().actionEntity(entity)) {
             action.repoActionInjection.addRepositoryImport(f);
@@ -31,8 +41,11 @@ public class BeRepositoryPrinter extends Printer {
         f.flushJavaImportBlock();
 
         f.L("");
-        f.L("@Repository");
-        f.L("public interface ", entity.uname, "Repository extends JpaRepository<", entity.uname, ", ", entity.id_.jtype, ">, JpaSpecificationExecutor<", entity.uname, "> {");
+        f.L("public interface ", entity.uname, "Repository extends JpaRepository<", entity.uname, ", ", entity.id_.jtype, ">");
+        if (estFiltre) {
+            f.__(", JpaSpecificationExecutor<", entity.uname, ">");
+        }
+        f.__(" {");
 
         for (Action action : Context.getInstance().actionEntity(entity)) {
             action.repoActionInjection.addRepositoryDeclaration(f);

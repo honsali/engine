@@ -34,6 +34,8 @@ public class Field {
     public boolean isBasic;
     public boolean isFather;
     public boolean isId;
+    public boolean isUnique;
+    public boolean isText;
 
     public boolean cloned = false;
 
@@ -143,6 +145,21 @@ public class Field {
     public Field isId() {
         Field p = makeCopy();
         p.isId = true;
+        p.required = true;
+        p.isUnique = true;
+        return p;
+    }
+
+
+    public Field isUnique() {
+        Field p = makeCopy();
+        p.isUnique = true;
+        return p;
+    }
+
+    public Field iText() {
+        Field p = makeCopy();
+        p.isText = true;
         return p;
     }
 
@@ -281,15 +298,20 @@ public class Field {
     }
 
     public void addFilterImport(JavaFlow f) {
-        addJavaImport(f);
+        addJavaImport(f, false);
     }
 
-    public void addJavaImport(JavaFlow f) {
-        if (required) {
-            f.addJavaImport("jakarta.validation.constraints.NotNull");
-        }
-        if (tranzient) {
-            f.addJavaImport("jakarta.persistence.Transient");
+
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        if (addGlobal) {
+            if (required && isText) {
+                f.addJavaImport("jakarta.validation.constraints.NotBlank");
+            } else if (required) {
+                f.addJavaImport("jakarta.validation.constraints.NotNull");
+            }
+            if (tranzient) {
+                f.addJavaImport("jakarta.persistence.Transient");
+            }
         }
     }
 
@@ -306,12 +328,14 @@ public class Field {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____("private " + jtype + " " + lname + ";");
+        f.L____(jtype + " " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
-        if (required) {
+        if (required && isText) {
+            f.L____("@NotBlank");
+        } else if (required) {
             f.L____("@NotNull");
         }
         if (tranzient) {
@@ -320,6 +344,9 @@ public class Field {
             f.L____("@Column(name = \"" + dbName + "\"");
             if (required) {
                 f.__(", nullable = false");
+            }
+            if (isUnique) {
+                f.__(", unique = true");
             }
             f.__(")");
         }
@@ -331,10 +358,7 @@ public class Field {
     }
 
     public void addSpecification(JavaFlow f) {
-        f.L("");
-        f.L____________("if (condition.get" + uname + "() != null && !condition.get" + uname + "().trim().isEmpty()) {");
-        f.L________________("predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(\"" + lname + "\")), \"%\" + condition.get" + uname + "().toLowerCase() + \"%\"));");
-        f.L____________("}");
+        f.L________________("addLike(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition." + lname + "());");
     }
 
     public void addGetterSetter(JavaFlow f) {
@@ -351,7 +375,11 @@ public class Field {
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"" + stype + "\">");
-        f.L________________("<constraints nullable=\"" + !required + "\" />");
+        f.L________________("<constraints nullable=\"" + !required + "\"");
+        if (isUnique) {
+            f.__("unique=\"true\" uniqueConstraintName=\"ux_", containingEntityDbname, "_", dbName, "\" ");
+        }
+        f.__("/>");
         f.L____________("</column>");
     }
 
@@ -403,6 +431,8 @@ public class Field {
         to.isBasic = from.isBasic;
         to.isFather = from.isFather;
         to.isId = from.isId;
+        to.isUnique = from.isUnique;
+        to.isText = from.isText;
 
         to.label = from.label;
         to.width = from.width;

@@ -9,7 +9,6 @@ public class ListBusinessInjection extends ActionBusinessInjection {
 
     public void addBusinessImport(JavaFlow f) {
         f.addJavaImport("java.util.List");
-        f.addJavaImport("java.util.stream.Collectors");
         if (entity().haveFather) {
             Entity fe = Context.getInstance().getEntity(entity().father.jtype);
             f.addJavaImport("app.domain." + fe.pkg + "." + fe.lname + "." + fe.uname + "Repository");
@@ -27,8 +26,8 @@ public class ListBusinessInjection extends ActionBusinessInjection {
         f.__(") {");
 
         if (byFatherId() && entity().haveFather) {
-            f.L________("if (!employeRepository.existsById(id", entity().ufather, ")) {");
-            f.L____________("throw new IllegalArgumentException(\"", entity().ufather, " not found\");");
+            f.L________("if (!", entity().lfather, "Repository.existsById(id", entity().ufather, ")) {");
+            f.L____________("throw new NoSuchElementException(\"", entity().ufather, " not found\");");
             f.L________("}");
         }
         f.L________("return ", entity().lname, "Repository.findAllBy");
@@ -42,7 +41,7 @@ public class ListBusinessInjection extends ActionBusinessInjection {
         if (byFatherId() && entity().haveFather) {
             f.__("id", entity().ufather);
         }
-        f.__(").stream().map(", entity().uname, "Dto::toDto).collect(Collectors.toList());");
+        f.__(").stream().map(", entity().uname, "Dto::toDto).toList();");
         f.L____("}");
     }
 }

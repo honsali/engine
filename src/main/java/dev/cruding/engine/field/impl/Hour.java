@@ -11,9 +11,9 @@ public class Hour extends Field {
         lname(lname).jtype("LocalTime").jstype("string").stype("date");
     }
 
-    public void addJavaImport(JavaFlow flow) {
-        super.addJavaImport(flow);
-        flow.addJavaImport("java.time.LocalTime");
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        super.addJavaImport(f, addGlobal);
+        f.addJavaImport("java.time.LocalTime");
     }
 
     public void addDtoImport(JavaFlow flow) {

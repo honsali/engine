@@ -7,9 +7,9 @@ import dev.cruding.engine.field.Field;
 public class Employe extends Entity {
 
     public final Field matricule = Text("matricule").isId();
-    public final Field nom = Text("nom");
-    public final Field prenom = Text("prenom");
-    public final Field dateNaissance = Date("dateNaissance").filtrable();
+    public final Field nom = Text("nom").required();
+    public final Field prenom = Text("prenom").required();
+    public final Field dateNaissance = Date("dateNaissance").required().filtrable();
     public final Field sexe = Ref(Sexe.class);
     public final Field situationFamiliale = Ref(SituationFamiliale.class);
     public final Field dateEntree = Date("dateEntree").filtrable();

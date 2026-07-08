@@ -71,6 +71,7 @@ public class Entity extends FieldFactory {
                             if (this.father == null) {
                                 fieldList.add(field);
                                 this.father = (Father<?>) field;
+                                this.father.lname(f.getName());
                             }
                         } else if (field instanceof Setting) {
                             this.id_ = (Setting) field;

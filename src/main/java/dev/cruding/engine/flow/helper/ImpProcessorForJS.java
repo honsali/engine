@@ -39,7 +39,7 @@ public class ImpProcessorForJS {
             for (int k = 0; k < ss.length; k++) {
                 String element = ss[k];
                 if (isType(element)) {
-                    ss[k] = "type " + element;
+                    ss[k] = element;
                 }
             }
             importText = StringUtils.join(ss, ' ');
@@ -122,6 +122,7 @@ public class ImpProcessorForJS {
                                 || (element.startsWith("Res") && Character.isUpperCase(element.charAt(3)))//
                                 || (element.startsWith("FormInstance"))//
                                 || (element.startsWith("PageDefinition"))//
+                                || (element.startsWith("ModuleDefinition"))//
                                 || (element.startsWith("EtatMdl"))//
                         );
         return test;

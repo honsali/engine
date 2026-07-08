@@ -66,6 +66,9 @@ public class Context {
         if (StringUtils.isBlank(uname)) {
             throw new ContextException("Entity name cannot be null or empty");
         }
+        if (uname.equals("Father")) {
+            System.out.println("ok");
+        }
         Entity entity = entityMap.get(uname);
         if (entity == null) {
             throw new ContextException(String.format("Entity '%s' not found", uname));

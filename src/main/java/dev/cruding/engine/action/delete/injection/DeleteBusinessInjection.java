@@ -9,10 +9,8 @@ public class DeleteBusinessInjection extends BasicBusinessInjection {
     public void addBusinessDeclaration(JavaFlow f) {
         f.L("");
         f.L____("public void ", lcoreName(), "(Long id) {");
-        f.L________("if (!", entity().lname, "Repository.existsById(id)) {");
-        f.L____________("throw new IllegalArgumentException(\"", entity().uname, " not found\");");
-        f.L________("}");
-        f.L________(entity().lname, "Repository.deleteById(id);");
+        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id).orElseThrow(() -> new NoSuchElementException(\"", entity().uname, " not found\"));");
+        f.L________(entity().lname, "Repository.delete(", entity().lname, ");");
         f.L____("}");
     }
 

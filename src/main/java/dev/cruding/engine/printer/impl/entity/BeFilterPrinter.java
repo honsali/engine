@@ -41,16 +41,16 @@ public class BeFilterPrinter extends Printer {
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
-        f.L("public class ", entity.uname, "Filtre {");
-        f.L("");
-        for (Field field : notManyList) {
-            field.addFilterJavaDeclaration(f);
-        }
-        f.L("");
+        f.L("public record ", entity.uname, "Filtre (");
+        for (int i = 0; i < notManyList.size(); i++) {
+            notManyList.get(i).addFilterJavaDeclaration(f);
+            if (i < notManyList.size() - 1) {
+                f.__(",");
+            }
 
-        for (Field field : notManyList) {
-            field.addFilterGetterSetter(f);
         }
+        f.__("){");
+
         f.L("}");
 
         /* *********************************************************************** */

@@ -68,7 +68,7 @@ public class Setting extends Field {
         return DbNameMapper.getInstance().getLegacyDbName(entityUname, "id", "column", "id");
     }
 
-    public void addJavaImport(JavaFlow f) {
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
         f.addJavaImport("jakarta.persistence.Id");
         if (idSequence) {
             f.addJavaImport("jakarta.persistence.GeneratedValue");
@@ -84,7 +84,7 @@ public class Setting extends Field {
         f.L____("@Id");
         if (idSequence) {
             f.L____("@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = \"", seqName, "\")");
-            f.L____("@SequenceGenerator(name = \"", seqName, "\", allocationSize = 1)");
+            f.L____("@SequenceGenerator(name = \"", seqName, "\", sequenceName = \"", seqName, "\", allocationSize = 1)");
             f.L____("@Column(name = \"", newDbName, "\")");
             f.L____("private ", jtype, " id;");
         } else {
@@ -109,11 +109,6 @@ public class Setting extends Field {
 
         f.L____("public ", jtype, " getId() {");
         f.L________("return this.id;");
-        f.L____("}");
-        f.L("");
-        f.L____("public ", entityUname, " id(", jtype, " id) {");
-        f.L________("this.setId(id);");
-        f.L________("return this;");
         f.L____("}");
         f.L("");
         f.L____("public void setId(", jtype, " id) {");

@@ -8,8 +8,7 @@ import dev.cruding.engine.gen.Context;
 public class Father<T extends Entity> extends RefField<T> {
 
     public Father(Class<T> t) {
-        super(t, false);
-        isFather = true;
+        super(t, false, true);
     }
 
     public void addJsDeclaration(JsFlow f) {
@@ -27,10 +26,11 @@ public class Father<T extends Entity> extends RefField<T> {
         f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname + "Dto");
     }
 
-    public void addJavaImport(JavaFlow f) {
-        super.addJavaImport(f);
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        super.addJavaImport(f, addGlobal);
         Entity re = Context.getInstance().getEntity(jtype);
         f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);
+        f.addJavaImport("jakarta.validation.constraints.NotNull");
         f.addJavaImport("jakarta.persistence.ManyToOne");
         // f.addJavaImport("jakarta.persistence.JoinColumn");
         f.addJavaImport("jakarta.persistence.FetchType");
@@ -38,13 +38,14 @@ public class Father<T extends Entity> extends RefField<T> {
 
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____("private " + uname + "Dto " + lname + ";");
+        f.L____(uname + "Dto " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@ManyToOne(fetch = FetchType.LAZY)");
-        // f.L____("@JoinColumn(name = \"", jcDbName, "\")");
+        f.L____("@NotNull");
+        f.L____("@ManyToOne(fetch = FetchType.LAZY, optional = false)");
+        f.L____("@JoinColumn(name = \"", jcDbName, "\", nullable = false)");
         f.L____("private " + jtype + " " + lname + ";");
 
     }
@@ -73,10 +74,7 @@ public class Father<T extends Entity> extends RefField<T> {
     }
 
     public void addSpecification(JavaFlow f) {
-        f.L("");
-        f.L____________("if (condition.get" + uname + "() != null && condition.get" + uname + "().id() != null) {");
-        f.L________________("predicates.add(criteriaBuilder.equal(root.get(\"" + lname + "\").get(\"id\"), condition.get" + uname + "().id()));");
-        f.L____________("}");
+        f.L________________("addEqual(predicates, criteriaBuilder, root.get(\"" + lname + "\").get(\"id\"), condition." + lname + "() == null ? null : condition." + lname + "().id());");
     }
 
     protected Father<T> initCopy() {

@@ -37,6 +37,7 @@ public class BeSpecificationPrinter extends Printer {
         f.addJavaImport("jakarta.persistence.criteria.CriteriaQuery");
         f.addJavaImport("jakarta.persistence.criteria.Predicate");
         f.addJavaImport("jakarta.persistence.criteria.Root");
+        f.addJavaImport("app.core.BaseSpecification");
 
         List<Field> notManyList = entity.fieldList.stream().filter(IS_BASIC_REF_OR_PERE).toList();
 
@@ -47,18 +48,26 @@ public class BeSpecificationPrinter extends Printer {
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
-        f.L("public class ", entity.uname, "Specification {");
+        f.L("public final class ", entity.uname, "Specification extends BaseSpecification {");
+        f.L("");
+        f.L____("private ", entity.uname, "Specification() {");
+        f.L____("}");
         f.L("");
         f.L____("public static Specification<Employe> buildSpecification(", entity.uname, "Filtre condition) {");
         f.L________("return (Root<Employe> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) -> {");
+        f.L____________("if (condition == null) {");
+        f.L________________("return criteriaBuilder.conjunction();");
+        f.L____________("}");
+        f.L("");
         f.L____________("List<Predicate> predicates = new ArrayList<>();");
+        f.L("");
 
 
         for (Field champ : notManyList) {
             champ.addSpecification(f);
         }
         f.L("");
-        f.L____________("return criteriaBuilder.and(predicates.toArray(new Predicate[0]));");
+        f.L____________("return criteriaBuilder.and(predicates.toArray(Predicate[]::new));");
         f.L________("};");
         f.L____("}");
         f.L("}");

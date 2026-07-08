@@ -10,13 +10,11 @@ import dev.cruding.engine.gen.Context;
 public class Ref<T extends Entity> extends RefField<T> {
 
     public Ref(Class<T> t) {
-        super(t, false);
-        isRef = true;
+        super(t, false, false);
     }
 
     public Ref(Class<T> t, String lname) {
-        super(t, false, lname);
-        isRef = true;
+        super(t, false, false, lname);
     }
 
     public void addJsDeclaration(JsFlow f) {
@@ -36,8 +34,8 @@ public class Ref<T extends Entity> extends RefField<T> {
         }
     }
 
-    public void addJavaImport(JavaFlow f) {
-        super.addJavaImport(f);
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        super.addJavaImport(f, addGlobal);
         if (!jtype.equals(containingEntity)) {
             Entity re = Context.getInstance().getEntity(jtype);
 
@@ -45,13 +43,13 @@ public class Ref<T extends Entity> extends RefField<T> {
         }
         if (!tranzient) {
             f.addJavaImport("jakarta.persistence.ManyToOne");
-            // f.addJavaImport("jakarta.persistence.JoinColumn");
+            f.addJavaImport("jakarta.persistence.JoinColumn");
             f.addJavaImport("jakarta.persistence.FetchType");
         }
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L____("private " + uname + "Dto " + lname + ";");
+        f.L____(uname + "Dto " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
@@ -60,17 +58,14 @@ public class Ref<T extends Entity> extends RefField<T> {
             f.L____("@Transient");
         } else {
             f.L____("@ManyToOne(fetch = FetchType.LAZY)");
-            // f.L____("@JoinColumn(name = \"", jcDbName, "\")");
+            f.L____("@JoinColumn(name = \"", jcDbName, "\")");
         }
         f.L____("private " + jtype + " " + lname + ";");
 
     }
 
     public void addSpecification(JavaFlow f) {
-        f.L("");
-        f.L____________("if (condition.get" + uname + "() != null && condition.get" + uname + "().id() != null) {");
-        f.L________________("predicates.add(criteriaBuilder.equal(root.get(\"" + lname + "\").get(\"id\"), condition.get" + uname + "().id()));");
-        f.L____________("}");
+        f.L________________("addEqual(predicates, criteriaBuilder, root.get(\"" + lname + "\").get(\"id\"), condition." + lname + "() == null ? null : condition." + lname + "().id());");
     }
 
 

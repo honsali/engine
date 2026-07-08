@@ -19,8 +19,8 @@ public class UpdateCtrlInjection extends ActionCtrlInjection {
             f.L____("const { mdl", uc(), " } = thunkAPI.getState() as any;");
             f.L____("const ", entity().lname, " = mdl", uc(), ".", entity().lname, ";");
         }
-        f.L____("await requete.form.validateFields();");
-        f.L____("const dataForm = util.removeNonSerialisable(requete.form.getFieldsValue());");
+        f.L____("await requete.form?.validateFields();");
+        f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
         f.L____("await Service", entity().uname, ".", lnameWithoutEntity(), "(");
         if (byFatherId()) {
             f.__("requete.id" + entity().ufather, ", ");

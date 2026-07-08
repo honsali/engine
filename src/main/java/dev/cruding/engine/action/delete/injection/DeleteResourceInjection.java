@@ -14,7 +14,7 @@ public class DeleteResourceInjection extends BasicResourceInjection {
         f.L________("try {");
         f.L____________(entity().lname, "Service.supprimer(id);");
         f.L____________("return ResponseEntity.noContent().build();");
-        f.L________("} catch (IllegalArgumentException e) {");
+        f.L________("} catch (NoSuchElementException e) {");
         f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());");
         f.L________("}");
         f.L____("}");

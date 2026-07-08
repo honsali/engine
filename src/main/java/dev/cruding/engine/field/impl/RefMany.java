@@ -8,16 +8,15 @@ import dev.cruding.engine.gen.Context;
 public class RefMany<T extends Entity> extends RefField<T> {
 
     public RefMany(Class<T> t) {
-        super(t, true);
+        super(t, true, false);
     }
 
     public RefMany(Class<T> t, String lname) {
-        super(t, true, lname);
-        isRef = true;
+        super(t, true, false, lname);
     }
 
-    public void addJavaImport(JavaFlow f) {
-        super.addJavaImport(f);
+    public void addJavaImport(JavaFlow f, boolean addGlobal) {
+        super.addJavaImport(f, addGlobal);
         if (!jtype.equals(containingEntity)) {
             Entity re = Context.getInstance().getEntity(jtype);
             f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);

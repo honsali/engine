@@ -7,6 +7,11 @@ public class Text extends Field {
     public Text(String lname) {
         super(true);
         lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
+        isText = true;
     }
 
+
+    protected Field initCopy() {
+        return new Text(lname);
+    }
 }

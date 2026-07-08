@@ -6,7 +6,6 @@ import dev.cruding.engine.injection.ActionResourceInjection;
 public class FindResourceInjection extends ActionResourceInjection {
 
     public void addResourceImport(JavaFlow f) {
-        f.addJavaImport("org.springdoc.api.annotations.ParameterObject");
         f.addJavaImport("org.springframework.data.domain.Page");
         f.addJavaImport("org.springframework.data.domain.Pageable");
         f.addJavaImport("org.springframework.web.bind.annotation.PostMapping");
@@ -16,7 +15,7 @@ public class FindResourceInjection extends ActionResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@PostMapping(\"/", lnameWithoutEntity(), "\")");
-        f.L____("public Page<", entity().uname, "> ", lnameWithoutEntity(), "(@RequestBody ", entity().uname, " ", entity().lname, ", @ParameterObject Pageable pageable) {");
+        f.L____("public Page<", entity().uname, "> ", lnameWithoutEntity(), "(@RequestBody ", entity().uname, " ", entity().lname, ", Pageable pageable) {");
         f.L________("return ", entity().lname, "Repository.", lnameWithoutEntity(), "(", entity().lname, ", pageable);");
         f.L____("}");
     }
