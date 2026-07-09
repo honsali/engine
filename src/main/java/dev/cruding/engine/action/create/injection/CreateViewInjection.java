@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.LabelMapper;
@@ -82,12 +83,12 @@ public class CreateViewInjection extends ActionViewInjection {
                 String messageSuccess = LabelMapper.getInstance().messageSuccess(lnameWithoutEntity(), e);
 
                 String key = "Action" + page().module.unameLast + "." + "Uc" + uc() + "." + actionKey();
-                f.L____("[", key, "]", ": '", nameAction, "',");
+                f.L____("[", key, "]", ": ", TsLiteral.string(nameAction), ",");
 
                 if (confirm()) {
-                    f.L____("[titreConfirmation(", key, ")]: '", titleConfirmation, "',");
-                    f.L____("[enteteConfirmation(", key, ")]: '", enteteConfirmation, "',");
-                    f.L____("[messageSuccess(", key, ")]: '", messageSuccess, "',");
+                    f.L____("[titreConfirmation(", key, ")]: ", TsLiteral.string(titleConfirmation), ",");
+                    f.L____("[enteteConfirmation(", key, ")]: ", TsLiteral.string(enteteConfirmation), ",");
+                    f.L____("[messageSuccess(", key, ")]: ", TsLiteral.string(messageSuccess), ",");
                 }
             }
         }

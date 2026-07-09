@@ -174,8 +174,7 @@ public class Context {
             throw new ContextException("Label value cannot be null or empty");
         }
 
-        String newKey = key.indexOf(".") > 0 ? "'" + key + "'" : key;
-        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(newKey, label);
+        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(key, label);
     }
 
     public HashMap<String, String> getLabelMap(String module) {

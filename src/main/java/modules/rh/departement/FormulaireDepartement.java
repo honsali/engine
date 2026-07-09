@@ -1,16 +1,15 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import modules.rh.RhElementComposer;
+import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Departement;
+import modules.rh.RhProject;
 
-public class FormulaireDepartement extends RhElementComposer {
+public class FormulaireDepartement extends ElementComposer {
 
     private boolean enModification;
 
     public FormulaireDepartement(boolean enModification) {
-        super();
-        isElement();
         this.enModification = enModification;
     }
 
@@ -27,10 +26,10 @@ public class FormulaireDepartement extends RhElementComposer {
                         enModification ? hidden(e.id_) : null //
                 ).columnNumber(1), //
                 actionBlock(//
-                        enModification ? element(updateAction(e).onSuccess(goToPage(e, pageConsulterDepartement))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, pageConsulterDepartement).byField(e.id_))).byForm(), //
+                        enModification ? element(updateAction(e).onSuccess(goToPage(e, RhProject.pageConsulterDepartement))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, RhProject.pageConsulterDepartement).byField(e.id_))).byForm(), //
 
-                        enModification ? button(backToDetailAction(e, pageConsulterDepartement)) : button(backToListAction(e, pageListerDepartement))//
+                        enModification ? button(backToDetailAction(e, RhProject.pageConsulterDepartement)) : button(backToListAction(e, RhProject.pageListerDepartement))//
                 )//
         ).width("600px").margin("20px").background("blanc");//
     }

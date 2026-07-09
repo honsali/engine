@@ -1,16 +1,12 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import modules.rh.RhElementComposer;
+import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Employe;
 
-public class EtatEmploye extends RhElementComposer {
+public class EtatEmploye extends ElementComposer {
 
 
-        public EtatEmploye() {
-            super();
-            isElement();
-        }
 
         public Component rootComponent() {
                 Employe e = entity(Employe.class);

@@ -47,14 +47,11 @@ public class Page {
 
     public boolean pathById = false;
 
-    public ElementComposer elementComposer;
+    public ViewComposer<?> elementComposer;
 
-    public Page(Module module, Class<? extends Entity> entityType, ElementComposer elementComposer) {
+    public Page(Module module, ViewComposer<?> elementComposer) {
         if (module == null) {
             throw new ContextException("Page module cannot be null");
-        }
-        if (entityType == null) {
-            throw new ContextException("Page entity type cannot be null");
         }
         if (elementComposer == null) {
             throw new ContextException("Page element composer cannot be null");
@@ -62,6 +59,7 @@ public class Page {
         this.module = module;
         this.elementComposer = elementComposer;
 
+        Class<? extends Entity> entityType = elementComposer.entityType();
         entityUname = entityType.getSimpleName();
         entityLname = StringUtils.uncapitalize(entityUname);
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.gen.Module;
@@ -27,8 +28,8 @@ public class FeI18nPrinter extends Printer {
         if (!module.isParent) {
             ArrayList<Page> pageList = sortedPageList(module);
             for (Page page : pageList) {
-                f.L____("Page", page.uc, ": '", LabelMapper.getInstance().getTitle(page), "',");
-                f.L____("'Uc", page.uc, ".titre': '", LabelMapper.getInstance().getTitle(page), "',");
+                f.L____("Page", page.uc, ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
+                f.L____(TsLiteral.objectKey("Uc" + page.uc + ".titre"), ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
 
                 for (Action action : Context.getInstance().actionPage(page)) {
                     if (!action.noUi() && !action.flow()) {
@@ -43,11 +44,11 @@ public class FeI18nPrinter extends Printer {
                 List<String> keySet = new ArrayList<>(labelMap.keySet());
                 Collections.sort(keySet);
                 for (String key : keySet) {
-                    f.L____("", key, ": '", labelMap.get(key), "',");
+                    f.L____(TsLiteral.objectKey(key), ": ", TsLiteral.string(labelMap.get(key)), ",");
                 }
             }
         } else {
-            f.L____("Page", module.unameLast, ": '", LabelMapper.getInstance().uLabel(module.unameLast), "',");
+            f.L____("Page", module.unameLast, ": ", TsLiteral.string(LabelMapper.getInstance().uLabel(module.unameLast)), ",");
         }
         f.L("};");
         /* *********************************************************************** */

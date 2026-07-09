@@ -1,16 +1,15 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import modules.rh.RhElementComposer;
+import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Conge;
+import modules.rh.RhProject;
 
-public class FormulaireConge extends RhElementComposer {
+public class FormulaireConge extends ElementComposer {
 
     private boolean enModification;
 
     public FormulaireConge(boolean enModification) {
-        super();
-        isElement();
         this.enModification = enModification;
     }
 
@@ -30,12 +29,12 @@ public class FormulaireConge extends RhElementComposer {
                 ).columnNumber(1), //
                 actionBlock(//
                         enModification ? //
-                                element(updateAction(e).onSuccess(goToPage(e, pageConsulterConge))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
+                                element(updateAction(e).onSuccess(goToPage(e, RhProject.pageConsulterConge))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, RhProject.pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
 
                         enModification ? //
-                                button(backToDetailAction(e, pageConsulterConge)) : //
-                                button(backToListAction(e, pageConsulterEmploye))//
+                                button(backToDetailAction(e, RhProject.pageConsulterConge)) : //
+                                button(backToListAction(e, RhProject.pageConsulterEmploye))//
                 )//
         ).width("600px").margin("20px").background("blanc");//
     }

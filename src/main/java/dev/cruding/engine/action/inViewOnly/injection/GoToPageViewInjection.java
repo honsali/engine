@@ -3,6 +3,7 @@ package dev.cruding.engine.action.inViewOnly.injection;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.gen.Page;
@@ -55,7 +56,7 @@ public class GoToPageViewInjection extends ActionViewInjection {
             label = uAction + " " + entityLabel;
         }
 
-        f.L____("[Action", page().module.unameLast, ".", "Uc", uc(), ".", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(key), "_").toUpperCase(), "]", ": '", label, "',");
+        f.L____("[Action", page().module.unameLast, ".", "Uc", uc(), ".", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(key), "_").toUpperCase(), "]", ": ", TsLiteral.string(label), ",");
 
     }
 }

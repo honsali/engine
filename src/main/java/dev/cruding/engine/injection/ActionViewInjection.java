@@ -3,6 +3,7 @@ package dev.cruding.engine.injection;
 import dev.cruding.engine.action.ActionWrapper;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.LabelMapper;
@@ -29,12 +30,12 @@ public class ActionViewInjection extends ActionWrapper {
 
 
                 String key = "Action" + page().module.unameLast + "." + "Uc" + uc() + "." + actionKey();
-                f.L____("[", key, "]", ": '", nameAction, "',");
+                f.L____("[", key, "]", ": ", TsLiteral.string(nameAction), ",");
 
                 if (confirm()) {
-                    f.L____("[titreConfirmation(", key, ")]: '", titleConfirmation, "',");
-                    f.L____("[enteteConfirmation(", key, ")]: '", enteteConfirmation, "',");
-                    f.L____("[messageSuccess(", key, ")]: '", messageSuccess, "',");
+                    f.L____("[titreConfirmation(", key, ")]: ", TsLiteral.string(titleConfirmation), ",");
+                    f.L____("[enteteConfirmation(", key, ")]: ", TsLiteral.string(enteteConfirmation), ",");
+                    f.L____("[messageSuccess(", key, ")]: ", TsLiteral.string(messageSuccess), ",");
                 }
             }
         }

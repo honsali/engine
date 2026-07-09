@@ -1,9 +1,11 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import modules.rh.RhElementComposer;
+import dev.cruding.engine.gen.ViewComposer;
+import model.rh.Employe;
 
-public class ViewCreerEmploye extends RhElementComposer {
+public class ViewCreerEmploye extends ViewComposer<Employe> {
+
     public Component rootComponent() {
 
         return section( //

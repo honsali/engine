@@ -1,17 +1,11 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import modules.rh.RhElementComposer;
+import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Conge;
+import modules.rh.RhProject;
 
-public class TableauConge extends RhElementComposer {
-
-
-
-    public TableauConge() {
-        super();
-        isElement();
-    }
+public class TableauConge extends ElementComposer {
 
     public Component rootComponent() {
         Conge e = entity(Conge.class);
@@ -21,7 +15,7 @@ public class TableauConge extends RhElementComposer {
                         e.dateDebutConge, //
                         e.dateFinConge, //
                         e.commentaire//
-                ).fillWith(listAll(e).byFatherId()).onRowClick(goToPage(e, pageConsulterConge)) //
+                ).fillWith(listAll(e).byFatherId()).onRowClick(goToPage(e, RhProject.pageConsulterConge)) //
         );
     }
 

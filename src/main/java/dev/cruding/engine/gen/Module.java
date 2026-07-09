@@ -1,7 +1,6 @@
 package dev.cruding.engine.gen;
 
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.entity.Entity;
 
 public class Module {
 
@@ -46,8 +45,8 @@ public class Module {
         return pageList(path_, false);
     }
 
-    public Page addPage(Class<? extends Entity> entityType, ElementComposer elementComposer) {
-        Page page = new Page(this, entityType, elementComposer);
+    public Page addPage(ViewComposer<?> viewComposer) {
+        Page page = new Page(this, viewComposer);
         page.position = lastPosition++;
         Context.getInstance().addPage(page);
         return page;
