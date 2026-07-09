@@ -20,7 +20,8 @@ public class Context {
         return instance;
     }
 
-    private HashMap<String, Entity> entityMap = new HashMap<>();
+    private HashMap<String, Entity> entityMapByName = new HashMap<>();
+    private HashMap<Class<? extends Entity>, Entity> entityMapByClass = new HashMap<>();
     private HashMap<String, Page> pageMap = new HashMap<>();
     private HashMap<String, Module> moduleMap = new HashMap<>();
     private HashMap<String, HashMap<String, String>> labelMap = new HashMap<>();
@@ -48,32 +49,41 @@ public class Context {
     /* ********************************** ENTITIES ********************************** */
     /* ****************************************************************************** */
     public void addEntity(Entity entity) {
-        if (StringUtils.isBlank(entity.uname)) {
-            throw new ContextException("Cannot add Entity with null or empty uname");
+        if (entity == null || StringUtils.isBlank(entity.uname)) {
+            throw new ContextException("Cannot add null Entity or Entity with null or empty uname");
         }
-        entityMap.put(entity.uname, entity);
+        entityMapByName.put(entity.uname, entity);
+        entityMapByClass.put(entity.getClass(), entity);
     }
 
     public void initEntities() {
-        entityMap.values().stream().forEach(e -> e.init());
+        entityMapByName.values().stream().forEach(e -> e.init());
     }
 
     public Collection<Entity> getEntityList() {
-        return entityMap.values();
+        return entityMapByName.values();
     }
 
     public Entity getEntity(String uname) {
         if (StringUtils.isBlank(uname)) {
             throw new ContextException("Entity name cannot be null or empty");
         }
-        if (uname.equals("Father")) {
-            System.out.println("ok");
-        }
-        Entity entity = entityMap.get(uname);
+        Entity entity = entityMapByName.get(uname);
         if (entity == null) {
             throw new ContextException(String.format("Entity '%s' not found", uname));
         }
         return entity;
+    }
+
+    public <T extends Entity> T getEntity(Class<T> entityType) {
+        if (entityType == null) {
+            throw new ContextException("Entity type cannot be null");
+        }
+        Entity entity = entityMapByClass.get(entityType);
+        if (entity == null) {
+            throw new ContextException(String.format("Entity '%s' not found", entityType.getSimpleName()));
+        }
+        return entityType.cast(entity);
     }
 
     /* ****************************************************************************** */
@@ -128,18 +138,6 @@ public class Context {
         return pageMap.values();
     }
 
-    public Page getPage(String name) {
-        if (StringUtils.isBlank(name)) {
-            throw new ContextException("Page name cannot be null or empty");
-        }
-        Page page = pageMap.get(name);
-        if (page == null) {
-            throw new ContextException(String.format("Page '%s' not found", name));
-        }
-        return page;
-    }
-
-
     public List<Page> getPageList(Module module) {
         if (module == null) {
             throw new ContextException("Module cannot be null");
@@ -148,7 +146,7 @@ public class Context {
             throw new ContextException("Module uname cannot be null or empty");
         }
 
-        return pageMap.values().stream().filter(page -> page.actionUname != null && page.module != null && page.module.uname != null && page.module.uname.equals(module.uname)).toList();
+        return pageMap.values().stream().filter(page -> page.module != null && page.module.uname != null && page.module.uname.equals(module.uname)).toList();
     }
 
     public void addLabelForField(String module, Field c) {
@@ -208,20 +206,20 @@ public class Context {
         if (page == null || StringUtils.isBlank(page.name)) {
             throw new ContextException("Page cannot be null and must have a name");
         }
-        return actionList.stream().filter(as -> as.page != null && as.page.name != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> as.page != null && as.page.name != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionElement(Element element) {
         if (element == null) {
             throw new ContextException("Element cannot be null");
         }
-        return actionList.stream().filter(as -> as.element != null && as.element.equals(element)).filter(Objects::nonNull).sorted().toList();
+        return actionList.stream().filter(as -> as.element != null && as.element.equals(element)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionEntity(Entity entity) {
         if (entity == null || StringUtils.isBlank(entity.lname)) {
             throw new ContextException("Entity cannot be null and must have an lname");
         }
-        return actionList.stream().filter(as -> as.entity != null && as.entity.lname != null && as.entity.lname.equals(entity.lname)).filter(Objects::nonNull).distinct().sorted().toList();
+        return actionList.stream().filter(as -> as.entity != null && as.entity.lname != null && as.entity.lname.equals(entity.lname)).filter(Objects::nonNull).distinct().sorted(Action.ORDER_BY_NAME).toList();
     }
 }

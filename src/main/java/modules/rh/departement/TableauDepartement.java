@@ -1,23 +1,24 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Departement;
 
-public class TableauDepartement extends ElementComposer {
+public class TableauDepartement extends RhElementComposer {
 
 
     public TableauDepartement() {
-        super("TableauDepartement", "/element");
+        super();
+        isElement();
     }
 
     public Component rootComponent() {
-        Departement e = (Departement) getEntity("Departement");
+        Departement e = entity(Departement.class);
         return block(//
                 table(e, //
                         e.nom, //
                         e.description//
-                ).fillWith(listAll(e)).onRowClick(goToPage(e, "PageConsulterDepartement")) //
+                ).fillWith(listAll(e)).onRowClick(goToPage(e, pageConsulterDepartement)) //
         );
     }
 

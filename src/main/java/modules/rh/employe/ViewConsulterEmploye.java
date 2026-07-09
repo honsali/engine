@@ -1,34 +1,30 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Conge;
 import model.rh.Employe;
 import modules.rh.conge.TableauConge;
 
-public class ViewConsulterEmploye extends ElementComposer {
-        public ViewConsulterEmploye() {
-                super("ViewConsulterEmploye", "/");
-        }
-
+public class ViewConsulterEmploye extends RhElementComposer {
         public Component rootComponent() {
 
-                Employe e = (Employe) getEntity("Employe");
-                Conge c = (Conge) getEntity("Conge");
+                Employe e = entity(Employe.class);
+                Conge c = entity(Conge.class);
                 return section( //
                                 tabMenu(//
                                                 block(//
                                                                 element(new EtatEmploye()), //
                                                                 actionBlock(//
-                                                                                button(editAction(e, "PageModifierEmploye")), //
-                                                                                button(backToListAction(e, "PageFiltrerEmploye")), //
-                                                                                button(deleteAction(e).onSuccess(goToPage(e, "PageFiltrerEmploye")))//
+                                                                                button(editAction(e, pageModifierEmploye)), //
+                                                                                button(backToListAction(e, pageFiltrerEmploye)), //
+                                                                                button(deleteAction(e).onSuccess(goToPage(e, pageFiltrerEmploye)))//
                                                                 )//
                                                 ).margin("20px").name("employe"), //
                                                 block(//
                                                                 element(new TableauConge()), //
                                                                 actionBlock(//
-                                                                                button(addAction(c, "PageCreerConge")) //
+                                                                                button(addAction(c, pageCreerConge)) //
                                                                 )//
                                                 ).margin("20px").name("conge")//
                                 )//

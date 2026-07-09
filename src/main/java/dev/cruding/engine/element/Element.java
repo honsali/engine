@@ -1,6 +1,8 @@
 
 package dev.cruding.engine.element;
 
+import java.util.Comparator;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.component.Component;
@@ -8,6 +10,8 @@ import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Page;
 
 public class Element {
+
+    public static final Comparator<Element> ORDER_BY_PATH = Element::compareByPath;
 
     public static final String DETAIL = "DETAIL";
     public static final String FORM = "FORM";
@@ -72,12 +76,37 @@ public class Element {
         rootComponent.addContent(null, flow, 1);
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Element) {
-            Element e = (Element) obj;
-            return e.name.equals(name) && e.path.equals(path);
+        if (this == obj) {
+            return true;
         }
-        return false;
+        if (!(obj instanceof Element e)) {
+            return false;
+        }
+        return Objects.equals(name, e.name) && Objects.equals(path, e.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, path);
+    }
+
+    private static int compareByPath(Element left, Element right) {
+        if (left == right) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        int pathComparison = Strings.CS.compare(left.path, right.path);
+        if (pathComparison != 0) {
+            return pathComparison;
+        }
+        return Strings.CS.compare(left.name, right.name);
     }
 
 }

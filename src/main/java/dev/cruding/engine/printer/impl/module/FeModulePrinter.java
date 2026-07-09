@@ -35,7 +35,7 @@ public class FeModulePrinter extends Printer {
         if (module.isParent || module.isTabMenu) {
             f.L________("index: Page", module.unameLast, ",");
         } else {
-            f.L________("index: ", module.pageIndex, ",");
+            f.L________("index: ", module.pageIndex.name, ",");
         }
         f.L____("};");
         f.L("};");
@@ -50,6 +50,6 @@ public class FeModulePrinter extends Printer {
         if (module.pageIndex == null) {
             return "Page" + module.unameLast;
         }
-        return module.pageIndex;
+        return module.pageIndex.name;
     }
 }

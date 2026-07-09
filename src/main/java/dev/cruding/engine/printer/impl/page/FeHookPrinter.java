@@ -1,9 +1,11 @@
 package dev.cruding.engine.printer.impl.page;
 
+import java.util.ArrayList;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.helper.Attribute;
+import dev.cruding.engine.flow.helper.AttributeSorter;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -31,7 +33,10 @@ public class FeHookPrinter extends Printer {
         f.addMdlImport("{ useAppDispatch }", "waxant");
         f.addMdlImport("type { AsyncThunk, AsyncThunkConfig }", "@reduxjs/toolkit");
 
-        for (Attribute att : f.mdlSelectorAttributeSet) {
+        List<Attribute> mdlSelectorAttributeList = new ArrayList<>(f.mdlSelectorAttributeSet);
+        mdlSelectorAttributeList.sort(new AttributeSorter());
+
+        for (Attribute att : mdlSelectorAttributeList) {
             f.addMdlImport("{ select" + att.name + " }", "./Mdl" + page.uc);
         }
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
@@ -49,7 +54,7 @@ public class FeHookPrinter extends Printer {
         f.L____("const params = useParams();");
         f.L("");
 
-        for (Attribute att : f.mdlSelectorAttributeSet) {
+        for (Attribute att : mdlSelectorAttributeList) {
             f.L____("const ", att.type, " = useSelector(select", att.name, ");");
         }
 
@@ -72,7 +77,7 @@ public class FeHookPrinter extends Printer {
         }
         f.L("");
         f.L________("// State");
-        for (Attribute att : f.mdlSelectorAttributeSet) {
+        for (Attribute att : mdlSelectorAttributeList) {
             f.L________(att.type, ",");
         }
         f.L____("};");

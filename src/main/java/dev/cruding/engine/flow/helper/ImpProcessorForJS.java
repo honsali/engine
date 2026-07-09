@@ -35,14 +35,6 @@ public class ImpProcessorForJS {
         int i = 0;
         for (Imp imp : mergedList) {
             String importText = imp.getComp();
-            String[] ss = StringUtils.split(importText, ' ');
-            for (int k = 0; k < ss.length; k++) {
-                String element = ss[k];
-                if (isType(element)) {
-                    ss[k] = element;
-                }
-            }
-            importText = StringUtils.join(ss, ' ');
             sb.append(i == 0 ? "" : "\n").append("import ").append(importText).append(" from '").append(imp.getPath()).append("';");
             i++;
         }
@@ -111,20 +103,5 @@ public class ImpProcessorForJS {
             return null;
         }
         return sub.trim();
-    }
-
-    private boolean isType(String element) {
-        boolean test = //
-                element.length() > 1 //
-                        && (//
-                        (element.charAt(0) == 'I' && Character.isUpperCase(element.charAt(1))) //
-                                || (element.startsWith("Req") && Character.isUpperCase(element.charAt(3))) //
-                                || (element.startsWith("Res") && Character.isUpperCase(element.charAt(3)))//
-                                || (element.startsWith("FormInstance"))//
-                                || (element.startsWith("PageDefinition"))//
-                                || (element.startsWith("ModuleDefinition"))//
-                                || (element.startsWith("EtatMdl"))//
-                        );
-        return test;
     }
 }

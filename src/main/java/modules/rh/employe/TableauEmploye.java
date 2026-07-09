@@ -2,21 +2,22 @@ package modules.rh.employe;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Employe;
 
-public class TableauEmploye extends ElementComposer {
+public class TableauEmploye extends RhElementComposer {
 
 
     private Action action;
 
     public TableauEmploye(Action action) {
-        super("TableauEmploye", "/element");
+        super();
+        isElement();
         this.action = action;
     }
 
     public Component rootComponent() {
-        Employe e = (Employe) getEntity("Employe");
+        Employe e = entity(Employe.class);
         return block(//
                 table(e, //
                         e.matricule, //
@@ -24,7 +25,7 @@ public class TableauEmploye extends ElementComposer {
                         e.prenom, //
                         e.fonction, //
                         e.departement//
-                ).fillWith(action).onRowClick(goToPage(e, "PageConsulterEmploye")) //
+                ).fillWith(action).onRowClick(goToPage(e, pageConsulterEmploye)) //
         );
     }
 

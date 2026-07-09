@@ -1,18 +1,19 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Conge;
 
-public class EtatConge extends ElementComposer {
+public class EtatConge extends RhElementComposer {
 
 
     public EtatConge() {
-        super("EtatConge", "/element");
+        super();
+        isElement();
     }
 
     public Component rootComponent() {
-        Conge e = (Conge) getEntity("Conge");
+        Conge e = entity(Conge.class);
         getByFieldAction(e, e.id_).inInit();
 
         return block(//
@@ -21,9 +22,9 @@ public class EtatConge extends ElementComposer {
                         e.dateDebutConge, //
                         e.dateFinConge //
                 ).columnNumber(1), actionBlock(//
-                        button(editAction(e, "PageModifierConge")), //
-                        button(backToListAction(e, "PageConsulterEmploye")), //
-                        button(deleteAction(e).onSuccess(goToPage(e, "PageConsulterEmploye")))//
+                        button(editAction(e, pageModifierConge)), //
+                        button(backToListAction(e, pageConsulterEmploye)), //
+                        button(deleteAction(e).onSuccess(goToPage(e, pageConsulterEmploye)))//
                 )////
         ).width("600px").margin("20px").background("blanc");//
     }

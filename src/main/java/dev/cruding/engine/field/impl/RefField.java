@@ -68,13 +68,6 @@ public class RefField<T extends Entity> extends Field {
         f.L____________("</column>");
     }
 
-    public RefField<T> dbName(String dbName) {
-        RefField<T> p = makeCopy();
-        p.dbName = dbName;
-        p.dbTypeName = dbName.endsWith("_id") ? dbName.substring(0, -3) : dbName;
-        return p;
-    }
-
     public void addCtrlImport(CtrlFlow f) {
         if (init == null) {
             Entity entity = Context.getInstance().getEntity(jtype);

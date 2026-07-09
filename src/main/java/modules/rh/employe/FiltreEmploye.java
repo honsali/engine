@@ -2,19 +2,20 @@ package modules.rh.employe;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Employe;
 
-public class FiltreEmploye extends ElementComposer {
+public class FiltreEmploye extends RhElementComposer {
 
         public Action action;
 
         public FiltreEmploye() {
-                super("FiltreEmploye", "/element");
+            super();
+            isElement();
         }
 
         public Component rootComponent() {
-                Employe e = (Employe) getEntity("Employe");
+                Employe e = entity(Employe.class);
                 action = filter(e).filterOnLoad();
 
                 return filterPanel(e, true, //

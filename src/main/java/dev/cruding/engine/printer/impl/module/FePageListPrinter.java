@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.flow.JsFlow;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -83,7 +82,7 @@ public class FePageListPrinter extends Printer {
         } else {
             if (pageList.size() > 0) {
                 int idx = module.path.length();
-                Page pageIndex = Context.getInstance().getPage(module.pageIndex);
+                Page pageIndex = module.pageIndex;
                 f.addJsImport("{ FontAwesomeIcon }", "@fortawesome/react-fontawesome");
                 f.addJsImport("{ " + pageIndex.icon + " }", "@fortawesome/free-solid-svg-icons");
                 f.addJsImport("{ ContexteViewProvider, PageDefinition }", "waxant");

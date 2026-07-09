@@ -8,7 +8,7 @@ import dev.cruding.engine.gen.Processor;
 import dev.cruding.engine.loader.EntityLoader;
 import dev.cruding.engine.loader.GeneratorException;
 import dev.cruding.engine.loader.LoaderUtils;
-import dev.cruding.engine.loader.ModuleLoader;
+import dev.cruding.engine.loader.ProjectBootstrapLoader;
 
 public class App {
 
@@ -29,8 +29,8 @@ public class App {
             LOGGER.info("Loading entities from: {}", modelPath);
             (new EntityLoader()).load(modelPath.toString());
 
-            LOGGER.info("Loading modules from: {}", modulesPath);
-            (new ModuleLoader()).load(modulesPath.toString());
+            LOGGER.info("Loading project bootstrap from: {}", modulesPath);
+            (new ProjectBootstrapLoader()).load(modulesPath.toString());
 
             LOGGER.info("Initializing entities");
             Context.getInstance().initEntities();

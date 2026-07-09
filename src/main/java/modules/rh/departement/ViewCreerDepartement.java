@@ -1,13 +1,9 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 
-public class ViewCreerDepartement extends ElementComposer {
-    public ViewCreerDepartement() {
-        super("ViewCreerDepartement", "/");
-    }
-
+public class ViewCreerDepartement extends RhElementComposer {
     public Component rootComponent() {
 
         return section( //

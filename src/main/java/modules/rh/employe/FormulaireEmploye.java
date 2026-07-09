@@ -1,20 +1,21 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Employe;
 
-public class FormulaireEmploye extends ElementComposer {
+public class FormulaireEmploye extends RhElementComposer {
 
         private boolean enModification;
 
         public FormulaireEmploye(boolean enModification) {
-                super("FormulaireEmploye", "/element");
+                super();
+        isElement();
                 this.enModification = enModification;
         }
 
         public Component rootComponent() {
-                Employe e = (Employe) getEntity("Employe");
+                Employe e = entity(Employe.class);
                 if (enModification) {
                         initUpdate(e, getByFieldAction(e, e.id_)).inInit();
                 }
@@ -55,10 +56,10 @@ public class FormulaireEmploye extends ElementComposer {
                                                                 ).width("400px")//
                                                 ).title("contact"), //
                                                 actionBlock(//
-                                                                enModification ? element(updateAction(e).onSuccess(goToPage(e, "PageConsulterEmploye"))).byForm() : //
-                                                                                element(createAction(e).onSuccess(goToPage(e, "PageConsulterEmploye").byField(e.id_))).byForm(), //
+                                                                enModification ? element(updateAction(e).onSuccess(goToPage(e, pageConsulterEmploye))).byForm() : //
+                                                                                element(createAction(e).onSuccess(goToPage(e, pageConsulterEmploye).byField(e.id_))).byForm(), //
 
-                                                                enModification ? button(backToDetailAction(e, "PageConsulterEmploye")) : button(backToListAction(e, "PageFiltrerEmploye"))//
+                                                                enModification ? button(backToDetailAction(e, pageConsulterEmploye)) : button(backToListAction(e, pageFiltrerEmploye))//
                                                 )//
                                 ).width("1000px")//
                 ).margin("40px").background("blanc");//

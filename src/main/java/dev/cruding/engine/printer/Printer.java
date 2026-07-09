@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
@@ -28,7 +27,7 @@ public abstract class Printer {
 
     protected ArrayList<Page> sortedPageList(dev.cruding.engine.gen.Module module) {
         ArrayList<Page> pageList = new ArrayList<>(Context.getInstance().getPageList(module));
-        Collections.sort(pageList);
+        pageList.sort(Page.ORDER_BY_ACTION_AND_ENTITY);
         return pageList;
     }
 
@@ -55,7 +54,7 @@ public abstract class Printer {
                 Files.write(filePath, normalizedContent.getBytes(StandardCharsets.UTF_8));
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new IllegalStateException("Failed to write file: " + path, ex);
         }
     }
 }

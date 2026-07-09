@@ -37,8 +37,7 @@ public class Util {
             if (field != null) {
                 typeList.add(field.ui(elementType));
             } else {
-                System.out.println("Field is null");
-
+                throw new IllegalArgumentException("Field list cannot contain null values");
             }
         }
         StringBuilder sb = new StringBuilder();

@@ -58,6 +58,8 @@ public class Processor {
 
         printBeGlobalFiles();
 
+        // Page and element files are generated before module files because some labels
+        // are collected as a side effect of rendering components.
         for (Page page : Context.getInstance().getPageList()) {
             if (page.containsComponent()) {
                 for (Element element : page.elementList) {

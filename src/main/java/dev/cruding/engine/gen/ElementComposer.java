@@ -73,8 +73,20 @@ public abstract class ElementComposer {
     public Element element;
     public Page page;
 
+    public ElementComposer() {
+        this.element = new Element(getClass().getSimpleName(), "/");
+    }
+
     public ElementComposer(String name, String path) {
         this.element = new Element(name, path);
+    }
+
+    public ElementComposer isElement() {
+        this.element.relativePath = "/element";
+        if (page != null) {
+            this.element.page(page);
+        }
+        return this;
     }
 
     public void setPage(Page page) {
@@ -106,8 +118,8 @@ public abstract class ElementComposer {
         return new Button(action.element(element));
     }
 
-    public Entity getEntity(String uname) {
-        return Context.getInstance().getEntity(uname);
+    public <T extends Entity> T entity(Class<T> entityType) {
+        return Context.getInstance().getEntity(entityType);
     }
 
     public Action primaryAction(Entity entity, String ltype) {
@@ -156,20 +168,20 @@ public abstract class ElementComposer {
         return new UpdateAction(entity, element);
     }
 
-    public Action addAction(Entity entity, String targePage) {
-        return new EmptyAction(ActionType.UCA, "ajouter", entity, element).targetPage(targePage).inViewOnly();
+    public Action addAction(Entity entity, Page targetPage) {
+        return new EmptyAction(ActionType.UCA, "ajouter", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action editAction(Entity entity, String targePage) {
-        return new EmptyAction(ActionType.UCA, "modifier", entity, element).targetPage(targePage).inViewOnly();
+    public Action editAction(Entity entity, Page targetPage) {
+        return new EmptyAction(ActionType.UCA, "modifier", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action backToListAction(Entity entity, String targePage) {
-        return new EmptyAction(ActionType.UCA, "retourListe", entity, element).targetPage(targePage).inViewOnly();
+    public Action backToListAction(Entity entity, Page targetPage) {
+        return new EmptyAction(ActionType.UCA, "retourListe", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action backToDetailAction(Entity entity, String targePage) {
-        return new EmptyAction(ActionType.UCA, "retourConsulter", entity, element).targetPage(targePage).inViewOnly();
+    public Action backToDetailAction(Entity entity, Page targetPage) {
+        return new EmptyAction(ActionType.UCA, "retourConsulter", entity, element).targetPage(targetPage).inViewOnly();
     }
 
     public Action getByFieldAction(Entity entity, Field... fieldList) {
@@ -192,7 +204,7 @@ public abstract class ElementComposer {
         return new GoToModuleAction(entity, element, target);
     }
 
-    public Action goToPage(Entity entity, String target) {
+    public Action goToPage(Entity entity, Page target) {
         return new GoToPageAction(entity, element, target);
     }
 

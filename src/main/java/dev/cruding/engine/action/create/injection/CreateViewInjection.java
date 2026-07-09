@@ -60,7 +60,6 @@ public class CreateViewInjection extends ActionViewInjection {
                     ifSuccessAction.viewActionInjection.addFlowScript(flow, 2, args);
                 } else {
                     flow.totalScript().L____________(ifSuccessAction.lnameWithEntity);
-                    System.out.println(ifSuccessAction.lnameWithEntity);
                 }
             }
             flow.totalScript().L________("}");

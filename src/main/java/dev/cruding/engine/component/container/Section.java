@@ -9,7 +9,7 @@ import dev.cruding.engine.gen.Page;
 
 public class Section extends Container {
 
-    public String backPage = null;
+    public Page backPage = null;
     public boolean statePanel = false;
     public Component actionBlock = null;
 
@@ -24,8 +24,7 @@ public class Section extends Container {
     public void addImport(ViewFlow flow) {
         flow.addJsImport("{ Section }", "waxant");
         if (backPage != null) {
-            Page pr = Context.getInstance().getPage(backPage);
-            flow.addJsImport("{ " + pr.name + " }", pr.module.pageList(element.path, inElement));
+            flow.addJsImport("{ " + backPage.name + " }", backPage.module.pageList(element.path, inElement));
         }
         if (statePanel) {
             flow.addJsImport("{ PlaqueEtat }", "waxant");
@@ -38,8 +37,8 @@ public class Section extends Container {
             if (actionBlock != null) {
                 indent(flow, level + 1);
             }
-            flow.totalUi().__(" backPage={").append(backPage).append("}");
-            Context.getInstance().addLabel(element.page.module.uname, "Uc" + element.page.uc + ".retour" + backPage, "Retour");
+            flow.totalUi().__(" backPage={").append(backPage.name).append("}");
+            Context.getInstance().addLabel(element.page.module.uname, "Uc" + element.page.uc + ".retour" + backPage.name, "Retour");
 
         }
         if (margin != null) {
@@ -74,7 +73,7 @@ public class Section extends Container {
         return this;
     }
 
-    public Section backPage(String backPage) {
+    public Section backPage(Page backPage) {
         this.backPage = backPage;
         return this;
     }

@@ -1,8 +1,10 @@
 package dev.cruding.engine.action;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -16,7 +18,7 @@ import dev.cruding.engine.injection.ActionResourceInjection;
 import dev.cruding.engine.injection.ActionServiceInjection;
 import dev.cruding.engine.injection.ActionViewInjection;
 
-public abstract class Action implements Comparable<Action> {
+public abstract class Action {
 
     public enum ActionType {
         NOUI, //
@@ -27,6 +29,8 @@ public abstract class Action implements Comparable<Action> {
         CONFIRM, //
         MODAL,
     }
+
+    public static final Comparator<Action> ORDER_BY_NAME = Action::compareByName;
 
     private static int rank = 0;
     public ActionCtrlInjection ctrlActionInjection;
@@ -251,8 +255,8 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
-    public Action targetPage(String targetPage) {
-        this.targetPage = Context.getInstance().getPage(targetPage);
+    public Action targetPage(Page targetPage) {
+        this.targetPage = Objects.requireNonNull(targetPage, "Target page cannot be null");
         return this;
     }
 
@@ -353,6 +357,7 @@ public abstract class Action implements Comparable<Action> {
         return this;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -361,16 +366,29 @@ public abstract class Action implements Comparable<Action> {
 
         Action other = (Action) obj;
 
-        return lnameWithEntity.equals(other.lnameWithEntity);
+        return Objects.equals(id, other.id);
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
-    @Override
-    public int compareTo(Action o) {
-        return this.lnameWithEntity.compareTo(o.lnameWithEntity);
+    private static int compareByName(Action left, Action right) {
+        if (left == right) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        int nameComparison = Strings.CS.compare(left.lnameWithEntity, right.lnameWithEntity);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+        return Strings.CS.compare(left.id, right.id);
     }
 
     public Action waitUntilReady() {

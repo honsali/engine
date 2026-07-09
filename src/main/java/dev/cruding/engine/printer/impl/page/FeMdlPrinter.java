@@ -5,6 +5,7 @@ import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.helper.Attribute;
+import dev.cruding.engine.flow.helper.AttributeSorter;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
@@ -103,8 +104,9 @@ public class FeMdlPrinter extends Printer {
         f.L("");
         f.L("const selectMdl", page.uc, " = (state: IRootState) => state.mdl", page.uc, ";");
 
-        List<Attribute> mdlResultAttributeList = new ArrayList<>(f.mdlSelectorAttributeSet);
-        for (Attribute att : mdlResultAttributeList) {
+        List<Attribute> mdlSelectorAttributeList = new ArrayList<>(f.mdlSelectorAttributeSet);
+        mdlSelectorAttributeList.sort(new AttributeSorter());
+        for (Attribute att : mdlSelectorAttributeList) {
             f.L("export const select", att.name, " = createSelector([selectMdl", page.uc, "], (state: ", page.uc, "Type) => state.", att.type, ");");
         }
         f.L("");

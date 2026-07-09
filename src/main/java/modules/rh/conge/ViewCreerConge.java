@@ -1,13 +1,9 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 
-public class ViewCreerConge extends ElementComposer {
-    public ViewCreerConge() {
-        super("ViewCreerConge", "/");
-    }
-
+public class ViewCreerConge extends RhElementComposer {
     public Component rootComponent() {
 
         return section( //

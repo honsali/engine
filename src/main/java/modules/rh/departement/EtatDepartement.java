@@ -1,18 +1,19 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Departement;
 
-public class EtatDepartement extends ElementComposer {
+public class EtatDepartement extends RhElementComposer {
 
 
     public EtatDepartement() {
-        super("EtatDepartement", "/element");
+        super();
+        isElement();
     }
 
     public Component rootComponent() {
-        Departement e = (Departement) getEntity("Departement");
+        Departement e = entity(Departement.class);
         getByFieldAction(e, e.id_).inInit();
         return detail(e, //
                 e.nom, //

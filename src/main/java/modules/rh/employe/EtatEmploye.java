@@ -1,18 +1,19 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import modules.rh.RhElementComposer;
 import model.rh.Employe;
 
-public class EtatEmploye extends ElementComposer {
+public class EtatEmploye extends RhElementComposer {
 
 
         public EtatEmploye() {
-                super("EtatEmploye", "/element");
+            super();
+            isElement();
         }
 
         public Component rootComponent() {
-                Employe e = (Employe) getEntity("Employe");
+                Employe e = entity(Employe.class);
                 getByFieldAction(e, e.id_).inInit();
                 return inlineBlock(//
                                 primaryPanel(//
