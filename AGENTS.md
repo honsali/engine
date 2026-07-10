@@ -8,6 +8,8 @@
 - The RH DSL bootstrap is `modules.rh.RhProject`; it declares modules and page variables in one place.
 - Modules are explicit `new Module("ModuleName", "package.path")` instances; module subclasses are not used.
 - Pages are added with `Module.addPage(new ViewComposerSubclass())`; `ViewComposer<T>` infers the page entity from its generic type.
+- For a regular frontend module, mark the index/menu page explicitly with `.icon(...).isIndex()`; `icon` only sets the icon and `isIndex` selects the module index page.
+- `Context.addEntity`, `Context.addModule`, and `Context.addPage` throw `ContextException` on duplicates instead of overwriting existing registrations.
 - DSL code should use typed entity lookup (`entity(Employe.class)`) and typed page variables (`RhProject.pageConsulterEmploye`) instead of string references.
 - `BaseComposer.super()` derives the element name from the class name; `ElementComposer` marks reusable `/element` composers.
 - Frontend i18n TypeScript literals are escaped at emission time with `dev.cruding.engine.flow.TsLiteral`; `Context.addLabel` stores raw label keys/values rather than pre-quoted TypeScript fragments.

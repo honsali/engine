@@ -36,7 +36,7 @@ public class RhProject implements ProjectBootstrap {
         new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
         Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
-        pageFiltrerEmploye = moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser");
+        pageFiltrerEmploye = moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser").isIndex();
         pageConsulterEmploye = moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
         pageModifierEmploye = moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
         pageCreerEmploye = moduleEmploye.addPage(new ViewCreerEmploye());
@@ -45,7 +45,7 @@ public class RhProject implements ProjectBootstrap {
         pageModifierConge = moduleEmploye.addPage(new ViewModifierConge()).pathById();
 
         Module moduleDepartement = new Module("ModuleDepartement", "rh.departement");
-        pageListerDepartement = moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap");
+        pageListerDepartement = moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();
         pageConsulterDepartement = moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
         pageModifierDepartement = moduleDepartement.addPage(new ViewModifierDepartement()).pathById();
         pageCreerDepartement = moduleDepartement.addPage(new ViewCreerDepartement());

@@ -82,7 +82,7 @@ public class FePageListPrinter extends Printer {
         } else {
             if (pageList.size() > 0) {
                 int idx = module.path.length();
-                Page pageIndex = module.pageIndex;
+                Page pageIndex = module.requirePageIndex();
                 f.addJsImport("{ FontAwesomeIcon }", "@fortawesome/react-fontawesome");
                 f.addJsImport("{ " + pageIndex.icon + " }", "@fortawesome/free-solid-svg-icons");
                 f.addJsImport("{ ContexteViewProvider, PageDefinition }", "waxant");

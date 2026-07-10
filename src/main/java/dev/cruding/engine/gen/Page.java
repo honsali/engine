@@ -106,6 +106,10 @@ public class Page {
 
     public Page icon(String icon) {
         this.icon = icon;
+        return this;
+    }
+
+    public Page isIndex() {
         this.module.pageIndex = this;
         return this;
     }

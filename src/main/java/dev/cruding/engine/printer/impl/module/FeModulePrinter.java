@@ -35,7 +35,7 @@ public class FeModulePrinter extends Printer {
         if (module.isParent || module.isTabMenu) {
             f.L________("index: Page", module.unameLast, ",");
         } else {
-            f.L________("index: ", module.pageIndex.name, ",");
+            f.L________("index: ", module.requirePageIndex().name, ",");
         }
         f.L____("};");
         f.L("};");
@@ -47,9 +47,9 @@ public class FeModulePrinter extends Printer {
     }
 
     private String getPageIndex(Module module) {
-        if (module.pageIndex == null) {
+        if (module.isParent || module.isTabMenu) {
             return "Page" + module.unameLast;
         }
-        return module.pageIndex.name;
+        return module.requirePageIndex().name;
     }
 }

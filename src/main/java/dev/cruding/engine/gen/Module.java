@@ -57,6 +57,16 @@ public class Module {
         return this;
     }
 
+    public Page requirePageIndex() {
+        if (pageIndex == null) {
+            throw new ContextException("Module " + uname + " has no index page: call .isIndex() on one module page");
+        }
+        if (pageIndex.icon == null) {
+            throw new ContextException("Index page " + pageIndex.name + " of module " + uname + " must have an icon: call .icon(...)");
+        }
+        return pageIndex;
+    }
+
     public Module parent() {
         this.isParent = true;
         return this;

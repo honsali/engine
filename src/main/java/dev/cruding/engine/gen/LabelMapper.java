@@ -99,7 +99,7 @@ public class LabelMapper {
         } else {
             verb = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(StringUtils.capitalize(key)), " ");
         }
-        return "Etes vous sur de vouloir " + verb + " " + entity.setting.that() + " " + entity.setting.label;
+        return "Êtes-vous sûr de vouloir " + verb + " " + entity.setting.that() + " " + entity.setting.label + " ?";
     }
 
     public String messageSuccess(String key, Entity entity) {

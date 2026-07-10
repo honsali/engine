@@ -52,6 +52,12 @@ public class Context {
         if (entity == null || StringUtils.isBlank(entity.uname)) {
             throw new ContextException("Cannot add null Entity or Entity with null or empty uname");
         }
+        if (entityMapByName.containsKey(entity.uname)) {
+            throw new ContextException("Doublon Entity: " + entity.uname);
+        }
+        if (entityMapByClass.containsKey(entity.getClass())) {
+            throw new ContextException("Doublon Entity class: " + entity.getClass().getName());
+        }
         entityMapByName.put(entity.uname, entity);
         entityMapByClass.put(entity.getClass(), entity);
     }
@@ -90,33 +96,17 @@ public class Context {
     /* ********************************** MODULES ********************************** */
     /* ****************************************************************************** */
     public void addModule(Module module) {
-        if (StringUtils.isBlank(module.packge)) {
+        if (module == null || StringUtils.isBlank(module.packge)) {
             throw new ContextException("Cannot add Module with null or empty package");
+        }
+        if (moduleMap.containsKey(module.packge)) {
+            throw new ContextException("Doublon Module: " + module.packge);
         }
         moduleMap.put(module.packge, module);
     }
 
     public Collection<Module> getModuleList() {
         return moduleMap.values();
-    }
-
-    public Module getModule(String packageName) {
-        if (StringUtils.isBlank(packageName)) {
-            throw new ContextException("Package name cannot be null or empty");
-        }
-
-        String bestMatch = "";
-        for (String str : moduleMap.keySet()) {
-            if (packageName.startsWith(str) && str.length() > bestMatch.length()) {
-                bestMatch = str;
-            }
-        }
-
-        if (bestMatch.isEmpty()) {
-            throw new ContextException(String.format("No module found for package: %s", packageName));
-        }
-
-        return moduleMap.get(bestMatch);
     }
 
     /* ****************************************************************************** */
@@ -126,6 +116,9 @@ public class Context {
     public void addPage(Page page) {
         if (page == null || StringUtils.isBlank(page.name)) {
             throw new ContextException("Cannot add null page or page with empty name");
+        }
+        if (pageMap.containsKey(page.name)) {
+            throw new ContextException("Doublon Page: " + page.name);
         }
         pageMap.put(page.name, page);
     }
@@ -219,6 +212,6 @@ public class Context {
         if (entity == null || StringUtils.isBlank(entity.lname)) {
             throw new ContextException("Entity cannot be null and must have an lname");
         }
-        return actionList.stream().filter(as -> as.entity != null && as.entity.lname != null && as.entity.lname.equals(entity.lname)).filter(Objects::nonNull).distinct().sorted(Action.ORDER_BY_NAME).toList();
+        return actionList.stream().filter(as -> as.entity != null && as.entity.lname != null && as.entity.lname.equals(entity.lname)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
     }
 }
