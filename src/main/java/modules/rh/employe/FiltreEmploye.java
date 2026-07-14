@@ -17,7 +17,7 @@ public class FiltreEmploye extends ElementComposer {
                 return filterPanel(e, true, //
                                 extendedPanel(//
                                                 form(e, //
-                                                                e.matricule.aloneInRow(), //
+                                                                e.matricule.required(false).aloneInRow(), //
                                                                 dateRangeBegin(e.dateEntree), //
                                                                 dateRangeEnd(e.dateEntree), //
                                                                 e.departement, //
@@ -25,8 +25,8 @@ public class FiltreEmploye extends ElementComposer {
                                                 )).open().title("employe"), //
                                 extendedPanel(//
                                                 form(e, //
-                                                                e.nom, //
-                                                                e.prenom, //
+                                                                e.nom.required(false), //
+                                                                e.prenom.required(false), //
                                                                 dateRangeBegin(e.dateNaissance), //
                                                                 dateRangeEnd(e.dateNaissance), //
                                                                 e.sexe, //

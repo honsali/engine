@@ -11,7 +11,6 @@ public class BasicResourceInjection extends ActionResourceInjection {
         f.addJavaImport("org.springframework.http.ResponseEntity");
         f.addJavaImport("jakarta.validation.Valid");
         f.addJavaImport("org.springframework.web.bind.annotation.RequestBody");
-        f.addJavaImport("java.util.NoSuchElementException");
         f.addJavaImport("org.springframework.web.bind.annotation." + urest() + "Mapping");
 
     }

@@ -13,7 +13,7 @@ public class BeLiqDataPrinter extends Printer {
 
         f.__("id");
         for (Field field : entity.fieldList) {
-            if (field.isBasic || field.isRef) {
+            if (field.isBasic || field.isRef || field.isFather) {
                 f.__(";", field.dbName);
             }
         }

@@ -48,11 +48,16 @@ public class BeLiqTablePrinter extends Printer {
         for (Field field : entity.fieldList) {
             if (field.isBasic) {
                 f.L____________("<column name=\"", field.dbName, "\" type=\"", field.stype, "\" />");
-            } else if (field.isRef) {
+            } else if (field.isRef || field.isFather) {
                 f.L____________("<column name=\"", field.dbName, "\" type=\"numeric\" />");
             }
         }
         f.L________("</loadData>");
+        f.L____("</changeSet>");
+        f.L("");
+
+        f.L____("<changeSet id=\"", entity.key, "-sequence-sync\" author=\"app_core\">");
+        f.L________("<sql dbms=\"postgresql\">SELECT setval('", entity.seqName, "', GREATEST(COALESCE(MAX(", entity.id_.getDbName(entity.uname), "), 0) + 1, 100), false) FROM ", entity.dbName, ";</sql>");
         f.L____("</changeSet>");
 
         f.L("</databaseChangeLog>");

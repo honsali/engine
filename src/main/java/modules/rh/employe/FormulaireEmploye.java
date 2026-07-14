@@ -10,7 +10,7 @@ public class FormulaireEmploye extends ElementComposer {
         private boolean enModification;
 
         public FormulaireEmploye(boolean enModification) {
-                        this.enModification = enModification;
+                this.enModification = enModification;
         }
 
         public Component rootComponent() {
@@ -36,9 +36,9 @@ public class FormulaireEmploye extends ElementComposer {
                                                 simplePanel(//
                                                                 block(//
                                                                                 form(e, //
-                                                                                                e.nom, //
-                                                                                                e.prenom, //
-                                                                                                e.dateNaissance, //
+                                                                                                e.nom.required(), //
+                                                                                                e.prenom.required(), //
+                                                                                                e.dateNaissance.required(), //
                                                                                                 e.sexe, //
                                                                                                 e.situationFamiliale//
                                                                                 )//

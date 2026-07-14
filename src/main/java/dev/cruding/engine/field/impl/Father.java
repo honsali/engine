@@ -1,6 +1,7 @@
 package dev.cruding.engine.field.impl;
 
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.gen.Context;
@@ -12,7 +13,7 @@ public class Father<T extends Entity> extends RefField<T> {
     }
 
     public void addJsDeclaration(JsFlow f) {
-        f.addJsDeclaration(lname, "I" + referencedEntity.uname);
+        addJsDeclaration(f, lname, "I" + referencedEntity.uname);
     }
 
     public void addDtoImport(JavaFlow flow) {
@@ -71,6 +72,12 @@ public class Father<T extends Entity> extends RefField<T> {
         f.L____("public void set" + uname + "(" + jtype + " " + lname + ") {");
         f.L________("this." + lname + " = " + lname + ";");
         f.L____("}");
+    }
+
+    public void addLiqDeclaration(Flow f) {
+        f.L____________("<column name=\"" + dbName + "\" type=\"bigint\">");
+        f.L________________("<constraints nullable=\"false\" />");
+        f.L____________("</column>");
     }
 
     public void addSpecification(JavaFlow f) {

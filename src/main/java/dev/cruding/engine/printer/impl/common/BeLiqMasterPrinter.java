@@ -25,14 +25,15 @@ public class BeLiqMasterPrinter extends Printer {
         f.L____("<property name=\"clobType\" value=\"longvarchar\" dbms=\"postgresql\"/>");
         f.L____("<property name=\"blobType\" value=\"bytea\" dbms=\"postgresql\"/>");
         f.L____("<property name=\"uuidType\" value=\"uuid\" dbms=\"postgresql\"/>");
-        f.L____("<property name=\"datetimeType\" value=\"datetime\" dbms=\"postgresql\"/>");
         f.L("");
-        f.L____("<include file=\"liquibase/changelog/_initial_schema.xml\" relativeToChangelogFile=\"false\"/>");
+        f.L____("<include file=\"liquibase/changelog/security_table.xml\" relativeToChangelogFile=\"false\"/>");
         for (Entity e : entityList()) {
             f.L("  <include file=\"liquibase/changelog/", e.lname, "_table.xml\" relativeToChangelogFile=\"false\"/>");
         }
         for (Entity e : entityList()) {
-            f.L("  <include file=\"liquibase/changelog/", e.lname, "_constraints.xml\" relativeToChangelogFile=\"false\"/>");
+            if (!e.isReferenceData() && e.fieldList.stream().anyMatch(p -> p.isFather || p.isRef || p.isRefMany)) {
+                f.L("  <include file=\"liquibase/changelog/", e.lname, "_constraints.xml\" relativeToChangelogFile=\"false\"/>");
+            }
         }
         f.L("</databaseChangeLog>");
 

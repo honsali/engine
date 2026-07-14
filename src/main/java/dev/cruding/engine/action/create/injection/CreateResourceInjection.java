@@ -12,7 +12,6 @@ public class CreateResourceInjection extends BasicResourceInjection {
         f.addJavaImport("org.springframework.web.server.ResponseStatusException");
         f.addJavaImport("org.springframework.web.bind.annotation.PostMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RequestBody");
-        f.addJavaImport("java.util.NoSuchElementException");
         f.addJavaImport("jakarta.validation.Valid");
         if (entity().haveFather) {
             f.addJavaImport("org.springframework.web.bind.annotation.PathVariable");
@@ -31,19 +30,13 @@ public class CreateResourceInjection extends BasicResourceInjection {
             f.__("@PathVariable Long id" + entity().ufather, ", ");
         }
         f.__("@Valid @RequestBody ", entity().uname, "Dto ", entity().lname + "Dto) {");
-        f.L________("try {");
         if (entity().haveFather) {
-            f.L____________(entity().uname, "Dto result = ", entity().lname, "Service.creer(id", entity().ufather, ", ", entity().lname, "Dto);");
+            f.L________(entity().uname, "Dto result = ", entity().lname, "Service.creer(id", entity().ufather, ", ", entity().lname, "Dto);");
 
         } else {
-            f.L____________(entity().uname, "Dto result = ", entity().lname, "Service.creer(", entity().lname, "Dto);");
+            f.L________(entity().uname, "Dto result = ", entity().lname, "Service.creer(", entity().lname, "Dto);");
         }
         f.L____________("return ResponseEntity.status(HttpStatus.CREATED).body(result);");
-        f.L________("} catch (NoSuchElementException e) {");
-        f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());");
-        f.L________("} catch (IllegalArgumentException e) {");
-        f.L____________("throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());");
-        f.L________("}");
         f.L____("}");
     }
 

@@ -13,12 +13,12 @@ public class JsFlow extends Flow {
         importJSSet.put(comp + path, new Imp(comp, path));
     }
 
-    public void flushJsImportBlock() {
-        __(impProcessor.convert(importJSSet));
-    }
-
-    public void addJsDeclaration(String lname, String type) {
-        L____(lname, "?: ", type, ";");
+    public boolean flushJsImportBlock() {
+        if (importJSSet.size() > 0) {
+            __(impProcessor.convert(importJSSet));
+            return true;
+        }
+        return false;
     }
 
 }

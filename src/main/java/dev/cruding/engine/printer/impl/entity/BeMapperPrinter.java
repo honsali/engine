@@ -14,10 +14,7 @@ public class BeMapperPrinter extends Printer {
 
         /* *********************************************************************** */
         List<Field> fieldList = entity.fieldList;
-        List<Field> mapperFieldList = fieldList.stream()
-                .filter(field -> field.isRef || field.isFather)
-                .sorted((left, right) -> left.jtype.compareTo(right.jtype))
-                .toList();
+        List<Field> mapperFieldList = fieldList.stream().filter(field -> field.isRef || field.isFather).sorted((left, right) -> left.jtype.compareTo(right.jtype)).toList();
         f.addJavaImport("java.util.NoSuchElementException");
         f.addJavaImport("org.springframework.stereotype.Component");
         for (Field field : mapperFieldList) {

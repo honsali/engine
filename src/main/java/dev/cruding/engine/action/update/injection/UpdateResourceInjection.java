@@ -21,14 +21,7 @@ public class UpdateResourceInjection extends BasicResourceInjection {
         f.L____________("throw new ResponseStatusException(HttpStatus.BAD_REQUEST, \"Path ID and body ID mismatch\");");
         f.L________("}");
         f.L("");
-        f.L________("try {");
-        f.L____________(entity().uname, "Dto result = ", entity().lname, "Service.maj(id, ", entity().lname, "Dto);");
-        f.L____________("return result;");
-        f.L________("} catch (NoSuchElementException e) {");
-        f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());");
-        f.L________("} catch (IllegalArgumentException e) {");
-        f.L____________("throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());");
-        f.L________("}");
+        f.L________("return ", entity().lname, "Service.maj(id, ", entity().lname, "Dto);");
         f.L____("}");
     }
 

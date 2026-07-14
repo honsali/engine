@@ -31,7 +31,6 @@ public class FeHookPrinter extends Printer {
         f.addMdlImport("{ useSelector }", "react-redux");
         f.addMdlImport("{ useParams }", "react-router");
         f.addMdlImport("{ useAppDispatch }", "waxant");
-        f.addMdlImport("type { AsyncThunk, AsyncThunkConfig }", "@reduxjs/toolkit");
 
         List<Attribute> mdlSelectorAttributeList = new ArrayList<>(f.mdlSelectorAttributeSet);
         mdlSelectorAttributeList.sort(new AttributeSorter());
@@ -41,7 +40,7 @@ public class FeHookPrinter extends Printer {
         }
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
 
-        f.addMdlImport("{ Mdl" + page.uc + ", Req" + page.uc + ", Res" + page.uc + " }", "./Mdl" + page.uc);
+        f.addMdlImport("{ Mdl" + page.uc + ", Req" + page.uc + " }", "./Mdl" + page.uc);
         /* *********************************************************************** */
         f.flushMdlImportBlock();
 
@@ -60,7 +59,7 @@ public class FeHookPrinter extends Printer {
 
 
         f.L("");
-        f.L____("const createAction = (action: AsyncThunk<Res", page.uc, ", Req", page.uc, ", AsyncThunkConfig>) => (req?: Req", page.uc, ") => dispatch(action({ ...req, ...params } as Req", page.uc, "));");
+        f.L____("const createAction = (action: any) => (req?: Req", page.uc, ") => dispatch(action({ ...req, ...params }));");
         f.L("");
         f.L____("return {");
         f.L________("// Actions");

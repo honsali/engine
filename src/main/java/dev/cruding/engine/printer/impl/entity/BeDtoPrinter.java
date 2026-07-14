@@ -25,6 +25,9 @@ public class BeDtoPrinter extends Printer {
                     f.addJavaImport("jakarta.validation.constraints.NotNull");
                 }
             }
+            if (!entity.isReferenceData() && field.maxLength != null) {
+                f.addJavaImport("jakarta.validation.constraints.Size");
+            }
         }
 
         /* *********************************************************************** */
@@ -46,12 +49,16 @@ public class BeDtoPrinter extends Printer {
                 f.L________(field.jtype, "Dto ", field.lname, end);
 
             } else {
+                f.L________("");
                 if (field.required && field.isText) {
-                    f.L________("@NotBlank ");
+                    f.__("@NotBlank ");
                 } else if (field.required) {
-                    f.L________("@NotNull ");
+                    f.__("@NotNull ");
                 } else {
-                    f.L________("");
+                    f.__("");
+                }
+                if (!entity.isReferenceData() && field.maxLength != null) {
+                    f.__("@Size(max = ", field.maxLength, ") ");
                 }
                 f.__(field.jtype, " ", field.lname, end);
             }

@@ -8,6 +8,7 @@ public class Text extends Field {
         super(true);
         lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
         isText = true;
+        maxLength = "250";
     }
 
 

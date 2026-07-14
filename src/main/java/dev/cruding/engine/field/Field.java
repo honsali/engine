@@ -38,6 +38,7 @@ public class Field {
     public boolean isText;
 
     public boolean cloned = false;
+    public String maxLength;
 
     public String label;
     public int width;
@@ -109,6 +110,12 @@ public class Field {
     public Field label(String label) {
         Field p = makeCopy();
         p.label = label;
+        return p;
+    }
+
+    public Field required(boolean required) {
+        Field p = makeCopy();
+        p.required = required;
         return p;
     }
 
@@ -213,6 +220,12 @@ public class Field {
         return p;
     }
 
+    public Field maxLength(String maxLength) {
+        Field p = makeCopy();
+        p.maxLength = maxLength;
+        return p;
+    }
+
     public Field watched() {
         Field p = makeCopy();
         p.watched = true;
@@ -294,7 +307,11 @@ public class Field {
     }
 
     public void addJsDeclaration(JsFlow f) {
-        f.addJsDeclaration(lname, jstype);
+        addJsDeclaration(f, lname, jstype);
+    }
+
+    public void addJsDeclaration(JsFlow f, String lname, String type) {
+        f.L____(lname, "?: ", type, ";");
     }
 
     public void addFilterImport(JavaFlow f) {
@@ -312,6 +329,11 @@ public class Field {
             if (tranzient) {
                 f.addJavaImport("jakarta.persistence.Transient");
             }
+        } else {
+
+            if (maxLength != null) {
+                f.addJavaImport("jakarta.validation.constraints.Size");
+            }
         }
     }
 
@@ -328,16 +350,22 @@ public class Field {
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
-        f.L________(jtype + " " + lname);
+        f.L________("");
+        if (maxLength != null) {
+            f.__("@Size(max = ", maxLength, ") ");
+        }
+        f.__(jtype + " " + lname);
     }
 
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
         if (required && isText) {
-            f.L____("@NotBlank");
+            f.L____("@NotBlank ");
         } else if (required) {
             f.L____("@NotNull");
         }
+
+
         if (tranzient) {
             f.L____("@Transient");
         } else {
@@ -375,7 +403,7 @@ public class Field {
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"" + stype + "\">");
-        f.L________________("<constraints nullable=\"" + !required + "\"");
+        f.L________________("<constraints nullable=\"" + !required + "\" ");
         if (isUnique) {
             f.__("unique=\"true\" uniqueConstraintName=\"ux_", containingEntityDbname, "_", dbName, "\" ");
         }
@@ -433,6 +461,9 @@ public class Field {
         to.isId = from.isId;
         to.isUnique = from.isUnique;
         to.isText = from.isText;
+
+
+        to.maxLength = from.maxLength;
 
         to.label = from.label;
         to.width = from.width;

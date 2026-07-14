@@ -11,8 +11,14 @@ import dev.cruding.engine.printer.Printer;
 public class FeServicePrinter extends Printer {
 
     public void print(Entity entity) {
+
+        if (entity.isReferenceData()) {
+            return;
+        }
+
         JsFlow f = new JsFlow();
         List<Action> actionList = Context.getInstance().actionEntity(entity);
+
 
         /* *********************************************************************** */
 

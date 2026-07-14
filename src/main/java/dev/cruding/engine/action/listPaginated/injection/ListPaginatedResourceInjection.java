@@ -6,8 +6,8 @@ import dev.cruding.engine.injection.ActionResourceInjection;
 public class ListPaginatedResourceInjection extends ActionResourceInjection {
 
     public void addResourceImport(JavaFlow f) {
-        f.addJavaImport("org.springframework.data.domain.Page");
         f.addJavaImport("org.springframework.data.domain.Pageable");
+        f.addJavaImport("app.core.PageResponse");
     }
 
     public void addResourceDeclaration(JavaFlow f) {
@@ -18,13 +18,13 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
             f.__("/", entity().lfather, "/{id", entity().ufather, "}");
         }
         f.__("\")");
-        f.L____("public Page<", entity().uname, "Dto> ", lnameWithoutEntity());
+        f.L____("public PageResponse<", entity().uname, "Dto> ", lnameWithoutEntity());
 
         if (byFatherId() && entity().haveFather) {
             f.__("@PathVariable Long id", entity().ufather, ", ");
         }
         f.__("Pageable pageable) {");
-        f.L________("return ", entity().lname, "Repository.findAllBy");
+        f.L________("return PageResponse.from(", entity().lname, "Repository.findAllBy");
 
         if (byFatherId() && entity().haveFather) {
             f.__(entity().ufather, "_Id");
@@ -35,7 +35,7 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
         if (byFatherId() && entity().haveFather) {
             f.__("id", entity().ufather, ", ");
         }
-        f.__("pageable).map(", entity().uname, "Dto::toDto);");
+        f.__("pageable).map(", entity().uname, "Dto::toDto));");
         f.L____("}");
     }
 }

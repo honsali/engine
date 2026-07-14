@@ -33,6 +33,7 @@ public class Entity extends FieldFactory {
     public Setting setting;
 
     public ArrayList<Field> fieldList = new ArrayList<>();
+    public ArrayList<DateOrderConstraint> dateOrderConstraints = new ArrayList<>();
 
     public Entity() {
         this.uname = this.getClass().getSimpleName();
@@ -104,6 +105,10 @@ public class Entity extends FieldFactory {
         }
     }
 
+    protected final void dateOrder(String constraintName, Field begin, Field end) {
+        dateOrderConstraints.add(new DateOrderConstraint(constraintName, begin, end));
+    }
+
     public boolean isReferenceData() {
         return false;
     }
@@ -113,5 +118,8 @@ public class Entity extends FieldFactory {
             throw new EntityInitializationException(String.format("Entity '%s' has no Father defined. Cannot get idFather.", uname));
         }
         return "Id" + ufather;
+    }
+
+    public record DateOrderConstraint(String name, Field begin, Field end) {
     }
 }

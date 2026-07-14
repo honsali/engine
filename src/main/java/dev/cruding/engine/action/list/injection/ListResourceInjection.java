@@ -16,11 +16,7 @@ public class ListResourceInjection extends ActionResourceInjection {
         if (byFatherId() && entity().haveFather) {
             f.L____("@GetMapping(\"/api/", entity().lname, "/", entity().lfather, "/{id", entity().ufather, "}\")");
             f.L____("public List<", entity().uname, "Dto> ", lnameWithoutEntity(), "(@PathVariable Long id", entity().ufather, ") {");
-            f.L________("try {");
-            f.L____________("return ", entity().lname, "Service.", lnameWithoutEntity(), "(id", entity().ufather, ");");
-            f.L________("} catch (NoSuchElementException e) {");
-            f.L____________("throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());");
-            f.L________("}");
+            f.L________("return ", entity().lname, "Service.", lnameWithoutEntity(), "(id", entity().ufather, ");");
 
             f.L____("}");
         } else {

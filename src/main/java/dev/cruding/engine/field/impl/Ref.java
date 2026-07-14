@@ -18,7 +18,7 @@ public class Ref<T extends Entity> extends RefField<T> {
     }
 
     public void addJsDeclaration(JsFlow f) {
-        f.addJsDeclaration(lname, "I" + referencedEntity.uname);
+        addJsDeclaration(f, lname, "I" + referencedEntity.uname);
     }
 
     public void addDtoImport(JavaFlow flow) {
