@@ -37,7 +37,7 @@ public class ServiceInitUpdateInjection extends ActionServiceInjection {
 
         f.L("");
         f.L("const recuperer", name, " = async (", params, ") => {");
-        f.L____("const ", entity().lname, ": I", entity().uname, " = (await axios.get<I", entity().uname, ">(`${API_URL}/", entity().lname, "/", url, "`)).data;");
+        f.L____("const ", entity().lname, ": I", entity().uname, " = (await axios.get<I", entity().uname, ">(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", url, "`)).data;");
         f.L____("return ", entity().lname, ";");
         f.L("};");
 

@@ -9,7 +9,7 @@ public class UpdateServiceInjection extends ActionServiceInjection {
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const maj = async (", entity().lname, ": I", entity().uname, ") => {");
-        f.L____("const { data } = await axios.put(`${API_URL}/", entity().lname, "/${", entity().lname, ".id}`, ", entity().lname, ");");
+        f.L____("const { data } = await axios.put(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/${", entity().lname, ".id}`, ", entity().lname, ");");
         f.L____("return data;");
         f.L("};");
 

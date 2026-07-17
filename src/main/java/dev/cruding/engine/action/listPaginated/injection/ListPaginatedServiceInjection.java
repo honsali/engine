@@ -22,7 +22,7 @@ public class ListPaginatedServiceInjection extends ActionServiceInjection {
         f.__("pageCourante: number) => {");
         f.L____("const listePaginee", entity().uname, ": IListePaginee", entity().uname, " = {} as IListePaginee", entity().uname, ";");
         f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}/", entity().lname, "/", lcoreName());
+        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", lcoreName());
 
         if (byFatherId() && entity().haveFather) {
             f.__("/", entity().lfather, "/${id", entity().ufather, "}");

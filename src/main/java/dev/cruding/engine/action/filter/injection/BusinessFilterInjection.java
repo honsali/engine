@@ -8,7 +8,7 @@ public class BusinessFilterInjection extends ActionBusinessInjection {
     public void addBusinessImport(JavaFlow f) {
         f.addJavaImport("org.springframework.data.domain.Page");
         f.addJavaImport("org.springframework.data.domain.Pageable");
-        f.addJavaImport("app.core.PageableUtils");
+        f.addJavaImport("app.core.pagination.PageableUtils");
     }
 
     public void addBusinessDeclaration(JavaFlow f) {

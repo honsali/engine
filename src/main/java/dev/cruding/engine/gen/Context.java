@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
@@ -14,6 +15,7 @@ import dev.cruding.engine.field.Field;
 public class Context {
 
 
+    private static final Pattern GENERATED_RESOURCE_AUTHORITY_PATTERN = Pattern.compile("ROLE_[A-Z][A-Z0-9_]*");
     private final static Context instance = new Context();
 
     public static final Context getInstance() {
@@ -29,6 +31,7 @@ public class Context {
 
 
     private String basePath;
+    private String generatedResourceAuthority;
 
 
 
@@ -43,6 +46,23 @@ public class Context {
             throw new ContextException("Base path cannot be null or empty");
         }
         this.basePath = basePath;
+    }
+
+    public String getGeneratedResourceAuthority() {
+        if (StringUtils.isBlank(generatedResourceAuthority)) {
+            throw new ContextException("Generated resource authority has not been configured");
+        }
+        return generatedResourceAuthority;
+    }
+
+    public void setGeneratedResourceAuthority(String generatedResourceAuthority) {
+        if (StringUtils.isBlank(generatedResourceAuthority)) {
+            throw new ContextException("Generated resource authority cannot be null or empty");
+        }
+        if (!GENERATED_RESOURCE_AUTHORITY_PATTERN.matcher(generatedResourceAuthority).matches()) {
+            throw new ContextException("Generated resource authority must match ROLE_[A-Z][A-Z0-9_]*");
+        }
+        this.generatedResourceAuthority = generatedResourceAuthority;
     }
 
     /* ****************************************************************************** */

@@ -12,7 +12,7 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
 
         for (Field field : entity().fieldList) {
             if (field.isId) {
-                f.addJavaImport("app.core.ConflictException");
+                f.addJavaImport("app.core.exception.ConflictException");
             }
         }
     }

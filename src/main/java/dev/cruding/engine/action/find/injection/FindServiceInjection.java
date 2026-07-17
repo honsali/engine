@@ -17,7 +17,7 @@ public class FindServiceInjection extends ActionServiceInjection {
         f.L("const ", lnameWithoutEntity(), " = async (", entity().lname, ": I", entity().uname, ", pageCourante: number) => {");
         f.L____("const listePaginee", entity().uname, ": IListePaginee", entity().uname, " = {} as IListePaginee", entity().uname, ";");
         f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.post<Page<I", entity().uname, ">>(`${API_URL}/", entity().lname, "/", lnameWithoutEntity(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entity().lname).__(")).data;");
+        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.post<Page<I", entity().uname, ">>(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", lnameWithoutEntity(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entity().lname).__(")).data;");
         f.L____("listePaginee", entity().uname, ".liste = page()", entity().uname, ".content;");
         f.L____("listePaginee", entity().uname, ".pagination = MapperPagination.creerPagination(page()", entity().uname, ");");
         f.L____("return listePaginee", entity().uname, ";");

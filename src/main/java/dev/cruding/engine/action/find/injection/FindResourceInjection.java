@@ -7,7 +7,7 @@ public class FindResourceInjection extends ActionResourceInjection {
 
     public void addResourceImport(JavaFlow f) {
         f.addJavaImport("org.springframework.data.domain.Pageable");
-        f.addJavaImport("app.core.PageResponse");
+        f.addJavaImport("app.core.pagination.PageResponse");
         f.addJavaImport("org.springframework.web.bind.annotation.PostMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RequestBody");
     }

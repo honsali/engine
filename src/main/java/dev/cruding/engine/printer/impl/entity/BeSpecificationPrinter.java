@@ -37,7 +37,7 @@ public class BeSpecificationPrinter extends Printer {
         f.addJavaImport("jakarta.persistence.criteria.CriteriaQuery");
         f.addJavaImport("jakarta.persistence.criteria.Predicate");
         f.addJavaImport("jakarta.persistence.criteria.Root");
-        f.addJavaImport("app.core.BaseSpecification");
+        f.addJavaImport("app.core.persistence.BaseSpecification");
 
         List<Field> notManyList = entity.fieldList.stream().filter(IS_BASIC_REF_OR_PERE).toList();
 

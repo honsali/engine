@@ -20,7 +20,7 @@ public class CreateResourceInjection extends BasicResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@PostMapping(\"/api");
+        f.L____("@PostMapping(\"");
         if ((byFatherId() && entity().haveFather) || byId()) {
             f.__("/", entity().lfather, "/{id" + entity().ufather, "}");
         }

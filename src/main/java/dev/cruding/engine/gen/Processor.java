@@ -3,6 +3,7 @@ package dev.cruding.engine.gen;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.printer.impl.common.BeLiqMasterPrinter;
+import dev.cruding.engine.printer.impl.common.BeReferenceDataCatalogPrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
 import dev.cruding.engine.printer.impl.entity.BeDomainPrinter;
@@ -45,6 +46,7 @@ public class Processor {
     private final BeLiqConstraintPrinter beLiqConstraintPrinter = new BeLiqConstraintPrinter();
     private final BeLiqDataPrinter beLiqDataPrinter = new BeLiqDataPrinter();
     private final BeLiqMasterPrinter beLiqMasterPrinter = new BeLiqMasterPrinter();
+    private final BeReferenceDataCatalogPrinter beReferenceDataCatalogPrinter = new BeReferenceDataCatalogPrinter();
     private final BeLiqTablePrinter beLiqTablePrinter = new BeLiqTablePrinter();
     private final FeModulePrinter feModulePrinter = new FeModulePrinter();
     private final FeI18nPrinter feI18nPrinter = new FeI18nPrinter();
@@ -91,6 +93,7 @@ public class Processor {
 
     private void printBeGlobalFiles() {
         beLiqMasterPrinter.print();
+        beReferenceDataCatalogPrinter.print();
     }
 
     private void printFeEntityFiles(Entity entity) {

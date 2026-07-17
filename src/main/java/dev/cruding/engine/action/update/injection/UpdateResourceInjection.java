@@ -7,7 +7,7 @@ public class UpdateResourceInjection extends BasicResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@", urest(), "Mapping(\"/api");
+        f.L____("@", urest(), "Mapping(\"");
         if ((byFatherId() && entity().haveFather) || byId()) {
             f.__("(\"/", entity().lfather, "/{id" + entity().ufather, "}");
         }

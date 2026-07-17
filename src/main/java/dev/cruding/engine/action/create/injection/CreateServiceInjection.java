@@ -13,7 +13,7 @@ public class CreateServiceInjection extends ActionServiceInjection {
             f.__("id", entity().father.uname, ": string, ");
         }
         f.__(entity().lname, ": I", entity().uname, ") => {");
-        f.L____("const { data } = await axios.post(`${API_URL}");
+        f.L____("const { data } = await axios.post(`${API_URL}", entity().apiDomainPath());
         if (byFatherId() && entity().haveFather) {
             f.__("/", entity().lfather, "/${id", entity().ufather, "}");
         }

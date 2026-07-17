@@ -46,6 +46,7 @@ The backend target is based on Spring, JPA, and Liquibase. Generated artifacts i
 - mappers;
 - repositories;
 - specifications and filters;
+- domain-owned reference-data catalogs;
 - business services;
 - REST resources;
 - Liquibase tables, constraints, data headers, and master changelog entries.
@@ -56,7 +57,9 @@ Output is written under:
 result/be/
 ```
 
-The backend overlay assumes that the host application provides `app.core.PageResponse`, global API exception handling for service-level `NoSuchElementException` and `IllegalArgumentException`, and `liquibase/changelog/security_table.xml`. Generated paginated resources return `PageResponse` rather than exposing Spring Data's `Page` contract directly.
+The backend overlay assumes that the host application provides `app.core.pagination.PageResponse`, `app.core.pagination.PageableUtils`, `app.core.persistence.BaseSpecification`, `app.core.exception.ConflictException`, `app.core.referenceData.ReferenceDataCatalog`, `app.core.referenceData.ReferenceDataDefinition`, global API exception handling for service-level `NoSuchElementException` and `IllegalArgumentException`, and `liquibase/changelog/security_table.xml`. Generated paginated resources return `PageResponse` rather than exposing Spring Data's `Page` contract directly.
+
+Generated REST resources use the entity model package as their API namespace. Entities under `model.rh` therefore receive the class-level prefix `/api/rh`, and generated frontend services append `/rh` to the host application's `API_URL`. Each resource also receives a class-level `@PreAuthorize` using the explicit authority supplied by the project bootstrap. The host must enable Spring method security and enforce the same namespace and authority in its HTTP security configuration so authorization remains stable as entities are added to a domain.
 
 ### Frontend
 
@@ -214,23 +217,33 @@ public Conge() {
 }
 ```
 
-This emits a Liquibase check that permits missing endpoints and otherwise requires the end value to be greater than or equal to the beginning. `ReferenceData` supplies a required `name` field mapped to `libelle` as its identifier; reference entities use the host application's shared reference-data runtime rather than generated per-entity backend resources or frontend services.
+This emits a Liquibase check that permits missing endpoints and otherwise requires the end value to be greater than or equal to the beginning. `ReferenceData` supplies a required `name` field mapped to `libelle` as its identifier; reference entities use the host application's shared reference-data runtime rather than generated per-entity backend resources or frontend services. The engine generates one domain-owned catalog from explicit reference-data entities and entities targeted by `Ref`, `RefMany`, or `Father` relationships. Catalog entries use each entity's identifier field as the display label and allow filtering by `id` plus its to-one reference IDs. All catalog entities must share one top-level model domain, and their case-insensitive reference names must be unique; generation fails otherwise.
 
 ### Project bootstrap
 
 Modules and pages are declared in one project bootstrap:
 
 ```java
-Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
+public class RhProject implements ProjectBootstrap {
+    @Override
+    public String generatedResourceAuthority() {
+        return "ROLE_GESTIONNAIRE_RH";
+    }
 
-pageFiltrerEmploye = moduleEmploye
-    .addPage(new ViewFiltrerEmploye())
-    .icon("faUser")
-    .isIndex();
+    @Override
+    public void init() {
+        Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
 
-pageConsulterEmploye = moduleEmploye
-    .addPage(new ViewConsulterEmploye())
-    .pathById();
+        pageFiltrerEmploye = moduleEmploye
+            .addPage(new ViewFiltrerEmploye())
+            .icon("faUser")
+            .isIndex();
+
+        pageConsulterEmploye = moduleEmploye
+            .addPage(new ViewConsulterEmploye())
+            .pathById();
+    }
+}
 ```
 
 ### Page composition
@@ -258,6 +271,7 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
 - Entity definitions belong under `src/main/java/model`.
 - Project and page definitions belong under `src/main/java/modules`.
 - Exactly one project bootstrap must implement `ProjectBootstrap` directly.
+- The project bootstrap must return one canonical authority from `generatedResourceAuthority()` for generated business resources; the value must match `ROLE_[A-Z][A-Z0-9_]*`.
 - Modules are explicit `new Module("ModuleName", "package.path")` instances.
 - Module names start with `Module`.
 - Pages are added with `Module.addPage(new ViewComposerSubclass())`.

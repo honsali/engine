@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.ProjectBootstrap;
 
 public class ProjectBootstrapLoader {
@@ -32,6 +33,7 @@ public class ProjectBootstrapLoader {
             }
 
             ProjectBootstrap bootstrap = instantiate(bootstrapClasses.get(0));
+            Context.getInstance().setGeneratedResourceAuthority(bootstrap.generatedResourceAuthority());
             bootstrap.init();
         } catch (GeneratorException e) {
             throw e;

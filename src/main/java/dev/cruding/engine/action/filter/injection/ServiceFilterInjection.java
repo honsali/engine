@@ -16,7 +16,7 @@ public class ServiceFilterInjection extends ActionServiceInjection {
         f.L("");
         f.L("const ", lnameWithoutEntity(), " = async (", entity().lname, ": I", entity().uname, ", pageCourante = 0): Promise<IListePaginee" + entity().uname + "> => {");
         f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
-        f.L____("const { data } = await axios.post<Page<I", entity().uname, ">>(`${API_URL}/", entity().lname, "/", lnameWithoutEntity(), "`, ", entity().lname).__(", { params: { page: pageable.page, size: pageable.size } });");
+        f.L____("const { data } = await axios.post<Page<I", entity().uname, ">>(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", lnameWithoutEntity(), "`, ", entity().lname).__(", { params: { page: pageable.page, size: pageable.size } });");
         f.L____("return {");
         f.L________("liste: data.content,");
         f.L________("pagination: MapperPagination.creerPagination<I", entity().uname, ">(data),");

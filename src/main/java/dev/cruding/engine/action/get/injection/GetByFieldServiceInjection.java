@@ -15,7 +15,7 @@ public class GetByFieldServiceInjection extends ActionServiceInjection {
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const ", lnameWithoutEntity(), " = async (", byField()[0].lname, entity().uname, ": string) => {");
-        f.L____("const { data } = await axios.get<I", entity().uname, ">(`${API_URL}/", entity().lname, "/${", byField()[0].lname, entity().uname, "}`);");
+        f.L____("const { data } = await axios.get<I", entity().uname, ">(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/${", byField()[0].lname, entity().uname, "}`);");
         f.L____("return data;");
         f.L("};");
 

@@ -32,6 +32,11 @@ public class RhProject implements ProjectBootstrap {
     public static Page pageCreerDepartement;
 
     @Override
+    public String generatedResourceAuthority() {
+        return "ROLE_GESTIONNAIRE_RH";
+    }
+
+    @Override
     public void init() {
         new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 

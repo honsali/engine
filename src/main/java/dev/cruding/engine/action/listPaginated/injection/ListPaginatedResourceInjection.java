@@ -7,7 +7,7 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
 
     public void addResourceImport(JavaFlow f) {
         f.addJavaImport("org.springframework.data.domain.Pageable");
-        f.addJavaImport("app.core.PageResponse");
+        f.addJavaImport("app.core.pagination.PageResponse");
     }
 
     public void addResourceDeclaration(JavaFlow f) {

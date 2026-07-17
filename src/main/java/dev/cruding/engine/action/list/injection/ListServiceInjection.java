@@ -17,7 +17,7 @@ public class ListServiceInjection extends ActionServiceInjection {
             f.__("id" + entity().ufather, ": string");
         }
         f.__(") => {");
-        f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${API_URL}");
+        f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${API_URL}", entity().apiDomainPath());
 
 
 

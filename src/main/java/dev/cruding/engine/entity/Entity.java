@@ -113,6 +113,10 @@ public class Entity extends FieldFactory {
         return false;
     }
 
+    public String apiDomainPath() {
+        return "/" + pkg.replace('.', '/');
+    }
+
     public String idFather() {
         if (father == null) {
             throw new EntityInitializationException(String.format("Entity '%s' has no Father defined. Cannot get idFather.", uname));

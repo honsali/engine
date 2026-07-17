@@ -18,7 +18,9 @@ public class BeResourcePrinter extends Printer {
         for (Action action : Context.getInstance().actionEntity(entity)) {
             action.resourceActionInjection.addResourceImport(f);
         }
+        f.addJavaImport("org.springframework.security.access.prepost.PreAuthorize");
         f.addJavaImport("org.springframework.web.bind.annotation.GetMapping");
+        f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RestController");
 
         /* *********************************************************************** */
@@ -27,6 +29,8 @@ public class BeResourcePrinter extends Printer {
         f.flushJavaImportBlock();
         f.L("");
         f.L("@RestController");
+        f.L("@RequestMapping(\"/api", entity.apiDomainPath(), "\")");
+        f.L("@PreAuthorize(\"hasAuthority('", Context.getInstance().getGeneratedResourceAuthority(), "')\")");
         f.L("public class ", entity.uname, "Resource {");
         f.L("");
         f.L____("private final ", entity.uname, "Service ", entity.lname, "Service;");
