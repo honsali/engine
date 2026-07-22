@@ -57,7 +57,9 @@ Output is written under:
 result/be/
 ```
 
-The backend overlay assumes that the host application provides `app.core.pagination.PageResponse`, `app.core.pagination.PageableUtils`, `app.core.persistence.BaseSpecification`, `app.core.exception.ConflictException`, `app.core.referenceData.ReferenceDataCatalog`, `app.core.referenceData.ReferenceDataDefinition`, global API exception handling for service-level `NoSuchElementException` and `IllegalArgumentException`, and `liquibase/changelog/security_table.xml`. Generated paginated resources return `PageResponse` rather than exposing Spring Data's `Page` contract directly.
+The backend overlay assumes that the host application provides `app.core.configuration.JsonId`, `app.core.pagination.PageResponse`, `app.core.pagination.PageableUtils`, `app.core.persistence.BaseSpecification`, `app.core.exception.ConflictException`, `app.core.referenceData.ReferenceDataCatalog`, `app.core.referenceData.ReferenceDataDefinition`, global API exception handling for service-level `NoSuchElementException` and `IllegalArgumentException`, and `liquibase/changelog/security_table.xml`. Generated paginated resources return `PageResponse` rather than exposing Spring Data's `Page` contract directly.
+
+Generated DTO identifiers remain `Long` inside Java and receive the host-owned `@JsonId` annotation. The host serializes only these annotated values as JSON strings, matching generated frontend string identifiers without changing JPA or repository ID types.
 
 Generated REST resources use the entity model package as their API namespace. Entities under `model.rh` therefore receive the class-level prefix `/api/rh`, and generated frontend services append `/rh` to the host application's `API_URL`. Each resource also receives a class-level `@PreAuthorize` using the explicit authority supplied by the project bootstrap. The host must enable Spring method security and enforce the same namespace and authority in its HTTP security configuration so authorization remains stable as entities are added to a domain.
 

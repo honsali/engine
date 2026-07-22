@@ -13,6 +13,7 @@ public class BeDtoPrinter extends Printer {
 
         /* *********************************************************************** */
         List<Field> fieldList = entity.fieldList;
+        f.addJavaImport("app.core.configuration.JsonId");
         for (Field field : fieldList) {
             field.addDtoImport(f);
             if (field.isFather) {
@@ -37,8 +38,8 @@ public class BeDtoPrinter extends Printer {
         f.flushJavaImportBlock();
         f.L("");
         f.L("public record ", entity.uname, "Dto(");
-        f.L________("Long id,");
-        f.L________("Long id", entity.uname, ",");
+        f.L________("@JsonId Long id,");
+        f.L________("@JsonId Long id", entity.uname, ",");
         for (int i = 0; i < fieldList.size(); i++) {
             Field field = fieldList.get(i);
             String end = i == fieldList.size() - 1 ? "" : ",";
