@@ -1,15 +1,19 @@
 package dev.cruding.engine.action.update.injection;
 
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.injection.ActionServiceInjection;
 
 public class UpdateServiceInjection extends ActionServiceInjection {
 
+    public void addServiceImport(JsFlow f) {
+        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
+    }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const maj = async (", entity().lname, ": I", entity().uname, ") => {");
-        f.L____("const { data } = await axios.put(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/${", entity().lname, ".id}`, ", entity().lname, ");");
+        f.L____("const { data } = await axios.put<I", entity().uname, ">(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/${", entity().lname, ".id}`, ", entity().lname, ");");
         f.L____("return data;");
         f.L("};");
 

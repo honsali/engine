@@ -61,6 +61,8 @@ The backend overlay assumes that the host application provides `app.core.configu
 
 Generated DTO identifiers remain `Long` inside Java and receive the host-owned `@JsonId` annotation. The host serializes only these annotated values as JSON strings, matching generated frontend string identifiers without changing JPA or repository ID types.
 
+`JavaFlow` follows the same import groups as VS Code's Java organizer: `java`, `javax`, `org`, `com`, then unmatched packages alphabetically. Generated record components are emitted explicitly one per line; formatter configuration should preserve intentional wrapping rather than requiring trailing comments in generated/runtime comparisons.
+
 Generated REST resources use the entity model package as their API namespace. Entities under `model.rh` therefore receive the class-level prefix `/api/rh`, and generated frontend services append `/rh` to the host application's `API_URL`. Each resource also receives a class-level `@PreAuthorize` using the explicit authority supplied by the project bootstrap. The host must enable Spring method security and enforce the same namespace and authority in its HTTP security configuration so authorization remains stable as entities are added to a domain.
 
 ### Frontend
@@ -85,6 +87,8 @@ result/fe/
 ```
 
 The generated trees are overlays for applications that already provide shared runtime infrastructure such as Spring Boot configuration, frontend layout, security, common components, and Waxant integration.
+
+Generated Axios services use normal TypeScript imports rather than `import type`, type the response on the Axios call, destructure `data` into a local variable, and let TypeScript infer the async function return type. They do not duplicate the response type with an explicit `Promise<T>` annotation or return `(await axios...).data` inline. Paginated Redux consumers use null-safe access while their initial shared pagination state may be absent.
 
 ## Architectural overview
 
@@ -332,6 +336,8 @@ Validate the project with:
 ```bash
 mvn test
 ```
+
+Focused tests currently protect reference-catalog determinism, generated resource authority, backend `@JsonId` emission, and frontend Axios service conventions. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
 
 Run `dev.cruding.engine.App` with the engine directory as the working directory. The application expects `src/main/java/model` and `src/main/java/modules` relative to that directory and writes generated files to `result/`.
 

@@ -1,10 +1,14 @@
 package dev.cruding.engine.action.create.injection;
 
 import dev.cruding.engine.flow.Flow;
+import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.injection.ActionServiceInjection;
 
 public class CreateServiceInjection extends ActionServiceInjection {
 
+    public void addServiceImport(JsFlow f) {
+        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
+    }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
@@ -13,7 +17,7 @@ public class CreateServiceInjection extends ActionServiceInjection {
             f.__("id", entity().father.uname, ": string, ");
         }
         f.__(entity().lname, ": I", entity().uname, ") => {");
-        f.L____("const { data } = await axios.post(`${API_URL}", entity().apiDomainPath());
+        f.L____("const { data } = await axios.post<I", entity().uname, ">(`${API_URL}", entity().apiDomainPath());
         if (byFatherId() && entity().haveFather) {
             f.__("/", entity().lfather, "/${id", entity().ufather, "}");
         }

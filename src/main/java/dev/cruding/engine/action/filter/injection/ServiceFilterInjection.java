@@ -9,12 +9,12 @@ public class ServiceFilterInjection extends ActionServiceInjection {
     public void addServiceImport(JsFlow f) {
         f.addJsImport("{ Page }", "modele/commun/pagination/DomainePagination");
         f.addJsImport("MapperPagination", "modele/commun/pagination/MapperPagination");
-        f.addJsImport("{ IListePaginee" + entity().uname + ", I" + entity().uname + " }", "./Domaine" + entity().uname);
+        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
     }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
-        f.L("const ", lnameWithoutEntity(), " = async (", entity().lname, ": I", entity().uname, ", pageCourante = 0): Promise<IListePaginee" + entity().uname + "> => {");
+        f.L("const ", lnameWithoutEntity(), " = async (", entity().lname, ": I", entity().uname, ", pageCourante = 0) => {");
         f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
         f.L____("const { data } = await axios.post<Page<I", entity().uname, ">>(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", lnameWithoutEntity(), "`, ", entity().lname).__(", { params: { page: pageable.page, size: pageable.size } });");
         f.L____("return {");

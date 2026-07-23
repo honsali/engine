@@ -1,0 +1,11 @@
+# Engine agent notes
+
+- Read [`../Context.md`](../Context.md) and [`../WORKSPACE.md`](../WORKSPACE.md) before changing generator architecture or cross-project contracts. This engine is project-owned leverage for a solo workflow, not a generic generator product.
+- Inspect repository status before and after work. Preserve local version changes in `pom.xml`, do not stage/commit/push unless requested, and do not treat ignored `result/` as a runtime source tree.
+- For a repeated generated pattern, change the owning DSL/printer/injection first, add a focused regression test when it protects a concrete high-leverage rule, run `mvn test`, execute `dev.cruding.engine.App` from the engine root, inspect `result/be` and `result/fe`, and selectively transfer intended output into `crud-be` or `crud-fe`.
+- Generated backend DTO identifiers stay Java `Long` and receive `app.core.configuration.JsonId`; generated frontend identifiers stay `string`. Do not introduce numeric frontend IDs, `string | number`, `BigInteger` as an ID marker, or per-service conversion mappers.
+- Generated Axios services use normal TypeScript imports, not `import type`. Put the payload type on the Axios call, emit `const { data } = await ...`, return `data` separately, and infer async return types. Do not emit duplicate `Promise<T>` annotations or `(await axios...).data` inline.
+- `JavaFlow` import groups intentionally match VS Code: `java`, `javax`, `org`, `com`, then remaining packages alphabetically. Keep TypeScript imports deterministic as well. Prefer stable formatter configuration and generated layout over comments whose only purpose is to resist formatting.
+- Generated business resources use the model domain as their route namespace and the project bootstrap's canonical authority. The RH overlay uses `/api/rh` and `ROLE_GESTIONNAIRE_RH`; host backend security must enforce the same namespace.
+- Keep `result/` disposable and comparator-friendly. Never bulk-copy it over runnable projects, never place manual content there, and preserve deliberate runtime differences such as temporary leave-code behavior until their owning contract is decided.
+- Current known follow-up work includes correct parent/child leave routes, stronger route/request/response typing, and final leave-code ownership. Do not hide these with compatibility layers.

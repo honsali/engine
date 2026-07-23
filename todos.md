@@ -13,6 +13,15 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 
 ---
 
+## Established generated contracts
+
+- [x] Backend DTO IDs remain Java `Long` and receive host-owned `@JsonId` for JSON string serialization.
+- [x] Generated frontend IDs remain TypeScript `string`, including URL parameters.
+- [x] Generated business resources and services share explicit domain namespaces such as `/api/rh` and a configured canonical authority.
+- [x] Current Axios services use normal imports, response generics, `const { data }`, separate returns, and inferred async return types.
+- [x] Java import groups match the VS Code organizer to avoid save-time comparator churn.
+- [x] Focused tests cover the highest-leverage current DTO, resource, catalog, and frontend-service rules.
+
 # Priority 1 — Generate more with less DSL
 
 ## 1.1 Add a high-level recipe layer
@@ -35,6 +44,7 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 1.2.5  [ ] Derive standard action success flows, such as create → detail, update → detail, and delete → list.
 1.2.6  [ ] Derive standard module index pages when the module uses a known CRUD recipe.
 1.2.7  [ ] Allow entity-level presentation metadata to define sensible defaults reused by forms, tables, filters, and details.
+1.2.8  [ ] Derive correct parent/child routes that preserve both parent and child identifiers across list, detail, create, and update flows.
 
 ## 1.3 Keep progressive escape hatches
 
@@ -75,7 +85,7 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 
 ## 2.3 Stable formatting
 
-2.3.1  [ ] Keep import ordering deterministic across Java and TypeScript output.
+2.3.1  [x] Keep import ordering deterministic across Java and TypeScript output and aligned with the IDE organizer.
 2.3.2  [ ] Keep generated whitespace and line endings stable.
 2.3.3  [ ] Avoid timestamps, random values, and run-dependent content in generated files.
 2.3.4  [ ] Keep generated file paths and names based on stable conventions.
@@ -164,12 +174,14 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 
 # Priority 6 — Generated application contract
 
-6.1   [ ] Document the backend infrastructure expected by generated files.
+6.1   [x] Document the backend infrastructure expected by generated files, including `@JsonId`, pagination, persistence helpers, exceptions, reference data, and security assumptions.
 6.2   [ ] Document the frontend Waxant and `commun` APIs expected by generated files.
 6.3   [ ] Document which root application files are manually maintained rather than generated.
 6.4   [ ] Record the expected database and Liquibase conventions.
 6.5   [ ] Keep generator changes synchronized with corresponding backend/frontend runtime changes inside each project.
 6.6   [ ] Add a lightweight project profile only when different projects need configurable package names, route roots, locale, or database behaviour.
+6.7   [ ] Generate stronger create, update, response, and filter contracts when one optional-field interface no longer gives sufficient safety.
+6.8   [ ] Keep generated route-parameter requirements synchronized with each page path and parent/child ownership.
 
 ---
 

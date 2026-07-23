@@ -17,17 +17,15 @@ public class ListServiceInjection extends ActionServiceInjection {
             f.__("id" + entity().ufather, ": string");
         }
         f.__(") => {");
-        f.L____("const liste", entity().uname, ": I", entity().uname, "[] = (await axios.get<I", entity().uname, "[]>(`${API_URL}", entity().apiDomainPath());
-
-
+        f.L____("const { data } = await axios.get<I", entity().uname, "[]>(`${API_URL}", entity().apiDomainPath());
 
         f.__("/", entity().lname);
 
         if (byFatherId() && entity().haveFather) {
             f.__("/", entity().lfather, "/${id", entity().ufather, "}");
         }
-        f.__("`)).data;");
-        f.L____("return liste", entity().uname, ";");
+        f.__("`);");
+        f.L____("return data;");
 
         f.L("};");
     }

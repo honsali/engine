@@ -26,6 +26,6 @@ public class ChangePageMdlInjection extends ActionMdlInjection {
 
     public void addMdlExtraReducerAffectation(MdlFlow f) {
         f.L________________("state.listePaginee", entity().uname, " = action.payload.listePaginee", entity().uname, ";");
-        f.L________________("state.pageCourante = action.payload.listePaginee", entity().uname, ".pagination.pageCourante;");
+        f.L________________("state.pageCourante = action.payload.listePaginee", entity().uname, ".pagination?.pageCourante;");
     }
 }
