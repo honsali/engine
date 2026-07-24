@@ -59,7 +59,7 @@ public class FeHookPrinter extends Printer {
 
 
         f.L("");
-        f.L____("const createAction = (action: any) => (req?: Req", page.uc, ") => dispatch(action({ ...req, ...params }));");
+        f.L____("const createAction = (action: any) => (req?: Partial<Req", page.uc, ">) => dispatch(action({ ...req, ...params }));");
         f.L("");
         f.L____("return {");
         f.L________("// Actions");

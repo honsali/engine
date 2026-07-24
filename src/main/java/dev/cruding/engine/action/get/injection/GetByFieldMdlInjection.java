@@ -14,13 +14,13 @@ public class GetByFieldMdlInjection extends ActionMdlInjection {
     public void addMdlRequestAttribute(MdlFlow f) {
         String lnameField = byField()[0].lname;
         if (lnameField.equals("id")) {
-            f.addMdlRequestAttribute("id" + entity().uname, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().uname, "string");
         } else {
-            f.addMdlRequestAttribute(lnameField, "string");
+            f.addMdlRequiredRequestAttribute(lnameField, "string");
         }
 
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
     }
 

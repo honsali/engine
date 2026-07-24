@@ -20,7 +20,9 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 - [x] Generated business resources and services share explicit domain namespaces such as `/api/rh` and a configured canonical authority.
 - [x] Current Axios services use normal imports, response generics, `const { data }`, separate returns, and inferred async return types.
 - [x] Java import groups match the VS Code organizer to avoid save-time comparator churn.
-- [x] Focused tests cover the highest-leverage current DTO, resource, catalog, and frontend-service rules.
+- [x] Focused tests cover the highest-leverage current DTO, resource, catalog, frontend-service, and page-contract rules.
+- [x] Generated page requests require strict service identifiers, keep shared `form`/`pageCourante` values optional, and expose `Partial<Req*>` hook inputs completed by route parameters without frontend validation throws.
+- [x] Generated page results use optional action-specific properties instead of `T | {}`, and paginated consumers remain null-safe.
 
 # Priority 1 — Generate more with less DSL
 

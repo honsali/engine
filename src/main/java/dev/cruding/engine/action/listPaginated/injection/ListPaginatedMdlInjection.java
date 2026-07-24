@@ -13,7 +13,7 @@ public class ListPaginatedMdlInjection extends ActionMdlInjection {
         f.addMdlRequestAttribute("pageCourante", "number");
 
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
     }
 

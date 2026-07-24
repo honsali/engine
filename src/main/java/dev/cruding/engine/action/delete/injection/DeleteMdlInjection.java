@@ -11,9 +11,9 @@ public class DeleteMdlInjection extends ActionMdlInjection {
     public void addMdlRequestAttribute(MdlFlow f) {
 
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
-        f.addMdlRequestAttribute("id" + entity().uname, "string");
+        f.addMdlRequiredRequestAttribute("id" + entity().uname, "string");
     }
 
     public void addMdlResultAttribute(MdlFlow f) {}

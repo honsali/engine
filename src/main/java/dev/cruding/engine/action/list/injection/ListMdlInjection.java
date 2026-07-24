@@ -12,7 +12,7 @@ public class ListMdlInjection extends ActionMdlInjection {
     public void addMdlRequestAttribute(MdlFlow f) {
 
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
     }
 

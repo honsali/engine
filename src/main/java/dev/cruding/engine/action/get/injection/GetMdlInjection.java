@@ -11,10 +11,10 @@ public class GetMdlInjection extends ActionMdlInjection {
 
     public void addMdlRequestAttribute(MdlFlow f) {
         if (!asList()) {
-            f.addMdlRequestAttribute("id" + entity().uname, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().uname, "string");
         }
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
     }
 

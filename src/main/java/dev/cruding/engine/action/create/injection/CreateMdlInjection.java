@@ -12,7 +12,7 @@ public class CreateMdlInjection extends ActionMdlInjection {
     public void addMdlRequestAttribute(MdlFlow f) {
         f.addMdlRequestAttribute("form", "FormInstance");
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
     }
 

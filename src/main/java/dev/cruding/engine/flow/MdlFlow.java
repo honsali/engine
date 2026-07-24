@@ -14,6 +14,7 @@ public class MdlFlow extends Flow {
 
     private HashMap<String, Imp> importMdlSet = new HashMap<>();
     private HashSet<Attribute> mdlRequestAttributeSet = new HashSet<>();
+    private HashSet<String> mdlRequiredRequestAttributeSet = new HashSet<>();
     private HashSet<Attribute> mdlResultAttributeSet = new HashSet<>();
     public HashSet<Attribute> mdlStateAttributeSet = new HashSet<>();
     public HashSet<Attribute> mdlSelectorAttributeSet = new HashSet<>();
@@ -28,6 +29,11 @@ public class MdlFlow extends Flow {
 
     public void addMdlRequestAttribute(String name, String type) {
         mdlRequestAttributeSet.add(new Attribute(name, type));
+    }
+
+    public void addMdlRequiredRequestAttribute(String name, String type) {
+        mdlRequestAttributeSet.add(new Attribute(name, type));
+        mdlRequiredRequestAttributeSet.add(name);
     }
 
     public void addMdlResultAttribute(String name, String type) {
@@ -55,7 +61,8 @@ public class MdlFlow extends Flow {
         Collections.sort(mdlRequestAttributeList, attributeSorter);
 
         for (Attribute att : mdlRequestAttributeList) {
-            L____(att.name, "?: ", att.type, ";");
+            String separator = mdlRequiredRequestAttributeSet.contains(att.name) ? ": " : "?: ";
+            L____(att.name, separator, att.type, ";");
         }
     }
 
@@ -64,11 +71,7 @@ public class MdlFlow extends Flow {
         Collections.sort(mdlResultAttributeList, attributeSorter);
 
         for (Attribute att : mdlResultAttributeList) {
-            if (att.type.length() > 1 && !att.type.endsWith("[]") && att.type.charAt(0) == 'I' && Character.isUpperCase(att.type.charAt(1))) {
-                L____(att.name, ": ", att.type, " | {};");
-            } else {
-                L____(att.name, "?: ", att.type, ";");
-            }
+            L____(att.name, "?: ", att.type, ";");
         }
     }
 

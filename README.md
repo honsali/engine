@@ -18,6 +18,19 @@ The project optimizes for:
 - **Diff-friendly output** — generated files are reviewed with comparator tools before selected changes are applied to the application.
 - **Project ownership** — the generator and its backend/frontend targets are developed together and may evolve together.
 
+## One application, two generated runtimes
+
+The generated backend and frontend belong to one application and normally evolve in the same delivery. Their HTTP contract remains explicit and testable, but the engine does not optimize for independently versioned frontend and backend products or hypothetical external consumers.
+
+The ownership boundary is deliberate:
+
+- generated backend candidates place business rules, authoritative validation, authorization, transactions, persistence, and integrity on the backend side; after review and selective transfer, runnable backend code is authoritative;
+- generated frontend candidates remain limited to components, layouts, navigation, presentation, interaction state, and API orchestration;
+- when one DSL field constraint feeds backend request validation and frontend feedback, backend emission remains authoritative; frontend emission is only an inline UX projection and must not add acceptance logic;
+- frontend TypeScript types describe the transport contract without creating a separate browser-side business domain.
+
+A generated frontend controller or Redux model may coordinate a request and its UI state, but it must not mirror backend use cases or decide business outcomes. The backend must remain correct when called without the generated frontend, and its Problem Details are the canonical errors presented by the UI.
+
 ## Intended workflow
 
 The normal workflow is:
@@ -86,9 +99,11 @@ Output is written under:
 result/fe/
 ```
 
-The generated trees are overlays for applications that already provide shared runtime infrastructure such as Spring Boot configuration, frontend layout, security, common components, and Waxant integration.
+The generated trees are overlays for applications that already provide shared runtime infrastructure such as Spring Boot configuration, frontend layout, security, common components, and Waxant integration. These artifacts organize presentation and transport; business behavior and authoritative validation stay in the generated or host backend.
 
 Generated Axios services use normal TypeScript imports rather than `import type`, type the response on the Axios call, destructure `data` into a local variable, and let TypeScript infer the async function return type. They do not duplicate the response type with an explicit `Promise<T>` annotation or return `(await axios...).data` inline. Paginated Redux consumers use null-safe access while their initial shared pagination state may be absent.
+
+A generated page shares aggregate `Req*` and `Res*` interfaces across multiple actions. Strict service inputs such as route identifiers are required in `Req*`, while shared UI values such as `form` and `pageCourante` remain optional. Hooks accept `Partial<Req*>` because router parameters complete the dispatched request; controllers do not add frontend `throw` validation. Backend validation remains authoritative. Results use optional properties rather than `T | {}` unions, since each action populates only its own subset.
 
 ## Architectural overview
 
@@ -288,6 +303,7 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
 - Typed lookup such as `entity(Employe.class)` is preferred over string lookup.
 - Duplicate entities, modules, and pages are rejected by `Context`.
 - Generated TypeScript literals must be emitted through `TsLiteral` where escaping is required.
+- Generated frontend validation is limited to non-authoritative inline feedback; business rules and acceptance validation belong in backend candidates and become authoritative only in the reviewed runnable backend.
 
 ## Extension philosophy
 
@@ -337,7 +353,7 @@ Validate the project with:
 mvn test
 ```
 
-Focused tests currently protect reference-catalog determinism, generated resource authority, backend `@JsonId` emission, and frontend Axios service conventions. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
+Focused tests currently protect reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
 
 Run `dev.cruding.engine.App` with the engine directory as the working directory. The application expects `src/main/java/model` and `src/main/java/modules` relative to that directory and writes generated files to `result/`.
 

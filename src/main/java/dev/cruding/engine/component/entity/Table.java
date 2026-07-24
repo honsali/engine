@@ -79,8 +79,8 @@ public class Table extends Component {
 
     public boolean addOpenTag(ViewFlow flow, int level) {
         if (paginated) {
-            indent(flow, level).append("<Tableau listeDonnee={").append(dataSource).append(".liste}");
-            flow.totalUi().__(" pagination={").append(dataSource).append(".pagination}");
+            indent(flow, level).append("<Tableau listeDonnee={").append(dataSource).append("?.liste}");
+            flow.totalUi().__(" pagination={").append(dataSource).append("?.pagination}");
         } else {
             indent(flow, level).append("<Tableau listeDonnee={").append(dataSource).append("}");
         }

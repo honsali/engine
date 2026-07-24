@@ -22,16 +22,16 @@ public class BasicMdlInjection extends ActionMdlInjection {
             f.addMdlRequestAttribute("form", "FormInstance");
         }
         if (byFatherId() && entity().haveFather) {
-            f.addMdlRequestAttribute("id" + entity().ufather, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");
         }
 
         if (byId()) {
-            f.addMdlRequestAttribute("id" + entity().uname, "string");
+            f.addMdlRequiredRequestAttribute("id" + entity().uname, "string");
         }
 
         if (byField() != null) {
             for (Field c : byField()) {
-                f.addMdlRequestAttribute(c.lname, "string");
+                f.addMdlRequiredRequestAttribute(c.lname, "string");
             }
 
         }
