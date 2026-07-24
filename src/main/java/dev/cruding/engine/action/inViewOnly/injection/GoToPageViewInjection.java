@@ -20,7 +20,7 @@ public class GoToPageViewInjection extends ActionViewInjection {
     public boolean addViewScript(ViewFlow f) {
         if (!onSuccessAction()) {
             f.addJsImport("{ " + targetPage.name + " }", targetPage.module.pageList(element().path, inElement()));
-            f.totalScript().L____("const goTo", targetPage.name, " = (", entity().lname, ") => {");
+            f.totalScript().L____("const goTo", targetPage.name, " = (", typedEntityParameter(f), ") => {");
             f.totalScript().L________("goToPage(", targetPage.name + ", ", entity().lname, ");");
             f.totalScript().L____("};");
             f.useGoToPage();

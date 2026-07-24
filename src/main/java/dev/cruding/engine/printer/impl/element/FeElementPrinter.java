@@ -15,7 +15,8 @@ public class FeElementPrinter extends Printer {
 
         /* *********************************************************************** */
         if (element.byForm) {
-            f.addProp("form");
+            f.addJsImport("{ FormInstance }", "antd");
+            f.addProp("form", "FormInstance");
         }
         f.addProp(element.byProp);
 
@@ -32,7 +33,7 @@ public class FeElementPrinter extends Printer {
 
         f.flushViewImportBlock();
         f.L("");
-        f.L("const ", element.name, " = (", f.joinProps(), ") => {");
+        f.L("const ", element.name, " = (", f.joinProps(), f.joinPropsTypeAnnotation(), ") => {");
         f.flushInitBlock();
         f.flushScriptBlock();
         f.L____("//");

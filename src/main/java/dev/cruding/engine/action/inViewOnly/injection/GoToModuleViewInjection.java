@@ -14,7 +14,7 @@ public class GoToModuleViewInjection extends ActionViewInjection {
     };
 
     public boolean addViewScript(ViewFlow f) {
-        f.totalScript().L____("const goToModule", targetModule, " = (", entity().lname, ") => {");
+        f.totalScript().L____("const goToModule", targetModule, " = (", typedEntityParameter(f), ") => {");
         f.totalScript().L________("goToModule(APP_MODULES.", targetModule.toUpperCase() + ", ", entity().lname, ");");
         f.totalScript().L____("};");
         f.useGoToModule();

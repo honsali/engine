@@ -10,6 +10,7 @@ public class ViewFlow extends JsFlow {
 
     private HashSet<String> paramSet = new HashSet<>();
     private HashSet<String> propSet = new HashSet<>();
+    private HashMap<String, String> propTypeMap = new HashMap<>();
     private HashSet<String> selectorSet = new HashSet<>();
     private HashMap<String, String> stateSet = new HashMap<>();
     private Flow totalScript = new Flow();
@@ -289,6 +290,13 @@ public class ViewFlow extends JsFlow {
         }
     }
 
+    public void addProp(String prop, String type) {
+        addProp(prop);
+        if (prop != null && type != null) {
+            propTypeMap.put(StringUtils.substringBefore(prop, ":"), type);
+        }
+    }
+
     public boolean hasProps() {
         return propSet.size() > 0;
     }
@@ -297,7 +305,17 @@ public class ViewFlow extends JsFlow {
         if (propSet.isEmpty()) {
             return "";
         }
-        return "{ " + propSet.stream().collect(Collectors.joining(", ")) + " }";
+        return "{ " + propSet.stream().sorted().collect(Collectors.joining(", ")) + " }";
+    }
+
+    public String joinPropsTypeAnnotation() {
+        if (propSet.isEmpty() || !propTypeMap.keySet().containsAll(propSet)) {
+            return "";
+        }
+        return ": { " + propSet.stream()
+                .sorted()
+                .map(prop -> prop + ": " + propTypeMap.get(prop))
+                .collect(Collectors.joining("; ")) + " }";
     }
 
     public Flow totalScript() {

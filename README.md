@@ -105,6 +105,8 @@ Generated Axios services use normal TypeScript imports rather than `import type`
 
 A generated page shares aggregate `Req*` and `Res*` interfaces across multiple actions. Strict service inputs such as route identifiers are required in `Req*`, while shared UI values such as `form` and `pageCourante` remain optional. Hooks accept `Partial<Req*>` because router parameters complete the dispatched request; controllers do not add frontend `throw` validation. Backend validation remains authoritative. Results use optional properties rather than `T | {}` unions, since each action populates only its own subset.
 
+Generated controller implementations conform to Waxant's `ActionOperation<Req, Res>` contract. Their request, result, and thunk context are therefore contextually typed; genuinely unused parameters use the TypeScript `_` convention. Generated Redux handlers omit unused action parameters, constant routes use argument-free `toPath` functions, form and table-row inputs are typed, and empty ACLs do not import unused action catalogs. The focused page-contract test protects these conventions.
+
 ## Architectural overview
 
 The engine behaves like a small compiler built around an internal Java DSL:
@@ -353,7 +355,7 @@ Validate the project with:
 mvn test
 ```
 
-Focused tests currently protect generated LF/final-newline normalization, reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
+Focused tests currently protect generated LF/final-newline normalization, reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, callback-signature, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
 
 Run `dev.cruding.engine.App` with the engine directory as the working directory. The application expects `src/main/java/model` and `src/main/java/modules` relative to that directory and writes generated files to `result/`.
 

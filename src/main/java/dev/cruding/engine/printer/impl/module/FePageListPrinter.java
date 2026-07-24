@@ -24,7 +24,7 @@ public class FePageListPrinter extends Printer {
             f.L("export const Page", module.unameLast, ": PageDefinition = {");
             f.L____("key: 'Page", module.unameLast, "',");
             f.L____("path: '/", module.lnameLast, "',");
-            f.L____("toPath: (args) => '/", module.lnameLast, "',");
+            f.L____("toPath: () => '/", module.lnameLast, "',");
             f.L____("icone: <FontAwesomeIcon icon={", module.icon, "} />,");
             f.L____("menu: '", getMenuPath(module), "',");
             f.L____("view: (");
@@ -55,7 +55,7 @@ public class FePageListPrinter extends Printer {
             f.L("export const Page", module.unameLast, ": PageDefinition = {");
             f.L____("key: 'Page", module.unameLast, "',");
             f.L____("path: '/", getMenuPath(module), "',");
-            f.L____("toPath: (args) => '/", getMenuPath(module), "',");
+            f.L____("toPath: () => '/", getMenuPath(module), "',");
             f.L____("icone: <FontAwesomeIcon icon={", module.icon, "} />,");
             f.L____("menu: '", getMenuPath(module), "',");
             f.L____("view: (");
@@ -101,7 +101,7 @@ public class FePageListPrinter extends Printer {
                         f.L____("toPath: (args) => `", getToPath(module, page), "/${args.id", page.entityUname, "}`,");
                     } else {
                         f.L____("path: '/", getPath(module, page), "',");
-                        f.L____("toPath: (args) => '", getToPath(module, page), "',");
+                        f.L____("toPath: () => '", getToPath(module, page), "',");
                     }
                     if (page.name.equals(pageIndex.name)) {
                         f.L____("icone: <FontAwesomeIcon icon={", pageIndex.icon, "} />,");

@@ -27,7 +27,7 @@ public class EmitEventViewInjection extends ActionViewInjection {
         if (!onSuccessAction()) {
             f.totalScript().L____("const ").append(lnameWithEntity()).append(" = (");
             if (byRow()) {
-                f.totalScript().__(entity().lname);
+                f.totalScript().__(typedEntityParameter(f));
             }
             f.totalScript().append(") => {");
             f.totalScript().L________("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());

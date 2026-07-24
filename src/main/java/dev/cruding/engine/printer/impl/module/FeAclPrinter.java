@@ -16,10 +16,15 @@ public class FeAclPrinter extends Printer {
 
         /* *********************************************************************** */
         ArrayList<Page> pageList = sortedPageList(module);
-        f.addJsImport("{ Action" + module.unameLast + " }", module.path + "/Action" + module.unameLast);
+        boolean containsAclAction = hasAclAction(pageList);
+        if (containsAclAction) {
+            f.addJsImport("{ Action" + module.unameLast + " }", module.path + "/Action" + module.unameLast);
+        }
         f.flushJsImportBlock();
-        f.L("");
-        f.L("");
+        if (containsAclAction) {
+            f.L("");
+            f.L("");
+        }
         f.__("export const acl", module.unameLast, " = [");
         f.L("");
         for (Page page : pageList) {
@@ -40,6 +45,20 @@ public class FeAclPrinter extends Printer {
 
         String s = f.toString();
         printFile(s, getBasePath() + "/fe/src/commun/securite/acl/acl" + module.unameLast + ".ts");
+    }
+
+    private boolean hasAclAction(List<Page> pageList) {
+        for (Page page : pageList) {
+            if (!page.containsComponent()) {
+                continue;
+            }
+            for (Action action : Context.getInstance().actionPage(page)) {
+                if (!action.noUi() && !action.flow()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

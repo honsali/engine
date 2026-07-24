@@ -12,9 +12,7 @@ public class CreateCtrlInjection extends ActionCtrlInjection {
     }
 
 
-    public void addCtrlImplementation(CtrlFlow f) {
-        f.L("");
-        f.L("const creer", entity().uname, "Impl = async (requete: Req", uc(), ", resultat: Res", uc(), ", thunkAPI) => {");
+    public void addCtrlImplementationCore(CtrlFlow f) {
         f.L____("await requete.form?.validateFields();");
         f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
 
@@ -35,7 +33,5 @@ public class CreateCtrlInjection extends ActionCtrlInjection {
                 }
             }
         }
-
-        f.L("};");
     }
 }

@@ -16,6 +16,10 @@ public class ActionViewInjection extends ActionWrapper {
 
     public void addFlowScript(ViewFlow flow, int level, String args) {}
 
+    protected String typedEntityParameter(ViewFlow flow) {
+        flow.addJsImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        return entity().lname + ": I" + entity().uname;
+    }
 
     public void addI18n(Flow f) {
         if (!noUi()) {
