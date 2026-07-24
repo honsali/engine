@@ -9,4 +9,3 @@ public class GeneratorException extends RuntimeException {
         super(message, cause);
     }
 }
-

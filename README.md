@@ -48,7 +48,7 @@ The normal workflow is:
 
 ## What the engine generates
 
-From the same application specification, the engine can generate coordinated artifacts for the database, backend, and frontend.
+From the same application specification, the engine can generate coordinated artifacts for the database, backend, and frontend. Every generated text file uses LF and exactly one final newline, independently of the host platform or the previous contents of `result/`.
 
 ### Backend
 
@@ -353,7 +353,7 @@ Validate the project with:
 mvn test
 ```
 
-Focused tests currently protect reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
+Focused tests currently protect generated LF/final-newline normalization, reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
 
 Run `dev.cruding.engine.App` with the engine directory as the working directory. The application expects `src/main/java/model` and `src/main/java/modules` relative to that directory and writes generated files to `result/`.
 

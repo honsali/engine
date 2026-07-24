@@ -88,7 +88,7 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 ## 2.3 Stable formatting
 
 2.3.1  [x] Keep import ordering deterministic across Java and TypeScript output and aligned with the IDE organizer.
-2.3.2  [ ] Keep generated whitespace and line endings stable.
+2.3.2  [ ] Keep generated internal whitespace stable; LF and exactly one final newline are already enforced.
 2.3.3  [ ] Avoid timestamps, random values, and run-dependent content in generated files.
 2.3.4  [ ] Keep generated file paths and names based on stable conventions.
 2.3.5  [ ] Add a concise generation summary listing created output paths and artifact counts.

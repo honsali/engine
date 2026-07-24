@@ -44,17 +44,19 @@ public abstract class Printer {
                 Files.createDirectories(parentDir);
             }
             if (force || !Files.exists(filePath)) {
-                String normalizedContent = content.endsWith("\n") ? content : content + "\n";
-                if (Files.exists(filePath)) {
-                    String existingContent = Files.readString(filePath, StandardCharsets.UTF_8);
-                    if (existingContent.contains("\r\n")) {
-                        normalizedContent = normalizedContent.replace("\n", "\r\n");
-                    }
-                }
-                Files.write(filePath, normalizedContent.getBytes(StandardCharsets.UTF_8));
+                Files.write(filePath, normalizeContent(content).getBytes(StandardCharsets.UTF_8));
             }
         } catch (Exception ex) {
             throw new IllegalStateException("Failed to write file: " + path, ex);
         }
+    }
+
+    private static String normalizeContent(String content) {
+        String normalizedContent = content.replace("\r\n", "\n").replace('\r', '\n');
+        int contentEnd = normalizedContent.length();
+        while (contentEnd > 0 && normalizedContent.charAt(contentEnd - 1) == '\n') {
+            contentEnd--;
+        }
+        return normalizedContent.substring(0, contentEnd) + "\n";
     }
 }
