@@ -36,7 +36,7 @@ public class CreateResourceInjection extends BasicResourceInjection {
         } else {
             f.L________(entity().uname, "Dto result = ", entity().lname, "Service.creer(", entity().lname, "Dto);");
         }
-        f.L____________("return ResponseEntity.status(HttpStatus.CREATED).body(result);");
+        f.L________("return ResponseEntity.status(HttpStatus.CREATED).body(result);");
         f.L____("}");
     }
 

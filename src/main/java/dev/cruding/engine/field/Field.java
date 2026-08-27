@@ -360,7 +360,7 @@ public class Field {
     public void addJavaDeclaration(JavaFlow f) {
         f.L("");
         if (required && isText) {
-            f.L____("@NotBlank ");
+            f.L____("@NotBlank");
         } else if (required) {
             f.L____("@NotNull");
         }

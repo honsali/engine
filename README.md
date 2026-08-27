@@ -107,6 +107,8 @@ A generated page shares aggregate `Req*` and `Res*` interfaces across multiple a
 
 Generated controller implementations conform to Waxant's `ActionOperation<Req, Res>` contract. Their request, result, and thunk context are therefore contextually typed; genuinely unused parameters use the TypeScript `_` convention. Generated Redux handlers omit unused action parameters, constant routes use argument-free `toPath` functions, form and table-row inputs are typed, and empty ACLs do not import unused action catalogs. The focused page-contract test protects these conventions.
 
+The Account specification is a deliberate example of selective transfer. `model.admin.Account` and `modules.admin.account` generate the standard list, detail, create, and update candidate structure. The runnable frontend then adapts that candidate to the plural account API, separate request payloads, password reset, and administrator-specific UX. The generated Account backend remains disposable comparison output; it must not replace the secure host implementation under `crud-be/src/main/java/app/core/security/account`.
+
 ## Architectural overview
 
 The engine behaves like a small compiler built around an internal Java DSL:

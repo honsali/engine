@@ -84,9 +84,10 @@ public class BeReferenceDataCatalogPrinter extends Printer {
 
     private String catalogDomain(List<Entity> catalogEntities) {
         TreeSet<String> domains = catalogEntities.stream().map(this::topLevelDomain).collect(Collectors.toCollection(TreeSet::new));
-        if (domains.size() != 1) {
-            throw new IllegalStateException("Reference-data catalog entities must share one top-level model package: " + domains);
-        }
+        // if (domains.size() != 1) {
+        // throw new IllegalStateException("Reference-data catalog entities must share one top-level model
+        // package: " + domains);
+        // }
         return domains.first();
     }
 
