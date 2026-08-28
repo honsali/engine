@@ -51,6 +51,14 @@ public abstract class Printer {
         }
     }
 
+    protected void deleteFile(String path) {
+        try {
+            Files.deleteIfExists(Paths.get(path));
+        } catch (Exception ex) {
+            throw new IllegalStateException("Failed to delete generated file: " + path, ex);
+        }
+    }
+
     private static String normalizeContent(String content) {
         String normalizedContent = content.replace("\r\n", "\n").replace('\r', '\n');
         int contentEnd = normalizedContent.length();

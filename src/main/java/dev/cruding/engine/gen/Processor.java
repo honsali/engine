@@ -6,15 +6,15 @@ import dev.cruding.engine.printer.impl.common.BeLiqMasterPrinter;
 import dev.cruding.engine.printer.impl.common.BeReferenceDataCatalogPrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
+import dev.cruding.engine.printer.impl.entity.BeControllerPrinter;
 import dev.cruding.engine.printer.impl.entity.BeDomainPrinter;
-import dev.cruding.engine.printer.impl.entity.BeDtoPrinter;
-import dev.cruding.engine.printer.impl.entity.BeFilterPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqConstraintPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqDataPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
 import dev.cruding.engine.printer.impl.entity.BeMapperPrinter;
 import dev.cruding.engine.printer.impl.entity.BeRepositoryPrinter;
-import dev.cruding.engine.printer.impl.entity.BeResourcePrinter;
+import dev.cruding.engine.printer.impl.entity.BeRequestPrinter;
+import dev.cruding.engine.printer.impl.entity.BeResponsePrinter;
 import dev.cruding.engine.printer.impl.entity.BeSpecificationPrinter;
 import dev.cruding.engine.printer.impl.entity.FeDomainPrinter;
 import dev.cruding.engine.printer.impl.entity.FeServicePrinter;
@@ -36,12 +36,12 @@ public class Processor {
     private final FeDomainPrinter feDomainPrinter = new FeDomainPrinter();
     private final FeServicePrinter feServicePrinter = new FeServicePrinter();
     private final BeDomainPrinter beDomainPrinter = new BeDomainPrinter();
-    private final BeDtoPrinter beDtoPrinter = new BeDtoPrinter();
+    private final BeRequestPrinter beRequestPrinter = new BeRequestPrinter();
+    private final BeResponsePrinter beResponsePrinter = new BeResponsePrinter();
     private final BeMapperPrinter beMapperPrinter = new BeMapperPrinter();
-    private final BeFilterPrinter beFilterPrinter = new BeFilterPrinter();
     private final BeSpecificationPrinter beSpecificationPrinter = new BeSpecificationPrinter();
     private final BeRepositoryPrinter beRepositoryPrinter = new BeRepositoryPrinter();
-    private final BeResourcePrinter beResourcePrinter = new BeResourcePrinter();
+    private final BeControllerPrinter beResourcePrinter = new BeControllerPrinter();
     private final BeBusinessPrinter beBusinessPrinter = new BeBusinessPrinter();
     private final BeLiqConstraintPrinter beLiqConstraintPrinter = new BeLiqConstraintPrinter();
     private final BeLiqDataPrinter beLiqDataPrinter = new BeLiqDataPrinter();
@@ -104,13 +104,13 @@ public class Processor {
     private void printBeEntityFiles(Entity entity) {
         beDomainPrinter.print(entity);
         if (!entity.isReferenceData()) {
+            beRequestPrinter.print(entity);
             beResourcePrinter.print(entity);
             beBusinessPrinter.print(entity);
+            beResponsePrinter.print(entity);
         }
         beRepositoryPrinter.print(entity);
-        beDtoPrinter.print(entity);
         beMapperPrinter.print(entity);
-        beFilterPrinter.print(entity);
         beSpecificationPrinter.print(entity);
         beLiqConstraintPrinter.print(entity);
         beLiqDataPrinter.print(entity);

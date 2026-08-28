@@ -14,8 +14,4 @@ public class Conge extends Entity {
     public final Field commentaire = LongText("commentaire");
     public final Field employe = Father(Employe.class);
 
-    public Conge() {
-        dateOrder("ck_conge_date_order", dateDebutConge, dateFinConge);
-    }
-
 }

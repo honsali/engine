@@ -4,6 +4,7 @@ import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.changePage.ChangePageForFilterAction;
 import dev.cruding.engine.action.filter.injection.BusinessFilterInjection;
 import dev.cruding.engine.action.filter.injection.CtrlFilterInjection;
+import dev.cruding.engine.action.filter.injection.FilterRequestInjection;
 import dev.cruding.engine.action.filter.injection.MdlFilterInjection;
 import dev.cruding.engine.action.filter.injection.MdlFilterPaginatedInjection;
 import dev.cruding.engine.action.filter.injection.RepoFilterInjection;
@@ -42,6 +43,7 @@ public class FilterAction extends Action {
         }
         repoActionInjection = new RepoFilterInjection();
         resourceActionInjection = new ResourceFilterInjection();
+        requestActionInjection = new FilterRequestInjection();
         businessActionInjection = new BusinessFilterInjection();
         serviceActionInjection = new ServiceFilterInjection();
         viewActionInjection = new ActionViewInjection();

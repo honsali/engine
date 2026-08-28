@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import dev.cruding.engine.field.Field;
 
 public class Util {
@@ -57,5 +58,11 @@ public class Util {
         Path file2Path = Paths.get(pathFile2).toAbsolutePath();
 
         return file1Path.relativize(file2Path);
+    }
+
+
+
+    public static String fieldListAsParameterList(List<Field> fields) {
+        return fields.stream().map(field -> field.jtype + " " + field.lname).reduce((left, right) -> left + ", " + right).orElse("");
     }
 }

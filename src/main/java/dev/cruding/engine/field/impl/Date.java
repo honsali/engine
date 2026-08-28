@@ -9,17 +9,10 @@ public class Date extends Field {
 
     public Date(String lname) {
         super(true);
-        lname(lname).jtype("LocalDate").jstype("string").stype("date");
+        lname(lname).jtype("LocalDate").jstype("string").stype("date").isDate(true);
     }
 
-    public void addJavaImport(JavaFlow f, boolean addGlobal) {
-        super.addJavaImport(f, addGlobal);
-        f.addJavaImport("java.time.LocalDate");
-    }
 
-    public void addDtoImport(JavaFlow flow) {
-        flow.addJavaImport("java.time.LocalDate");
-    }
 
     public String ui(String element) {
         switch (element) {
@@ -40,6 +33,11 @@ public class Date extends Field {
             f.L____("debut" + uname, "?: string;");
             f.L____("fin" + uname, "?: string;");
         }
+    }
+
+    public void addFilterImport(JavaFlow f) {
+        super.addFilterImport(f);
+        f.addJavaImport("java.time.LocalDate");
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
@@ -69,7 +67,7 @@ public class Date extends Field {
 
 
     public void addSpecification(JavaFlow f) {
-        f.L____________("addDateRange(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition.debut" + uname + "(), condition.fin" + uname + "());");
+        f.L____________("addDateRange(predicates, builder, root.get(\"" + lname + "\"), filtre.debut" + uname + "(), filtre.fin" + uname + "());");
     }
 
     protected Field initCopy() {

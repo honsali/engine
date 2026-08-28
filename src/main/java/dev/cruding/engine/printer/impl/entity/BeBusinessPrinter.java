@@ -1,55 +1,63 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class BeBusinessPrinter extends Printer {
 
+    private static final int MAX_LOOKUP_LINE_LENGTH = 100;
+
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
-
-        /* *********************************************************************** */
-
         List<Action> actionList = Context.getInstance().actionEntity(entity);
+        LinkedHashMap<String, Field> repositoryDependencies = repositoryDependencies(actionList);
 
         for (Action action : actionList) {
             action.businessActionInjection.addBusinessImport(f);
         }
-        f.addJavaImport("org.springframework.transaction.annotation.Transactional");
+        if (!repositoryDependencies.isEmpty()) {
+            f.addJavaImport("app.core.exception.ResourceNotFoundException");
+            f.addJavaImport("app.core.reference.Reference");
+        }
+        for (Field relation : repositoryDependencies.values()) {
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
+            f.addJavaImport("app.domain." + referenced.pkg + "." + referenced.lname + "." + referenced.uname);
+            f.addJavaImport("app.domain." + referenced.pkg + "." + referenced.lname + "." + referenced.uname + "Repository");
+        }
         f.addJavaImport("org.springframework.stereotype.Service");
+        f.addJavaImport("org.springframework.transaction.annotation.Transactional");
 
-        /* *********************************************************************** */
         f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
-
         f.L("@Service");
-        f.L("@Transactional");
         f.L("public class ", entity.uname, "Service {");
         f.L("");
         f.L____("private final ", entity.uname, "Repository ", entity.lname, "Repository;");
-        if (entity.haveFather) {
-            f.L____("private final ", entity.ufather, "Repository ", entity.lfather, "Repository;");
+        for (Field relation : repositoryDependencies.values()) {
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
+            f.L____("private final ", referenced.uname, "Repository ", referenced.lname, "Repository;");
         }
-        f.L____("private final ", entity.uname, "Mapper ", entity.lname, "Mapper;");
         f.L("");
         f.L____("public ", entity.uname, "Service(", entity.uname, "Repository ", entity.lname, "Repository");
-        if (entity.haveFather) {
-            f.__(", ", entity.ufather, "Repository ", entity.lfather, "Repository");
+        for (Field relation : repositoryDependencies.values()) {
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
+            f.__(", ", referenced.uname, "Repository ", referenced.lname, "Repository");
         }
-        f.__(", ", entity.uname, "Mapper ", entity.lname, "Mapper) {");
+        f.__(") {");
         f.L________("this.", entity.lname, "Repository = ", entity.lname, "Repository;");
-        if (entity.haveFather) {
-
-            f.L________("this.", entity.lfather, "Repository = ", entity.lfather, "Repository;");
+        for (Field relation : repositoryDependencies.values()) {
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
+            f.L________("this.", referenced.lname, "Repository = ", referenced.lname, "Repository;");
         }
-        f.L________("this.", entity.lname, "Mapper = ", entity.lname, "Mapper;");
         f.L____("}");
 
         HashSet<String> actionName = new HashSet<>();
@@ -60,11 +68,50 @@ public class BeBusinessPrinter extends Printer {
             }
         }
 
+        for (Field relation : repositoryDependencies.values()) {
+            addRelationResolver(f, relation);
+        }
+        if (!repositoryDependencies.isEmpty()) {
+            f.L("");
+        }
         f.L("}");
 
-        /* *********************************************************************** */
-        String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Service.java");
+        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Service.java");
     }
 
+    private LinkedHashMap<String, Field> repositoryDependencies(List<Action> actionList) {
+        LinkedHashMap<String, Field> dependencies = new LinkedHashMap<>();
+        for (Action action : actionList) {
+            for (Field field : action.businessActionInjection.businessRelationFields()) {
+                dependencies.putIfAbsent(field.jtype, field);
+            }
+        }
+        return dependencies;
+    }
+
+    private void addRelationResolver(JavaFlow f, Field relation) {
+        Entity referenced = Context.getInstance().getEntity(relation.jtype);
+        f.L("");
+        if (relation.isFather) {
+            f.L____("private ", referenced.uname, " recuperer", referenced.uname, "(Long id", relation.uname, ") {");
+            f.L________("return ", referenced.lname, "Repository.findById(id", relation.uname, ").orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id", relation.uname, "));");
+            f.L____("}");
+            return;
+        }
+        f.L____("private ", referenced.uname, " recuperer", referenced.uname, "(Reference reference) {");
+        f.L________("if (reference == null) {");
+        f.L____________("return null;");
+        f.L________("}");
+        f.L________("Long id = reference.id();");
+
+        String lookup = "return " + referenced.lname + "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"" + referenced.uname + "\", id));";
+        if (lookup.length() <= MAX_LOOKUP_LINE_LENGTH) {
+            f.L________(lookup);
+        } else {
+            f.L________("return ", referenced.lname, "Repository");
+            f.L________________(".findById(id)");
+            f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id));");
+        }
+        f.L____("}");
+    }
 }

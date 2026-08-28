@@ -19,14 +19,13 @@ public class BeLiqTablePrinter extends Printer {
         f.L____("xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd");
         f.L________________________("http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">");
         f.L("");
-        f.L____("<changeSet id=\"", entity.key, "-0\" author=\"app_core\">");
-        f.L________("<createSequence sequenceName=\"", entity.seqName, "\" startValue=\"100\" incrementBy=\"1\" />");
-        f.L____("</changeSet>");
-
         f.L____("<changeSet id=\"", entity.key, "-1\" author=\"app_core\">");
         f.L________("<createTable tableName=\"", entity.dbName, "\">");
-        f.L____________("<column name=\"", entity.id_.getDbName(entity.uname), "\" type=\"bigint\">");
+        f.L____________("<column name=\"", entity.id_.getDbName(entity.uname), "\" type=\"bigint\" autoIncrement=\"true\" startWith=\"100\" incrementBy=\"1\">");
         f.L________________("<constraints primaryKey=\"true\" nullable=\"false\" />");
+        f.L____________("</column>");
+        f.L____________("<column name=\"version\" type=\"bigint\" defaultValueNumeric=\"0\">");
+        f.L________________("<constraints nullable=\"false\" />");
         f.L____________("</column>");
         for (Field field : entity.fieldList) {
             if (field.isBasic || field.isRef || field.isFather) {
@@ -57,7 +56,7 @@ public class BeLiqTablePrinter extends Printer {
         f.L("");
 
         f.L____("<changeSet id=\"", entity.key, "-sequence-sync\" author=\"app_core\">");
-        f.L________("<sql dbms=\"postgresql\">SELECT setval('", entity.seqName, "', GREATEST(COALESCE(MAX(", entity.id_.getDbName(entity.uname), "), 0) + 1, 100), false) FROM ", entity.dbName, ";</sql>");
+        f.L________("<sql dbms=\"postgresql\">SELECT setval(pg_get_serial_sequence('", entity.dbName, "', '", entity.id_.getDbName(entity.uname), "'), GREATEST(COALESCE(MAX(", entity.id_.getDbName(entity.uname), "), 0) + 1, 100), false) FROM ", entity.dbName, ";</sql>");
         f.L____("</changeSet>");
 
         f.L("</databaseChangeLog>");

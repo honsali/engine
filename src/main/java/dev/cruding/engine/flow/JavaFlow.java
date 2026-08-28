@@ -17,7 +17,7 @@ public class JavaFlow extends Flow {
         }
 
         TreeSet<String> ts = new TreeSet<>(importJavaSet);
-        String[] packagePrefixes = {"java", "javax", "org", "com"};
+        String[] packagePrefixes = {"java", "javax", "jakarta", "org", "com", "app"};
 
         for (String prefix : packagePrefixes) {
             for (String s : ts) {

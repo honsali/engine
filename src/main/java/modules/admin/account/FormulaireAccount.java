@@ -25,7 +25,7 @@ public class FormulaireAccount extends ElementComposer {
                 form(e, //
                         enModification ? e.username.readOnly() : e.username, //
                         enModification ? null : password, //
-                        staticList("role", "radioVertical").required(), //
+                        e.role, //
                         enModification ? e.activated.yesValue("Oui").noValue("Non").defaultValue("true") : null, //
                         enModification ? hidden(e.id_) : null //
                 ).columnNumber(1), //

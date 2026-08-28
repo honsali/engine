@@ -1,87 +1,107 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.List;
-import java.util.function.Predicate;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
+import dev.cruding.engine.field.impl.RefField;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.printer.BePrinterException;
+import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.Util;
 import dev.cruding.engine.printer.Printer;
 
 public class BeDomainPrinter extends Printer {
 
-    private static final Predicate<Field> IS_BASIC_REF_OR_FATHER = p -> p.isBasic || p.isRef || p.isFather;
-
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
-
-        /* *********************************************************************** */
-
-
-        List<Field> isIdFieldList = entity.fieldList.stream().filter(p -> p.isId).toList();
-        if (isIdFieldList.isEmpty()) {
-            throw new BePrinterException(String.format("Entity '%s' has no ID fields. Cannot generate domain class.", entity.uname));
-        }
-        List<Field> notManyList = entity.fieldList.stream().filter(IS_BASIC_REF_OR_FATHER).toList();
-
-        for (Field field : isIdFieldList) {
-            field.addJavaImport(f, true);
-        }
-        for (Field field : notManyList) {
-            field.addJavaImport(f, true);
-        }
-
-        entity.id_.addJavaImport(f, true);
-        f.addJavaImport("jakarta.persistence.Id");
-        f.addJavaImport("jakarta.persistence.Column");
-        f.addJavaImport("jakarta.persistence.Entity");
-        f.addJavaImport("jakarta.persistence.Table");
+        List<Field> fields = entity.fieldList;
 
         /* *********************************************************************** */
 
         f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
+
+        /* *********************************************************************** */
+
+        f.addJavaImport("app.core.persistence.BaseEntity");
+        f.addJavaImport("jakarta.persistence.Entity");
+        f.addJavaImport("jakarta.persistence.Table");
+        for (Field field : fields) {
+            if ((field.isRef || field.isFather) && !field.jtype.equals(field.containingEntity)) {
+                Entity re = Context.getInstance().getEntity(field.jtype);
+                f.addJavaImport("app.domain." + re.pkg + "." + re.lname + "." + re.uname);
+            }
+            if (field.tranzient) {
+                f.addJavaImport("jakarta.persistence.Transient");
+            } else if (field.isFather || field.isRef) {
+                f.addJavaImport("jakarta.persistence.ManyToOne");
+                f.addJavaImport("jakarta.persistence.JoinColumn");
+                f.addJavaImport("jakarta.persistence.FetchType");
+            } else if (field.isDate) {
+                f.addJavaImport("java.time.LocalDate");
+            }
+
+        }
         f.L("");
         f.flushJavaImportBlock();
+
+        /* *********************************************************************** */
         f.L("");
         f.L("@Entity");
         f.L("@Table(name = \"", entity.dbName, "\")");
-        f.L("public class ", entity.uname, " {");
-        f.L("");
-        entity.id_.addJavaDeclaration(f, entity.uname, entity.seqName);
-        for (Field field : notManyList) {
-            field.addJavaDeclaration(f);
-        }
-        f.L("");
+        f.L("public class ", entity.uname, " extends BaseEntity {");
 
-        entity.id_.addGetterSetter(f, entity.uname);
-        for (Field field : notManyList) {
-            field.addGetterSetter(f);
+        /* *********************************************************************** */
+
+        f.L("");
+        for (Field field : fields) {
+            if (field.tranzient) {
+                f.L____("@Transient");
+            } else if (field.isRef || field.isFather) {
+                f.L____("@ManyToOne(fetch = FetchType.LAZY", field.required ? ", optional = false)" : ")");
+                f.L____("@JoinColumn(name = \"", ((RefField<?>) field).jcDbName, "\"", field.required ? ", nullable = false)" : ")");
+            }
+            f.L____("private " + field.jtype + " " + field.lname + ";");
         }
+
+        /* *********************************************************************** */
+
         f.L("");
-        f.L____("@Override");
-        f.L____("public boolean equals(Object o) {");
-        f.L________("if (this == o) {");
-        f.L____________("return true;");
-        f.L________("}");
-        f.L________("if (!(o instanceof ", entity.uname, " other)) {");
-        f.L____________("return false;");
-        f.L________("}");
-        f.L________("return id != null && id.equals(other.id);");
-        f.L____("}");
+        f.L____("protected ", entity.uname, "() {}");
+
+        /* *********************************************************************** */
+
         f.L("");
-        f.L____("@Override");
-        f.L____("public int hashCode() {");
-        f.L________("return getClass().hashCode();");
+        f.L____(entity.uname, "(", Util.fieldListAsParameterList(fields), ") {");
+        for (Field field : fields) {
+            f.L________("this.", field.lname, " = ", field.lname, ";");
+        }
         f.L____("}");
+
+        /* *********************************************************************** */
+
+        for (Field field : fields) {
+            f.L("");
+            f.L____("public " + field.jtype + " get" + field.uname + "() {");
+            f.L________("return " + field.lname + ";");
+            f.L____("}");
+        }
+
+        /* *********************************************************************** */
+
+        if (!entity.isReferenceData()) {
+            List<Field> allFieldButFather = entity.listAllFieldButFather();
+            f.L("");
+            f.L____("public void update(", Util.fieldListAsParameterList(allFieldButFather), ") {");
+            for (Field field : allFieldButFather) {
+                f.L________("this.", field.lname, " = ", field.lname, ";");
+            }
+            f.L____("}");
+        }
         f.L("}");
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + '/' + entity.uname + ".java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + ".java");
     }
 
-    private String generateSerialVersionUID(Entity entity) {
-        String fullName = entity.pkg + "." + entity.lname;
-        return Math.abs(fullName.hashCode()) + "L";
-    }
+
 }

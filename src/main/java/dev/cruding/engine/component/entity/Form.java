@@ -7,6 +7,7 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
+import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.field.impl.RefField;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
@@ -113,7 +114,11 @@ public class Form extends Component {
             flow.totalUi().__(" nombreColonne={" + columnNumber + "}");
         }
         flow.totalUi().__(">");
+        boolean includeVersion = false;
         for (Field c : fieldList) {
+            if (c instanceof Hidden && "id".equals(c.lname) && !entity.isReferenceData()) {
+                includeVersion = true;
+            }
             indent(flow, level + 1).append("<" + c.ui(Element.FORM) + " nom=\"" + c.lname + "\"");
             if (c.label != null) {
                 flow.totalUi().__(" libelle=\"" + c.label + "\"");
@@ -152,6 +157,9 @@ public class Form extends Component {
                 indent(flow, level + 1).append("<ChampVide invisible={!" + c.emptyIf + "} />");
             }
             Context.getInstance().addLabelForField(element.page.module.uname, c);
+        }
+        if (includeVersion) {
+            indent(flow, level + 1).append("<ChampCache nom=\"version\" />");
         }
         return false;
     }

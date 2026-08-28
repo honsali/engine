@@ -1,7 +1,6 @@
 package model.test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,9 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.printer.impl.entity.BeDtoPrinter;
+import dev.cruding.engine.printer.impl.entity.BeResponsePrinter;
 
 class BeDtoPrinterTest {
+
+    static final class IdEntity extends Entity {
+    }
 
     @TempDir
     Path tempDir;
@@ -22,7 +24,7 @@ class BeDtoPrinterTest {
 
         IdEntity entity = new IdEntity();
         entity.init();
-        new BeDtoPrinter().print(entity);
+        new BeResponsePrinter().print(entity);
 
         Path dto = tempDir.resolve("be/src/main/java/app/domain/test/idEntity/IdEntityDto.java");
         String generated = Files.readString(dto);
@@ -30,8 +32,5 @@ class BeDtoPrinterTest {
         assertTrue(generated.contains("import app.core.configuration.JsonId;"));
         assertTrue(generated.contains("@JsonId Long id,"));
         assertTrue(generated.contains("@JsonId Long idIdEntity,"));
-    }
-
-    static final class IdEntity extends Entity {
     }
 }

@@ -20,17 +20,16 @@ public class RefField<T extends Entity> extends Field {
     public String jcDbName;
     public String ijcDbName;
 
-    public RefField(Class<T> type, boolean many, boolean father, String lname) {
+    public RefField(Class<T> type, boolean father, String lname) {
         super(false);
         this.type = type;
-        isRefMany = many;
         isFather = father;
         isRef = !father;
         lname(lname).jtype(type.getSimpleName());
     }
 
-    public RefField(Class<T> type, boolean many, boolean father) {
-        this(type, many, father, StringUtils.uncapitalize(type.getSimpleName()));
+    public RefField(Class<T> type, boolean father) {
+        this(type, father, StringUtils.uncapitalize(type.getSimpleName()));
     }
 
     public RefField<?> lname(String lname) {
@@ -38,7 +37,7 @@ public class RefField<T extends Entity> extends Field {
         this.uname = StringUtils.capitalize(lname);
         this.dbTypeName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(type.getSimpleName()), "_").toLowerCase();
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase() + "_id";
-        if (containingEntity != null && (isRef || isRefMany || isFather)) {
+        if (containingEntity != null && (isRef || isFather)) {
             this.jtDbName = DbNameMapper.getInstance().getLegacyDbName(containingEntity, lname, "joinTable", containingEntityDbname + "_" + this.dbTypeName);
             this.jcDbName = DbNameMapper.getInstance().getLegacyDbName(containingEntity, lname, "joinColumn", dbName);
             this.ijcDbName = DbNameMapper.getInstance().getLegacyDbName(containingEntity, lname, "inverseJoinColumn", this.dbTypeName);
@@ -47,14 +46,12 @@ public class RefField<T extends Entity> extends Field {
     }
 
     public void addJsImport(JsFlow f, Entity entity) {
-        if (this.referencedEntity != null && !entity.uname.equals(this.referencedEntity.uname)) {
-            f.addJsImport("{ I" + this.referencedEntity.uname + " }", "modele/" + this.referencedEntity.path + "/Domaine" + this.referencedEntity.uname);
-        }
+        f.addJsImport("{ IReference }", "modele/commun/reference/DomaineReference");
     }
 
     public Field containingEntity(Entity entity) {
         this.referencedEntity = (T) Context.getInstance().getEntity(jtype);
-        jstype("I" + this.referencedEntity.uname + (isRefMany ? "[]" : ""));
+        jstype("IReference");
 
         this.containingEntity = entity.uname;
         this.containingEntityDbname = entity.dbName;
@@ -129,7 +126,7 @@ public class RefField<T extends Entity> extends Field {
     }
 
     protected RefField<T> initCopy() {
-        return new RefField<T>(type, isRefMany, isFather);
+        return new RefField<T>(type, isFather);
     }
 
     protected RefField<T> makeCopy() {

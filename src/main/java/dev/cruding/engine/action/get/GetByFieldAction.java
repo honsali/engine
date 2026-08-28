@@ -5,6 +5,7 @@ import dev.cruding.engine.action.get.injection.GetBusinessInjection;
 import dev.cruding.engine.action.get.injection.GetByFieldCtrlInjection;
 import dev.cruding.engine.action.get.injection.GetByFieldMdlInjection;
 import dev.cruding.engine.action.get.injection.GetByFieldResourceInjection;
+import dev.cruding.engine.action.get.injection.GetByFieldRepoInjection;
 import dev.cruding.engine.action.get.injection.GetByFieldServiceInjection;
 import dev.cruding.engine.action.get.injection.GetByFieldViewInjection;
 import dev.cruding.engine.element.Element;
@@ -42,6 +43,7 @@ public class GetByFieldAction extends Action {
         ctrlActionInjection = new GetByFieldCtrlInjection();
         mdlActionInjection = new GetByFieldMdlInjection();
         resourceActionInjection = new GetByFieldResourceInjection();
+        repoActionInjection = new GetByFieldRepoInjection();
         businessActionInjection = new GetBusinessInjection();
         serviceActionInjection = new GetByFieldServiceInjection();
         viewActionInjection = new GetByFieldViewInjection();

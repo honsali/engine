@@ -4,7 +4,6 @@ import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
 import dev.cruding.engine.flow.Flow;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class BeLiqConstraintPrinter extends Printer {
@@ -48,27 +47,6 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L____________("referencedColumnNames=\"", entity.id_.getDbName(entity.uname), "\"");
                 f.L____________("referencedTableName=\"", ref.dbTypeName, "\" />");
                 isEmpty = false;
-            } else if (field.isRefMany) {
-                RefField<?> ref = (RefField<?>) field;
-                f.L________("<addForeignKeyConstraint");
-                f.L____________("baseColumnNames=\"", ref.jcDbName, "\"");
-                f.L____________("baseTableName=\"", ref.jtDbName, "\"");
-                f.L____________("constraintName=\"fk_", ref.jtDbName, "_", ref.jtDbName, "\"");
-                f.L____________("referencedColumnNames=\"", entity.id_.getDbName(entity.uname), "\"");
-                f.L____________("referencedTableName=\"", entity.dbName, "\" />");
-
-
-                Entity fieldEntity = Context.getInstance().getEntity(ref.jtype);
-                String ijtDbName = fieldEntity.dbName;
-
-                f.L________("<addForeignKeyConstraint");
-                f.L____________("baseColumnNames=\"", ref.ijcDbName, "\"");
-                f.L____________("baseTableName=\"", ref.jtDbName, "\"");
-                f.L____________("constraintName=\"fk_", ref.jtDbName, "_", ref.jtDbName, "\"");
-                f.L____________("referencedColumnNames=\"", entity.id_.getDbName(entity.uname), "\"");
-                f.L____________("referencedTableName=\"", ijtDbName, "\" />");
-                isEmpty = false;
-
             }
 
         }

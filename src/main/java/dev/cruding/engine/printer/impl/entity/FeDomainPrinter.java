@@ -24,6 +24,9 @@ public class FeDomainPrinter extends Printer {
         f.__("export interface I", entity.uname, " {");
         f.L____("id?: string;");
         f.L____("id", entity.uname, "?: string;");
+        if (!entity.isReferenceData()) {
+            f.L____("version?: number;");
+        }
         for (Field field : entity.fieldList) {
             field.addJsDeclaration(f);
         }
