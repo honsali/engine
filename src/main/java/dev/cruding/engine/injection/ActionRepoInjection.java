@@ -9,4 +9,12 @@ public class ActionRepoInjection extends ActionWrapper {
 
     public void addRepositoryImport(JavaFlow f) {}
 
+    public int repositoryDeclarationOrder() {
+        return 0;
+    }
+
+    public String repositoryExtension() {
+        return "";
+    }
+
 }

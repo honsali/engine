@@ -5,23 +5,18 @@ import dev.cruding.engine.flow.JavaFlow;
 
 public class UpdateResourceInjection extends BasicResourceInjection {
 
+    public void addResourceImport(JavaFlow f) {
+        f.addJavaImport("jakarta.validation.Valid");
+        f.addJavaImport("org.springframework.web.bind.annotation.PathVariable");
+        f.addJavaImport("org.springframework.web.bind.annotation.PutMapping");
+        f.addJavaImport("org.springframework.web.bind.annotation.RequestBody");
+    }
+
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@", urest(), "Mapping(\"");
-        if ((byFatherId() && entity().haveFather) || byId()) {
-            f.__("(\"/", entity().lfather, "/{id" + entity().ufather, "}");
-        }
-        f.__("/", entity().lname, "/{id}\")");
-        f.L____("public ", entity().uname, "Dto ", lnameWithoutEntity(), "(");
-        if (byFatherId() && entity().haveFather) {
-            f.__("@PathVariable Long id" + entity().ufather, ", ");
-        }
-        f.__("@PathVariable Long id, @Valid @RequestBody ", entity().uname, "Dto ", entity().lname, "Dto) {");
-        f.L________("if (", entity().lname, "Dto.id() != null && !", entity().lname, "Dto.id().equals(id)) {");
-        f.L____________("throw new ResponseStatusException(HttpStatus.BAD_REQUEST, \"Path ID and body ID mismatch\");");
-        f.L________("}");
-        f.L("");
-        f.L________("return ", entity().lname, "Service.maj(id, ", entity().lname, "Dto);");
+        f.L____("@PutMapping(\"/{id}\")");
+        f.L____("public ", entity().uname, "Response ", lnameWithoutEntity(), "(@PathVariable Long id, @Valid @RequestBody ", requestName(), " request) {");
+        f.L________("return ", entity().lname, "Service.", lnameWithoutEntity(), "(id, request);");
         f.L____("}");
     }
 

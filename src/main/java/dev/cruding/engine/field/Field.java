@@ -28,14 +28,15 @@ public class Field {
     public boolean required;
     public String requiredIf;
 
+
     public boolean isRef;
-    public boolean isRefMany;
     public boolean isChild;
     public boolean isBasic;
     public boolean isFather;
     public boolean isId;
     public boolean isUnique;
     public boolean isText;
+    public boolean isDate;
 
     public boolean cloned = false;
     public String maxLength;
@@ -86,6 +87,11 @@ public class Field {
         return this;
     }
 
+    public Field isDate(boolean isDate) {
+        this.isDate = isDate;
+        return this;
+    }
+
     public Field stype(String stype) {
         this.stype = stype;
         return this;
@@ -93,11 +99,6 @@ public class Field {
 
     public Field jtype(String jtype) {
         this.jtype = jtype;
-        return this;
-    }
-
-    public Field jstype(String jstype) {
-        this.jstype = jstype;
         return this;
     }
 
@@ -157,14 +158,14 @@ public class Field {
         return p;
     }
 
-
     public Field isUnique() {
         Field p = makeCopy();
         p.isUnique = true;
         return p;
     }
 
-    public Field iText() {
+
+    public Field isText() {
         Field p = makeCopy();
         p.isText = true;
         return p;
@@ -213,12 +214,12 @@ public class Field {
         return p;
     }
 
-
     public Field defaultValue(String defaultValue) {
         Field p = makeCopy();
         p.defaultValue = defaultValue;
         return p;
     }
+
 
     public Field maxLength(String maxLength) {
         Field p = makeCopy();
@@ -269,12 +270,12 @@ public class Field {
         return p;
     }
 
-
     public Field filtrable() {
         Field p = makeCopy();
         p.filtrable = true;
         return p;
     }
+
 
     public String ui(String element) {
         switch (element) {
@@ -315,25 +316,8 @@ public class Field {
     }
 
     public void addFilterImport(JavaFlow f) {
-        addJavaImport(f, false);
-    }
-
-
-    public void addJavaImport(JavaFlow f, boolean addGlobal) {
-        if (addGlobal) {
-            if (required && isText) {
-                f.addJavaImport("jakarta.validation.constraints.NotBlank");
-            } else if (required) {
-                f.addJavaImport("jakarta.validation.constraints.NotNull");
-            }
-            if (tranzient) {
-                f.addJavaImport("jakarta.persistence.Transient");
-            }
-        } else {
-
-            if (maxLength != null) {
-                f.addJavaImport("jakarta.validation.constraints.Size");
-            }
+        if (maxLength != null) {
+            f.addJavaImport("jakarta.validation.constraints.Size");
         }
     }
 
@@ -341,9 +325,7 @@ public class Field {
         f.L________(jtype + " " + lname + ", //");
     }
 
-    public void addDtoImport(JavaFlow flow) {
 
-    }
 
     public boolean addViewScript(ViewFlow f, String uc, String mvcPath) {
         return false;
@@ -357,49 +339,13 @@ public class Field {
         f.__(jtype + " " + lname);
     }
 
-    public void addJavaDeclaration(JavaFlow f) {
-        f.L("");
-        if (required && isText) {
-            f.L____("@NotBlank");
-        } else if (required) {
-            f.L____("@NotNull");
-        }
 
-
-        if (tranzient) {
-            f.L____("@Transient");
-        } else {
-            f.L____("@Column(name = \"" + dbName + "\"");
-            if (required) {
-                f.__(", nullable = false");
-            }
-            if (isUnique) {
-                f.__(", unique = true");
-            }
-            f.__(")");
-        }
-        f.L____("private " + jtype + " " + lname + ";");
-    }
-
-    public void addFilterGetterSetter(JavaFlow f) {
-        addGetterSetter(f);
-    }
+    public void addFilterGetterSetter(JavaFlow f) {}
 
     public void addSpecification(JavaFlow f) {
-        f.L____________("addLike(predicates, criteriaBuilder, root.get(\"" + lname + "\"), condition." + lname + "());");
+        f.L____________("addLike(predicates, builder, root.get(\"" + lname + "\"), filtre." + lname + "());");
     }
 
-    public void addGetterSetter(JavaFlow f) {
-
-        f.L("");
-        f.L____("public " + jtype + " get" + uname + "() {");
-        f.L________("return this." + lname + ";");
-        f.L____("}");
-        f.L("");
-        f.L____("public void set" + uname + "(" + jtype + " " + lname + ") {");
-        f.L________("this." + lname + " = " + lname + ";");
-        f.L____("}");
-    }
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"" + stype + "\">");
@@ -414,7 +360,7 @@ public class Field {
     public String getReferenceNameList(String entityName) {
         Entity entity = Context.getInstance().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
-            return entity.fieldList.stream().filter(p -> p.isRef || p.isRefMany).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
+            return entity.fieldList.stream().filter(p -> p.isRef).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
         }
         return null;
     }
@@ -422,12 +368,17 @@ public class Field {
     public String getReferenceName(String entityName, String c) {
         Entity entity = Context.getInstance().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
-            Optional<String> o = entity.fieldList.stream().filter(p -> p.isRef || p.isRefMany).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
+            Optional<String> o = entity.fieldList.stream().filter(p -> p.isRef).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
             if (o.isPresent()) {
                 return o.get();
             }
         }
         return null;
+    }
+
+    public Field jstype(String jstype) {
+        this.jstype = jstype;
+        return this;
     }
 
     protected Field initCopy() {
@@ -454,13 +405,13 @@ public class Field {
         to.required = from.required;
         to.requiredIf = from.requiredIf;
         to.isRef = from.isRef;
-        to.isRefMany = from.isRefMany;
         to.isChild = from.isChild;
         to.isBasic = from.isBasic;
         to.isFather = from.isFather;
         to.isId = from.isId;
         to.isUnique = from.isUnique;
         to.isText = from.isText;
+        to.isDate = from.isDate;
 
 
         to.maxLength = from.maxLength;

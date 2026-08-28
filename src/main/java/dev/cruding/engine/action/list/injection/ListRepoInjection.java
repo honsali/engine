@@ -27,7 +27,7 @@ public class ListRepoInjection extends ActionRepoInjection {
         f.L____("List<", entity().uname, "> findAllBy");
 
         if (byFatherId() && entity().haveFather) {
-            f.__(entity().ufather, "_Id");
+            f.__(entity().ufather, "Id");
         }
         f.__("OrderBy", orderBy(), "(");
 

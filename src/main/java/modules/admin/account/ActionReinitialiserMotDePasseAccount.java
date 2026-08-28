@@ -13,7 +13,7 @@ public class ActionReinitialiserMotDePasseAccount extends ElementComposer {
         Account e = entity(Account.class);
         return dialogAction(e, //
                 e.username.readOnly(), //
-                e.password, hidden(e.id_)//
+                e.passwordHash, hidden(e.id_)//
         )//
                 .action(updateAction(e).lcoreName("reinitialiserMotDePasseAccount").onSuccess(localAction(e, "apresSucces").inViewOnly()));
     }

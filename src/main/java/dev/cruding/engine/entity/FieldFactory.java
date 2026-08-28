@@ -12,7 +12,6 @@ import dev.cruding.engine.field.impl.Hour;
 import dev.cruding.engine.field.impl.Int;
 import dev.cruding.engine.field.impl.LongText;
 import dev.cruding.engine.field.impl.Ref;
-import dev.cruding.engine.field.impl.RefMany;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.field.impl.StaticList;
 import dev.cruding.engine.field.impl.Tel;
@@ -86,14 +85,6 @@ public class FieldFactory {
 
     public <T extends Entity> Ref<T> Ref(Class<T> type, String lname) {
         return new Ref<T>(type, lname);
-    }
-
-    public <T extends Entity> RefMany<T> RefMany(Class<T> type) {
-        return new RefMany<T>(type);
-    }
-
-    public <T extends Entity> RefMany<T> RefMany(Class<T> type, String lname) {
-        return new RefMany<T>(type, lname);
     }
 
     public Field TextArray(String name) {

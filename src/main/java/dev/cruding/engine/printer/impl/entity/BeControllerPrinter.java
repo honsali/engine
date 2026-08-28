@@ -8,34 +8,28 @@ import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
-public class BeResourcePrinter extends Printer {
+public class BeControllerPrinter extends Printer {
 
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
 
-        /* *********************************************************************** */
-
         for (Action action : Context.getInstance().actionEntity(entity)) {
             action.resourceActionInjection.addResourceImport(f);
         }
-        f.addJavaImport("org.springframework.security.access.prepost.PreAuthorize");
-        f.addJavaImport("org.springframework.web.bind.annotation.GetMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RestController");
 
-        /* *********************************************************************** */
         f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
         f.L("@RestController");
-        f.L("@RequestMapping(\"/api", entity.apiDomainPath(), "\")");
-        f.L("@PreAuthorize(\"hasAuthority('", Context.getInstance().getGeneratedResourceAuthority(), "')\")");
-        f.L("public class ", entity.uname, "Resource {");
+        f.L("@RequestMapping(\"/api", entity.apiDomainPath(), "/", entity.lname, "\")");
+        f.L("public class ", entity.uname, "Controller {");
         f.L("");
         f.L____("private final ", entity.uname, "Service ", entity.lname, "Service;");
         f.L("");
-        f.L____("public ", entity.uname, "Resource(", entity.uname, "Service ", entity.lname, "Service) {");
+        f.L____("public ", entity.uname, "Controller(", entity.uname, "Service ", entity.lname, "Service) {");
         f.L________("this.", entity.lname, "Service = ", entity.lname, "Service;");
         f.L____("}");
 
@@ -48,12 +42,8 @@ public class BeResourcePrinter extends Printer {
             }
         }
 
-
         f.L("}");
 
-        /* *********************************************************************** */
-        String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Resource.java");
+        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + entity.uname + "Controller.java");
     }
-
 }

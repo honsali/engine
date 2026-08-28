@@ -3,17 +3,21 @@ package dev.cruding.engine.entity;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
-import dev.cruding.engine.field.impl.RefMany;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.gen.DbNameMapper;
+import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
 
+
+    public record DateOrderConstraint(String name, Field begin, Field end) {
+    }
 
     public String pkg;
     public String path;
@@ -28,11 +32,12 @@ public class Entity extends FieldFactory {
     public Setting id_;
     public Father<?> father;
     public String lfather;
+
     public String ufather;
 
     public Setting setting;
-
     public ArrayList<Field> fieldList = new ArrayList<>();
+
     public ArrayList<DateOrderConstraint> dateOrderConstraints = new ArrayList<>();
 
     public Entity() {
@@ -65,9 +70,6 @@ public class Entity extends FieldFactory {
                         if (field instanceof Ref) {
                             field.lname(f.getName());
                             fieldList.add(field);
-                        } else if (field instanceof RefMany) {
-                            field.lname(f.getName());
-                            fieldList.add(field);
                         } else if (field instanceof Father) {
                             if (this.father == null) {
                                 fieldList.add(field);
@@ -87,7 +89,7 @@ public class Entity extends FieldFactory {
                 }
             }
         }
-
+        validateFields();
         this.setting = this.id_.init(uname);
 
         if (identifier == null) {
@@ -105,10 +107,6 @@ public class Entity extends FieldFactory {
         }
     }
 
-    protected final void dateOrder(String constraintName, Field begin, Field end) {
-        dateOrderConstraints.add(new DateOrderConstraint(constraintName, begin, end));
-    }
-
     public boolean isReferenceData() {
         return false;
     }
@@ -124,6 +122,32 @@ public class Entity extends FieldFactory {
         return "Id" + ufather;
     }
 
-    public record DateOrderConstraint(String name, Field begin, Field end) {
+    public List<Field> listAllFieldButFather() {
+        return fieldList.stream().filter(field -> !field.isFather).toList();
     }
+
+    public List<Field> listRef() {
+        return fieldList.stream().filter(field -> field.isRef).toList();
+    }
+
+    public List<Field> listRefAndFather() {
+        return fieldList.stream().filter(field -> field.isRef || field.isFather).toList();
+    }
+
+
+    private void validateFields() {
+        List<Field> fields = fieldList.stream().filter(field -> field.isBasic || field.isRef || field.isFather).toList();
+        if (fields.isEmpty()) {
+            throw new BePrinterException("Entity '" + uname + "' has no persistent fields.");
+        }
+        List<Field> identifiers = fields.stream().filter(field -> field.isId).toList();
+        if (identifiers.size() != 1) {
+            throw new BePrinterException("Entity '" + uname + "' must have exactly one identifier field.");
+        }
+        if (!"String".equals(identifiers.getFirst().jtype)) {
+            throw new BePrinterException("Identifier field '" + identifiers.getFirst().lname + "' must use Java type String.");
+        }
+
+    }
+
 }

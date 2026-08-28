@@ -242,7 +242,7 @@ public Conge() {
 }
 ```
 
-This emits a Liquibase check that permits missing endpoints and otherwise requires the end value to be greater than or equal to the beginning. `ReferenceData` supplies a required `name` field mapped to `libelle` as its identifier; reference entities use the host application's shared reference-data runtime rather than generated per-entity backend resources or frontend services. The engine generates one domain-owned catalog from explicit reference-data entities and entities targeted by `Ref`, `RefMany`, or `Father` relationships. Catalog entries use each entity's identifier field as the display label and allow filtering by `id` plus its to-one reference IDs. All catalog entities must share one top-level model domain, and their case-insensitive reference names must be unique; generation fails otherwise.
+This emits a Liquibase check that permits missing endpoints and otherwise requires the end value to be greater than or equal to the beginning. `ReferenceData` supplies a required `name` field mapped to `libelle` as its identifier; reference entities use the host application's shared reference-data runtime rather than generated per-entity backend resources or frontend services. The engine generates one domain-owned catalog from explicit reference-data entities and entities targeted by `Ref` or `Father` relationships. Catalog entries use each entity's identifier field as the display label and allow filtering by `id` plus its to-one reference IDs. All catalog entities must share one top-level model domain, and their case-insensitive reference names must be unique; generation fails otherwise.
 
 ### Project bootstrap
 

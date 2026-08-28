@@ -67,9 +67,14 @@ public class DialogAction extends Component {
         if (action.icon != null) {
             indent(flow, level + 1).append("icone={<FontAwesomeIcon icon={").append(action.icon).append("} />}");
         }
-        indent(flow, level + 1).append("action={").append(action.lnameWithEntity).append("}");
+        String handlerName = action.byForm && action.lnameWithoutEntity.equals(action.lnameWithEntity)
+                ? "executer" + action.unameWithEntity
+                : action.byForm ? action.lnameWithoutEntity : action.lnameWithEntity;
+        indent(flow, level + 1).append("action={").append(handlerName).append("}");
         indent(flow, level + 1).append("form={form}");
-        indent(flow, level + 1).append("etat={etat").append(action.unameWithEntity).append("}");
+        indent(flow, level + 1).append("etat={{ rid: etat").append(action.unameWithEntity)
+                .append(".rid ?? null, success: etat").append(action.unameWithEntity)
+                .append(".succes, erreur: etat").append(action.unameWithEntity).append(".erreur ?? false }}");
         if (initFormByEntity) {
             indent(flow, level + 1).append("siInit={siInit}");
         }

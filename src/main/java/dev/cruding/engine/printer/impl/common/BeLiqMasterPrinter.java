@@ -1,5 +1,7 @@
 package dev.cruding.engine.printer.impl.common;
 
+import java.util.Comparator;
+import java.util.List;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
@@ -27,11 +29,12 @@ public class BeLiqMasterPrinter extends Printer {
         f.L____("<property name=\"uuidType\" value=\"uuid\" dbms=\"postgresql\"/>");
         f.L("");
         f.L____("<include file=\"liquibase/changelog/security_table.xml\" relativeToChangelogFile=\"false\"/>");
-        for (Entity e : entityList()) {
+        List<Entity> entities = entityList().stream().sorted(Comparator.comparing(entity -> entity.path)).toList();
+        for (Entity e : entities) {
             f.L("  <include file=\"liquibase/changelog/", e.lname, "_table.xml\" relativeToChangelogFile=\"false\"/>");
         }
-        for (Entity e : entityList()) {
-            if (!e.isReferenceData() && e.fieldList.stream().anyMatch(p -> p.isFather || p.isRef || p.isRefMany)) {
+        for (Entity e : entities) {
+            if (!e.isReferenceData() && e.fieldList.stream().anyMatch(p -> p.isFather || p.isRef)) {
                 f.L("  <include file=\"liquibase/changelog/", e.lname, "_constraints.xml\" relativeToChangelogFile=\"false\"/>");
             }
         }

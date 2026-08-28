@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.entity.Entity;
@@ -17,12 +16,12 @@ import dev.cruding.engine.printer.Printer;
 public class BeReferenceDataCatalogPrinter extends Printer {
 
     public void print() {
-        List<Entity> catalogEntities = catalogEntities();
-        if (catalogEntities.isEmpty()) {
-            return;
+        for (Map.Entry<String, List<Entity>> catalog : catalogEntitiesByDomain().entrySet()) {
+            printCatalog(catalog.getKey(), catalog.getValue());
         }
+    }
 
-        String domain = catalogDomain(catalogEntities);
+    private void printCatalog(String domain, List<Entity> catalogEntities) {
         String className = StringUtils.capitalize(domain) + "ReferenceDataCatalog";
         boolean useEntries = catalogEntities.size() > 10;
 
@@ -58,37 +57,32 @@ public class BeReferenceDataCatalogPrinter extends Printer {
         printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + domain + "/referenceData/" + className + ".java");
     }
 
-    private List<Entity> catalogEntities() {
+    private Map<String, List<Entity>> catalogEntitiesByDomain() {
         List<Entity> entities = new ArrayList<>(entityList());
-        Map<String, Entity> catalogEntitiesByReferenceName = new TreeMap<>();
+        Map<String, Map<String, Entity>> entitiesByDomainAndReferenceName = new TreeMap<>();
 
-        entities.stream().filter(Entity::isReferenceData).forEach(entity -> addCatalogEntity(catalogEntitiesByReferenceName, entity));
+        entities.stream().filter(Entity::isReferenceData).forEach(entity -> addCatalogEntity(entitiesByDomainAndReferenceName, entity));
         for (Entity entity : entities) {
             for (Field field : entity.fieldList) {
-                if (field.isRef || field.isRefMany || field.isFather) {
-                    addCatalogEntity(catalogEntitiesByReferenceName, Context.getInstance().getEntity(field.jtype));
+                if (field.isRef || field.isFather) {
+                    addCatalogEntity(entitiesByDomainAndReferenceName, Context.getInstance().getEntity(field.jtype));
                 }
             }
         }
 
-        return List.copyOf(catalogEntitiesByReferenceName.values());
+        Map<String, List<Entity>> catalogs = new TreeMap<>();
+        entitiesByDomainAndReferenceName.forEach((domain, byReferenceName) -> catalogs.put(domain, List.copyOf(byReferenceName.values())));
+        return catalogs;
     }
 
-    private void addCatalogEntity(Map<String, Entity> catalogEntitiesByReferenceName, Entity entity) {
+    private void addCatalogEntity(Map<String, Map<String, Entity>> catalogs, Entity entity) {
+        String domain = topLevelDomain(entity);
         String referenceName = referenceName(entity);
-        Entity existing = catalogEntitiesByReferenceName.putIfAbsent(referenceName, entity);
+        Map<String, Entity> catalog = catalogs.computeIfAbsent(domain, ignored -> new TreeMap<>());
+        Entity existing = catalog.putIfAbsent(referenceName, entity);
         if (existing != null && existing != entity) {
-            throw new IllegalStateException("Duplicate case-insensitive reference-data catalog name: " + referenceName);
+            throw new IllegalStateException("Duplicate case-insensitive reference-data catalog name in domain '" + domain + "': " + referenceName);
         }
-    }
-
-    private String catalogDomain(List<Entity> catalogEntities) {
-        TreeSet<String> domains = catalogEntities.stream().map(this::topLevelDomain).collect(Collectors.toCollection(TreeSet::new));
-        // if (domains.size() != 1) {
-        // throw new IllegalStateException("Reference-data catalog entities must share one top-level model
-        // package: " + domains);
-        // }
-        return domains.first();
     }
 
     private String topLevelDomain(Entity entity) {
@@ -108,11 +102,7 @@ public class BeReferenceDataCatalogPrinter extends Printer {
     private String quotedAllowedFilters(Entity entity) {
         List<String> filters = new ArrayList<>();
         filters.add("id");
-        entity.fieldList.stream()
-                .filter(field -> field.isRef || field.isFather)
-                .map(field -> field.lname + ".id")
-                .sorted()
-                .forEach(filters::add);
+        entity.fieldList.stream().filter(field -> field.isRef || field.isFather).map(field -> field.lname + ".id").sorted().forEach(filters::add);
         return filters.stream().distinct().map(filter -> "\"" + filter + "\"").collect(Collectors.joining(", "));
     }
 

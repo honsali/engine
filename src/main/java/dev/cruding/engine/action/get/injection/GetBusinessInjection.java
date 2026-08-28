@@ -8,15 +8,19 @@ public class GetBusinessInjection extends ActionBusinessInjection {
 
 
     public void addBusinessImport(JavaFlow f) {
-        f.addJavaImport("java.util.Optional");
-
+        f.addJavaImport("app.core.exception.ResourceNotFoundException");
     }
 
     public void addBusinessDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@Transactional(readOnly = true)");
-        f.L____("public Optional<", entity().uname, "Dto> ", lnameWithoutEntity(), "(", entity().id_.jtype, " ", byField()[0].lname, ") {");
-        f.L________("return ", entity().lname, "Repository.findById(id).map(", entity().lname, "Mapper::toDto);");
+        f.L____("public ", entity().uname, "Response ", lnameWithoutEntity(), "(", byField()[0].jtype, " ", byField()[0].lname, ") {");
+        if (entity().listRef().isEmpty()) {
+            f.L________("return ", entity().uname, "Mapper.toResponse(", entity().lname, "Repository.findById(", byField()[0].lname, ").orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", ", byField()[0].lname, ")));");
+        } else {
+            f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(", byField()[0].lname, ").orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", ", byField()[0].lname, "));");
+            f.L________("return ", entity().uname, "Mapper.toResponse(", entity().lname, ");");
+        }
         f.L____("}");
     }
 

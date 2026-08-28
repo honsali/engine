@@ -12,7 +12,9 @@ import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.injection.ActionBusinessInjection;
 import dev.cruding.engine.injection.ActionCtrlInjection;
+import dev.cruding.engine.injection.ActionMapperInjection;
 import dev.cruding.engine.injection.ActionMdlInjection;
+import dev.cruding.engine.injection.ActionRequestInjection;
 import dev.cruding.engine.injection.ActionRepoInjection;
 import dev.cruding.engine.injection.ActionResourceInjection;
 import dev.cruding.engine.injection.ActionServiceInjection;
@@ -38,6 +40,8 @@ public abstract class Action {
     public ActionRepoInjection repoActionInjection;
     public ActionResourceInjection resourceActionInjection;
     public ActionBusinessInjection businessActionInjection;
+    public ActionRequestInjection requestActionInjection;
+    public ActionMapperInjection mapperActionInjection;
     public ActionServiceInjection serviceActionInjection;
     public ActionViewInjection viewActionInjection;
     public ActionType type;
@@ -112,6 +116,8 @@ public abstract class Action {
         repoActionInjection = new ActionRepoInjection();
         resourceActionInjection = new ActionResourceInjection();
         businessActionInjection = new ActionBusinessInjection();
+        requestActionInjection = new ActionRequestInjection();
+        mapperActionInjection = new ActionMapperInjection();
         serviceActionInjection = new ActionServiceInjection();
         viewActionInjection = new ActionViewInjection();
         overrideActionInjection();
@@ -120,6 +126,8 @@ public abstract class Action {
         repoActionInjection.action(this);
         resourceActionInjection.action(this);
         businessActionInjection.action(this);
+        requestActionInjection.action(this);
+        mapperActionInjection.action(this);
         serviceActionInjection.action(this);
         viewActionInjection.action(this);
     }

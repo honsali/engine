@@ -155,7 +155,7 @@ This backlog is organized around the engine's real purpose: maximize solo delive
 5.1.1  [ ] Keep class-name conventions as defaults, but add explicit route or permission overrides when a real project needs them.
 5.1.2  [ ] Define stable semantic identities for cases where renaming a Java class must not rename a public route or ACL key.
 5.1.3  [ ] Support multiple relationships between the same entity types without ambiguous lookup.
-5.1.4  [ ] Generalize ownership/cardinality semantics only when new project models require more than `Ref`, `RefMany`, and `Father`.
+5.1.4  [ ] Generalize ownership/cardinality semantics only when new project models require more than `Ref`  and `Father`.
 
 ## 5.2 Replace fragile target-language strings selectively
 

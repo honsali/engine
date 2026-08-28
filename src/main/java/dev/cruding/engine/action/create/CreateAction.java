@@ -3,7 +3,9 @@ package dev.cruding.engine.action.create;
 import dev.cruding.engine.action.create.injection.CreateBusinessInjection;
 import dev.cruding.engine.action.create.injection.CreateCtrlInjection;
 import dev.cruding.engine.action.create.injection.CreateMdlInjection;
+import dev.cruding.engine.action.create.injection.CreateMapperInjection;
 import dev.cruding.engine.action.create.injection.CreateRepoInjection;
+import dev.cruding.engine.action.create.injection.CreateRequestInjection;
 import dev.cruding.engine.action.create.injection.CreateResourceInjection;
 import dev.cruding.engine.action.create.injection.CreateServiceInjection;
 import dev.cruding.engine.action.create.injection.CreateViewInjection;
@@ -27,6 +29,8 @@ public class CreateAction extends BasicAction {
         serviceActionInjection = new CreateServiceInjection();
         businessActionInjection = new CreateBusinessInjection();
         repoActionInjection = new CreateRepoInjection();
+        requestActionInjection = new CreateRequestInjection();
+        mapperActionInjection = new CreateMapperInjection();
 
     }
 

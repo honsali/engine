@@ -57,6 +57,10 @@ public class ActionWrapper {
         return action.unameWithoutEntity;
     };
 
+    public String requestName() {
+        return action.requestActionInjection.name();
+    }
+
     public String icon() {
         return action.icon;
     };

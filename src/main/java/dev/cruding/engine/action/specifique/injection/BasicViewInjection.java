@@ -63,7 +63,10 @@ public class BasicViewInjection extends ActionViewInjection {
                 }
             }
             if (flow.hasParams()) {
-                flow.totalScript().L____("const ", lnameWithoutEntity(), " = () => {");
+                String handlerName = lnameWithoutEntity().equals(lnameWithEntity())
+                        ? "executer" + unameWithEntity()
+                        : lnameWithoutEntity();
+                flow.totalScript().L____("const ", handlerName, " = () => {");
                 flow.totalScript().L________(lnameWithEntity(), "({ ", flow.joinParams(), " });");
                 flow.totalScript().L____("};");
             }

@@ -2,23 +2,14 @@ package dev.cruding.engine.field.impl;
 
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.flow.JavaFlow;
 
 public class Year extends Field {
 
     public Year(String lname) {
         super(true);
-        lname(lname).jtype("LocalDate").jstype("string").stype("date");
+        lname(lname).jtype("LocalDate").jstype("string").stype("date").isDate(true);
     }
 
-    public void addJavaImport(JavaFlow f, boolean addGlobal) {
-        super.addJavaImport(f, addGlobal);
-        f.addJavaImport("java.time.LocalDate");
-    }
-
-    public void addDtoImport(JavaFlow flow) {
-        flow.addJavaImport("java.time.LocalDate");
-    }
 
     public String ui(String element) {
         switch (element) {
