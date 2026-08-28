@@ -1,16 +1,36 @@
-# Engine agent notes
+# Consignes de travail pour Engine
 
-- Read [`../Context.md`](../Context.md) and [`../WORKSPACE.md`](../WORKSPACE.md) before changing generator architecture or cross-project contracts. While the July frontend review follow-up remains open, also read [`../crud-fe/update_plan.md`](../crud-fe/update_plan.md). This engine is project-owned leverage for a solo workflow, not a generic generator product.
-- Inspect repository status before and after work. Preserve local version changes in `pom.xml`, do not stage/commit/push unless requested, and do not treat ignored `result/` as a runtime source tree.
-- Keep tracked and generated text in LF with exactly one final newline. [`.gitattributes`](.gitattributes) normalizes tracked text to LF, [`.editorconfig`](.editorconfig) guides compatible editors to add a final newline, and the shared `Printer` normalizes generated output to LF with exactly one final newline regardless of the host platform or prior contents.
-- For a repeated generated pattern, change the owning DSL/printer/injection first, add a focused regression test when it protects a concrete high-leverage rule, run `mvn test`, execute `dev.cruding.engine.App` from the engine root, inspect `result/be` and `result/fe`, and selectively transfer intended output into `crud-be` or `crud-fe`.
-- The `model.admin.Account` and `modules.admin.account` declarations intentionally generate a normal full-stack candidate so the frontend account workflow starts from the same list/detail/create/update structure as other modules. Only selected frontend artifacts are integrated. The generated backend Account entity, Liquibase, repository, service, and resource do not model password hashing, token invalidation, administrator invariants, or the established plural API and must never replace `crud-be`'s host-owned `app.core.security.account` implementation.
-- Generated backend DTO identifiers stay Java `Long` and receive `app.core.configuration.JsonId`; generated frontend identifiers stay `string`. Do not introduce numeric frontend IDs, `string | number`, `BigInteger` as an ID marker, or per-service conversion mappers.
-- Generated Axios services use normal TypeScript imports, not `import type`. Put the payload type on the Axios call, emit `const { data } = await ...`, return `data` separately, and infer async return types. Do not emit duplicate `Promise<T>` annotations or `(await axios...).data` inline.
-- `JavaFlow` import groups intentionally match VS Code: `java`, `javax`, `org`, `com`, then remaining packages alphabetically. Keep TypeScript imports deterministic as well. Prefer stable formatter configuration and generated layout over comments whose only purpose is to resist formatting.
-- Generated business resources use the model domain as their route namespace and the project bootstrap's canonical authority. The RH overlay uses `/api/rh` and `ROLE_GESTIONNAIRE_RH`; host backend security must enforce the same namespace.
-- Page-scoped frontend `Req*` and `Res*` interfaces aggregate multiple actions. Emit strict service inputs such as route identifiers as required `Req*` fields, while shared UI values such as `form` and `pageCourante` remain optional. Generated hooks accept `Partial<Req*>` because router parameters complete the dispatched request. Do not generate frontend `throw` guards for these values; backend validation remains authoritative. Emit action-specific result properties as optional, never `Res* | {}`.
-- Generated controller implementations use Waxant's `ActionOperation<Req, Res>` contract. Prefix genuinely unused operation parameters with `_`, omit unused Redux callback parameters and constant-route `toPath` arguments, type form and table-row inputs, and do not import an action catalog for an empty ACL. Keep these patterns clean under `noImplicitAny`, `noUnusedLocals`, and `noUnusedParameters`.
-- Generate backend and frontend candidates as two runtimes of one application. Backend candidates place business rules and authoritative validation on the backend side; after review and selective transfer, runnable backend code is authoritative. Frontend candidates remain limited to components, navigation, interaction state, transport orchestration, and optional inline feedback. When one DSL field constraint feeds both backend validation and frontend feedback, backend emission remains authoritative and frontend emission is only a UX projection, never additional acceptance logic.
-- Keep `result/` disposable and comparator-friendly. Never bulk-copy it over runnable projects or place manual content there. Preserve deliberate runtime customizations during comparison, but do not reproduce the current client-side leave-code formula in generated frontend output; either the user supplies that value or backend code derives it according to the business requirement.
-- Current known follow-up work includes correct parent/child leave routes, stronger route-parameter typing, and moving leave-code semantics out of frontend derivation. Do not hide these with compatibility layers.
+## Sources de vérité
+
+- Lire `README.md` avant toute modification : il définit la finalité d'Engine, son architecture en Flow et le workflow d'intégration par comparaison.
+- Lire `todos.md` pour connaître les chantiers ouverts. Ne pas réintroduire un objectif ou un contrat absent de ces deux documents sans demande explicite.
+- Le code de production est la référence opérationnelle ; `result` représente le plan généré. Lorsqu'une comparaison avec `C:\dev\crud` est demandée, ne prendre comme modèle que les modules et fichiers explicitement désignés pour l'itération.
+
+## Architecture à préserver
+
+- Le DSL décrit l'intention fonctionnelle et structurelle. Le CRUD est un ensemble d'Actions disponibles, pas l'architecture ni la limite du générateur.
+- Une `Action` représente un cas d'usage. Elle sélectionne uniquement les `Injection` nécessaires aux couches auxquelles elle contribue.
+- Une `Injection` produit la contribution d'une Action à une couche. Un `Flow` construit le contenu et un printer assemble le fichier final.
+- `Processor` orchestre les familles de printers. Il ne doit contenir ni logique CRUD transversale ni cas particulier propre à une Action métier.
+- Lorsqu'un artefact dépend des Actions, son printer les parcourt et sollicite leurs Injections. Cela concerne notamment les controllers, services, repositories, requests, mappers et les couches MVC frontend.
+- Un printer générique ne doit pas reconnaître une liste fermée d'Actions concrètes. Placer une nouvelle règle dans l'Action, l'Injection, le Flow ou le DSL qui en porte la responsabilité.
+- Une Action disponible mais absente du DSL du projet ne doit produire aucun code inutile.
+- Une Action peut dépendre d'Actions annexes. Lors des travaux de mutualisation, distinguer les occurrences fonctionnelles de la capacité technique partagée et dédupliquer celle-ci par identité sémantique et par portée, pas seulement par nom ou ordre de création.
+- Les artefacts structurels directement dérivés d'une `Entity` et de ses `Field` peuvent rester pilotés par l'entité tant qu'ils ne contiennent pas de logique propre à un cas d'usage.
+
+## Code généré et application cible
+
+- Les printers écrivent uniquement sous `result/be` et `result/fe`. Le terme « injection » ne signifie jamais une modification automatique de l'application cible.
+- Ne transférer du code vers l'application cible que si la tâche le demande. Le transfert peut être complet pour une première intégration ou sélectif lorsque la production a divergé.
+- Ne placer aucun contenu manuel dans `result`. Avant tout nettoyage, préserver ou identifier `G0`, puis générer `G1` afin de permettre la comparaison avec la production `P`.
+- Préserver la compatibilité avec les conventions du projet cible plutôt que de chercher une abstraction universelle ou indépendante de la stack.
+- Maintenir une sortie adaptée au comparateur : chemins, noms, ordre, imports et formatage déterministes, fins de ligne LF et exactement une fin de ligne finale.
+
+## Méthode de modification
+
+- Inspecter `git status` et le diff avant et après le travail. Préserver toutes les modifications existantes sans rapport avec la tâche et ne pas commit, stage ou push sans demande explicite.
+- Procéder par petites itérations centrées sur une responsabilité, une Action, un printer ou un ensemble précis de fichiers générés. Éviter les refactorings adjacents non demandés.
+- Pour une règle transversale, identifier d'abord son propriétaire naturel : DSL pour l'exposition, Action pour le cas d'usage, Injection pour une couche, Flow pour le contenu ou printer pour l'assemblage générique.
+- Ne pas ajouter de framework de vérification, de préconditions ou de compatibilité préventive. Ajouter uniquement les contrôles directement nécessaires au contrat demandé.
+- Adapter la vérification au périmètre : compiler avec `mvn -DskipTests compile`, exécuter `dev.cruding.engine.App` depuis la racine lorsque la génération change, puis comparer uniquement les sorties concernées. Lancer des tests ciblés lorsqu'ils protègent le comportement modifié ; ne pas transformer une petite itération en campagne de tests générale.
+- Ne jamais annoncer qu'un résultat est conforme sans distinguer la compilation d'Engine, l'exécution du générateur, la comparaison des fichiers produits et la compilation éventuelle de l'application cible.

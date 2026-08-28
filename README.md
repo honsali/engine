@@ -1,374 +1,461 @@
-# Engine — Personal CRUD Application Generator
+# Engine 3.0.0
 
-`engine` is a personal code-generation tool built for a solo freelance development workflow. Its purpose is simple:
+Engine est un outil de génération de code full-stack piloté par un DSL Java.
 
-> Describe an application with the smallest readable Java DSL possible, then generate the repetitive database, backend, and frontend code.
+Il permet de décrire un domaine, des pages, des composants et des actions, puis de produire le gros œuvre correspondant côté frontend et côté backend.
 
-The engine is not intended to be a generic, target-neutral generator product. It evolves with the applications it generates. For a new project, the engine can be copied from the latest useful version and adapted to that project's needs.
+Sa valeur principale n'est pas de générer du CRUD à partir de templates figés. Elle réside dans son architecture en Flow : les éléments visuels et fonctionnels font apparaître les actions réellement nécessaires, et chaque action contribue transversalement aux différentes couches de l'application.
 
-## Design goals
+> Le CRUD est un vocabulaire d'actions fourni par Engine. Ce n'est pas la limite ni l'architecture du générateur.
 
-The project optimizes for:
+## Proposition de valeur
 
-- **More output from less input** — the DSL should contain intent and exceptions, not boilerplate.
-- **Readable specifications** — entities, pages, components, and actions should remain easy to understand.
-- **Fast delivery** — repeated full-stack patterns should be generated consistently.
-- **Strong conventions** — names and defaults should eliminate unnecessary declarations.
-- **Progressive customization** — common cases should be short, while uncommon cases retain low-level escape hatches.
-- **Diff-friendly output** — generated files are reviewed with comparator tools before selected changes are applied to the application.
-- **Project ownership** — the generator and its backend/frontend targets are developed together and may evolve together.
+Engine cherche à obtenir simultanément :
 
-## One application, two generated runtimes
+- un DSL Java court et lisible ;
+- du code frontend et backend adapté au projet cible ;
+- une génération déterministe et facile à comparer ;
+- des actions fonctionnelles extensibles au-delà du CRUD ;
+- une séparation claire entre le code proposé par le générateur et le code réellement intégré ;
+- un plan initial qui conserve sa valeur lorsque l'application de production évolue.
 
-The generated backend and frontend belong to one application and normally evolve in the same delivery. Their HTTP contract remains explicit and testable, but the engine does not optimize for independently versioned frontend and backend products or hypothetical external consumers.
+Engine est volontairement lié aux conventions des applications qu'il aide à construire. Il ne cherche pas à devenir un générateur universel et indépendant de toute cible.
 
-The ownership boundary is deliberate:
+## Modèle mental
 
-- generated backend candidates place business rules, authoritative validation, authorization, transactions, persistence, and integrity on the backend side; after review and selective transfer, runnable backend code is authoritative;
-- generated frontend candidates remain limited to components, layouts, navigation, presentation, interaction state, and API orchestration;
-- when one DSL field constraint feeds backend request validation and frontend feedback, backend emission remains authoritative; frontend emission is only an inline UX projection and must not add acceptance logic;
-- frontend TypeScript types describe the transport contract without creating a separate browser-side business domain.
+Le fonctionnement général est le suivant :
 
-A generated frontend controller or Redux model may coordinate a request and its UI state, but it must not mirror backend use cases or decide business outcomes. The backend must remain correct when called without the generated frontend, and its Problem Details are the canonical errors presented by the UI.
+```text
+DSL Java
+  ├─ model/**       domaine, champs et relations
+  └─ modules/**     modules, pages, composants et actions
+          │
+          ▼
+Chargement et Context
+Entities · Modules · Pages · Elements · Actions
+          │
+          ▼
+Actions et Injections
+          │
+          ▼
+Flows et Printers
+       ┌──┴──┐
+       ▼     ▼
+ result/be  result/fe
+       └──┬──┘
+          ▼
+Comparateur de code
+          │
+          ▼
+Transfert explicite et sélectif vers l'application
+```
 
-## Intended workflow
+Trois niveaux doivent rester distincts :
 
-The normal workflow is:
+```text
+DSL                    intention fonctionnelle et structurelle
+Code généré            plan initial, proposition, gros œuvre
+Code en production     plan intégré puis adapté au besoin réel
+```
 
-1. Copy the latest useful engine version for a new project.
-2. Adapt the engine when the project introduces a genuinely new pattern.
-3. Describe the domain under `src/main/java/model`.
-4. Describe modules, pages, UI composition, and actions under `src/main/java/modules`.
-5. Run `dev.cruding.engine.App` from the engine project root.
-6. Review `result/be` and `result/fe` with comparator tools.
-7. Transfer only the desired changes into the runnable backend and frontend applications.
-8. Keep the adapted generator with the project so its generated architecture remains reproducible.
+Le code exécuté en production reste la référence opérationnelle. Le code généré reste la référence du plan initial.
 
-`result/` is disposable generated output. It is not the production source tree and should not contain manually maintained code.
+## Le DSL Java
 
-## What the engine generates
+Les entités sont décrites sous `src/main/java/model`.
 
-From the same application specification, the engine can generate coordinated artifacts for the database, backend, and frontend. Every generated text file uses LF and exactly one final newline, independently of the host platform or the previous contents of `result/`.
+Exemple réel :
+
+```java
+public class Conge extends Entity {
+
+    public final Field code = Text("code").isId();
+    public final Field typeConge = Ref(TypeConge.class);
+    public final Field dateDebutConge = Date("dateDebutConge");
+    public final Field dateFinConge = Date("dateFinConge");
+    public final Field commentaire = LongText("commentaire");
+    public final Field employe = Father(Employe.class);
+}
+```
+
+Les modules, pages et compositions visuelles sont décrits sous `src/main/java/modules`.
+
+Un composant ne décrit pas seulement son apparence. Il fait également apparaître les opérations nécessaires à son fonctionnement :
+
+```java
+table(e,
+        e.typeConge,
+        e.dateDebutConge,
+        e.dateFinConge,
+        e.commentaire)
+    .fillWith(listAll(e).byFatherId())
+    .onRowClick(goToPage(e, RhProject.pageConsulterConge));
+```
+
+Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
+
+Le DSL porte donc l'intention. Les actions traduisent cette intention dans les couches techniques.
+
+## L'architecture en Flow
+
+Une action ne génère pas directement un fichier complet.
+
+Elle sélectionne les injections utiles à son cas d'usage. Chaque injection sait contribuer à une couche précise, tandis que les printers assemblent les contributions dans des fichiers cohérents.
+
+| Frontend | Backend |
+|---|---|
+| View | Controller |
+| Controller | Service métier |
+| Model Redux | Repository |
+| Service HTTP | Request |
+|  | Mapper |
+
+Une action peut contribuer à toutes ces couches ou seulement à certaines d'entre elles. Les injections non nécessaires restent vides.
+
+Les artefacts comme le Domain et la Response sont actuellement produits directement à partir de l'Entity et de ses Fields ; ils ne disposent pas d'une Action Injection dédiée en version 3.0.0.
+
+Les Flows construisent le contenu Java, TypeScript, TSX ou XML. Les printers :
+
+- parcourent les entités et les actions ;
+- collectent les imports et les contributions ;
+- assemblent les fichiers ;
+- écrivent uniquement sous `result`.
+
+Un printer ne doit pas contenir une liste fermée de cas d'usage métier. Il doit rester générique et demander aux actions ce qu'elles souhaitent injecter.
+
+## Des actions au-delà du CRUD
+
+`CreateAction`, `UpdateAction`, `DeleteAction`, `FilterAction` ou `GetByFieldAction` sont des actions déjà disponibles. Elles ne constituent pas une frontière.
+
+Lorsqu'un projet introduit un nouveau cas d'usage réutilisable, il peut devenir une action du DSL :
+
+- historiser ;
+- imprimer ;
+- envoyer ;
+- exporter ;
+- valider ;
+- clôturer ;
+- déclencher un traitement propre au métier.
+
+Une nouvelle action :
+
+1. porte une intention fonctionnelle identifiable ;
+2. fournit uniquement les injections nécessaires ;
+3. est exposée par le DSL ;
+4. devient réutilisable dans les composants et les pages ;
+5. ne nécessite aucun cas spécial dans les printers existants.
+
+Exemple conceptuel :
+
+```java
+// Pseudo-code illustrant une extension possible du DSL.
+actionBlock(
+    button(historiser(e).byId()),
+    button(imprimer(e).byId()),
+    button(envoyer(e).byForm().confirm())
+);
+```
+
+Le code produit reste adapté aux actions effectivement utilisées. Une action disponible dans Engine mais absente du DSL du projet ne doit pas ajouter de code inutile au résultat.
+
+## Actions annexes et mutualisation
+
+Une action principale peut dépendre d'une opération annexe.
+
+Par exemple, imprimer et envoyer un employé peuvent toutes les deux nécessiter sa récupération par identifiant :
+
+```text
+Imprimer ───┐
+            ├── RecupererParId(Employe)
+Envoyer ────┘
+```
+
+`Imprimer` et `Envoyer` restent deux usages fonctionnels distincts. En revanche, la même méthode `recupererParId` ne doit être déclarée qu'une seule fois dans chaque portée où elle est partagée.
+
+Il faut distinguer :
+
+- les occurrences d'une action dans les pages et composants ;
+- la capacité technique réutilisable produite par cette action ;
+- la portée de la contribution générée.
+
+Deux pages peuvent donc conserver deux appels ou deux états d'interface distincts tout en partageant une seule méthode de service frontend, une seule route backend ou une seule méthode de repository.
+
+La clé de mutualisation doit être sémantique. Elle dépend au minimum :
+
+- du type d'opération ;
+- de l'entité ;
+- des champs ou du parent utilisés pour la recherche ;
+- des paramètres ;
+- du contrat Request/Response ;
+- de la portée de génération.
+
+### État en version 3.0.0
+
+`Context` conserve encore chaque occurrence d'`Action` avec une identité propre. Plusieurs printers évitent déjà les doubles déclarations grâce à `lnameWithoutEntity`, et les requests sont mutualisées par leur nom.
+
+Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `recupererParId`, mais le graphe explicite des actions annexes et leur identité sémantique restent une architecture à consolider.
+
+## Un résultat adapté au projet
+
+Engine génère du code adapté aux conventions et aux besoins de l'application cible :
+
+- structure des packages ;
+- routes ;
+- contrats ;
+- composants ;
+- organisation MVC frontend ;
+- organisation Controller/Service/Repository backend ;
+- infrastructure attendue par le projet.
+
+Ce choix est volontaire. Le résultat n'est pas un framework générique : c'est une proposition directement exploitable pour un projet donné.
+
+Le code généré doit être compatible et compilable une fois intégré à l'infrastructure de la cible. La valeur durable d'Engine se trouve surtout dans le DSL, les actions, les injections, les Flows et la reproductibilité du plan.
+
+## `result` est une proposition, jamais la production
+
+Engine écrit dans :
+
+```text
+result/be
+result/fe
+```
+
+Il n'écrit pas dans les applications finales et ne tente pas de fusionner automatiquement leur code.
+
+Le terme « injection » désigne l'injection d'une contribution dans un artefact généré. Il ne désigne jamais une modification automatique du projet de production.
+
+Le workflow d'intégration reste sous le contrôle du développeur.
+
+### Première utilisation d'une entité
+
+Lorsque l'entité apparaît pour la première fois, le développeur peut copier l'ensemble des fichiers générés vers le frontend et le backend cibles.
+
+### Itérations suivantes
+
+Lorsque le projet a commencé à évoluer manuellement, le développeur :
+
+1. régénère le code ;
+2. compare `result` avec l'application ;
+3. sélectionne les fichiers, blocs ou lignes utiles ;
+4. transfère explicitement ces changements ;
+5. conserve les adaptations propres à la production.
+
+Aucun code manuel ne doit être maintenu dans `result`. Le dossier est une sortie reproductible et jetable.
+
+Le moteur écrase les fichiers qu'il produit, mais il ne supprime pas nécessairement un ancien artefact qu'aucun printer ne génère plus. Un fichier obsolète dans `result` doit donc être identifié lors de la comparaison ou lors de la préparation d'une nouvelle référence.
+
+## Le code généré comme plan initial
+
+Après sa mise en production, une application diverge naturellement de son code généré :
+
+- règles métier supplémentaires ;
+- intégrations externes ;
+- sécurité ;
+- optimisation ;
+- cas particuliers ;
+- refactoring ;
+- adaptations demandées par les utilisateurs.
+
+Cette divergence ne retire pas sa valeur au résultat généré. Elle lui donne une nouvelle fonction : celle de plan initial avant travaux.
+
+```text
+Application de production - Plan généré = Travail spécifique au projet
+```
+
+La comparaison permet de retrouver :
+
+- ce qui appartenait au gros œuvre ;
+- ce qui a été ajouté ensuite ;
+- ce qui a été remplacé ;
+- ce qui est spécifique à l'application ;
+- ce qui mérite de remonter dans Engine comme capacité réutilisable.
+
+Une amélioration générique doit être reportée dans le DSL, une Action, une Injection ou un Flow. Une adaptation strictement locale doit rester dans l'application.
+
+Avec une version identifiée d'Engine et le DSL correspondant, le plan reste reproductible. La version 3.0.0 constitue une baseline de ce contrat.
+
+## Refactoring après mise en production
+
+Engine reste utile pour appliquer un changement transversal lorsque l'application est déjà en production.
+
+Le raisonnement utilise trois états :
+
+```text
+G0 = ancien résultat généré
+P  = code actuel de production
+G1 = résultat produit après évolution d'Engine
+```
+
+La règle de transfert est simple :
+
+```text
+si P == G0
+    le fichier peut être remplacé intégralement par G1
+sinon
+    la différence G0 → G1 doit être reportée manuellement dans P
+```
+
+### Exemple : ajouter Springdoc OpenAPI
+
+Supposons que l'application possède 100 controllers et que 20 d'entre eux aient été modifiés depuis leur génération.
+
+Le workflow peut être :
+
+1. comparer l'ancien `result` avec la production ;
+2. sélectionner les 80 controllers restés identiques ;
+3. modifier Engine pour générer les annotations Springdoc OpenAPI ;
+4. régénérer `G1` ;
+5. revenir au comparateur sans rafraîchir la sélection ;
+6. copier intégralement les 80 controllers sélectionnés ;
+7. reporter manuellement les annotations dans les 20 controllers personnalisés.
+
+Le générateur applique ainsi le refactoring à toute la partie non divergée. Le travail manuel est limité aux fichiers qui contiennent réellement des adaptations.
+
+Cette méthode s'applique également à :
+
+- la sécurité ;
+- la journalisation ;
+- la gestion des erreurs ;
+- les conventions de mapping ;
+- la pagination ;
+- les changements de packages ;
+- les imports communs ;
+- les annotations techniques ;
+- les évolutions de contrats partagés.
+
+Engine agit alors comme producteur d'un changement cohérent à grande échelle, sans devenir un outil d'écriture automatique dans la production.
+
+## Contrat de comparabilité
+
+Le workflow repose sur la qualité des différences produites. Engine doit donc garantir autant que possible :
+
+- des chemins et noms de fichiers stables ;
+- un ordre déterministe des entités, actions et déclarations ;
+- des imports ordonnés ;
+- un formatage stable ;
+- des fins de ligne LF ;
+- exactement une fin de ligne finale ;
+- l'absence de timestamps ou de contenu aléatoire ;
+- des changements localisés aux responsabilités concernées ;
+- l'absence de reformatage inutile.
+
+Une évolution ciblée d'une Action ou d'une Injection doit produire une différence ciblée. Le bruit de génération réduit directement la capacité du développeur à sélectionner les changements avec confiance.
+
+## Ce qu'Engine génère
+
+Selon le DSL utilisé, Engine peut produire notamment :
 
 ### Backend
 
-The backend target is based on Spring, JPA, and Liquibase. Generated artifacts include:
-
-- domain entities;
-- DTOs;
-- mappers;
-- repositories;
-- specifications and filters;
-- domain-owned reference-data catalogs;
-- business services;
-- REST resources;
-- Liquibase tables, constraints, data headers, and master changelog entries.
-
-Output is written under:
-
-```text
-result/be/
-```
-
-The backend overlay assumes that the host application provides `app.core.configuration.JsonId`, `app.core.pagination.PageResponse`, `app.core.pagination.PageableUtils`, `app.core.persistence.BaseSpecification`, `app.core.exception.ConflictException`, `app.core.referenceData.ReferenceDataCatalog`, `app.core.referenceData.ReferenceDataDefinition`, global API exception handling for service-level `NoSuchElementException` and `IllegalArgumentException`, and `liquibase/changelog/security_table.xml`. Generated paginated resources return `PageResponse` rather than exposing Spring Data's `Page` contract directly.
-
-Generated DTO identifiers remain `Long` inside Java and receive the host-owned `@JsonId` annotation. The host serializes only these annotated values as JSON strings, matching generated frontend string identifiers without changing JPA or repository ID types.
-
-`JavaFlow` follows the same import groups as VS Code's Java organizer: `java`, `javax`, `org`, `com`, then unmatched packages alphabetically. Generated record components are emitted explicitly one per line; formatter configuration should preserve intentional wrapping rather than requiring trailing comments in generated/runtime comparisons.
-
-Generated REST resources use the entity model package as their API namespace. Entities under `model.rh` therefore receive the class-level prefix `/api/rh`, and generated frontend services append `/rh` to the host application's `API_URL`. Each resource also receives a class-level `@PreAuthorize` using the explicit authority supplied by the project bootstrap. The host must enable Spring method security and enforce the same namespace and authority in its HTTP security configuration so authorization remains stable as entities are added to a domain.
+- entités de domaine ;
+- requests et responses ;
+- mappers ;
+- controllers ;
+- services métier ;
+- repositories ;
+- filtres et specifications ;
+- données de référence ;
+- fichiers de structure de base de données.
 
 ### Frontend
 
-The frontend target is based on React, TypeScript, Redux Toolkit, and Waxant conventions. Generated artifacts include:
-
-- frontend domain models;
-- API services;
-- pages and reusable elements;
-- controllers;
-- Redux models and reducers;
-- hooks;
-- module definitions and page lists;
-- actions;
-- ACL declarations;
-- i18n labels.
-
-Output is written under:
-
-```text
-result/fe/
-```
-
-The generated trees are overlays for applications that already provide shared runtime infrastructure such as Spring Boot configuration, frontend layout, security, common components, and Waxant integration. These artifacts organize presentation and transport; business behavior and authoritative validation stay in the generated or host backend.
-
-Generated Axios services use normal TypeScript imports rather than `import type`, type the response on the Axios call, destructure `data` into a local variable, and let TypeScript infer the async function return type. They do not duplicate the response type with an explicit `Promise<T>` annotation or return `(await axios...).data` inline. Paginated Redux consumers use null-safe access while their initial shared pagination state may be absent.
-
-A generated page shares aggregate `Req*` and `Res*` interfaces across multiple actions. Strict service inputs such as route identifiers are required in `Req*`, while shared UI values such as `form` and `pageCourante` remain optional. Hooks accept `Partial<Req*>` because router parameters complete the dispatched request; controllers do not add frontend `throw` validation. Backend validation remains authoritative. Results use optional properties rather than `T | {}` unions, since each action populates only its own subset.
-
-Generated controller implementations conform to Waxant's `ActionOperation<Req, Res>` contract. Their request, result, and thunk context are therefore contextually typed; genuinely unused parameters use the TypeScript `_` convention. Generated Redux handlers omit unused action parameters, constant routes use argument-free `toPath` functions, form and table-row inputs are typed, and empty ACLs do not import unused action catalogs. The focused page-contract test protects these conventions.
-
-The Account specification is a deliberate example of selective transfer. `model.admin.Account` and `modules.admin.account` generate the standard list, detail, create, and update candidate structure. The runnable frontend then adapts that candidate to the plural account API, separate request payloads, password reset, and administrator-specific UX. The generated Account backend remains disposable comparison output; it must not replace the secure host implementation under `crud-be/src/main/java/app/core/security/account`.
-
-## Architectural overview
-
-The engine behaves like a small compiler built around an internal Java DSL:
-
-```text
-Java application specification
-  ├─ model/**       entities, fields, and relationships
-  └─ modules/**     modules, pages, components, and actions
-          │
-          ▼
-Discovery and project bootstrap
-          │
-          ▼
-Shared generation context
- entities → modules/pages → elements/actions → labels
-          │
-          ▼
-Fixed generation pipeline
-          │
-     ┌────┴────┐
-     ▼         ▼
- result/be   result/fe
-```
-
-### Main subsystems
-
-| Package | Responsibility |
-|---|---|
-| `dev.cruding.engine.loader` | Discovers entity classes and the project bootstrap. |
-| `dev.cruding.engine.gen` | Holds the generation context, modules, pages, composers, orchestration, and naming helpers. |
-| `dev.cruding.engine.entity` | Defines the entity DSL and field factory. |
-| `dev.cruding.engine.field` | Defines scalar fields, references, parent relationships, and field presentation options. |
-| `dev.cruding.engine.component` | Defines composable UI structures such as forms, tables, details, panels, and buttons. |
-| `dev.cruding.engine.element` | Represents generated page elements and reusable UI elements. |
-| `dev.cruding.engine.action` | Defines CRUD, navigation, filtering, initialization, and view-only actions. |
-| `dev.cruding.engine.injection` | Defines how actions contribute to generated frontend and backend layers. |
-| `dev.cruding.engine.flow` | Builds formatted Java, TypeScript, TSX, and XML content. |
-| `dev.cruding.engine.printer` | Generates complete files and writes them to `result/`. |
-
-## Generation lifecycle
-
-`dev.cruding.engine.App` coordinates the lifecycle.
-
-### 1. Discover entities
-
-`EntityLoader` scans `src/main/java/model`, loads each `Entity` subclass, and registers it in `Context`.
-
-### 2. Bootstrap the project
-
-`ProjectBootstrapLoader` discovers exactly one concrete `ProjectBootstrap` under `src/main/java/modules` and calls its `init()` method.
-
-The RH example uses:
-
-```text
-src/main/java/modules/rh/RhProject.java
-```
-
-The bootstrap creates modules, registers pages, selects index pages, and exposes page references used by navigation actions.
-
-### 3. Initialize entities
-
-Entity initialization resolves:
-
-- declared fields;
-- identifiers;
-- references and parent relationships;
-- database names;
-- generated paths;
-- labels and settings.
-
-All entities are registered before references are resolved.
-
-### 4. Compose pages
-
-Each `ViewComposer<T>` builds a component tree. Nested `ElementComposer` classes define reusable page fragments such as forms, tables, filters, and detail sections.
-
-Actions are created while these trees are composed and are registered in the shared context.
-
-### 5. Initialize actions
-
-Every action selects the contributors needed by the generated layers. A single action may coordinate:
-
-- frontend view behaviour;
-- frontend controller behaviour;
-- Redux state;
-- frontend API services;
-- backend REST resources;
-- backend business services;
-- repository operations.
-
-### 6. Generate artifacts
-
-`Processor` invokes the concrete printers in the required order:
-
-1. global backend files;
-2. frontend pages and reusable elements;
-3. frontend and backend entity files;
-4. frontend module files.
-
-Page and element generation currently occurs before module i18n generation because rendering also collects field and component labels.
-
-## DSL examples
-
-### Entity declaration
-
-Entities extend `Entity` and declare fields using the inherited field factory:
-
-```java
-public class Employe extends Entity {
-    public final Field matricule = Text("matricule").isId();
-    public final Field nom = Text("nom").required();
-    public final Field dateNaissance = Date("dateNaissance").filtrable();
-    public final Field departement = Ref(Departement.class);
-}
-```
-
-Relationships use typed entity classes:
-
-```java
-public final Field employe = Father(Employe.class);
-public final Field departement = Ref(Departement.class);
-```
-
-`Text(...)` fields default to a maximum length of 250, which is emitted as backend DTO and filter validation. Field modifiers are copy-on-write, so a required domain field can be reused as an optional filter input with `field.required(false)` without weakening the entity declaration.
-
-Entities can also register database ordering constraints in their constructor:
-
-```java
-public Conge() {
-    dateOrder("ck_conge_date_order", dateDebutConge, dateFinConge);
-}
-```
-
-This emits a Liquibase check that permits missing endpoints and otherwise requires the end value to be greater than or equal to the beginning. `ReferenceData` supplies a required `name` field mapped to `libelle` as its identifier; reference entities use the host application's shared reference-data runtime rather than generated per-entity backend resources or frontend services. The engine generates one domain-owned catalog from explicit reference-data entities and entities targeted by `Ref` or `Father` relationships. Catalog entries use each entity's identifier field as the display label and allow filtering by `id` plus its to-one reference IDs. All catalog entities must share one top-level model domain, and their case-insensitive reference names must be unique; generation fails otherwise.
-
-### Project bootstrap
-
-Modules and pages are declared in one project bootstrap:
-
-```java
-public class RhProject implements ProjectBootstrap {
-    @Override
-    public String generatedResourceAuthority() {
-        return "ROLE_GESTIONNAIRE_RH";
-    }
-
-    @Override
-    public void init() {
-        Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
-
-        pageFiltrerEmploye = moduleEmploye
-            .addPage(new ViewFiltrerEmploye())
-            .icon("faUser")
-            .isIndex();
-
-        pageConsulterEmploye = moduleEmploye
-            .addPage(new ViewConsulterEmploye())
-            .pathById();
-    }
-}
-```
-
-### Page composition
-
-Pages use typed entity lookup and component composition:
-
-```java
-public class ViewConsulterEmploye extends ViewComposer<Employe> {
-    public Component rootComponent() {
-        Employe e = entity(Employe.class);
-
-        return section(
-            element(new EtatEmploye()),
-            actionBlock(
-                button(editAction(e, RhProject.pageModifierEmploye)),
-                button(backToListAction(e, RhProject.pageFiltrerEmploye))
-            )
-        );
-    }
-}
-```
-
-## Important conventions
-
-- Entity definitions belong under `src/main/java/model`.
-- Project and page definitions belong under `src/main/java/modules`.
-- Exactly one project bootstrap must implement `ProjectBootstrap` directly.
-- The project bootstrap must return one canonical authority from `generatedResourceAuthority()` for generated business resources; the value must match `ROLE_[A-Z][A-Z0-9_]*`.
-- Modules are explicit `new Module("ModuleName", "package.path")` instances.
-- Module names start with `Module`.
-- Pages are added with `Module.addPage(new ViewComposerSubclass())`.
-- `ViewComposer<T>` supplies the page entity through its generic type.
-- View class names follow `View<Action><Entity>` conventions.
-- A normal frontend module explicitly marks one page with `.icon(...).isIndex()`.
-- `ElementComposer` defines reusable generated `/element` components.
-- Typed lookup such as `entity(Employe.class)` is preferred over string lookup.
-- Duplicate entities, modules, and pages are rejected by `Context`.
-- Generated TypeScript literals must be emitted through `TsLiteral` where escaping is required.
-- Generated frontend validation is limited to non-authoritative inline feedback; business rules and acceptance validation belong in backend candidates and become authoritative only in the reviewed runnable backend.
-
-## Extension philosophy
-
-The intended customization hierarchy is:
-
-```text
-conventions
-    ↓
-high-level CRUD recipes
-    ↓
-recipe overrides
-    ↓
-component and action DSL
-    ↓
-custom action injection or printer
-```
-
-The common case should become increasingly concise, but the existing component/action layer should remain available for project-specific pages.
-
-The engine does not need to stay identical between projects. Useful general improvements can be carried into the next engine version, while highly specific behaviour can remain in the project where it is needed.
-
-## Project structure
+- modèles TypeScript ;
+- services HTTP ;
+- views et composants ;
+- controllers frontend ;
+- modèles Redux ;
+- hooks ;
+- reducers ;
+- pages ;
+- actions, ACL et libellés.
+
+Tous ces artefacts sont des candidats à intégrer. Le projet cible reste libre de les adapter.
+
+## Cycle de génération
+
+`dev.cruding.engine.App` orchestre le cycle :
+
+1. chargement des entités depuis `src/main/java/model` ;
+2. chargement du `ProjectBootstrap` depuis `src/main/java/modules` ;
+3. initialisation des entités ;
+4. composition et initialisation des pages ;
+5. découverte et initialisation des actions ;
+6. exécution du `Processor` ;
+7. écriture des résultats frontend et backend.
+
+`Processor` orchestre les familles de printers. Les printers concernés par les actions les parcourent ensuite et demandent à leurs injections de contribuer au fichier visé.
+
+## Étendre Engine
+
+Pour ajouter un nouveau cas d'usage transversal :
+
+1. identifier l'intention fonctionnelle ;
+2. créer ou spécialiser une `Action` ;
+3. lui associer uniquement les injections utiles ;
+4. exposer sa création dans le DSL ;
+5. identifier les opérations annexes dont elle dépend ;
+6. les composer avec les mécanismes disponibles et vérifier leur mutualisation dans chaque portée ;
+7. régénérer ;
+8. comparer le résultat ;
+9. transférer explicitement le code souhaité.
+
+Une modification répétée dans plusieurs fichiers générés doit être placée dans la responsabilité qui la possède :
+
+- Action pour le cas d'usage ;
+- Injection pour une contribution de couche ;
+- Flow pour la construction du contenu ;
+- Printer pour l'assemblage générique d'un type de fichier ;
+- DSL pour rendre la capacité disponible au projet.
+
+Un cas métier particulier ne doit pas être codé directement dans un printer générique.
+
+## Structure du projet
 
 ```text
 .
 ├── pom.xml
 ├── src/main/java/
-│   ├── dev/cruding/engine/     generator and DSL implementation
-│   ├── model/                  application domain specification
-│   └── modules/                application/module/UI specification
+│   ├── dev/cruding/engine/     moteur, DSL, actions, injections et printers
+│   ├── model/                  description du domaine
+│   └── modules/                modules, pages et composants
 ├── result/
-│   ├── be/                     generated backend overlay
-│   └── fe/                     generated frontend overlay
-└── todos.md                    prioritized improvement backlog
+│   ├── be/                     proposition backend
+│   └── fe/                     proposition frontend
+└── todos.md                    travaux et évolutions envisagés
 ```
 
-## Requirements and execution
+## Prérequis et exécution
 
-- Java 25
-- Maven
+- Java 25 ;
+- Maven ;
+- Engine 3.0.0.
 
-The authoritative project version is the top-level `<version>` in `pom.xml`. Release commits use `version <current-version>: <message>`; after a successful release push, `pom.xml` advances to the next minor version as `MAJOR.(MINOR + 1).0`.
+Compiler le moteur depuis sa racine :
 
-Validate the project with:
+```bash
+mvn -DskipTests compile
+```
+
+La suite de tests se lance avec :
 
 ```bash
 mvn test
 ```
 
-Focused tests currently protect generated LF/final-newline normalization, reference-catalog determinism, generated resource authority, backend `@JsonId` emission, frontend Axios service conventions, and generated page request/result, callback-signature, hook, and pagination contracts. Add similarly bounded tests when a deterministic generator regression would otherwise be repeated across client projects.
+Dans la baseline 3.0.0, `BeDtoPrinterTest` et `BeResourcePrinterTest` sont encore fondés sur d'anciens contrats de génération et doivent être réalignés. Cette commande n'est donc pas encore entièrement verte.
 
-Run `dev.cruding.engine.App` with the engine directory as the working directory. The application expects `src/main/java/model` and `src/main/java/modules` relative to that directory and writes generated files to `result/`.
+Pour générer, lancer `dev.cruding.engine.App` depuis l'IDE avec la racine d'Engine comme répertoire de travail. Le `pom.xml` ne déclare pas actuellement de plugin d'exécution Maven et ne fournit donc pas de commande CLI autonome garantie.
 
-## Current direction
+## Non-objectifs
 
-The main development direction is not generic platform abstraction. It is improving the personal workflow by:
+Engine :
 
-1. generating more from less DSL;
-2. adding reusable high-level CRUD recipes;
-3. keeping complete escape hatches for exceptional project needs;
-4. producing deterministic, comparator-friendly output;
-5. making generation phases easier to understand and modify.
+- n'injecte pas de code dans l'application finale ;
+- ne fusionne pas automatiquement génération et production ;
+- ne cherche pas à maintenir les deux arbres strictement identiques ;
+- ne remplace pas la décision du développeur ;
+- n'est pas limité au CRUD ;
+- n'a pas vocation à être neutre vis-à-vis du projet cible ;
+- ne perd pas son intérêt lorsque la production diverge.
 
-See [`todos.md`](todos.md) for the prioritized backlog.
+L'objectif est de produire un plan full-stack cohérent, reproductible, comparable et suffisamment précis pour accélérer aussi bien la construction initiale que les évolutions futures.
