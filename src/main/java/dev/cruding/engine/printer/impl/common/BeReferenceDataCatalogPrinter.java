@@ -34,7 +34,7 @@ public class BeReferenceDataCatalogPrinter extends Printer {
         f.addJavaImport("app.core.referenceData.ReferenceDataCatalog");
         f.addJavaImport("app.core.referenceData.ReferenceDataDefinition");
 
-        f.__("package app.domain.", domain, ".referenceData;");
+        f.__("package app.domain.", domain, ".referencedata;");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
@@ -54,7 +54,7 @@ public class BeReferenceDataCatalogPrinter extends Printer {
         f.L____("}");
         f.L("}");
 
-        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + domain + "/referenceData/" + className + ".java");
+        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + domain + "/referencedata/" + className + ".java");
     }
 
     private Map<String, List<Entity>> catalogEntitiesByDomain() {

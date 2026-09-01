@@ -78,6 +78,19 @@ public class Conge extends Entity {
 }
 ```
 
+Le nom de collection REST est dérivé par défaut du nom d'entité avec un `s`. Une entité dont le pluriel est irrégulier peut le déclarer dans son constructeur :
+
+```java
+public class Cheval extends Entity {
+
+    public Cheval() {
+        apiCollectionName("chevaux");
+    }
+}
+```
+
+Les routes utilisent ce nom de collection. Une entité enfant est exposée dans le contexte de son parent, par exemple `/api/rh/employes/{idEmploye}/conges`, tandis que ses opérations unitaires utilisent `/api/rh/conges/{id}`. Les packages Java générés sont entièrement en minuscules ; les chemins et identifiants frontend conservent leur camelCase.
+
 Les modules, pages et compositions visuelles sont décrits sous `src/main/java/modules`.
 
 Un composant ne décrit pas seulement son apparence. Il fait également apparaître les opérations nécessaires à son fonctionnement :

@@ -22,10 +22,10 @@ public class ListPaginatedServiceInjection extends ActionServiceInjection {
         f.__("pageCourante: number = 0) => {");
         f.L____("const listePaginee", entity().uname, ": IListePaginee", entity().uname, " = {} as IListePaginee", entity().uname, ";");
         f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/", lcoreName());
-
         if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/${id", entity().ufather, "}");
+            f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().father.referencedEntity.apiCollectionPath(), "/${id", entity().ufather, "}/", entity().apiCollectionName(), "/", lcoreName());
+        } else {
+            f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().apiCollectionPath(), "/", lcoreName());
         }
 
         f.__("?page()=${requetePage.page()}&size=${requetePage.size}");

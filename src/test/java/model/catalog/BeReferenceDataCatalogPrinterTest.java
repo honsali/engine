@@ -31,7 +31,7 @@ public class BeReferenceDataCatalogPrinterTest {
 
         new BeReferenceDataCatalogPrinter().print();
 
-        Path catalog = tempDir.resolve("be/src/main/java/app/domain/catalog/referenceData/CatalogReferenceDataCatalog.java");
+        Path catalog = tempDir.resolve("be/src/main/java/app/domain/catalog/referencedata/CatalogReferenceDataCatalog.java");
         String generated = Files.readString(catalog);
 
         assertTrue(generated.contains("public class CatalogReferenceDataCatalog implements ReferenceDataCatalog"));

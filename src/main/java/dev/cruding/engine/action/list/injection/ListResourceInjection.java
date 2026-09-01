@@ -16,13 +16,13 @@ public class ListResourceInjection extends ActionResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         if (byFatherId() && entity().haveFather) {
-            f.L____("@GetMapping(\"/", entity().lfather, "/{id", entity().ufather, "}\")");
+            f.L____("@GetMapping(\"/", entity().father.referencedEntity.apiCollectionName(), "/{id", entity().ufather, "}/", entity().apiCollectionName(), "\")");
             f.L____("public List<", entity().uname, "Response> ", lnameWithoutEntity(), "(@PathVariable Long id", entity().ufather, ") {");
             f.L________("return ", entity().lname, "Service.", lnameWithoutEntity(), "(id", entity().ufather, ");");
 
             f.L____("}");
         } else {
-            f.L____("@GetMapping");
+            f.L____("@GetMapping(\"/", entity().apiCollectionName(), "\")");
             f.L____("public List<", entity().uname, "Response> ", lnameWithoutEntity(), "() {");
             f.L________("return ", entity().lname, "Service.", lnameWithoutEntity(), "();");
             f.L____("}");

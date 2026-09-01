@@ -12,10 +12,10 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@GetMapping(\"/", lcoreName());
-
         if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/{id", entity().ufather, "}");
+            f.L____("@GetMapping(\"/", entity().father.referencedEntity.apiCollectionName(), "/{id", entity().ufather, "}/", entity().apiCollectionName(), "/", lcoreName());
+        } else {
+            f.L____("@GetMapping(\"/", entity().apiCollectionName(), "/", lcoreName());
         }
         f.__("\")");
         f.L____("public PageResponse<", entity().uname, "Dto> ", lnameWithoutEntity());

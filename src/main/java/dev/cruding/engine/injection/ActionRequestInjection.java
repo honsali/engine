@@ -30,7 +30,7 @@ public class ActionRequestInjection extends ActionWrapper {
             f.addJavaImport("jakarta.validation.constraints.PositiveOrZero");
         }
 
-        f.__("package app.domain.", entity().pkg, ".", entity().lname, ";");
+        f.__("package app.domain.", entity().javaPackage(), ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");

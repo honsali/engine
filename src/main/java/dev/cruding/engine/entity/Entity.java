@@ -4,6 +4,7 @@ package dev.cruding.engine.entity;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.field.Field;
@@ -28,6 +29,7 @@ public class Entity extends FieldFactory {
     public String uname;
     public String dbName;
     public String seqName;
+    private String apiCollectionName;
     public boolean haveFather = false;
     public Setting id_;
     public Father<?> father;
@@ -46,6 +48,7 @@ public class Entity extends FieldFactory {
         this.pkg = StringUtils.substringAfter(this.getClass().getPackageName(), "model.");
         this.path = this.pkg.replace('.', '/') + '/' + this.lname;
         this.key = UUID.nameUUIDFromBytes(this.path.getBytes(StandardCharsets.UTF_8)).toString();
+        this.apiCollectionName = this.lname + "s";
     }
 
     public void init() {
@@ -113,6 +116,26 @@ public class Entity extends FieldFactory {
 
     public String apiDomainPath() {
         return "/" + pkg.replace('.', '/');
+    }
+
+    public String apiCollectionName() {
+        return apiCollectionName;
+    }
+
+    protected void apiCollectionName(String apiCollectionName) {
+        this.apiCollectionName = apiCollectionName;
+    }
+
+    public String apiCollectionPath() {
+        return apiDomainPath() + "/" + apiCollectionName;
+    }
+
+    public String javaPackage() {
+        return (pkg + "." + lname).toLowerCase(Locale.ROOT);
+    }
+
+    public String javaPath() {
+        return javaPackage().replace('.', '/');
     }
 
     public String idFather() {

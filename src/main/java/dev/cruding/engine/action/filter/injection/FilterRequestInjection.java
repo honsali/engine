@@ -21,7 +21,7 @@ public class FilterRequestInjection extends ActionRequestInjection {
             field.addFilterImport(f);
         }
 
-        f.__("package app.domain.", entity().pkg, ".", entity().lname, ";");
+        f.__("package app.domain.", entity().javaPackage(), ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");

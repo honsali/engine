@@ -14,7 +14,7 @@ public class BeRequestPrinter extends Printer {
         for (Action action : Context.getInstance().actionEntity(entity)) {
             String requestName = action.requestActionInjection.name();
             if (!requestName.isEmpty() && requestNames.add(requestName)) {
-                printFile(action.requestActionInjection.content(), getBasePath() + "/be/src/main/java/app/domain/" + entity.path + "/" + requestName + ".java");
+                printFile(action.requestActionInjection.content(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + requestName + ".java");
             }
         }
     }

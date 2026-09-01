@@ -37,7 +37,7 @@ public class BeFilterPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.pkg, ".", entity.lname, ";");
+        f.__("package app.domain.", entity.javaPackage(), ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
@@ -55,7 +55,7 @@ public class BeFilterPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.path + '/' + entity.uname + "Filtre.java");
+        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + '/' + entity.uname + "Filtre.java");
     }
 
 }

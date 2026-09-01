@@ -19,9 +19,9 @@ public class CreateResourceInjection extends BasicResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         if (byFatherId() && entity().haveFather) {
-            f.L____("@PostMapping(\"/", entity().lfather, "/{id", entity().ufather, "}\")");
+            f.L____("@PostMapping(\"/", entity().father.referencedEntity.apiCollectionName(), "/{id", entity().ufather, "}/", entity().apiCollectionName(), "\")");
         } else {
-            f.L____("@PostMapping");
+            f.L____("@PostMapping(\"/", entity().apiCollectionName(), "\")");
         }
         f.L____("public ResponseEntity<", entity().uname, "Response> ", lnameWithoutEntity(), "(");
         if (byFatherId() && entity().haveFather) {

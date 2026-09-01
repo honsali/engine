@@ -17,11 +17,13 @@ public class CreateServiceInjection extends ActionServiceInjection {
             f.__("id", entity().father.uname, ": string, ");
         }
         f.__(entity().lname, ": I", entity().uname, ") => {");
-        f.L____("const { data } = await axios.post<I", entity().uname, ">(`${API_URL}", entity().apiDomainPath());
+        f.L____("const { data } = await axios.post<I", entity().uname, ">(`${API_URL}");
         if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/${id", entity().ufather, "}");
+            f.__(entity().father.referencedEntity.apiCollectionPath(), "/${id", entity().ufather, "}/", entity().apiCollectionName());
+        } else {
+            f.__(entity().apiCollectionPath());
         }
-        f.__("/", entity().lname, "`, ", entity().lname);
+        f.__("`, ", entity().lname);
         f.__(");");
         f.L____("return data;");
         f.L("};");

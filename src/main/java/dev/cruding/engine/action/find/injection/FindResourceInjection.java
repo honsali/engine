@@ -14,7 +14,7 @@ public class FindResourceInjection extends ActionResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@PostMapping(\"/", lnameWithoutEntity(), "\")");
+        f.L____("@PostMapping(\"/", entity().apiCollectionName(), "/", lnameWithoutEntity(), "\")");
         f.L____("public PageResponse<", entity().uname, "> ", lnameWithoutEntity(), "(@RequestBody ", entity().uname, " ", entity().lname, ", Pageable pageable) {");
         f.L________("return PageResponse.from(", entity().lname, "Repository.", lnameWithoutEntity(), "(", entity().lname, ", pageable));");
         f.L____("}");

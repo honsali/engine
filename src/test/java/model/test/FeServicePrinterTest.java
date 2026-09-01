@@ -1,5 +1,6 @@
 package model.test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,6 +34,10 @@ class FeServicePrinterTest {
         ServiceEntity entity = new ServiceEntity();
         entity.init();
 
+        assertEquals("test.serviceentity", entity.javaPackage());
+        assertEquals("test/serviceentity", entity.javaPath());
+        assertEquals("/test/service-entities", entity.apiCollectionPath());
+
         Module module = new Module("ModuleServiceStyle", "test.serviceStyle");
         ViewTestServiceEntity view = new ViewTestServiceEntity();
         module.addPage(view);
@@ -54,12 +59,18 @@ class FeServicePrinterTest {
         assertTrue(generated.contains("const { data } = await axios.get<IServiceEntity[]>("));
         assertTrue(generated.contains("const { data } = await axios.get<IServiceEntity>("));
         assertTrue(generated.contains("const { data } = await axios.post<Page<IServiceEntity>>("));
+        assertTrue(generated.contains("`${API_URL}/test/service-entities`"));
+        assertTrue(generated.contains("`${API_URL}/test/service-entities/${serviceEntity.id}`"));
         assertFalse(generated.contains("(await axios"));
         assertFalse(generated.contains(": Promise<"));
     }
 
     public static final class ServiceEntity extends Entity {
         public final Field code = Text("code").isId();
+
+        ServiceEntity() {
+            apiCollectionName("service-entities");
+        }
     }
 
     public static final class ViewTestServiceEntity extends ViewComposer<ServiceEntity> {

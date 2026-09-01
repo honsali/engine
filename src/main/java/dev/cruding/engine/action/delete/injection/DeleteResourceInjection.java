@@ -13,7 +13,7 @@ public class DeleteResourceInjection extends BasicResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@DeleteMapping(\"/{id}\")");
+        f.L____("@DeleteMapping(\"/", entity().apiCollectionName(), "/{id}\")");
         f.L____("public ResponseEntity<Void> ", lnameWithoutEntity(), "(@PathVariable Long id) {");
         f.L________(entity().lname, "Service.", lnameWithoutEntity(), "(id);");
         f.L________("return ResponseEntity.noContent().build();");

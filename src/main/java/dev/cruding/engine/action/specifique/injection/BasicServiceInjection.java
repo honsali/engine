@@ -33,9 +33,10 @@ public class BasicServiceInjection extends ActionServiceInjection {
             f.removeAfterLastComma();
         }
         f.__(") => {");
-        f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().apiDomainPath(), "/", entity().lname, "/");
         if (byFatherId() && entity().haveFather) {
-            f.__("/", entity().lfather, "/${id" + entity().ufather, "}");
+            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().father.referencedEntity.apiCollectionPath(), "/${id" + entity().ufather, "}/", entity().apiCollectionName());
+        } else {
+            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().apiCollectionPath());
         }
         if (byId()) {
             f.__("/${id", entity().uname, "}");

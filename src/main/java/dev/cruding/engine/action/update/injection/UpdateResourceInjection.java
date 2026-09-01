@@ -14,7 +14,7 @@ public class UpdateResourceInjection extends BasicResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@PutMapping(\"/{id}\")");
+        f.L____("@PutMapping(\"/", entity().apiCollectionName(), "/{id}\")");
         f.L____("public ", entity().uname, "Response ", lnameWithoutEntity(), "(@PathVariable Long id, @Valid @RequestBody ", requestName(), " request) {");
         f.L________("return ", entity().lname, "Service.", lnameWithoutEntity(), "(id, request);");
         f.L____("}");
