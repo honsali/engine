@@ -3,10 +3,6 @@ package modules.rh;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.gen.ProjectBootstrap;
-import modules.admin.account.ViewConsulterAccount;
-import modules.admin.account.ViewCreerAccount;
-import modules.admin.account.ViewListerAccount;
-import modules.admin.account.ViewModifierAccount;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
 import modules.rh.conge.ViewModifierConge;
@@ -35,11 +31,6 @@ public class RhProject implements ProjectBootstrap {
     public static Page pageModifierDepartement;
     public static Page pageCreerDepartement;
 
-    public static Page pageListerAccount;
-    public static Page pageConsulterAccount;
-    public static Page pageModifierAccount;
-    public static Page pageCreerAccount;
-
     @Override
     public void init() {
         new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
@@ -58,14 +49,6 @@ public class RhProject implements ProjectBootstrap {
         pageConsulterDepartement = moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
         pageModifierDepartement = moduleDepartement.addPage(new ViewModifierDepartement()).pathById();
         pageCreerDepartement = moduleDepartement.addPage(new ViewCreerDepartement());
-
-
-
-        Module moduleAccount = new Module("ModuleAccount", "admin.account");
-        pageListerAccount = moduleAccount.addPage(new ViewListerAccount()).icon("faUsers").isIndex();
-        pageConsulterAccount = moduleAccount.addPage(new ViewConsulterAccount()).pathById();
-        pageModifierAccount = moduleAccount.addPage(new ViewModifierAccount()).pathById();
-        pageCreerAccount = moduleAccount.addPage(new ViewCreerAccount());
 
     }
 }
