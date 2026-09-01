@@ -28,7 +28,6 @@ public class BeLiqMasterPrinter extends Printer {
         f.L____("<property name=\"blobType\" value=\"bytea\" dbms=\"postgresql\"/>");
         f.L____("<property name=\"uuidType\" value=\"uuid\" dbms=\"postgresql\"/>");
         f.L("");
-        f.L____("<include file=\"liquibase/changelog/security_table.xml\" relativeToChangelogFile=\"false\"/>");
         List<Entity> entities = entityList().stream().sorted(Comparator.comparing(entity -> entity.path)).toList();
         for (Entity e : entities) {
             f.L("  <include file=\"liquibase/changelog/", e.lname, "_table.xml\" relativeToChangelogFile=\"false\"/>");
