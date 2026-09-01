@@ -6,7 +6,6 @@ import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Util;
 import dev.cruding.engine.printer.Printer;
 
 public class BeDomainPrinter extends Printer {
@@ -70,7 +69,7 @@ public class BeDomainPrinter extends Printer {
         /* *********************************************************************** */
 
         f.L("");
-        f.L____(entity.uname, "(", Util.fieldListAsParameterList(fields), ") {");
+        f.addMethodDeclaration(4, entity.uname + "(", parameterList(fields));
         for (Field field : fields) {
             f.L________("this.", field.lname, " = ", field.lname, ";");
         }
@@ -90,7 +89,7 @@ public class BeDomainPrinter extends Printer {
         if (!entity.isReferenceData()) {
             List<Field> allFieldButFather = entity.listAllFieldButFather();
             f.L("");
-            f.L____("public void update(", Util.fieldListAsParameterList(allFieldButFather), ") {");
+            f.addMethodDeclaration(4, "public void update(", parameterList(allFieldButFather));
             for (Field field : allFieldButFather) {
                 f.L________("this.", field.lname, " = ", field.lname, ";");
             }
@@ -103,5 +102,8 @@ public class BeDomainPrinter extends Printer {
         printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + ".java");
     }
 
+    private List<String> parameterList(List<Field> fields) {
+        return fields.stream().map(field -> field.jtype + " " + field.lname).toList();
+    }
 
 }

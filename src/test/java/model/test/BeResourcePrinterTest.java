@@ -7,19 +7,21 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.field.Field;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.impl.entity.BeControllerPrinter;
 
 class BeResourcePrinterTest {
 
-    static final class SecuredEntity extends Entity {
+    public static final class SecuredEntity extends Entity {
+        public final Field code = Text("code").isId();
     }
 
     @TempDir
     Path tempDir;
 
     @Test
-    void generatesConfiguredResourceAuthority() throws IOException {
+    void generatesConventionBasedController() throws IOException {
         Context context = Context.getInstance();
         context.setBasePath(tempDir.toString());
 
@@ -27,11 +29,12 @@ class BeResourcePrinterTest {
         entity.init();
         new BeControllerPrinter().print(entity);
 
-        Path resource = tempDir.resolve("be/src/main/java/app/domain/test/securedEntity/SecuredEntityResource.java");
-        String generated = Files.readString(resource);
+        Path controller = tempDir.resolve("be/src/main/java/app/domain/test/securedentity/SecuredEntityController.java");
+        String generated = Files.readString(controller);
 
-        assertTrue(generated.contains("import org.springframework.security.access.prepost.PreAuthorize;"));
-        assertTrue(generated.contains("@PreAuthorize(\"hasAuthority('ROLE_GESTIONNAIRE_RH')\")"));
+        assertTrue(generated.contains("@RestController"));
+        assertTrue(generated.contains("@RequestMapping(\"/api/test\")"));
+        assertTrue(generated.contains("public class SecuredEntityController"));
     }
 
 }

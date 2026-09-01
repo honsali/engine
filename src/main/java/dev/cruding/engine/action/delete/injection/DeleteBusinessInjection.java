@@ -13,7 +13,8 @@ public class DeleteBusinessInjection extends BasicBusinessInjection {
         f.L("");
         f.L____("@Transactional");
         f.L____("public void ", lnameWithoutEntity(), "(Long id) {");
-        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", id));");
+        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id)");
+        f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", id));");
         f.L________(entity().lname, "Repository.delete(", entity().lname, ");");
         f.L________(entity().lname, "Repository.flush();");
         f.L____("}");

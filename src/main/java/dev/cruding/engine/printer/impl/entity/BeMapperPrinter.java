@@ -53,7 +53,9 @@ public class BeMapperPrinter extends Printer {
             f.L________________(entity.lname, ".getId(),");
             for (Field field : fields) {
                 if (field.isRef || field.isFather) {
-                    f.L________________(entity.lname, ".get", field.uname, "() == null ? null : ", field.jtype, "Mapper.toReference(", entity.lname, ".get", field.uname, "()),");
+                    f.L________________(entity.lname, ".get", field.uname, "() == null");
+                    f.L________________________("? null");
+                    f.L________________________(": ", field.jtype, "Mapper.toReference(", entity.lname, ".get", field.uname, "()),");
                 } else {
                     f.L________________(entity.lname, ".get", field.uname, "(),");
                 }

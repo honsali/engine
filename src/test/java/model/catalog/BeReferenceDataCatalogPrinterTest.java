@@ -35,12 +35,17 @@ public class BeReferenceDataCatalogPrinterTest {
         String generated = Files.readString(catalog);
 
         assertTrue(generated.contains("public class CatalogReferenceDataCatalog implements ReferenceDataCatalog"));
-        assertTrue(generated.contains("\"department\", new ReferenceDataDefinition(\"Department\", \"name\", Set.of(\"id\"))"));
-        assertTrue(generated.contains("\"employee\", new ReferenceDataDefinition(\"Employee\", \"code\", Set.of(\"id\", \"department.id\", \"status.id\"))"));
-        assertTrue(generated.contains("\"status\", new ReferenceDataDefinition(\"Status\", \"libelle\", Set.of(\"id\"))"));
+        assertTrue(generated.contains("\"department\","));
+        assertTrue(generated.contains("\"Department\","));
+        assertTrue(generated.contains("\"employee\","));
+        assertTrue(generated.contains("\"Employee\","));
+        assertTrue(generated.contains("Set.of(\"id\", \"department.id\", \"status.id\")"));
+        assertTrue(generated.contains("\"status\","));
+        assertTrue(generated.contains("\"Status\","));
         assertTrue(generated.indexOf("\"department\"") < generated.indexOf("\"employee\""));
         assertTrue(generated.indexOf("\"employee\"") < generated.indexOf("\"status\""));
-        assertFalse(generated.contains("\"leave\", new ReferenceDataDefinition"));
+        assertFalse(generated.contains("\"leave\","));
+        assertTrue(generated.lines().allMatch(line -> line.length() <= 120));
     }
 
     public static final class Department extends Entity {

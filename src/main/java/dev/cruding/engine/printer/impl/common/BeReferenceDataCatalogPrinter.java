@@ -44,8 +44,7 @@ public class BeReferenceDataCatalogPrinter extends Printer {
         f.L____("private static final Map<String, ReferenceDataDefinition> REFERENCES = Map.", useEntries ? "ofEntries(" : "of(");
         for (int index = 0; index < catalogEntities.size(); index++) {
             Entity entity = catalogEntities.get(index);
-            String entry = catalogEntry(entity, useEntries);
-            f.L____________(entry, index + 1 < catalogEntities.size() ? "," : ");");
+            addCatalogEntry(f, entity, useEntries, index + 1 == catalogEntities.size());
         }
         f.L("");
         f.L____("@Override");
@@ -93,10 +92,27 @@ public class BeReferenceDataCatalogPrinter extends Printer {
         return domain;
     }
 
-    private String catalogEntry(Entity entity, boolean useEntries) {
-        String definition = "new ReferenceDataDefinition(\"" + entity.uname + "\", \"" + entity.lid + "\", Set.of(" + quotedAllowedFilters(entity) + "))";
-        String entry = "\"" + referenceName(entity) + "\", " + definition;
-        return useEntries ? "Map.entry(" + entry + ")" : entry;
+    private void addCatalogEntry(JavaFlow f, Entity entity, boolean useEntries, boolean last) {
+        int definitionIndentation;
+        int argumentIndentation;
+        if (useEntries) {
+            f.L____________("Map.entry(");
+            f.L________________("\"", referenceName(entity), "\",");
+            definitionIndentation = 16;
+            argumentIndentation = 24;
+        } else {
+            f.L____________("\"", referenceName(entity), "\",");
+            definitionIndentation = 12;
+            argumentIndentation = 20;
+        }
+
+        f.newLineWithIndent(definitionIndentation, "new ReferenceDataDefinition(");
+        f.newLineWithIndent(argumentIndentation, "\"" + entity.uname + "\",");
+        f.newLineWithIndent(argumentIndentation, "\"" + entity.lid + "\",");
+        String suffix = useEntries
+                ? (last ? "))));" : "))),")
+                : (last ? ")));" : ")),");
+        f.newLineWithIndent(argumentIndentation, "Set.of(" + quotedAllowedFilters(entity) + suffix);
     }
 
     private String quotedAllowedFilters(Entity entity) {

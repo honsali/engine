@@ -1,5 +1,6 @@
 package dev.cruding.engine.action.filter.injection;
 
+import java.util.List;
 import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.injection.ActionResourceInjection;
 
@@ -16,7 +17,10 @@ public class ResourceFilterInjection extends ActionResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@PostMapping(\"/", entity().apiCollectionName(), "/", lnameWithoutEntity(), "\")");
-        f.L____("public PageResponse<", entity().uname, "Response> ", lnameWithoutEntity(), "(@Valid @RequestBody(required = false) ", requestName(), " filtre, Pageable pageable) {");
+        f.addMethodDeclaration(
+                4,
+                "public PageResponse<" + entity().uname + "Response> " + lnameWithoutEntity() + "(",
+                List.of("@Valid @RequestBody(required = false) " + requestName() + " filtre", "Pageable pageable"));
         f.L________("return PageResponse.from(", entity().lname, "Service.", lnameWithoutEntity(), "(filtre, pageable));");
         f.L____("}");
     }

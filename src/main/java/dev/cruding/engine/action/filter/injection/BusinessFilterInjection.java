@@ -16,7 +16,9 @@ public class BusinessFilterInjection extends ActionBusinessInjection {
         f.L____("@Transactional(readOnly = true)");
         f.L____("public Page<", entity().uname, "Response> ", lnameWithoutEntity(), "(", requestName(), " filtre, Pageable pageable) {");
         f.L________("Pageable pagination = PageableUtils.paginationValide(pageable);");
-        f.L________("return ", entity().lname, "Repository.findAll(", entity().uname, "Specification.buildSpecification(filtre), pagination).map(", entity().uname, "Mapper::toResponse);");
+        f.L________("return ", entity().lname, "Repository");
+        f.L________________(".findAll(", entity().uname, "Specification.buildSpecification(filtre), pagination)");
+        f.L________________(".map(", entity().uname, "Mapper::toResponse);");
         f.L____("}");
     }
 }

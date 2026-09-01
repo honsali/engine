@@ -27,7 +27,8 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
         f.L("");
         f.L____("@Transactional");
         f.L____("public ", entity().uname, "Response ", lnameWithoutEntity(), "(Long id, ", requestName(), " request) {");
-        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", id));");
+        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id)");
+        f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", id));");
         f.L________("if (", entity().lname, ".getVersion() != request.version()) {");
         f.L____________("throw new StaleVersionException(\"", entity().uname, "\", id);");
         f.L________("}");

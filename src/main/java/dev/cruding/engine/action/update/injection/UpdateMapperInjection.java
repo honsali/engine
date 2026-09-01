@@ -1,5 +1,6 @@
 package dev.cruding.engine.action.update.injection;
 
+import java.util.ArrayList;
 import java.util.List;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.JavaFlow;
@@ -10,9 +11,13 @@ public class UpdateMapperInjection extends ActionMapperInjection {
     @Override
     public void addMapperDeclaration(JavaFlow f) {
         List<Field> fields = entity().listAllFieldButFather();
+        List<String> parameters = new ArrayList<>();
+        parameters.add(entity().uname + " " + entity().lname);
+        parameters.add(requestName() + " request");
+        parameters.addAll(mapperRelationParameters(entity().listRef()));
 
         f.L("");
-        f.L____("public static void toEntity(", entity().uname, " ", entity().lname, ", ", requestName(), " request", mapperRelationParameters(entity().listRef()), ") {");
+        f.addMethodDeclaration(4, "public static void toEntity(", parameters);
         f.L________(entity().lname, ".update(");
         for (int i = 0; i < fields.size(); i++) {
             Field field = fields.get(i);

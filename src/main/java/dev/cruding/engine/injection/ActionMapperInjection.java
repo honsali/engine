@@ -11,11 +11,7 @@ public class ActionMapperInjection extends ActionWrapper {
 
     public void addMapperImport(JavaFlow f) {}
 
-    protected String mapperRelationParameters(List<Field> fields) {
-        StringBuilder parameters = new StringBuilder();
-        for (Field field : fields) {
-            parameters.append(", ").append(field.jtype).append(" ").append(field.lname);
-        }
-        return parameters.toString();
+    protected List<String> mapperRelationParameters(List<Field> fields) {
+        return fields.stream().map(field -> field.jtype + " " + field.lname).toList();
     }
 }

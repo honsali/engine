@@ -1,5 +1,7 @@
 package dev.cruding.engine.action.create.injection;
 
+import java.util.ArrayList;
+import java.util.List;
 import dev.cruding.engine.action.specifique.injection.BasicResourceInjection;
 import dev.cruding.engine.flow.JavaFlow;
 
@@ -23,11 +25,15 @@ public class CreateResourceInjection extends BasicResourceInjection {
         } else {
             f.L____("@PostMapping(\"/", entity().apiCollectionName(), "\")");
         }
-        f.L____("public ResponseEntity<", entity().uname, "Response> ", lnameWithoutEntity(), "(");
+        List<String> parameters = new ArrayList<>();
         if (byFatherId() && entity().haveFather) {
-            f.__("@PathVariable Long id" + entity().ufather, ", ");
+            parameters.add("@PathVariable Long id" + entity().ufather);
         }
-        f.__("@Valid @RequestBody ", requestName(), " request) {");
+        parameters.add("@Valid @RequestBody " + requestName() + " request");
+        f.addMethodDeclaration(
+                4,
+                "public ResponseEntity<" + entity().uname + "Response> " + lnameWithoutEntity() + "(",
+                parameters);
         if (byFatherId() && entity().haveFather) {
             f.L________(entity().uname, "Response response = ", entity().lname, "Service.", lnameWithoutEntity(), "(id", entity().ufather, ", request);");
         } else {

@@ -67,7 +67,12 @@ public class Date extends Field {
 
 
     public void addSpecification(JavaFlow f) {
-        f.L____________("addDateRange(predicates, builder, root.get(\"" + lname + "\"), filtre.debut" + uname + "(), filtre.fin" + uname + "());");
+        f.L____________("addDateRange(");
+        f.L____________________("predicates,");
+        f.L____________________("builder,");
+        f.L____________________("root.get(\"" + lname + "\"),");
+        f.L____________________("filtre.debut" + uname + "(),");
+        f.L____________________("filtre.fin" + uname + "());");
     }
 
     protected Field initCopy() {

@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -47,12 +48,13 @@ public class BeBusinessPrinter extends Printer {
             f.L____("private final ", referenced.uname, "Repository ", referenced.lname, "Repository;");
         }
         f.L("");
-        f.L____("public ", entity.uname, "Service(", entity.uname, "Repository ", entity.lname, "Repository");
+        List<String> constructorParameters = new ArrayList<>();
+        constructorParameters.add(entity.uname + "Repository " + entity.lname + "Repository");
         for (Field relation : repositoryDependencies.values()) {
             Entity referenced = Context.getInstance().getEntity(relation.jtype);
-            f.__(", ", referenced.uname, "Repository ", referenced.lname, "Repository");
+            constructorParameters.add(referenced.uname + "Repository " + referenced.lname + "Repository");
         }
-        f.__(") {");
+        f.addMethodDeclaration(4, "public " + entity.uname + "Service(", constructorParameters);
         f.L________("this.", entity.lname, "Repository = ", entity.lname, "Repository;");
         for (Field relation : repositoryDependencies.values()) {
             Entity referenced = Context.getInstance().getEntity(relation.jtype);
@@ -94,7 +96,8 @@ public class BeBusinessPrinter extends Printer {
         f.L("");
         if (relation.isFather) {
             f.L____("private ", referenced.uname, " recuperer", referenced.uname, "(Long id", relation.uname, ") {");
-            f.L________("return ", referenced.lname, "Repository.findById(id", relation.uname, ").orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id", relation.uname, "));");
+            f.L________("return ", referenced.lname, "Repository.findById(id", relation.uname, ")");
+            f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id", relation.uname, "));");
             f.L____("}");
             return;
         }
