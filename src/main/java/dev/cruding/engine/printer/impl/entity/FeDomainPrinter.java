@@ -1,11 +1,16 @@
 package dev.cruding.engine.printer.impl.entity;
 
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.printer.Printer;
 
 public class FeDomainPrinter extends Printer {
+
+    public FeDomainPrinter(Context context) {
+        super(context);
+    }
 
     public void print(Entity entity) {
         JsFlow f = new JsFlow();

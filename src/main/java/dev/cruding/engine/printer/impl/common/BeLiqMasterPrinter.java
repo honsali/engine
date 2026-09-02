@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.common;
 
+import dev.cruding.engine.gen.Context;
 import java.util.Comparator;
 import java.util.List;
 import dev.cruding.engine.entity.Entity;
@@ -7,6 +8,10 @@ import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
 
 public class BeLiqMasterPrinter extends Printer {
+
+    public BeLiqMasterPrinter(Context context) {
+        super(context);
+    }
 
     public void print() {
 

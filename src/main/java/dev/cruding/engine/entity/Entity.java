@@ -11,7 +11,7 @@ import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
-import dev.cruding.engine.gen.DbNameMapper;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
@@ -41,6 +41,7 @@ public class Entity extends FieldFactory {
     public ArrayList<Field> fieldList = new ArrayList<>();
 
     public ArrayList<DateOrderConstraint> dateOrderConstraints = new ArrayList<>();
+    private Context context;
 
     public Entity() {
         this.uname = this.getClass().getSimpleName();
@@ -56,8 +57,8 @@ public class Entity extends FieldFactory {
         this.id_ = new Setting();
 
 
-        this.dbName = DbNameMapper.getInstance().getTableName(uname);
-        this.seqName = DbNameMapper.getInstance().getSequenceName(uname);
+        this.dbName = context().getDbNameMapper().getTableName(uname);
+        this.seqName = context().getDbNameMapper().getSequenceName(uname);
 
         java.lang.reflect.Field[] list = this.getClass().getFields();
         for (java.lang.reflect.Field f : list) {
@@ -108,6 +109,23 @@ public class Entity extends FieldFactory {
             this.lfather = this.father.lname;
             this.ufather = StringUtils.capitalize(lfather);
         }
+    }
+
+    public void attachTo(Context context) {
+        if (context == null) {
+            throw new EntityInitializationException("Entity Context cannot be null: " + uname);
+        }
+        if (this.context != null && this.context != context) {
+            throw new EntityInitializationException("Entity already belongs to another Context: " + uname);
+        }
+        this.context = context;
+    }
+
+    public Context context() {
+        if (context == null) {
+            throw new EntityInitializationException("Entity is not attached to a Context: " + uname);
+        }
+        return context;
     }
 
     public boolean isReferenceData() {

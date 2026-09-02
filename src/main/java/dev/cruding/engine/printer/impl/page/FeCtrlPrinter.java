@@ -10,10 +10,14 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeCtrlPrinter extends Printer {
 
+    public FeCtrlPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Page page) {
 
         CtrlFlow f = new CtrlFlow();
-        List<Action> controllerActionList = Context.getInstance().actionPage(page).stream()
+        List<Action> controllerActionList = context().actionPage(page).stream()
                 .filter(action -> action.uc != null && !action.inViewOnly)
                 .toList();
         /* *********************************************************************** */

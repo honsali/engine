@@ -1,10 +1,15 @@
 package dev.cruding.engine.printer.impl.module;
 
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.printer.Printer;
 
 public class FeModulePrinter extends Printer {
+
+    public FeModulePrinter(Context context) {
+        super(context);
+    }
 
     public void print(Module module) {
         Flow f = new Flow();

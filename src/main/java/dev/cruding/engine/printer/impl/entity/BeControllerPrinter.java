@@ -10,10 +10,14 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeControllerPrinter extends Printer {
 
+    public BeControllerPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
 
-        for (Action action : Context.getInstance().actionEntity(entity)) {
+        for (Action action : context().actionEntity(entity)) {
             action.resourceActionInjection.addResourceImport(f);
         }
         f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
@@ -33,7 +37,7 @@ public class BeControllerPrinter extends Printer {
         f.L________("this.", entity.lname, "Service = ", entity.lname, "Service;");
         f.L____("}");
 
-        List<Action> actionList = Context.getInstance().actionEntity(entity);
+        List<Action> actionList = context().actionEntity(entity);
         HashSet<String> actionName = new HashSet<>();
         for (Action action : actionList) {
             if (!actionName.contains(action.lnameWithoutEntity)) {

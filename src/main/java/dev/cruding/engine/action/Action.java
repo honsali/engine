@@ -34,7 +34,7 @@ public abstract class Action {
 
     public static final Comparator<Action> ORDER_BY_NAME = Action::compareByName;
 
-    private static int rank = 0;
+    private final Context context;
     public ActionCtrlInjection ctrlActionInjection;
     public ActionMdlInjection mdlActionInjection;
     public ActionRepoInjection repoActionInjection;
@@ -94,20 +94,29 @@ public abstract class Action {
 
 
     public Action(ActionType type, String lcoreName, Entity entity, Element element) {
-        this.id = "" + rank++;
+        this.element = Objects.requireNonNull(element, "Action element cannot be null");
+        this.page = Objects.requireNonNull(element.page, "Action element must belong to a Page");
+        this.context = page.context();
+        if (entity != null && entity.context() != context) {
+            throw new IllegalArgumentException("Action entity belongs to another Context: " + entity.uname);
+        }
+        this.id = context.nextActionId();
         this.type = type;
         this.entity = entity;
         if (this.entity != null) {
             this.orderBy = entity.uid;
         }
-        this.page = element.page;
         this.uc = page.uc;
         lcoreName(lcoreName);
         if (ucConfirmer() || ucDialogue()) {
             this.confirm();
         }
         element(element);
-        Context.getInstance().addAction(this);
+        context.addAction(this);
+    }
+
+    public Context context() {
+        return context;
     }
 
     public void init() {
@@ -264,7 +273,11 @@ public abstract class Action {
     }
 
     public Action targetPage(Page targetPage) {
-        this.targetPage = Objects.requireNonNull(targetPage, "Target page cannot be null");
+        Page candidate = Objects.requireNonNull(targetPage, "Target page cannot be null");
+        if (candidate.context() != context) {
+            throw new IllegalArgumentException("Target page belongs to another Context: " + candidate.name);
+        }
+        this.targetPage = candidate;
         return this;
     }
 
@@ -374,12 +387,12 @@ public abstract class Action {
 
         Action other = (Action) obj;
 
-        return Objects.equals(id, other.id);
+        return context == other.context && Objects.equals(id, other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(System.identityHashCode(context), id);
     }
 
     private static int compareByName(Action left, Action right) {

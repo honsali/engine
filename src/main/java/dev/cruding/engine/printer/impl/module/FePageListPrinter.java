@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.module;
 
+import dev.cruding.engine.gen.Context;
 import java.util.ArrayList;
 import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
@@ -9,6 +10,10 @@ import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
 
 public class FePageListPrinter extends Printer {
+
+    public FePageListPrinter(Context context) {
+        super(context);
+    }
 
     public void print(Module module) {
         JsFlow f = new JsFlow();

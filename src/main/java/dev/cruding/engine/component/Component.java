@@ -61,7 +61,6 @@ public abstract class Component {
     }
 
     public void addLabel(String key, String value) {
-        // Context.getInstance().addLabel(element.module.uname, key, value);
     }
 
     public void appendContent(ViewFlow vf, Flow flow) {}

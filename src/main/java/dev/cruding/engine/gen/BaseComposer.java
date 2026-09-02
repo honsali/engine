@@ -107,12 +107,19 @@ public abstract class BaseComposer {
         return element(new ButtonElementComposer(action));
     }
 
+    protected Context context() {
+        if (page == null) {
+            throw new ContextException("Composer is not attached to a Page: " + getClass().getName());
+        }
+        return page.context();
+    }
+
     public Button button(Action action) {
         return new Button(action.element(element));
     }
 
     public <T extends Entity> T entity(Class<T> entityType) {
-        return Context.getInstance().getEntity(entityType);
+        return context().getEntity(entityType);
     }
 
     public Action primaryAction(Entity entity, String ltype) {
@@ -165,16 +172,32 @@ public abstract class BaseComposer {
         return new EmptyAction(ActionType.UCA, "ajouter", entity, element).targetPage(targetPage).inViewOnly();
     }
 
+    public Action addAction(Entity entity, PageRef targetPage) {
+        return addAction(entity, context().getPage(targetPage));
+    }
+
     public Action editAction(Entity entity, Page targetPage) {
         return new EmptyAction(ActionType.UCA, "modifier", entity, element).targetPage(targetPage).inViewOnly();
+    }
+
+    public Action editAction(Entity entity, PageRef targetPage) {
+        return editAction(entity, context().getPage(targetPage));
     }
 
     public Action backToListAction(Entity entity, Page targetPage) {
         return new EmptyAction(ActionType.UCA, "retourListe", entity, element).targetPage(targetPage).inViewOnly();
     }
 
+    public Action backToListAction(Entity entity, PageRef targetPage) {
+        return backToListAction(entity, context().getPage(targetPage));
+    }
+
     public Action backToDetailAction(Entity entity, Page targetPage) {
         return new EmptyAction(ActionType.UCA, "retourConsulter", entity, element).targetPage(targetPage).inViewOnly();
+    }
+
+    public Action backToDetailAction(Entity entity, PageRef targetPage) {
+        return backToDetailAction(entity, context().getPage(targetPage));
     }
 
     public Action getByFieldAction(Entity entity, Field... fieldList) {
@@ -199,6 +222,10 @@ public abstract class BaseComposer {
 
     public Action goToPage(Entity entity, Page target) {
         return new GoToPageAction(entity, element, target);
+    }
+
+    public Action goToPage(Entity entity, PageRef target) {
+        return goToPage(entity, context().getPage(target));
     }
 
     public Action emitEvent(Entity entity, String target) {

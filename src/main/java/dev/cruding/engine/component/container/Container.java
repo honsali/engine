@@ -5,7 +5,6 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
 
 public class Container extends Component {
 
@@ -52,7 +51,7 @@ public class Container extends Component {
     public String title() {
         if (title != null) {
             String label = StringUtils.capitalize(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(title), " "));
-            Context.getInstance().addLabel(element.page.module.uname, "Uc" + element.page.uc + "." + title, label);
+            element.context().addLabel(element.page.module.uname, "Uc" + element.page.uc + "." + title, label);
         }
         return title != null ? (" titre=\"" + title + "\"") : "";
     }

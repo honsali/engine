@@ -12,11 +12,15 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeFilterPrinter extends Printer {
 
+    public BeFilterPrinter(Context context) {
+        super(context);
+    }
+
     private static final Predicate<Field> IS_BASIC_REF_OR_FATHER = p -> (p.isBasic || p.isRef || p.isFather);
 
     public void print(Entity entity) {
         boolean filtred = false;
-        for (Action action : Context.getInstance().actionEntity(entity)) {
+        for (Action action : context().actionEntity(entity)) {
             if (filtred = action instanceof FilterAction) {
                 break;
             }

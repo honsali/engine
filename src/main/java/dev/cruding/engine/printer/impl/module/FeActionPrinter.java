@@ -12,6 +12,10 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeActionPrinter extends Printer {
 
+    public FeActionPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Module module) {
         Flow f = new Flow();
 
@@ -23,7 +27,7 @@ public class FeActionPrinter extends Printer {
 
                 f.L____("Uc", page.uc, ": {");
 
-                List<Action> actionList = Context.getInstance().actionPage(page);
+                List<Action> actionList = context().actionPage(page);
                 for (Action action : actionList) {
                     f.L________(action.actionKey, ": 'Uc", page.uc, ".action." + StringUtils.uncapitalize(action.lnameWithEntity), "',");
                 }

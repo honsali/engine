@@ -1,9 +1,9 @@
 package dev.cruding.engine.gen;
 
+import java.util.Objects;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.printer.impl.common.BeLiqMasterPrinter;
-import dev.cruding.engine.printer.impl.common.BeReferenceDataCatalogPrinter;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
 import dev.cruding.engine.printer.impl.entity.BeControllerPrinter;
@@ -30,31 +30,59 @@ import dev.cruding.engine.printer.impl.page.FeMdlPrinter;
 
 public class Processor {
 
-    private final FeCtrlPrinter feCtrlPrinter = new FeCtrlPrinter();
-    private final FeMdlPrinter feMdlPrinter = new FeMdlPrinter();
-    private final FeHookPrinter feHookPrinter = new FeHookPrinter();
-    private final FeDomainPrinter feDomainPrinter = new FeDomainPrinter();
-    private final FeServicePrinter feServicePrinter = new FeServicePrinter();
-    private final BeDomainPrinter beDomainPrinter = new BeDomainPrinter();
-    private final BeRequestPrinter beRequestPrinter = new BeRequestPrinter();
-    private final BeResponsePrinter beResponsePrinter = new BeResponsePrinter();
-    private final BeMapperPrinter beMapperPrinter = new BeMapperPrinter();
-    private final BeSpecificationPrinter beSpecificationPrinter = new BeSpecificationPrinter();
-    private final BeRepositoryPrinter beRepositoryPrinter = new BeRepositoryPrinter();
-    private final BeControllerPrinter beResourcePrinter = new BeControllerPrinter();
-    private final BeBusinessPrinter beBusinessPrinter = new BeBusinessPrinter();
-    private final BeLiqConstraintPrinter beLiqConstraintPrinter = new BeLiqConstraintPrinter();
-    private final BeLiqDataPrinter beLiqDataPrinter = new BeLiqDataPrinter();
-    private final BeLiqMasterPrinter beLiqMasterPrinter = new BeLiqMasterPrinter();
-    private final BeReferenceDataCatalogPrinter beReferenceDataCatalogPrinter = new BeReferenceDataCatalogPrinter();
-    private final BeLiqTablePrinter beLiqTablePrinter = new BeLiqTablePrinter();
-    private final FeModulePrinter feModulePrinter = new FeModulePrinter();
-    private final FeI18nPrinter feI18nPrinter = new FeI18nPrinter();
-    private final FeActionPrinter feActionPrinter = new FeActionPrinter();
-    private final FeAclPrinter feAclPrinter = new FeAclPrinter();
-    private final FePageListPrinter feListePagePrinter = new FePageListPrinter();
-    private final FeReducerPrinter feReducerPrinter = new FeReducerPrinter();
-    private final FeElementPrinter feElementPrinter = new FeElementPrinter();
+    private final Context context;
+    private final FeCtrlPrinter feCtrlPrinter;
+    private final FeMdlPrinter feMdlPrinter;
+    private final FeHookPrinter feHookPrinter;
+    private final FeDomainPrinter feDomainPrinter;
+    private final FeServicePrinter feServicePrinter;
+    private final BeDomainPrinter beDomainPrinter;
+    private final BeRequestPrinter beRequestPrinter;
+    private final BeResponsePrinter beResponsePrinter;
+    private final BeMapperPrinter beMapperPrinter;
+    private final BeSpecificationPrinter beSpecificationPrinter;
+    private final BeRepositoryPrinter beRepositoryPrinter;
+    private final BeControllerPrinter beResourcePrinter;
+    private final BeBusinessPrinter beBusinessPrinter;
+    private final BeLiqConstraintPrinter beLiqConstraintPrinter;
+    private final BeLiqDataPrinter beLiqDataPrinter;
+    private final BeLiqMasterPrinter beLiqMasterPrinter;
+    private final BeLiqTablePrinter beLiqTablePrinter;
+    private final FeModulePrinter feModulePrinter;
+    private final FeI18nPrinter feI18nPrinter;
+    private final FeActionPrinter feActionPrinter;
+    private final FeAclPrinter feAclPrinter;
+    private final FePageListPrinter feListePagePrinter;
+    private final FeReducerPrinter feReducerPrinter;
+    private final FeElementPrinter feElementPrinter;
+
+    public Processor(Context context) {
+        this.context = Objects.requireNonNull(context, "Processor Context cannot be null");
+        feCtrlPrinter = new FeCtrlPrinter(context);
+        feMdlPrinter = new FeMdlPrinter(context);
+        feHookPrinter = new FeHookPrinter(context);
+        feDomainPrinter = new FeDomainPrinter(context);
+        feServicePrinter = new FeServicePrinter(context);
+        beDomainPrinter = new BeDomainPrinter(context);
+        beRequestPrinter = new BeRequestPrinter(context);
+        beResponsePrinter = new BeResponsePrinter(context);
+        beMapperPrinter = new BeMapperPrinter(context);
+        beSpecificationPrinter = new BeSpecificationPrinter(context);
+        beRepositoryPrinter = new BeRepositoryPrinter(context);
+        beResourcePrinter = new BeControllerPrinter(context);
+        beBusinessPrinter = new BeBusinessPrinter(context);
+        beLiqConstraintPrinter = new BeLiqConstraintPrinter(context);
+        beLiqDataPrinter = new BeLiqDataPrinter(context);
+        beLiqMasterPrinter = new BeLiqMasterPrinter(context);
+        beLiqTablePrinter = new BeLiqTablePrinter(context);
+        feModulePrinter = new FeModulePrinter(context);
+        feI18nPrinter = new FeI18nPrinter(context);
+        feActionPrinter = new FeActionPrinter(context);
+        feAclPrinter = new FeAclPrinter(context);
+        feListePagePrinter = new FePageListPrinter(context);
+        feReducerPrinter = new FeReducerPrinter(context);
+        feElementPrinter = new FeElementPrinter(context);
+    }
 
     public void execute() {
 
@@ -62,7 +90,7 @@ public class Processor {
 
         // Page and element files are generated before module files because some labels
         // are collected as a side effect of rendering components.
-        for (Page page : Context.getInstance().getPageList()) {
+        for (Page page : context.getPageList()) {
             if (page.containsComponent()) {
                 for (Element element : page.elementList) {
                     printFeElementFiles(element);
@@ -74,12 +102,12 @@ public class Processor {
         }
 
 
-        for (Entity entity : Context.getInstance().getEntityList()) {
+        for (Entity entity : context.getEntityList()) {
             printFeEntityFiles(entity);
             printBeEntityFiles(entity);
         }
 
-        for (Module module : Context.getInstance().getModuleList()) {
+        for (Module module : context.getModuleList()) {
             printFeModuleFiles(module);
         }
     }
@@ -93,7 +121,6 @@ public class Processor {
 
     private void printBeGlobalFiles() {
         beLiqMasterPrinter.print();
-        beReferenceDataCatalogPrinter.print();
     }
 
     private void printFeEntityFiles(Entity entity) {

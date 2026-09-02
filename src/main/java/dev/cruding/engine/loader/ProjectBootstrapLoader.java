@@ -7,16 +7,25 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.ProjectBootstrap;
 
 public class ProjectBootstrapLoader {
+
+    private final Context context;
+
+    public ProjectBootstrapLoader(Context context) {
+        this.context = Objects.requireNonNull(context, "ProjectBootstrapLoader Context cannot be null");
+    }
 
     public void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
             List<Class<? extends ProjectBootstrap>> bootstrapClasses = new ArrayList<>();
             files.filter(Files::isRegularFile)
                     .filter(LoaderUtils::isJavaFile)
+                    .sorted()
                     .forEach(file -> {
                         Class<?> clazz = loadClass(file);
                         if (directlyImplementsProjectBootstrap(clazz)) {
@@ -32,7 +41,7 @@ public class ProjectBootstrapLoader {
             }
 
             ProjectBootstrap bootstrap = instantiate(bootstrapClasses.get(0));
-            bootstrap.init();
+            bootstrap.init(context);
         } catch (GeneratorException e) {
             throw e;
         } catch (Exception e) {

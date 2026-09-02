@@ -22,12 +22,12 @@ class BeResourcePrinterTest {
 
     @Test
     void generatesConventionBasedController() throws IOException {
-        Context context = Context.getInstance();
-        context.setBasePath(tempDir.toString());
+        Context context = new Context(tempDir.toString());
 
         SecuredEntity entity = new SecuredEntity();
-        entity.init();
-        new BeControllerPrinter().print(entity);
+        context.addEntity(entity);
+        context.initEntities();
+        new BeControllerPrinter(context).print(entity);
 
         Path controller = tempDir.resolve("be/src/main/java/app/domain/test/securedentity/SecuredEntityController.java");
         String generated = Files.readString(controller);

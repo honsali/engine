@@ -1,10 +1,12 @@
 package dev.cruding.engine.gen;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
@@ -13,36 +15,38 @@ import dev.cruding.engine.field.Field;
 
 public class Context {
 
+    private final Map<String, Entity> entityMapByName = new LinkedHashMap<>();
+    private final Map<Class<? extends Entity>, Entity> entityMapByClass = new LinkedHashMap<>();
+    private final Map<String, Page> pageMap = new LinkedHashMap<>();
+    private final Map<String, Module> moduleMap = new LinkedHashMap<>();
+    private final Map<String, Map<String, String>> labelMap = new LinkedHashMap<>();
+    private final Set<Action> actionList = new LinkedHashSet<>();
+    private final String basePath;
+    private final DbNameMapper dbNameMapper;
+    private int actionRank;
 
-    private final static Context instance = new Context();
-
-    public static final Context getInstance() {
-        return instance;
+    public Context(String basePath) {
+        this(basePath, new DbNameMapper());
     }
 
-    private HashMap<String, Entity> entityMapByName = new HashMap<>();
-    private HashMap<Class<? extends Entity>, Entity> entityMapByClass = new HashMap<>();
-    private HashMap<String, Page> pageMap = new HashMap<>();
-    private HashMap<String, Module> moduleMap = new HashMap<>();
-    private HashMap<String, HashMap<String, String>> labelMap = new HashMap<>();
-    private HashSet<Action> actionList = new HashSet<>();
-
-
-    private String basePath;
-
-
-
-    private Context() {}
+    public Context(String basePath, DbNameMapper dbNameMapper) {
+        if (StringUtils.isBlank(basePath)) {
+            throw new ContextException("Base path cannot be null or empty");
+        }
+        this.basePath = basePath;
+        this.dbNameMapper = Objects.requireNonNull(dbNameMapper, "DbNameMapper cannot be null");
+    }
 
     public String getBasePath() {
         return basePath;
     }
 
-    public void setBasePath(String basePath) {
-        if (StringUtils.isBlank(basePath)) {
-            throw new ContextException("Base path cannot be null or empty");
-        }
-        this.basePath = basePath;
+    public DbNameMapper getDbNameMapper() {
+        return dbNameMapper;
+    }
+
+    public String nextActionId() {
+        return Integer.toString(actionRank++);
     }
 
     /* ****************************************************************************** */
@@ -58,6 +62,7 @@ public class Context {
         if (entityMapByClass.containsKey(entity.getClass())) {
             throw new ContextException("Doublon Entity class: " + entity.getClass().getName());
         }
+        entity.attachTo(this);
         entityMapByName.put(entity.uname, entity);
         entityMapByClass.put(entity.getClass(), entity);
     }
@@ -67,7 +72,7 @@ public class Context {
     }
 
     public Collection<Entity> getEntityList() {
-        return entityMapByName.values();
+        return List.copyOf(entityMapByName.values());
     }
 
     public Entity getEntity(String uname) {
@@ -99,6 +104,9 @@ public class Context {
         if (module == null || StringUtils.isBlank(module.packge)) {
             throw new ContextException("Cannot add Module with null or empty package");
         }
+        if (module.context() != this) {
+            throw new ContextException("Module belongs to another Context: " + module.uname);
+        }
         if (moduleMap.containsKey(module.packge)) {
             throw new ContextException("Doublon Module: " + module.packge);
         }
@@ -106,7 +114,7 @@ public class Context {
     }
 
     public Collection<Module> getModuleList() {
-        return moduleMap.values();
+        return List.copyOf(moduleMap.values());
     }
 
     /* ****************************************************************************** */
@@ -116,6 +124,9 @@ public class Context {
     public void addPage(Page page) {
         if (page == null || StringUtils.isBlank(page.name)) {
             throw new ContextException("Cannot add null page or page with empty name");
+        }
+        if (page.context() != this) {
+            throw new ContextException("Page belongs to another Context: " + page.name);
         }
         if (pageMap.containsKey(page.name)) {
             throw new ContextException("Doublon Page: " + page.name);
@@ -128,18 +139,36 @@ public class Context {
     }
 
     public Collection<Page> getPageList() {
-        return pageMap.values();
+        return List.copyOf(pageMap.values());
+    }
+
+    public Page getPage(String name) {
+        if (StringUtils.isBlank(name)) {
+            throw new ContextException("Page name cannot be null or empty");
+        }
+        Page page = pageMap.get(name);
+        if (page == null) {
+            throw new ContextException(String.format("Page '%s' not found", name));
+        }
+        return page;
+    }
+
+    public Page getPage(PageRef reference) {
+        return getPage(Objects.requireNonNull(reference, "Page reference cannot be null").name());
     }
 
     public List<Page> getPageList(Module module) {
         if (module == null) {
             throw new ContextException("Module cannot be null");
         }
+        if (module.context() != this) {
+            throw new ContextException("Module belongs to another Context: " + module.uname);
+        }
         if (StringUtils.isBlank(module.uname)) {
             throw new ContextException("Module uname cannot be null or empty");
         }
 
-        return pageMap.values().stream().filter(page -> page.module != null && page.module.uname != null && page.module.uname.equals(module.uname)).toList();
+        return pageMap.values().stream().filter(page -> page.module == module).toList();
     }
 
     public void addLabelForField(String module, Field c) {
@@ -167,10 +196,10 @@ public class Context {
             throw new ContextException("Label value cannot be null or empty");
         }
 
-        labelMap.computeIfAbsent(module, k -> new HashMap<>()).put(key, label);
+        labelMap.computeIfAbsent(module, k -> new LinkedHashMap<>()).put(key, label);
     }
 
-    public HashMap<String, String> getLabelMap(String module) {
+    public Map<String, String> getLabelMap(String module) {
         if (StringUtils.isBlank(module)) {
             throw new ContextException("Module name cannot be null or empty");
         }
@@ -187,6 +216,9 @@ public class Context {
         if (action == null) {
             throw new ContextException("Action cannot be null");
         }
+        if (action.context() != this) {
+            throw new ContextException("Action belongs to another Context: " + action.lnameWithEntity);
+        }
         actionList.add(action);
     }
 
@@ -198,20 +230,29 @@ public class Context {
         if (page == null || StringUtils.isBlank(page.name)) {
             throw new ContextException("Page cannot be null and must have a name");
         }
-        return actionList.stream().filter(as -> as.page != null && as.page.name != null && as.page.name.equals(page.name)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
+        if (page.context() != this) {
+            throw new ContextException("Page belongs to another Context: " + page.name);
+        }
+        return actionList.stream().filter(action -> action.page == page).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionElement(Element element) {
         if (element == null) {
             throw new ContextException("Element cannot be null");
         }
-        return actionList.stream().filter(as -> as.element != null && as.element.equals(element)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
+        if (element.context() != this) {
+            throw new ContextException("Element belongs to another Context: " + element.name);
+        }
+        return actionList.stream().filter(action -> action.element == element).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionEntity(Entity entity) {
         if (entity == null || StringUtils.isBlank(entity.lname)) {
             throw new ContextException("Entity cannot be null and must have an lname");
         }
-        return actionList.stream().filter(as -> as.entity != null && as.entity.lname != null && as.entity.lname.equals(entity.lname)).filter(Objects::nonNull).sorted(Action.ORDER_BY_NAME).toList();
+        if (entity.context() != this) {
+            throw new ContextException("Entity belongs to another Context: " + entity.uname);
+        }
+        return actionList.stream().filter(action -> action.entity == entity).sorted(Action.ORDER_BY_NAME).toList();
     }
 }

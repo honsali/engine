@@ -12,7 +12,6 @@ import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.DbNameMapper;
 
 public class Field {
 
@@ -64,6 +63,7 @@ public class Field {
 
     public String containingEntity;
     public String containingEntityDbname;
+    protected Context context;
 
     public Field(Field f) {
         copyFieldProps(f, this);
@@ -81,10 +81,18 @@ public class Field {
     }
 
     public Field containingEntity(Entity entity) {
+        this.context = entity.context();
         this.containingEntity = entity.uname;
         this.containingEntityDbname = entity.dbName;
-        this.dbName = DbNameMapper.getInstance().getLegacyDbName(entity.uname, lname, "column", this.dbName);
+        this.dbName = context().getDbNameMapper().getLegacyDbName(entity.uname, lname, "column", this.dbName);
         return this;
+    }
+
+    protected Context context() {
+        if (context == null) {
+            throw new IllegalStateException("Field is not attached to an Entity Context: " + lname);
+        }
+        return context;
     }
 
     public Field isDate(boolean isDate) {
@@ -358,7 +366,7 @@ public class Field {
     }
 
     public String getReferenceNameList(String entityName) {
-        Entity entity = Context.getInstance().getEntity(entityName);
+        Entity entity = context().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
             return entity.fieldList.stream().filter(p -> p.isRef).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
         }
@@ -366,7 +374,7 @@ public class Field {
     }
 
     public String getReferenceName(String entityName, String c) {
-        Entity entity = Context.getInstance().getEntity(entityName);
+        Entity entity = context().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
             Optional<String> o = entity.fieldList.stream().filter(p -> p.isRef).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
             if (o.isPresent()) {
@@ -440,6 +448,7 @@ public class Field {
 
         to.containingEntity = from.containingEntity;
         to.containingEntityDbname = from.containingEntityDbname;
+        to.context = from.context;
 
         to.cloned = true;
 

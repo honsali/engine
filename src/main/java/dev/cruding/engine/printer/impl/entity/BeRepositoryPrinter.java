@@ -12,9 +12,13 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeRepositoryPrinter extends Printer {
 
+    public BeRepositoryPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
-        List<Action> actionList = Context.getInstance().actionEntity(entity);
+        List<Action> actionList = context().actionEntity(entity);
         LinkedHashSet<String> repositoryExtensions = new LinkedHashSet<>();
 
         for (Action action : actionList) {

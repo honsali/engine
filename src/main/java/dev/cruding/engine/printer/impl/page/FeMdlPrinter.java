@@ -12,9 +12,13 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeMdlPrinter extends Printer {
 
+    public FeMdlPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Page page) {
         MdlFlow f = new MdlFlow();
-        List<Action> actionList = Context.getInstance().actionPage(page);
+        List<Action> actionList = context().actionPage(page);
         /* *********************************************************************** */
         for (Action action : actionList) {
             action.mdlActionInjection.addMdlImport(f);

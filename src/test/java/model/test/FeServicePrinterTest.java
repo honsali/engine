@@ -28,17 +28,17 @@ class FeServicePrinterTest {
 
     @Test
     void generatesTypedAxiosCallsWithExplicitDataDestructuring() throws IOException {
-        Context context = Context.getInstance();
-        context.setBasePath(tempDir.toString());
+        Context context = new Context(tempDir.toString());
 
         ServiceEntity entity = new ServiceEntity();
-        entity.init();
+        context.addEntity(entity);
+        context.initEntities();
 
         assertEquals("test.serviceentity", entity.javaPackage());
         assertEquals("test/serviceentity", entity.javaPath());
         assertEquals("/test/service-entities", entity.apiCollectionPath());
 
-        Module module = new Module("ModuleServiceStyle", "test.serviceStyle");
+        Module module = new Module(context, "ModuleServiceStyle", "test.serviceStyle");
         ViewTestServiceEntity view = new ViewTestServiceEntity();
         module.addPage(view);
 
@@ -49,7 +49,7 @@ class FeServicePrinterTest {
         new FilterAction(entity, view.element, true);
         context.initActions();
 
-        new FeServicePrinter().print(entity);
+        new FeServicePrinter(context).print(entity);
 
         Path service = tempDir.resolve("fe/src/modele/test/serviceEntity/ServiceServiceEntity.ts");
         String generated = Files.readString(service);

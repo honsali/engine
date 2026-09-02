@@ -10,6 +10,10 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeDomainPrinter extends Printer {
 
+    public BeDomainPrinter(Context context) {
+        super(context);
+    }
+
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
         List<Field> fields = entity.fieldList;
@@ -25,7 +29,7 @@ public class BeDomainPrinter extends Printer {
         f.addJavaImport("jakarta.persistence.Table");
         for (Field field : fields) {
             if ((field.isRef || field.isFather) && !field.jtype.equals(field.containingEntity)) {
-                Entity re = Context.getInstance().getEntity(field.jtype);
+                Entity re = context().getEntity(field.jtype);
                 f.addJavaImport("app.domain." + re.javaPackage() + "." + re.uname);
             }
             if (field.tranzient) {

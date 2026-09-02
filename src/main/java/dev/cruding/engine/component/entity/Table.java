@@ -6,7 +6,6 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
 
 public class Table extends Component {
 
@@ -22,7 +21,7 @@ public class Table extends Component {
     public Table(Element element, Entity entity, Field... fieldList) {
         super(element, entity, fieldList);
         inElement = true;
-        Context.getInstance().addLabel(element.page.module.uname, "aucun." + entity.lname, (entity.setting.feminine ? "Aucune " : "Aucun ") + entity.setting.label);
+        element.context().addLabel(element.page.module.uname, "aucun." + entity.lname, (entity.setting.feminine ? "Aucune " : "Aucun ") + entity.setting.label);
 
     }
 
@@ -106,7 +105,7 @@ public class Table extends Component {
                 flow.totalUi().__(" width={", "" + c.width, "}");
             }
             flow.totalUi().__(" />");
-            Context.getInstance().addLabelForField(element.page.module.uname, c);
+            element.context().addLabelForField(element.page.module.uname, c);
         }
         return false;
     }

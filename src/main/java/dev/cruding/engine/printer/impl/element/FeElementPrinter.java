@@ -9,6 +9,10 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeElementPrinter extends Printer {
 
+    public FeElementPrinter(Context context) {
+        super(context);
+    }
+
 
     public void print(Element element) {
         ViewFlow f = new ViewFlow(element);
@@ -20,7 +24,7 @@ public class FeElementPrinter extends Printer {
         }
         f.addProp(element.byProp);
 
-        List<Action> actionList = Context.getInstance().actionElement(element);
+        List<Action> actionList = context().actionElement(element);
 
         for (int i = 0; i < actionList.size(); i++) {
             Action action = actionList.get(i);

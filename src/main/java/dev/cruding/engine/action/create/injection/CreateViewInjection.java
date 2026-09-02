@@ -8,7 +8,6 @@ import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.injection.ActionViewInjection;
 
@@ -74,7 +73,7 @@ public class CreateViewInjection extends ActionViewInjection {
     public void addI18n(Flow f) {
         if (!noUi()) {
 
-            Entity e = entity() == null ? Context.getInstance().getEntity(page().entityUname) : entity();
+            Entity e = entity() == null ? context().getEntity(page().entityUname) : entity();
             if (e != null) {
 
                 String nameAction = LabelMapper.getInstance().nameAction(lnameWithoutEntity(), e);

@@ -35,13 +35,13 @@ class FePageContractPrinterTest {
 
     @Test
     void generatesStrictPageContractsAndCallbackSignatures() throws IOException {
-        Context context = Context.getInstance();
-        context.setBasePath(tempDir.toString());
+        Context context = new Context(tempDir.toString());
 
         PageContractEntity entity = new PageContractEntity();
-        entity.init();
+        context.addEntity(entity);
+        context.initEntities();
 
-        Module module = new Module("ModulePageContract", "test.pageContract");
+        Module module = new Module(context, "ModulePageContract", "test.pageContract");
         ViewFiltrerPageContractEntity view = new ViewFiltrerPageContractEntity(entity);
         Page page = module.addPage(view).icon("faFilter").isIndex();
         view.targetPage = page;
@@ -51,7 +51,7 @@ class FePageContractPrinterTest {
         Page detailPage = module.addPage(detailView).pathById();
         detailPage.init();
 
-        Module viewOnlyModule = new Module("ModuleViewOnly", "test.viewOnly");
+        Module viewOnlyModule = new Module(context, "ModuleViewOnly", "test.viewOnly");
         ViewGoToModulePageContractEntity goToModuleView = new ViewGoToModulePageContractEntity(entity);
         Page goToModulePage = viewOnlyModule.addPage(goToModuleView);
         goToModulePage.init();
@@ -59,7 +59,7 @@ class FePageContractPrinterTest {
         Page emitEventPage = viewOnlyModule.addPage(emitEventView);
         emitEventPage.init();
 
-        Module componentlessAclModule = new Module("ModuleComponentlessAcl", "test.componentlessAcl");
+        Module componentlessAclModule = new Module(context, "ModuleComponentlessAcl", "test.componentlessAcl");
         ViewComponentlessPageContractEntity componentlessView = new ViewComponentlessPageContractEntity();
         Page componentlessPage = componentlessAclModule.addPage(componentlessView);
         componentlessPage.init();
@@ -72,17 +72,17 @@ class FePageContractPrinterTest {
         new ListPaginatedAction(entity, view.element);
         context.initActions();
 
-        new FeCtrlPrinter().print(page);
-        new FeMdlPrinter().print(page);
-        new FeHookPrinter().print(page);
-        new FeElementPrinter().print(view.element);
-        new FeElementPrinter().print(formAction);
-        new FePageListPrinter().print(module);
-        new FeCtrlPrinter().print(goToModulePage);
-        new FeCtrlPrinter().print(emitEventPage);
-        new FeElementPrinter().print(goToModuleView.element);
-        new FeElementPrinter().print(emitEventView.element);
-        new FeAclPrinter().print(componentlessAclModule);
+        new FeCtrlPrinter(context).print(page);
+        new FeMdlPrinter(context).print(page);
+        new FeHookPrinter(context).print(page);
+        new FeElementPrinter(context).print(view.element);
+        new FeElementPrinter(context).print(formAction);
+        new FePageListPrinter(context).print(module);
+        new FeCtrlPrinter(context).print(goToModulePage);
+        new FeCtrlPrinter(context).print(emitEventPage);
+        new FeElementPrinter(context).print(goToModuleView.element);
+        new FeElementPrinter(context).print(emitEventView.element);
+        new FeAclPrinter(context).print(componentlessAclModule);
 
         Path pageDirectory = tempDir.resolve("fe/src/modules/test/pageContract/pageContractEntity/filtrer");
         String ctrl = Files.readString(pageDirectory.resolve("CtrlFiltrerPageContractEntity.ts"));

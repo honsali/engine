@@ -124,7 +124,7 @@ public class LabelMapper {
     public String getTitle(Page page) {
         String title = uLabel(page.actionUname);
 
-        Entity entity = Context.getInstance().getEntity(page.entityUname);
+        Entity entity = page.context().getEntity(page.entityUname);
         if (entity != null) {
             title = title + " " + entity.setting.label;
 

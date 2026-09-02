@@ -1,7 +1,8 @@
 package modules.rh;
 
 import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.PageRef;
 import dev.cruding.engine.gen.ProjectBootstrap;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
@@ -17,38 +18,38 @@ import modules.rh.employe.ViewModifierEmploye;
 
 public class RhProject implements ProjectBootstrap {
 
-    public static Page pageFiltrerEmploye;
-    public static Page pageConsulterEmploye;
-    public static Page pageModifierEmploye;
-    public static Page pageCreerEmploye;
+    public static final PageRef pageFiltrerEmploye = new PageRef("PageFiltrerEmploye");
+    public static final PageRef pageConsulterEmploye = new PageRef("PageConsulterEmploye");
+    public static final PageRef pageModifierEmploye = new PageRef("PageModifierEmploye");
+    public static final PageRef pageCreerEmploye = new PageRef("PageCreerEmploye");
 
-    public static Page pageCreerConge;
-    public static Page pageConsulterConge;
-    public static Page pageModifierConge;
+    public static final PageRef pageCreerConge = new PageRef("PageCreerConge");
+    public static final PageRef pageConsulterConge = new PageRef("PageConsulterConge");
+    public static final PageRef pageModifierConge = new PageRef("PageModifierConge");
 
-    public static Page pageListerDepartement;
-    public static Page pageConsulterDepartement;
-    public static Page pageModifierDepartement;
-    public static Page pageCreerDepartement;
+    public static final PageRef pageListerDepartement = new PageRef("PageListerDepartement");
+    public static final PageRef pageConsulterDepartement = new PageRef("PageConsulterDepartement");
+    public static final PageRef pageModifierDepartement = new PageRef("PageModifierDepartement");
+    public static final PageRef pageCreerDepartement = new PageRef("PageCreerDepartement");
 
     @Override
-    public void init() {
-        new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
+    public void init(Context context) {
+        new Module(context, "ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
-        Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
-        pageFiltrerEmploye = moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser").isIndex();
-        pageConsulterEmploye = moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
-        pageModifierEmploye = moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
-        pageCreerEmploye = moduleEmploye.addPage(new ViewCreerEmploye());
-        pageCreerConge = moduleEmploye.addPage(new ViewCreerConge()).pathById();
-        pageConsulterConge = moduleEmploye.addPage(new ViewConsulterConge()).pathById();
-        pageModifierConge = moduleEmploye.addPage(new ViewModifierConge()).pathById();
+        Module moduleEmploye = new Module(context, "ModuleEmploye", "rh.employe");
+        moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser").isIndex();
+        moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
+        moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
+        moduleEmploye.addPage(new ViewCreerEmploye());
+        moduleEmploye.addPage(new ViewCreerConge()).pathById();
+        moduleEmploye.addPage(new ViewConsulterConge()).pathById();
+        moduleEmploye.addPage(new ViewModifierConge()).pathById();
 
-        Module moduleDepartement = new Module("ModuleDepartement", "rh.departement");
-        pageListerDepartement = moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();
-        pageConsulterDepartement = moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
-        pageModifierDepartement = moduleDepartement.addPage(new ViewModifierDepartement()).pathById();
-        pageCreerDepartement = moduleDepartement.addPage(new ViewCreerDepartement());
+        Module moduleDepartement = new Module(context, "ModuleDepartement", "rh.departement");
+        moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();
+        moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
+        moduleDepartement.addPage(new ViewModifierDepartement()).pathById();
+        moduleDepartement.addPage(new ViewCreerDepartement());
 
     }
 }

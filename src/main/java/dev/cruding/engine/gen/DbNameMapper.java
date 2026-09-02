@@ -1,18 +1,13 @@
 package dev.cruding.engine.gen;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 public class DbNameMapper {
-    private final static DbNameMapper instance = new DbNameMapper();
+    private Map<String, String> legacyDbMap = new LinkedHashMap<>();
 
-    public static final DbNameMapper getInstance() {
-        return instance;
-    }
-
-    private HashMap<String, String> legacyDbMap = new HashMap<>();
-
-    private DbNameMapper() {}
+    public DbNameMapper() {}
 
     public String getTableName(String entityName) {
         return getLegacyDbName(entityName, "table", StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(entityName), "_").toLowerCase());
@@ -47,7 +42,7 @@ public class DbNameMapper {
         return value != null ? value : defaultValue;
     }
 
-    public void setLegacyDbMap(HashMap<String, String> legacyDbMap) {
-        this.legacyDbMap = legacyDbMap != null ? legacyDbMap : new HashMap<>();
+    public void setLegacyDbMap(Map<String, String> legacyDbMap) {
+        this.legacyDbMap = legacyDbMap != null ? new LinkedHashMap<>(legacyDbMap) : new LinkedHashMap<>();
     }
 }

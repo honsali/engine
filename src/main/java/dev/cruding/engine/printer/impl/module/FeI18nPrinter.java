@@ -2,8 +2,8 @@ package dev.cruding.engine.printer.impl.module;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
@@ -14,6 +14,10 @@ import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
 
 public class FeI18nPrinter extends Printer {
+
+    public FeI18nPrinter(Context context) {
+        super(context);
+    }
 
     public void print(Module module) {
         Flow f = new Flow();
@@ -31,7 +35,7 @@ public class FeI18nPrinter extends Printer {
                 f.L____("Page", page.uc, ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
                 f.L____(TsLiteral.objectKey("Uc" + page.uc + ".titre"), ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
 
-                for (Action action : Context.getInstance().actionPage(page)) {
+                for (Action action : context().actionPage(page)) {
                     if (!action.noUi() && !action.flow()) {
                         action.viewActionInjection.addI18n(f);
                     }
@@ -39,7 +43,7 @@ public class FeI18nPrinter extends Printer {
 
             }
 
-            HashMap<String, String> labelMap = Context.getInstance().getLabelMap(module.uname);
+            Map<String, String> labelMap = context().getLabelMap(module.uname);
             if (labelMap != null) {
                 List<String> keySet = new ArrayList<>(labelMap.keySet());
                 Collections.sort(keySet);

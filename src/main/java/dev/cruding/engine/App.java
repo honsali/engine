@@ -22,27 +22,27 @@ public class App {
             Path modelPath = LoaderUtils.getModelPath();
             Path modulesPath = LoaderUtils.getModulesPath();
 
-            Context.getInstance().setBasePath("result");
+            Context context = new Context("result");
 
             LOGGER.info("Using engine base path: {}", basePath);
 
             LOGGER.info("Loading entities from: {}", modelPath);
-            (new EntityLoader()).load(modelPath.toString());
+            (new EntityLoader(context)).load(modelPath.toString());
 
             LOGGER.info("Loading project bootstrap from: {}", modulesPath);
-            (new ProjectBootstrapLoader()).load(modulesPath.toString());
+            (new ProjectBootstrapLoader(context)).load(modulesPath.toString());
 
             LOGGER.info("Initializing entities");
-            Context.getInstance().initEntities();
+            context.initEntities();
 
             LOGGER.info("Initializing pages");
-            Context.getInstance().initPages();
+            context.initPages();
 
             LOGGER.info("Initializing actions");
-            Context.getInstance().initActions();
+            context.initActions();
 
             LOGGER.info("Start generation...");
-            (new Processor()).execute();
+            (new Processor(context)).execute();
 
             long duration = (System.nanoTime() - startTime) / 1_000_000;
             LOGGER.info("Generation completed successfully in {} ms", duration);

@@ -398,6 +398,10 @@ Tous ces artefacts sont des candidats à intégrer. Le projet cible reste libre 
 6. exécution du `Processor` ;
 7. écriture des résultats frontend et backend.
 
+Chaque exécution crée son propre `Context`, puis le transmet explicitement aux loaders, au `ProjectBootstrap`, au `Processor` et aux printers. Les entités, modules, pages, actions, identifiants internes et mappings de noms SQL appartiennent ainsi à une seule génération. Un objet rattaché à un autre `Context` est refusé afin d'éviter qu'une exécution pollue la suivante.
+
+Le bootstrap expose `init(Context context)` et construit ses modules avec `new Module(context, ...)`. Les références de pages partagées par le DSL utilisent des `PageRef` immuables ; elles sont résolues dans le `Context` courant au moment de composer les actions.
+
 `Processor` orchestre les familles de printers. Les printers concernés par les actions les parcourent ensuite et demandent à leurs injections de contribuer au fichier visé.
 
 ## Étendre Engine

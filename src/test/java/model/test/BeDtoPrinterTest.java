@@ -22,11 +22,12 @@ class BeDtoPrinterTest {
 
     @Test
     void marksGeneratedResponseIdentifiersForStringJsonSerialization() throws IOException {
-        Context.getInstance().setBasePath(tempDir.toString());
+        Context context = new Context(tempDir.toString());
 
         IdEntity entity = new IdEntity();
-        entity.init();
-        new BeResponsePrinter().print(entity);
+        context.addEntity(entity);
+        context.initEntities();
+        new BeResponsePrinter(context).print(entity);
 
         Path response = tempDir.resolve("be/src/main/java/app/domain/test/identity/IdEntityResponse.java");
         String generated = Files.readString(response);
