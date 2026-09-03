@@ -10,6 +10,10 @@ public class JavaFlow extends Flow {
 
     private HashSet<String> importJavaSet = new HashSet<>();
 
+    public void addSingleLineMethodDeclaration(int indentation, String declaration, List<String> parameters) {
+        newLineWithIndent(indentation, declaration, String.join(", ", parameters), ") {");
+    }
+
     public void addMethodDeclaration(int indentation, String declaration, List<String> parameters) {
         String singleLine = declaration + String.join(", ", parameters) + ") {";
         if (parameters.isEmpty() || indentation + singleLine.length() <= MAX_LINE_LENGTH) {

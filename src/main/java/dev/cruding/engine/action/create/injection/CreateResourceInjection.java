@@ -30,7 +30,7 @@ public class CreateResourceInjection extends BasicResourceInjection {
             parameters.add("@PathVariable Long id" + entity().ufather);
         }
         parameters.add("@Valid @RequestBody " + requestName() + " request");
-        f.addMethodDeclaration(
+        f.addSingleLineMethodDeclaration(
                 4,
                 "public ResponseEntity<" + entity().uname + "Response> " + lnameWithoutEntity() + "(",
                 parameters);

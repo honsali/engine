@@ -17,8 +17,6 @@ public class BeBusinessPrinter extends Printer {
         super(context);
     }
 
-    private static final int MAX_LOOKUP_LINE_LENGTH = 100;
-
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
         List<Action> actionList = context().actionEntity(entity);
@@ -105,8 +103,7 @@ public class BeBusinessPrinter extends Printer {
     private void addEntityResolver(JavaFlow f, Entity entity) {
         f.L("");
         f.L____("private ", entity.uname, " recuperer", entity.uname, "(Long id) {");
-        f.L________("return ", entity.lname, "Repository.findById(id)");
-        f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", entity.uname, "\", id));");
+        f.L________("return ", entity.lname, "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"", entity.uname, "\", id));");
         f.L____("}");
     }
 
@@ -115,8 +112,7 @@ public class BeBusinessPrinter extends Printer {
         f.L("");
         if (relation.isFather) {
             f.L____("private ", referenced.uname, " recuperer", referenced.uname, "(Long id", relation.uname, ") {");
-            f.L________("return ", referenced.lname, "Repository.findById(id", relation.uname, ")");
-            f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id", relation.uname, "));");
+            f.L________("return ", referenced.lname, "Repository.findById(id", relation.uname, ").orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id", relation.uname, "));");
             f.L____("}");
             return;
         }
@@ -126,14 +122,7 @@ public class BeBusinessPrinter extends Printer {
         f.L________("}");
         f.L________("Long id = reference.id();");
 
-        String lookup = "return " + referenced.lname + "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"" + referenced.uname + "\", id));";
-        if (lookup.length() <= MAX_LOOKUP_LINE_LENGTH) {
-            f.L________(lookup);
-        } else {
-            f.L________("return ", referenced.lname, "Repository");
-            f.L________________(".findById(id)");
-            f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id));");
-        }
+        f.L________("return ", referenced.lname, "Repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(\"", referenced.uname, "\", id));");
         f.L____("}");
     }
 }

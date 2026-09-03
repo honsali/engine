@@ -17,7 +17,7 @@ public class ResourceFilterInjection extends ActionResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         f.L____("@PostMapping(\"/", entity().apiCollectionName(), "/", lnameWithoutEntity(), "\")");
-        f.addMethodDeclaration(
+        f.addSingleLineMethodDeclaration(
                 4,
                 "public PageResponse<" + entity().uname + "Response> " + lnameWithoutEntity() + "(",
                 List.of("@Valid @RequestBody(required = false) " + requestName() + " filtre", "Pageable pageable"));
