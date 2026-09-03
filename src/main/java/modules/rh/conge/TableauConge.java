@@ -11,6 +11,7 @@ public class TableauConge extends ElementComposer {
         Conge e = entity(Conge.class);
         return block(//
                 table(e, //
+                        e.code, //
                         e.typeConge, //
                         e.dateDebutConge, //
                         e.dateFinConge, //

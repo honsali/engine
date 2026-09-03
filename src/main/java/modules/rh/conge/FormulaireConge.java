@@ -21,9 +21,11 @@ public class FormulaireConge extends ElementComposer {
 
         return block(//
                 form(e, //
+                        e.code, //
                         e.typeConge, //
                         e.dateDebutConge, //
                         e.dateFinConge, //
+                        e.commentaire, //
                         enModification ? hidden(e.id_) : null, //
                         enModification ? hidden(e.father) : null //
                 ).columnNumber(1), //

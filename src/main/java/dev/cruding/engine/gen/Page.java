@@ -47,6 +47,8 @@ public class Page {
 
     public boolean pathById = false;
 
+    private String route;
+
     public ViewComposer<?> elementComposer;
 
     public Page(Module module, ViewComposer<?> elementComposer) {
@@ -121,6 +123,18 @@ public class Page {
     public Page pathById() {
         this.pathById = true;
         return this;
+    }
+
+    public Page route(String route) {
+        if (StringUtils.isBlank(route) || !route.startsWith("/")) {
+            throw new ContextException("Page route must be an absolute application path: " + route);
+        }
+        this.route = route;
+        return this;
+    }
+
+    public String route() {
+        return route;
     }
 
 

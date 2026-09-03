@@ -7,20 +7,20 @@ import dev.cruding.engine.injection.ActionServiceInjection;
 public class FindServiceInjection extends ActionServiceInjection {
 
     public void addServiceImport(JsFlow f) {
-        f.addJsImport("{ Page }", "modele/commun/pagination/DomainePagination");
+        f.addJsImport("{ PageResponse }", "modele/commun/pagination/DomainePagination");
         f.addJsImport("MapperPagination", "modele/commun/pagination/MapperPagination");
-        f.addJsImport("{ IListePaginee" + entity().uname + ", I" + entity().uname + " }", "./Domaine" + entity().uname);
+        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
     }
 
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const ", lnameWithoutEntity(), " = async (", entity().lname, ": I", entity().uname, ", pageCourante: number) => {");
-        f.L____("const listePaginee", entity().uname, ": IListePaginee", entity().uname, " = {} as IListePaginee", entity().uname, ";");
-        f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
-        f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.post<Page<I", entity().uname, ">>(`${API_URL}", entity().apiCollectionPath(), "/", lnameWithoutEntity(), "?page()=${requetePage.page()}&size=${requetePage.size}`, ", entity().lname).__(")).data;");
-        f.L____("listePaginee", entity().uname, ".liste = page()", entity().uname, ".content;");
-        f.L____("listePaginee", entity().uname, ".pagination = MapperPagination.creerPagination(page()", entity().uname, ");");
-        f.L____("return listePaginee", entity().uname, ";");
+        f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
+        f.L____("const { data } = await axios.post<PageResponse<I", entity().uname, ">>(`${API_URL}", entity().apiCollectionPath(), "/", lnameWithoutEntity(), "`, ", entity().lname).__(", { params: { page: pageable.page, size: pageable.size } });");
+        f.L____("return {");
+        f.L________("liste: data.items,");
+        f.L________("pagination: MapperPagination.creerPagination<I", entity().uname, ">(data),");
+        f.L____("};");
         f.L("};");
 
     }

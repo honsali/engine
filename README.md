@@ -95,6 +95,15 @@ Les routes utilisent ce nom de collection. Une entité enfant est exposée dans 
 
 Les modules, pages et compositions visuelles sont décrits sous `src/main/java/modules`.
 
+Une page utilise `pathById()` pour la route simple dérivée de son entité. Les parcours parent/enfant peuvent déclarer leur route explicitement ; chaque paramètre `:id...` est repris dans le `toPath` TypeScript généré :
+
+```java
+moduleEmploye.addPage(new ViewCreerConge())
+    .route("/rh/employe/:idEmploye/creer");
+moduleEmploye.addPage(new ViewConsulterConge())
+    .route("/rh/employe/:idEmploye/conge/consulter/:idConge");
+```
+
 Un composant ne décrit pas seulement son apparence. Il fait également apparaître les opérations nécessaires à son fonctionnement :
 
 ```java

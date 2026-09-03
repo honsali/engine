@@ -58,10 +58,12 @@ class FeServicePrinterTest {
         assertTrue(generated.contains("const { data } = await axios.put<IServiceEntity>("));
         assertTrue(generated.contains("const { data } = await axios.get<IServiceEntity[]>("));
         assertTrue(generated.contains("const { data } = await axios.get<IServiceEntity>("));
-        assertTrue(generated.contains("const { data } = await axios.post<Page<IServiceEntity>>("));
+        assertTrue(generated.contains("const { data } = await axios.post<PageResponse<IServiceEntity>>("));
+        assertTrue(generated.contains("liste: data.items,"));
         assertTrue(generated.contains("`${API_URL}/test/service-entities`"));
         assertTrue(generated.contains("`${API_URL}/test/service-entities/${serviceEntity.id}`"));
         assertFalse(generated.contains("(await axios"));
+        assertFalse(generated.contains("data.content"));
         assertFalse(generated.contains(": Promise<"));
     }
 

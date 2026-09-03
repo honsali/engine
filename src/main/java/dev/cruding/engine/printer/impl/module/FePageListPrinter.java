@@ -3,6 +3,8 @@ package dev.cruding.engine.printer.impl.module;
 import dev.cruding.engine.gen.Context;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.gen.Module;
@@ -10,6 +12,8 @@ import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
 
 public class FePageListPrinter extends Printer {
+
+    private static final Pattern ROUTE_PARAMETER = Pattern.compile(":([A-Za-z][A-Za-z0-9_]*)");
 
     public FePageListPrinter(Context context) {
         super(context);
@@ -101,12 +105,12 @@ public class FePageListPrinter extends Printer {
                 for (Page page : pageList) {
                     f.L("export const Page", page.uc, ": PageDefinition = {");
                     f.L____("key: 'Page", page.uc, "',");
-                    if (page.pathById) {
-                        f.L____("path: '/", getPath(module, page), "/:id", page.entityUname, "',");
-                        f.L____("toPath: (args) => `", getToPath(module, page), "/${args.id", page.entityUname, "}`,");
+                    String route = getRoute(module, page);
+                    f.L____("path: '", route, "',");
+                    if (ROUTE_PARAMETER.matcher(route).find()) {
+                        f.L____("toPath: (args) => `", toRouteTemplate(route), "`,");
                     } else {
-                        f.L____("path: '/", getPath(module, page), "',");
-                        f.L____("toPath: () => '", getToPath(module, page), "',");
+                        f.L____("toPath: () => '", route, "',");
                     }
                     if (page.name.equals(pageIndex.name)) {
                         f.L____("icone: <FontAwesomeIcon icon={", pageIndex.icon, "} />,");
@@ -147,11 +151,26 @@ public class FePageListPrinter extends Printer {
         return module.path.substring(8) + "/" + page.actionLname;
     }
 
+    private String getRoute(Module module, Page page) {
+        if (page.route() != null) {
+            return page.route();
+        }
+        String route = "/" + getPath(module, page);
+        return page.pathById ? route + "/:id" + page.entityUname : route;
+    }
+
+    private String toRouteTemplate(String route) {
+        Matcher matcher = ROUTE_PARAMETER.matcher(route);
+        StringBuilder template = new StringBuilder();
+        while (matcher.find()) {
+            matcher.appendReplacement(template, Matcher.quoteReplacement("${args." + matcher.group(1) + "}"));
+        }
+        matcher.appendTail(template);
+        return template.toString();
+    }
+
     private String getMenuPath(Module module) {
         return module.path.substring(8);
     }
 
-    private String getToPath(Module module, Page page) {
-        return module.path.substring(7) + "/" + page.actionLname;
-    }
 }

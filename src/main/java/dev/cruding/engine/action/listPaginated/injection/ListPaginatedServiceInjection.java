@@ -7,9 +7,9 @@ import dev.cruding.engine.injection.ActionServiceInjection;
 public class ListPaginatedServiceInjection extends ActionServiceInjection {
 
     public void addServiceImport(JsFlow f) {
-        f.addJsImport("{ Page }", "modele/commun/pagination/DomainePagination");
+        f.addJsImport("{ PageResponse }", "modele/commun/pagination/DomainePagination");
         f.addJsImport("MapperPagination", "modele/commun/pagination/MapperPagination");
-        f.addJsImport("{ IListePaginee" + entity().uname + ", I" + entity().uname + " }", "./Domaine" + entity().uname);
+        f.addJsImport("{ I" + entity().uname + " }", "./Domaine" + entity().uname);
     }
 
     public void addServiceImplementation(Flow f) {
@@ -20,21 +20,17 @@ public class ListPaginatedServiceInjection extends ActionServiceInjection {
         }
 
         f.__("pageCourante: number = 0) => {");
-        f.L____("const listePaginee", entity().uname, ": IListePaginee", entity().uname, " = {} as IListePaginee", entity().uname, ";");
-        f.L____("const requetePage = MapperPagination.creerRequetePage(pageCourante);");
+        f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
         if (byFatherId() && entity().haveFather) {
-            f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().father.referencedEntity.apiCollectionPath(), "/${id", entity().ufather, "}/", entity().apiCollectionName(), "/", lcoreName());
+            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}", entity().father.referencedEntity.apiCollectionPath(), "/${id", entity().ufather, "}/", entity().apiCollectionName(), "/", lcoreName());
         } else {
-            f.L____("const page()", entity().uname, ": Page<I", entity().uname, "> = (await axios.get<Page<I", entity().uname, ">>(`${API_URL}", entity().apiCollectionPath(), "/", lcoreName());
+            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}", entity().apiCollectionPath(), "/", lcoreName());
         }
-
-        f.__("?page()=${requetePage.page()}&size=${requetePage.size}");
-
-        f.__("`)).data;");
-
-        f.L____("listePaginee", entity().uname, ".liste = page()", entity().uname, ".content;");
-        f.L____("listePaginee", entity().uname, ".pagination = MapperPagination.creerPagination(page()", entity().uname, ");");
-        f.L____("return listePaginee", entity().uname, ";");
+        f.__("`, { params: { page: pageable.page, size: pageable.size } });");
+        f.L____("return {");
+        f.L________("liste: data.items,");
+        f.L________("pagination: MapperPagination.creerPagination<I", entity().uname, ">(data),");
+        f.L____("};");
 
         f.L("};");
     }

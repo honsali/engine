@@ -1,6 +1,7 @@
 package model.test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
+import dev.cruding.engine.field.impl.Date;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
@@ -32,6 +34,11 @@ class FePageContractPrinterTest {
 
     @TempDir
     Path tempDir;
+
+    @Test
+    void rendersApiDatesWithTheFormattedReadOnlyComponent() {
+        assertEquals("DateFormatee", new Date("date").ui(Element.DETAIL));
+    }
 
     @Test
     void generatesStrictPageContractsAndCallbackSignatures() throws IOException {
@@ -50,6 +57,11 @@ class FePageContractPrinterTest {
         ViewConsulterPageContractEntity detailView = new ViewConsulterPageContractEntity(entity);
         Page detailPage = module.addPage(detailView).pathById();
         detailPage.init();
+
+        ViewModifierPageContractEntity nestedView = new ViewModifierPageContractEntity(entity);
+        Page nestedPage = module.addPage(nestedView)
+                .route("/test/page-contract/:idParent/child/modifier/:idPageContractEntity");
+        nestedPage.init();
 
         Module viewOnlyModule = new Module(context, "ModuleViewOnly", "test.viewOnly");
         ViewGoToModulePageContractEntity goToModuleView = new ViewGoToModulePageContractEntity(entity);
@@ -116,12 +128,18 @@ class FePageContractPrinterTest {
 
         assertTrue(hook.contains("(req?: Partial<ReqFiltrerPageContractEntity>)"));
         assertTrue(generatedView.contains("(pageContractEntity: IPageContractEntity) =>"));
+        assertTrue(generatedView.contains(
+                "goToPage(PageFiltrerPageContractEntity, { idPageContractEntity: pageContractEntity.id });"));
         assertTrue(generatedView.contains("listeDonnee={listePagineePageContractEntity?.liste}"));
         assertTrue(generatedView.contains("pagination={listePagineePageContractEntity?.pagination}"));
         assertTrue(generatedFormAction.contains("({ form }: { form: FormInstance }) =>"));
         assertTrue(generatedPageList.contains("toPath: () =>"));
         assertTrue(generatedPageList.contains("toPath: (args) =>"));
         assertTrue(generatedPageList.contains("${args.idPageContractEntity}"));
+        assertTrue(generatedPageList.contains(
+                "path: '/test/page-contract/:idParent/child/modifier/:idPageContractEntity'"));
+        assertTrue(generatedPageList.contains(
+                "toPath: (args) => `/test/page-contract/${args.idParent}/child/modifier/${args.idPageContractEntity}`"));
 
         assertFalse(goToModuleCtrl.contains("import "));
         assertFalse(emitEventCtrl.contains("import "));
@@ -155,6 +173,19 @@ class FePageContractPrinterTest {
         private final PageContractEntity entity;
 
         ViewConsulterPageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            return table(entity, entity.code);
+        }
+    }
+
+    public static final class ViewModifierPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+
+        ViewModifierPageContractEntity(PageContractEntity entity) {
             this.entity = entity;
         }
 

@@ -19,7 +19,7 @@ public class Date extends Field {
             case Element.FORM:
                 return "ChampDate";
             case Element.DETAIL:
-                return "Texte";
+                return "DateFormatee";
             case Element.TABLE:
                 return "Colonne tc=\"date\"";
             default:

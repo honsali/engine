@@ -41,9 +41,9 @@ public class RhProject implements ProjectBootstrap {
         moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
         moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
         moduleEmploye.addPage(new ViewCreerEmploye());
-        moduleEmploye.addPage(new ViewCreerConge()).pathById();
-        moduleEmploye.addPage(new ViewConsulterConge()).pathById();
-        moduleEmploye.addPage(new ViewModifierConge()).pathById();
+        moduleEmploye.addPage(new ViewCreerConge()).route("/rh/employe/:idEmploye/creer");
+        moduleEmploye.addPage(new ViewConsulterConge()).route("/rh/employe/:idEmploye/conge/consulter/:idConge");
+        moduleEmploye.addPage(new ViewModifierConge()).route("/rh/employe/:idEmploye/modifier/:idConge");
 
         Module moduleDepartement = new Module(context, "ModuleDepartement", "rh.departement");
         moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();

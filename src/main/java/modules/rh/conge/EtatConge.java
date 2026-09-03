@@ -14,9 +14,11 @@ public class EtatConge extends ElementComposer {
 
         return block(//
                 detail(e, //
+                        e.code, //
                         e.typeConge, //
                         e.dateDebutConge, //
-                        e.dateFinConge //
+                        e.dateFinConge, //
+                        e.commentaire //
                 ).columnNumber(1), actionBlock(//
                         button(editAction(e, RhProject.pageModifierConge)), //
                         button(backToListAction(e, RhProject.pageConsulterEmploye)), //
