@@ -11,6 +11,10 @@ public class ActionBusinessInjection extends ActionWrapper {
 
     public void addBusinessImport(JavaFlow f) {}
 
+    public boolean requiresEntityResolver() {
+        return false;
+    }
+
     public List<Field> businessRelationFields() {
         return List.of();
     }

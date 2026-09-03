@@ -7,13 +7,16 @@ import dev.cruding.engine.flow.JavaFlow;
 
 public class UpdateBusinessInjection extends BasicBusinessInjection {
 
+    public boolean requiresEntityResolver() {
+        return true;
+    }
+
     public List<Field> businessRelationFields() {
         return entity().listRef();
     }
 
 
     public void addBusinessImport(JavaFlow f) {
-        f.addJavaImport("app.core.exception.ResourceNotFoundException");
         f.addJavaImport("app.core.exception.StaleVersionException");
 
         for (Field field : entity().fieldList) {
@@ -27,8 +30,7 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
         f.L("");
         f.L____("@Transactional");
         f.L____("public ", entity().uname, "Response ", lnameWithoutEntity(), "(Long id, ", requestName(), " request) {");
-        f.L________(entity().uname, " ", entity().lname, " = ", entity().lname, "Repository.findById(id)");
-        f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", entity().uname, "\", id));");
+        f.L________(entity().uname, " ", entity().lname, " = recuperer", entity().uname, "(id);");
         f.L________("if (", entity().lname, ".getVersion() != request.version()) {");
         f.L____________("throw new StaleVersionException(\"", entity().uname, "\", id);");
         f.L________("}");

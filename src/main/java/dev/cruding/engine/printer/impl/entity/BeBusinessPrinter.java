@@ -23,12 +23,16 @@ public class BeBusinessPrinter extends Printer {
         JavaFlow f = new JavaFlow();
         List<Action> actionList = context().actionEntity(entity);
         LinkedHashMap<String, Field> repositoryDependencies = repositoryDependencies(actionList);
+        boolean entityResolverRequired = actionList.stream()
+                .anyMatch(action -> action.businessActionInjection.requiresEntityResolver());
 
         for (Action action : actionList) {
             action.businessActionInjection.addBusinessImport(f);
         }
-        if (!repositoryDependencies.isEmpty()) {
+        if (entityResolverRequired || !repositoryDependencies.isEmpty()) {
             f.addJavaImport("app.core.exception.ResourceNotFoundException");
+        }
+        if (!repositoryDependencies.isEmpty()) {
             f.addJavaImport("app.core.reference.Reference");
         }
         for (Field relation : repositoryDependencies.values()) {
@@ -74,10 +78,13 @@ public class BeBusinessPrinter extends Printer {
             }
         }
 
+        if (entityResolverRequired) {
+            addEntityResolver(f, entity);
+        }
         for (Field relation : repositoryDependencies.values()) {
             addRelationResolver(f, relation);
         }
-        if (!repositoryDependencies.isEmpty()) {
+        if (entityResolverRequired || !repositoryDependencies.isEmpty()) {
             f.L("");
         }
         f.L("}");
@@ -93,6 +100,14 @@ public class BeBusinessPrinter extends Printer {
             }
         }
         return dependencies;
+    }
+
+    private void addEntityResolver(JavaFlow f, Entity entity) {
+        f.L("");
+        f.L____("private ", entity.uname, " recuperer", entity.uname, "(Long id) {");
+        f.L________("return ", entity.lname, "Repository.findById(id)");
+        f.L________________(".orElseThrow(() -> new ResourceNotFoundException(\"", entity.uname, "\", id));");
+        f.L____("}");
     }
 
     private void addRelationResolver(JavaFlow f, Field relation) {
