@@ -4,6 +4,7 @@ import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.PageRef;
 import dev.cruding.engine.gen.ProjectBootstrap;
+import modules.admin.AdminModule;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
 import modules.rh.conge.ViewModifierConge;
@@ -34,6 +35,8 @@ public class RhProject implements ProjectBootstrap {
 
     @Override
     public void init(Context context) {
+        AdminModule.init(context);
+
         new Module(context, "ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
         Module moduleEmploye = new Module(context, "ModuleEmploye", "rh.employe");

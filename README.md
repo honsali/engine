@@ -60,7 +60,7 @@ Code en production     plan intégré puis adapté au besoin réel
 
 Le code exécuté en production reste la référence opérationnelle. Le code généré reste la référence du plan initial.
 
-Le noyau technique de l'application cible n'a pas besoin d'être décrit dans le DSL. Dans le projet de démonstration actuel, l'authentification JWT et l'administration des comptes restent ainsi dans `crud-be` et `crud-fe`. Engine génère le domaine métier RH ; il ne produit pas un pseudo-modèle de sécurité incomplet ni des champs sensibles dans ses DTO.
+Le noyau technique de l'application cible n'a pas besoin d'être décrit dans le DSL. Dans le projet de démonstration actuel, le DSL couvre le domaine métier RH ainsi que la structure commune de `Account`, `Role` et des écrans d'administration des comptes. L'authentification JWT, le mot de passe et les adaptations de sécurité restent dans `crud-be` et `crud-fe` : aucun champ sensible n'est ajouté au modèle généré ni exposé dans ses DTO.
 
 ## Le DSL Java
 
