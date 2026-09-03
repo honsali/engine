@@ -8,14 +8,14 @@ import dev.cruding.engine.flow.JavaFlow;
 public class CreateBusinessInjection extends BasicBusinessInjection {
 
     public List<Field> businessRelationFields() {
-        if (byFatherId() && entity().haveFather) {
-            return entity().listRefAndFather();
-        }
-        return entity().listRef();
+        return entity().fieldList.stream()
+                .filter(field -> field.isRef && requestContains(field)
+                        || field.isFather && byFatherId() && entity().haveFather)
+                .toList();
     }
 
     public void addBusinessImport(JavaFlow f) {
-        for (Field field : entity().fieldList) {
+        for (Field field : requestEntityFields()) {
             if (field.isId) {
                 f.addJavaImport("app.core.exception.FieldConflictException");
             }
@@ -30,7 +30,7 @@ public class CreateBusinessInjection extends BasicBusinessInjection {
             f.__("Long id", entity().ufather, ", ");
         }
         f.__(requestName(), " request) {");
-        for (Field field : entity().fieldList) {
+        for (Field field : requestEntityFields()) {
             if (field.isId) {
                 f.L________("if (", entity().lname, "Repository.existsBy", field.uname, "(request.", field.lname, "())) {");
                 f.L____________("throw new FieldConflictException(\"", entity().uname, "\", \"", field.lname, "\", request.", field.lname, "());");

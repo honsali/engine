@@ -1,6 +1,7 @@
 package dev.cruding.engine.action;
 
 import java.util.ArrayList;
+import java.util.List;
 import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
@@ -93,6 +94,18 @@ public class ActionWrapper {
     public Field[] byField() {
         return action.byField == null ? emptyFieldList : action.byField;
     };
+
+    protected List<Field> requestFields() {
+        return action.requestFields();
+    }
+
+    protected boolean requestContains(Field field) {
+        return requestFields().stream().anyMatch(candidate -> candidate.lname.equals(field.lname));
+    }
+
+    protected List<Field> requestEntityFields() {
+        return entity().listAllFieldButFather().stream().filter(this::requestContains).toList();
+    }
 
     public boolean reload() {
         return action.reload;

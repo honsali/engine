@@ -11,6 +11,6 @@ public class CreateRequestInjection extends ActionRequestInjection {
 
     @Override
     public String content() {
-        return recordContent(entity().listAllFieldButFather());
+        return recordContent(requestFields());
     }
 }

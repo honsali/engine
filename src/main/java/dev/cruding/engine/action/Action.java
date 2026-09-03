@@ -2,6 +2,7 @@ package dev.cruding.engine.action;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -35,6 +36,7 @@ public abstract class Action {
     public static final Comparator<Action> ORDER_BY_NAME = Action::compareByName;
 
     private final Context context;
+    private final Element declarationElement;
     public ActionCtrlInjection ctrlActionInjection;
     public ActionMdlInjection mdlActionInjection;
     public ActionRepoInjection repoActionInjection;
@@ -94,7 +96,8 @@ public abstract class Action {
 
 
     public Action(ActionType type, String lcoreName, Entity entity, Element element) {
-        this.element = Objects.requireNonNull(element, "Action element cannot be null");
+        this.declarationElement = Objects.requireNonNull(element, "Action element cannot be null");
+        this.element = declarationElement;
         this.page = Objects.requireNonNull(element.page, "Action element must belong to a Page");
         this.context = page.context();
         if (entity != null && entity.context() != context) {
@@ -113,6 +116,13 @@ public abstract class Action {
         }
         element(element);
         context.addAction(this);
+    }
+
+    public List<Field> requestFields() {
+        if (entity == null) {
+            return List.of();
+        }
+        return declarationElement.formFields(entity).orElseGet(entity::listAllFieldButFather);
     }
 
     public Context context() {

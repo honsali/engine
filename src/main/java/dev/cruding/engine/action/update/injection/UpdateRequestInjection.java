@@ -11,6 +11,6 @@ public class UpdateRequestInjection extends ActionRequestInjection {
 
     @Override
     public String content() {
-        return recordContent(entity().listAllFieldButFather(), true);
+        return recordContent(requestFields(), true);
     }
 }

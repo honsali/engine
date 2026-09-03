@@ -118,6 +118,12 @@ table(e,
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
 
+Pour `CreateAction` et `UpdateAction`, le contrat Request est dérivé des champs effectivement présents dans les `Form` associés à l'action, et non de tous les champs de l'`Entity`. Les champs répartis dans plusieurs formulaires sont réunis dans leur ordre de déclaration ; un champ déclaré `readOnly()` n'appartient pas au contrat d'écriture. Les validations déclarées sur les copies utilisées par le formulaire sont conservées. Un champ typé propre au formulaire peut donc enrichir la Request sans devenir automatiquement une propriété persistée.
+
+Pour les champs qui appartiennent à l'`Entity`, les contrôles d'unicité, les références résolues et le mapper utilisent le même sous-ensemble. Lors d'une modification, les propriétés absentes du formulaire conservent leur valeur courante.
+
+Une action construite sans aucun `Form`, notamment dans un usage programmatique sans interface, conserve par compatibilité le contrat complet de l'entité hors relation parent.
+
 Le DSL porte donc l'intention. Les actions traduisent cette intention dans les couches techniques.
 
 ## L'architecture en Flow

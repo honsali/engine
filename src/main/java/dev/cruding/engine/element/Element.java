@@ -2,10 +2,18 @@
 package dev.cruding.engine.element;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.component.entity.Form;
+import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.field.Field;
+import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.gen.Context;
@@ -82,6 +90,38 @@ public class Element {
             return;
         }
         rootComponent.addContent(null, flow, 1);
+    }
+
+    public Optional<List<Field>> formFields(Entity entity) {
+        Map<String, Field> selectedFields = new LinkedHashMap<>();
+        boolean formFound = collectFormFields(rootComponent, entity, selectedFields);
+        return formFound ? Optional.of(List.copyOf(selectedFields.values())) : Optional.empty();
+    }
+
+    private boolean collectFormFields(
+            Component component,
+            Entity entity,
+            Map<String, Field> selectedFields) {
+        if (component == null) {
+            return false;
+        }
+
+        boolean formFound = false;
+        if (component instanceof Form form && form.entity == entity) {
+            formFound = true;
+            for (Field field : form.fieldList) {
+                boolean technicalId = field instanceof Hidden && field.lname.equals(entity.id_.lname);
+                if (!field.readOnly && !field.isFather && !technicalId) {
+                    selectedFields.putIfAbsent(field.lname, field);
+                }
+            }
+        }
+        if (component.componentList != null) {
+            for (Component child : component.componentList) {
+                formFound = collectFormFields(child, entity, selectedFields) || formFound;
+            }
+        }
+        return formFound;
     }
 
     @Override

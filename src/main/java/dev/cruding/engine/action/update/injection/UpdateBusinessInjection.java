@@ -12,14 +12,14 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
     }
 
     public List<Field> businessRelationFields() {
-        return entity().listRef();
+        return entity().listRef().stream().filter(this::requestContains).toList();
     }
 
 
     public void addBusinessImport(JavaFlow f) {
         f.addJavaImport("app.core.exception.StaleVersionException");
 
-        for (Field field : entity().fieldList) {
+        for (Field field : requestEntityFields()) {
             if (field.isId) {
                 f.addJavaImport("app.core.exception.FieldConflictException");
             }
@@ -34,7 +34,7 @@ public class UpdateBusinessInjection extends BasicBusinessInjection {
         f.L________("if (", entity().lname, ".getVersion() != request.version()) {");
         f.L____________("throw new StaleVersionException(\"", entity().uname, "\", id);");
         f.L________("}");
-        for (Field field : entity().fieldList) {
+        for (Field field : requestEntityFields()) {
             if (field.isId) {
                 f.L________("if (", entity().lname, "Repository.existsBy", field.uname, "AndIdNot(request.", field.lname, "(), id)) {");
                 f.L____________("throw new FieldConflictException(\"", entity().uname, "\", \"", field.lname, "\", request.", field.lname, "());");
