@@ -7,6 +7,6 @@ import model.admin.Account;
 public class ViewCreerAccount extends ViewComposer<Account> {
 
     public Component rootComponent() {
-        return section(element(new FormulaireAccount(false)));
+        return section(element(new FormulaireCreerAccount()));
     }
 }

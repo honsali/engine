@@ -80,8 +80,18 @@ public class ActionRequestInjection extends ActionWrapper {
         if (field.isRef || field.isFather) {
             prefix.append("@Valid ");
         }
-        if (field.maxLength != null) {
-            prefix.append("@Size(max = ").append(field.maxLength).append(") ");
+        if (field.minLength != null || field.maxLength != null) {
+            prefix.append("@Size(");
+            if (field.minLength != null) {
+                prefix.append("min = ").append(field.minLength);
+            }
+            if (field.minLength != null && field.maxLength != null) {
+                prefix.append(", ");
+            }
+            if (field.maxLength != null) {
+                prefix.append("max = ").append(field.maxLength);
+            }
+            prefix.append(") ");
         }
         return prefix.toString();
     }

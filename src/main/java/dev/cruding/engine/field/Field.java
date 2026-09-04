@@ -2,7 +2,9 @@ package dev.cruding.engine.field;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
+
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
@@ -27,7 +29,6 @@ public class Field {
     public boolean required;
     public String requiredIf;
 
-
     public boolean isRef;
     public boolean isChild;
     public boolean isBasic;
@@ -39,6 +40,7 @@ public class Field {
 
     public boolean cloned = false;
     public String maxLength;
+    public String minLength;
 
     public String label;
     public int width;
@@ -86,13 +88,6 @@ public class Field {
         this.containingEntityDbname = entity.dbName;
         this.dbName = context().getDbNameMapper().getLegacyDbName(entity.uname, lname, "column", this.dbName);
         return this;
-    }
-
-    protected Context context() {
-        if (context == null) {
-            throw new IllegalStateException("Field is not attached to an Entity Context: " + lname);
-        }
-        return context;
     }
 
     public Field isDate(boolean isDate) {
@@ -172,7 +167,6 @@ public class Field {
         return p;
     }
 
-
     public Field isText() {
         Field p = makeCopy();
         p.isText = true;
@@ -228,10 +222,15 @@ public class Field {
         return p;
     }
 
-
     public Field maxLength(String maxLength) {
         Field p = makeCopy();
         p.maxLength = maxLength;
+        return p;
+    }
+
+    public Field minLength(String minLength) {
+        Field p = makeCopy();
+        p.minLength = minLength;
         return p;
     }
 
@@ -284,7 +283,6 @@ public class Field {
         return p;
     }
 
-
     public String ui(String element) {
         switch (element) {
             case Element.FORM:
@@ -324,7 +322,7 @@ public class Field {
     }
 
     public void addFilterImport(JavaFlow f) {
-        if (maxLength != null) {
+        if (maxLength != null || minLength != null) {
             f.addJavaImport("jakarta.validation.constraints.Size");
         }
     }
@@ -333,27 +331,27 @@ public class Field {
         f.L________(jtype + " " + lname + ", //");
     }
 
-
-
     public boolean addViewScript(ViewFlow f, String uc, String mvcPath) {
         return false;
     }
 
     public void addFilterJavaDeclaration(JavaFlow f) {
         f.L________("");
+        if (minLength != null) {
+            f.__("@Size(min = ", minLength, ") ");
+        }
         if (maxLength != null) {
             f.__("@Size(max = ", maxLength, ") ");
         }
         f.__(jtype + " " + lname);
     }
 
-
-    public void addFilterGetterSetter(JavaFlow f) {}
+    public void addFilterGetterSetter(JavaFlow f) {
+    }
 
     public void addSpecification(JavaFlow f) {
         f.L____________("addLike(predicates, builder, root.get(\"" + lname + "\"), filtre." + lname + "());");
     }
-
 
     public void addLiqDeclaration(Flow f) {
         f.L____________("<column name=\"" + dbName + "\" type=\"" + stype + "\">");
@@ -368,7 +366,8 @@ public class Field {
     public String getReferenceNameList(String entityName) {
         Entity entity = context().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
-            return entity.fieldList.stream().filter(p -> p.isRef).map(p -> p.lname).collect(Collectors.joining("\", \"", "\"", "\""));
+            return entity.fieldList.stream().filter(p -> p.isRef).map(p -> p.lname)
+                    .collect(Collectors.joining("\", \"", "\"", "\""));
         }
         return null;
     }
@@ -376,7 +375,8 @@ public class Field {
     public String getReferenceName(String entityName, String c) {
         Entity entity = context().getEntity(entityName);
         if (entity != null && entity.fieldList.size() > 0) {
-            Optional<String> o = entity.fieldList.stream().filter(p -> p.isRef).filter(p -> p.jtype.equals(c)).map(p -> p.lname).findAny();
+            Optional<String> o = entity.fieldList.stream().filter(p -> p.isRef).filter(p -> p.jtype.equals(c))
+                    .map(p -> p.lname).findAny();
             if (o.isPresent()) {
                 return o.get();
             }
@@ -387,6 +387,13 @@ public class Field {
     public Field jstype(String jstype) {
         this.jstype = jstype;
         return this;
+    }
+
+    protected Context context() {
+        if (context == null) {
+            throw new IllegalStateException("Field is not attached to an Entity Context: " + lname);
+        }
+        return context;
     }
 
     protected Field initCopy() {
@@ -421,8 +428,8 @@ public class Field {
         to.isText = from.isText;
         to.isDate = from.isDate;
 
-
         to.maxLength = from.maxLength;
+        to.minLength = from.minLength;
 
         to.label = from.label;
         to.width = from.width;
