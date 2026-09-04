@@ -58,7 +58,7 @@ public class ActionRequestInjection extends ActionWrapper {
             f.addJavaImport("app.core.reference.Reference");
             f.addJavaImport("jakarta.validation.Valid");
         }
-        if (field.maxLength != null) {
+        if (field.minLength != null || field.maxLength != null) {
             f.addJavaImport("jakarta.validation.constraints.Size");
         }
         if ("LocalDate".equals(field.jtype)) {

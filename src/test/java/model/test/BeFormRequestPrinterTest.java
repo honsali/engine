@@ -54,7 +54,7 @@ class BeFormRequestPrinterTest {
 
         assertTrue(createRequest.contains("String code,"));
         assertTrue(createRequest.contains("@Size(max = 250) String libelle,"));
-        assertTrue(createRequest.contains("@NotBlank @Size(max = 100) String password,"));
+        assertTrue(createRequest.contains("@NotBlank @Size(min = 8, max = 100) String password,"));
         assertTrue(createRequest.contains("@Valid Reference referenceTarget)"));
         assertTrue(createRequest.indexOf("String libelle") < createRequest.indexOf("String code"));
         assertFalse(createRequest.contains("internalNote"));
@@ -80,6 +80,29 @@ class BeFormRequestPrinterTest {
         assertFalse(repository.contains("existsByCodeAndIdNot"));
     }
 
+    @Test
+    void importsSizeForAFieldWithOnlyMinimumLength() throws IOException {
+        Context context = new Context(tempDir.toString());
+
+        MinimumLengthEntity entity = new MinimumLengthEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module(context, "ModuleMinimumLengthEntity", "test.minimumLengthEntity");
+        module.addPage(new ViewCreerMinimumLengthEntity());
+        context.initPages();
+        context.initActions();
+
+        new BeRequestPrinter(context).print(entity);
+
+        Path requestPath = tempDir.resolve(
+                "be/src/main/java/app/domain/test/minimumlengthentity/MinimumLengthEntityCreateRequest.java");
+        String createRequest = Files.readString(requestPath);
+
+        assertTrue(createRequest.contains("import jakarta.validation.constraints.Size;"));
+        assertTrue(createRequest.contains("@NotBlank @Size(min = 3) String description)"));
+    }
+
     public static final class ReferenceTarget extends Entity {
         public final Field code = Text("code").isId();
     }
@@ -92,13 +115,18 @@ class BeFormRequestPrinterTest {
         public final Field referenceTarget = Ref(ReferenceTarget.class);
     }
 
+    public static final class MinimumLengthEntity extends Entity {
+        public final Field description = LongText("description").required().minLength("3").isId();
+    }
+
     public static final class ViewCreerFormEntity extends ViewComposer<FormEntity> {
 
         @Override
         public Component rootComponent() {
             FormEntity entity = entity(FormEntity.class);
             return block(
-                    form(entity, entity.libelle.required(false), entity.code, entity.Text("password").required().maxLength("100")),
+                    form(entity, entity.libelle.required(false), entity.code,
+                            entity.Text("password").required().minLength("8").maxLength("100")),
                     form(entity, entity.referenceTarget),
                     element(createAction(entity)).byForm());
         }
@@ -112,6 +140,17 @@ class BeFormRequestPrinterTest {
             return block(
                     form(entity, entity.code.readOnly(), entity.libelle, entity.active, hidden(entity.id_)),
                     element(updateAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewCreerMinimumLengthEntity extends ViewComposer<MinimumLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            MinimumLengthEntity entity = entity(MinimumLengthEntity.class);
+            return block(
+                    form(entity, entity.description),
+                    element(createAction(entity)).byForm());
         }
     }
 }

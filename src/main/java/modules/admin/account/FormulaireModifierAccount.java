@@ -7,8 +7,6 @@ import modules.admin.AdminModule;
 
 public class FormulaireModifierAccount extends ElementComposer {
 
-    public FormulaireModifierAccount() {}
-
     public Component rootComponent() {
         Account e = entity(Account.class);
         initUpdate(e, getByFieldAction(e, e.id_)).inInit();
