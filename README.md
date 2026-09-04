@@ -62,7 +62,7 @@ Le code exécuté en production reste la référence opérationnelle. Le code g�
 
 Le noyau technique de l'application cible n'a pas besoin d'être décrit dans le DSL. Dans le projet de démonstration actuel, le DSL couvre le domaine métier RH ainsi que la structure commune de `Account`, `Role` et des écrans d'administration des comptes. L'authentification JWT, le mot de passe et les adaptations de sécurité restent dans `crud-be` et `crud-fe` : aucun champ sensible n'est ajouté au modèle généré ni exposé dans ses DTO.
 
-`Role` est une donnée de référence en lecture seule : son unique `libelle` porte le code du rôle et aucune action de création ou de modification n'est déclarée.
+`Role` est une donnée de référence en lecture seule : son unique `libelle` porte directement l'autorité préfixée par `ROLE_`, et aucune action de création ou de modification n'est déclarée.
 
 ## Le DSL Java
 
