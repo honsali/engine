@@ -112,12 +112,14 @@ class FePageContractPrinterTest {
         assertTrue(mdl.contains("code: string;"));
         assertTrue(mdl.contains("idPageContractEntity: string;"));
         assertTrue(mdl.contains("form?: FormInstance;"));
+        assertTrue(mdl.contains("request: IPageContractEntity;"));
         assertTrue(mdl.contains("pageCourante?: number;"));
         assertTrue(mdl.contains("pageContractEntity?: IPageContractEntity;"));
         assertFalse(mdl.contains(" | {}"));
 
         assertTrue(ctrl.contains("import { ActionOperation, action, util } from 'waxant';"));
         assertTrue(ctrl.contains(": ActionOperation<ReqFiltrerPageContractEntity, ResFiltrerPageContractEntity> = async ("));
+        assertTrue(ctrl.contains("ServicePageContractEntity.creer(requete.request)"));
         assertTrue(ctrl.contains("async (requete, resultat, thunkAPI) =>"));
         assertTrue(ctrl.contains("async (_requete, resultat, _thunkAPI) =>"));
         assertTrue(ctrl.contains("_resultat, _thunkAPI"));
@@ -127,12 +129,17 @@ class FePageContractPrinterTest {
         assertFalse(mdl.contains(".rejected, (state, action)"));
 
         assertTrue(hook.contains("(req?: Partial<ReqFiltrerPageContractEntity>)"));
+        assertTrue(hook.contains("const creerPageContractEntity = async (form: FormInstance<IPageContractEntity>) =>"));
+        assertTrue(hook.contains("const request = util.removeNonSerialisable(await form.validateFields()) as IPageContractEntity;"));
+        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.creerPageContractEntity({ request, ...params })"));
+        assertTrue(generatedView.contains("Form.useForm<IPageContractEntity>()"));
         assertTrue(generatedView.contains("(pageContractEntity: IPageContractEntity) =>"));
         assertTrue(generatedView.contains(
                 "goToPage(PageFiltrerPageContractEntity, { idPageContractEntity: pageContractEntity.id });"));
         assertTrue(generatedView.contains("listeDonnee={listePagineePageContractEntity?.liste}"));
         assertTrue(generatedView.contains("pagination={listePagineePageContractEntity?.pagination}"));
-        assertTrue(generatedFormAction.contains("({ form }: { form: FormInstance }) =>"));
+        assertTrue(generatedFormAction.contains("({ form }: { form: FormInstance<IPageContractEntity> }) =>"));
+        assertTrue(generatedFormAction.contains("creerPageContractEntity(form);"));
         assertTrue(generatedPageList.contains("toPath: () =>"));
         assertTrue(generatedPageList.contains("toPath: (args) =>"));
         assertTrue(generatedPageList.contains("${args.idPageContractEntity}"));
@@ -163,9 +170,11 @@ class FePageContractPrinterTest {
         @Override
         public Component rootComponent() {
             FilterAction filter = filter(entity);
-            return table(entity, entity.code)
-                    .fillWith(filter)
-                    .onRowClick(goToPage(entity, targetPage));
+            return block(
+                    form(entity, entity.code),
+                    table(entity, entity.code)
+                            .fillWith(filter)
+                            .onRowClick(goToPage(entity, targetPage)));
         }
     }
 

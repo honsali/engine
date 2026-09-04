@@ -21,7 +21,7 @@ public class ViewInitCreateInjection extends ActionViewInjection {
         }
         f.totalScript().L("");
         f.totalScript().L____("useEffect(() => {");
-        f.totalScript().L________("if (etat", unameWithEntity(), ".succes) {");
+        f.totalScript().L________("if (etat", unameWithEntity(), ".succes && ", entity().lname, ") {");
         f.totalScript().L____________("form.setFieldsValue(", entity().lname, ");");
         f.totalScript().L________("}");
         f.totalScript().L____("}, [etat", unameWithEntity(), ".succes]);");

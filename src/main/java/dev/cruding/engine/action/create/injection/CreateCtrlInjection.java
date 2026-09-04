@@ -8,20 +8,15 @@ public class CreateCtrlInjection extends ActionCtrlInjection {
 
     public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
-        f.addCtrlImport("{ util }", "waxant");
     }
 
 
     public void addCtrlImplementationCore(CtrlFlow f) {
-        f.L____("await requete.form?.validateFields();");
-        f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
-
-        f.L____("");
-        f.__("const { id } = await Service", entity().uname, ".", lnameWithoutEntity(), "(");
+        f.L____("const { id } = await Service", entity().uname, ".", lnameWithoutEntity(), "(");
         if (byFatherId() && entity().haveFather) {
             f.__("requete.id" + entity().ufather, ", ");
         }
-        f.__("dataForm);");
+        f.__("requete.request);");
         f.L____("resultat.id", entity().uname, " = id;");
 
 

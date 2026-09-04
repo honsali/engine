@@ -19,10 +19,16 @@ public class FeHookPrinter extends Printer {
     public void print(Page page) {
         MdlFlow f = new MdlFlow();
         List<Action> actionList = context().actionPage(page);
+        List<Action> exposedActionList = actionList.stream()
+                .filter(action -> !action.inViewOnly && !action.isEmpty)
+                .toList();
+        boolean hasDefaultHookAction = exposedActionList.stream()
+                .anyMatch(action -> action.mdlActionInjection.usesDefaultHookAction());
         /* *********************************************************************** */
         for (Action action : actionList) {
             action.mdlActionInjection.addMdlStateAttribute(f);
             if (!action.inViewOnly && !action.isEmpty) {
+                action.mdlActionInjection.addHookImport(f);
                 f.addMdlStateAttribute("etat" + action.unameWithEntity, "createEtatInit()");
                 f.addMdlSelectorAttribute("etat" + action.unameWithEntity, "Etat" + action.unameWithEntity);
             }
@@ -44,7 +50,8 @@ public class FeHookPrinter extends Printer {
         }
         f.addMdlImport("Ctrl" + page.uc, "./Ctrl" + page.uc);
 
-        f.addMdlImport("{ Mdl" + page.uc + ", Req" + page.uc + " }", "./Mdl" + page.uc);
+        String mdlTypes = hasDefaultHookAction ? ", Req" + page.uc : "";
+        f.addMdlImport("{ Mdl" + page.uc + mdlTypes + " }", "./Mdl" + page.uc);
         /* *********************************************************************** */
         f.flushMdlImportBlock();
 
@@ -62,21 +69,29 @@ public class FeHookPrinter extends Printer {
         }
 
 
-        f.L("");
-        f.L____("const createAction = (action: any) => (req?: Partial<Req", page.uc, ">) => dispatch(action({ ...req, ...params }));");
+        if (hasDefaultHookAction) {
+            f.L("");
+            f.L____("const createAction = (action: any) => (req?: Partial<Req", page.uc, ">) => dispatch(action({ ...req, ...params }));");
+        }
+        for (Action action : exposedActionList) {
+            if (!action.mdlActionInjection.usesDefaultHookAction()) {
+                f.L("");
+                action.mdlActionInjection.addHookAction(f);
+            }
+        }
         f.L("");
         f.L____("return {");
         f.L________("// Actions");
 
-        for (Action action : actionList) {
-            if (!action.inViewOnly && !action.isEmpty) {
+        for (Action action : exposedActionList) {
+            if (action.mdlActionInjection.usesDefaultHookAction()) {
                 f.L________(action.lnameWithEntity, ": createAction(Ctrl", page.uc, ".", action.lnameWithEntity, "),");
+            } else {
+                f.L________(action.lnameWithEntity, ",");
             }
         }
-        for (Action action : actionList) {
-            if (!action.inViewOnly && !action.isEmpty) {
-                f.L________("resetEtat", action.unameWithEntity, ": () => dispatch(Mdl", page.uc, ".resetEtat", action.unameWithEntity, "()),");
-            }
+        for (Action action : exposedActionList) {
+            f.L________("resetEtat", action.unameWithEntity, ": () => dispatch(Mdl", page.uc, ".resetEtat", action.unameWithEntity, "()),");
         }
         f.L("");
         f.L________("// State");

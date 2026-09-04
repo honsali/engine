@@ -23,7 +23,7 @@ public class FilterPanel extends Container {
 
     public void addImport(ViewFlow flow) {
         flow.addJsImport("{ Filtre }", "waxant");
-        flow.useForm();
+        flow.useForm(entity);
         flow.useEffect();
         flow.addJsImport("{ BlocAction }", "waxant");
         flow.addJsImport("{ ActionUcInitialiserFiltre }", "waxant");

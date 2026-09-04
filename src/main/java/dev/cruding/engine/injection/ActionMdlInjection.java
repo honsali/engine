@@ -18,6 +18,14 @@ public class ActionMdlInjection extends ActionWrapper {
 
     public void addUseSelector(MdlFlow f) {}
 
+    public void addHookImport(MdlFlow f) {}
+
+    public boolean usesDefaultHookAction() {
+        return true;
+    }
+
+    public void addHookAction(MdlFlow f) {}
+
     public void addMdlExtraReducer(MdlFlow f) {
         MdlFlow fulfilled = new MdlFlow();
         addMdlExtraReducerAffectation(fulfilled);

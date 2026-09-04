@@ -15,6 +15,7 @@ public class CreateViewInjection extends ActionViewInjection {
 
     public boolean addViewScript(ViewFlow flow) {
         List<Action> ifSuccessUiActionList = null;
+        List<String> additionalHookParameters = new ArrayList<>();
 
         if (hasSuccess()) {
             ArrayList<Action> ifSuccessActionList = onSuccess();
@@ -26,22 +27,32 @@ public class CreateViewInjection extends ActionViewInjection {
         flow.addSelector("etat" + unameWithEntity());
         flow.totalScript().__("\n");
 
+        flow.addJsImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        flow.addProp("form", "FormInstance<I" + entity().uname + ">");
         flow.addParam("form");
         if (byProp() != null) {
             flow.addParam(byProp());
+            additionalHookParameters.add(byProp());
         }
         if (element().byProp != null) {
             String p = StringUtils.substringBefore(element().byProp, ":");
             if (byId()) {
-                flow.addParam("id" + StringUtils.capitalize(p) + ": " + p + ".id");
+                String idParameter = "id" + StringUtils.capitalize(p) + ": " + p + ".id";
+                flow.addParam(idParameter);
+                additionalHookParameters.add(idParameter);
             } else {
                 flow.addParam(p);
+                additionalHookParameters.add(p);
             }
         }
 
         if (flow.hasParams()) {
             flow.totalScript().L____("const ", lnameWithoutEntity(), " = () => {");
-            flow.totalScript().L________(lnameWithEntity(), "({ ", flow.joinParams(), " });");
+            flow.totalScript().L________(lnameWithEntity(), "(form");
+            if (!additionalHookParameters.isEmpty()) {
+                flow.totalScript().__(", { ", String.join(", ", additionalHookParameters), " }");
+            }
+            flow.totalScript().__(");");
             flow.totalScript().L____("};");
         }
 

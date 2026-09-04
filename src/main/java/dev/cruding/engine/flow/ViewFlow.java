@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.element.Element;
+import dev.cruding.engine.entity.Entity;
 
 public class ViewFlow extends JsFlow {
 
@@ -23,6 +24,7 @@ public class ViewFlow extends JsFlow {
     private boolean ready;
     private String execute;
     private String form;
+    private String formType;
     private boolean effect;
     private boolean inlineForm;
     private boolean horizontalForm;
@@ -86,7 +88,7 @@ public class ViewFlow extends JsFlow {
             initFlow.__(" } = use", element.page.uc, "();");
         }
         if (hasForm()) {
-            initFlow.L____("const [", form, "] = Form.useForm();");
+            initFlow.L____("const [", form, "] = Form.useForm", formType == null ? "" : "<" + formType + ">", "();");
         }
         for (String state : stateSet.keySet()) {
             initFlow.L____("const [", state, ", set", StringUtils.capitalize(state), "] = useState(", stateSet.get(state), ");");
@@ -249,9 +251,19 @@ public class ViewFlow extends JsFlow {
         this.form = "form";
     }
 
+    public void useForm(Entity entity) {
+        useForm();
+        typeForm(entity);
+    }
+
     public void useInLineForm() {
         this.inlineForm = true;
         this.form = "form";
+    }
+
+    public void useInLineForm(Entity entity) {
+        useInLineForm();
+        typeForm(entity);
     }
 
     public void useHorizontalForm() {
@@ -259,13 +271,30 @@ public class ViewFlow extends JsFlow {
         this.form = "form";
     }
 
+    public void useHorizontalForm(Entity entity) {
+        useHorizontalForm();
+        typeForm(entity);
+    }
+
     public void useForm(boolean addImportForm) {
         this.addImportForm = addImportForm;
         this.form = "form";
     }
 
+    public void useForm(boolean addImportForm, Entity entity) {
+        useForm(addImportForm);
+        typeForm(entity);
+    }
+
     public void useForm(String formName) {
         this.form = formName;
+    }
+
+    private void typeForm(Entity entity) {
+        if (entity != null) {
+            this.formType = "I" + entity.uname;
+            addJsImport("{ " + formType + " }", "modele/" + entity.path + "/Domaine" + entity.uname);
+        }
     }
 
     public void addParam(String param) {

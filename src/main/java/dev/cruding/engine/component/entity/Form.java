@@ -45,11 +45,11 @@ public class Form extends Component {
     public void addImport(ViewFlow flow) {
         if (!element.byForm) {
             if (type.equals("FormulaireInline")) {
-                flow.useInLineForm();
+                flow.useInLineForm(entity);
             } else if (type.equals("FormulaireHorizontal")) {
-                flow.useHorizontalForm();
+                flow.useHorizontalForm(entity);
             } else {
-                flow.useForm();
+                flow.useForm(entity);
             }
         }
         for (Field c : fieldList) {
