@@ -18,13 +18,57 @@ public class ActionMdlInjection extends ActionWrapper {
 
     public void addUseSelector(MdlFlow f) {}
 
-    public void addHookImport(MdlFlow f) {}
-
-    public boolean usesDefaultHookAction() {
-        return true;
+    public void addHookImport(MdlFlow f) {
+        ActionMdlInjection formInput = formInputInjection();
+        if (formInput != null) {
+            f.addMdlImport("{ FormInstance }", "antd");
+            f.addMdlImport("{ " + formInput.formRequestType() + " }",
+                    "modele/" + formInput.entity().path + "/Domaine" + formInput.entity().uname);
+            f.addMdlImport("{ util }", "waxant");
+            f.addMdlImport("{ Req" + uc() + " }", "./Mdl" + uc());
+        }
     }
 
-    public void addHookAction(MdlFlow f) {}
+    public boolean usesDefaultHookAction() {
+        return formInputInjection() == null;
+    }
+
+    public void addHookAction(MdlFlow f) {
+        ActionMdlInjection formInput = formInputInjection();
+        String attribute = formInput.formRequestAttribute();
+        String type = formInput.formRequestType();
+        String values = formInput.validatesFormInHook() ? "await form.validateFields()" : "form.getFieldsValue()";
+
+        f.L____("const ", lnameWithEntity(), " = async ({ form, ...req }: Partial<Req", uc(),
+                "> & { form: FormInstance<", type, "> }) => {");
+        f.L________("const ", attribute, " = util.removeNonSerialisable(", values, ") as ", type, ";");
+        f.L________("return dispatch(Ctrl", uc(), ".", lnameWithEntity(), "({ ...req, ", attribute,
+                ", ...params } as Req", uc(), "));");
+        f.L____("};");
+    }
+
+    protected ActionMdlInjection formInputInjection() {
+        if (byForm()) {
+            return this;
+        }
+        return onSuccess().stream()
+                .filter(action -> !action.inViewOnly && action.byForm)
+                .map(action -> action.mdlActionInjection)
+                .findFirst()
+                .orElse(null);
+    }
+
+    protected String formRequestAttribute() {
+        return "request";
+    }
+
+    protected String formRequestType() {
+        return "I" + entity().uname;
+    }
+
+    protected boolean validatesFormInHook() {
+        return true;
+    }
 
     public void addMdlExtraReducer(MdlFlow f) {
         MdlFlow fulfilled = new MdlFlow();

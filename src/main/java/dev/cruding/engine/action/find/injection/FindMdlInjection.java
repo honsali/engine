@@ -7,11 +7,15 @@ public class FindMdlInjection extends ActionMdlInjection {
 
     public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
-        f.addMdlImport("{ FormInstance }", "antd");
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
-        f.addMdlRequestAttribute("form", "FormInstance");
+        f.addMdlRequiredRequestAttribute("request", "I" + entity().uname);
+    }
+
+    @Override
+    protected ActionMdlInjection formInputInjection() {
+        return this;
     }
 
     public void addMdlResultAttribute(MdlFlow f) {

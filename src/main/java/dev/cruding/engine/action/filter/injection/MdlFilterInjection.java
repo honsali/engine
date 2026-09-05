@@ -8,11 +8,25 @@ public class MdlFilterInjection extends ActionMdlInjection {
     public void addMdlImport(MdlFlow f) {
         f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
         f.addMdlImport("{ IRequete" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
-        f.addMdlImport("{ FormInstance }", "antd");
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
-        f.addMdlRequestAttribute("form", "FormInstance");
+        f.addMdlRequiredRequestAttribute("filtre", "IRequete" + entity().uname);
+    }
+
+    @Override
+    protected String formRequestAttribute() {
+        return "filtre";
+    }
+
+    @Override
+    protected String formRequestType() {
+        return "IRequete" + entity().uname;
+    }
+
+    @Override
+    protected boolean validatesFormInHook() {
+        return false;
     }
 
     public void addMdlResultAttribute(MdlFlow f) {

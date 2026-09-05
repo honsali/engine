@@ -9,17 +9,14 @@ import dev.cruding.engine.injection.ActionMdlInjection;
 public class BasicMdlInjection extends ActionMdlInjection {
 
     public void addMdlImport(MdlFlow f) {
-        if (byEntity()) {
+        if (byEntity() || byForm()) {
             f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
-        }
-        if (byForm()) {
-            f.addMdlImport("{ FormInstance }", "antd");
         }
     }
 
     public void addMdlRequestAttribute(MdlFlow f) {
         if (byForm()) {
-            f.addMdlRequestAttribute("form", "FormInstance");
+            f.addMdlRequiredRequestAttribute("request", "I" + entity().uname);
         }
         if (byFatherId() && entity().haveFather) {
             f.addMdlRequiredRequestAttribute("id" + entity().ufather, "string");

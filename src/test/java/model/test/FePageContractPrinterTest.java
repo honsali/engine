@@ -12,8 +12,12 @@ import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.action.create.CreateAction;
 import dev.cruding.engine.action.delete.DeleteAction;
 import dev.cruding.engine.action.filter.FilterAction;
+import dev.cruding.engine.action.find.FindAction;
 import dev.cruding.engine.action.get.GetByFieldAction;
 import dev.cruding.engine.action.listPaginated.ListPaginatedAction;
+import dev.cruding.engine.action.Action.ActionType;
+import dev.cruding.engine.action.specifique.BasicAction;
+import dev.cruding.engine.action.update.UpdateAction;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
@@ -111,13 +115,17 @@ class FePageContractPrinterTest {
 
         assertTrue(mdl.contains("code: string;"));
         assertTrue(mdl.contains("idPageContractEntity: string;"));
-        assertTrue(mdl.contains("form?: FormInstance;"));
+        assertFalse(mdl.contains("FormInstance"));
+        assertTrue(mdl.contains("filtre: IRequetePageContractEntity;"));
         assertTrue(mdl.contains("request: IPageContractEntity;"));
         assertTrue(mdl.contains("pageCourante?: number;"));
         assertTrue(mdl.contains("pageContractEntity?: IPageContractEntity;"));
         assertFalse(mdl.contains(" | {}"));
 
-        assertTrue(ctrl.contains("import { ActionOperation, action, util } from 'waxant';"));
+        assertTrue(ctrl.contains("import { ActionOperation, action } from 'waxant';"));
+        assertFalse(ctrl.contains("requete.form"));
+        assertFalse(ctrl.contains("getFieldsValue"));
+        assertFalse(ctrl.contains("validateFields"));
         assertTrue(ctrl.contains(": ActionOperation<ReqFiltrerPageContractEntity, ResFiltrerPageContractEntity> = async ("));
         assertTrue(ctrl.contains("ServicePageContractEntity.creer(requete.request)"));
         assertTrue(ctrl.contains("async (requete, resultat, thunkAPI) =>"));
@@ -132,6 +140,10 @@ class FePageContractPrinterTest {
         assertTrue(hook.contains("const creerPageContractEntity = async (form: FormInstance<IPageContractEntity>) =>"));
         assertTrue(hook.contains("const request = util.removeNonSerialisable(await form.validateFields()) as IPageContractEntity;"));
         assertTrue(hook.contains("CtrlFiltrerPageContractEntity.creerPageContractEntity({ request, ...params })"));
+        assertTrue(hook.contains("const filtrerPageContractEntity = async ({ form, ...req }: Partial<ReqFiltrerPageContractEntity> & { form: FormInstance<IRequetePageContractEntity> }) =>"));
+        assertTrue(hook.contains("const filtre = util.removeNonSerialisable(form.getFieldsValue()) as IRequetePageContractEntity;"));
+        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.filtrerPageContractEntity({ ...req, filtre, ...params } as ReqFiltrerPageContractEntity)"));
+        assertTrue(ctrl.contains("ServicePageContractEntity.filtrer(requete.filtre)"));
         assertTrue(generatedView.contains("Form.useForm<IPageContractEntity>()"));
         assertTrue(generatedView.contains("(pageContractEntity: IPageContractEntity) =>"));
         assertTrue(generatedView.contains(
@@ -153,6 +165,59 @@ class FePageContractPrinterTest {
         assertTrue(goToModuleElement.contains("(pageContractEntity: IPageContractEntity) =>"));
         assertTrue(emitEventElement.contains("(pageContractEntity: IPageContractEntity) =>"));
         assertFalse(componentlessAcl.contains("import "));
+    }
+
+    @Test
+    void keepsUpdateFindAndCustomActionFormsInHooks() throws IOException {
+        Context context = new Context(tempDir.toString());
+        PageContractEntity entity = new PageContractEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module(context, "ModulePageContract", "test.pageContract");
+        ViewModifierPageContractEntity view = new ViewModifierPageContractEntity(entity);
+        Page page = module.addPage(view).pathById();
+        page.init();
+
+        Element formAction = new Element("ActionModifierPageContractEntity", "/element").page(page).byForm();
+        new UpdateAction(entity, formAction);
+        new BasicAction(ActionType.UCA, "valider", entity, formAction).byForm().byId().byEntity();
+        new FindAction(entity, formAction);
+        new FilterAction(entity, formAction, false);
+        new BasicAction(ActionType.UCA, "preparer", entity, formAction)
+                .onSuccess(new BasicAction(ActionType.NOUI, "enregistrer", entity, formAction).byForm());
+        context.initActions();
+
+        new FeCtrlPrinter(context).print(page);
+        new FeMdlPrinter(context).print(page);
+        new FeHookPrinter(context).print(page);
+
+        Path pageDirectory = tempDir.resolve("fe/src/modules/test/pageContract/pageContractEntity/modifier");
+        String ctrl = Files.readString(pageDirectory.resolve("CtrlModifierPageContractEntity.ts"));
+        String mdl = Files.readString(pageDirectory.resolve("MdlModifierPageContractEntity.ts"));
+        String hook = Files.readString(pageDirectory.resolve("useModifierPageContractEntity.ts"));
+
+        assertFalse(mdl.contains("FormInstance"));
+        assertFalse(mdl.contains("from 'antd'"));
+        assertTrue(mdl.contains("request: IPageContractEntity;"));
+        assertTrue(mdl.contains("filtre: IRequetePageContractEntity;"));
+        assertFalse(ctrl.contains("requete.form"));
+        assertFalse(ctrl.contains("getFieldsValue"));
+        assertFalse(ctrl.contains("validateFields"));
+        assertFalse(ctrl.contains("removeNonSerialisable"));
+        assertTrue(ctrl.contains("ServicePageContractEntity.maj(requete.request)"));
+        assertTrue(ctrl.contains("ServicePageContractEntity.chercher(requete.request)"));
+        assertTrue(ctrl.contains("{ ...pageContractEntity, ...requete.request }"));
+        assertTrue(ctrl.contains("await enregistrerPageContractEntityImpl(requete, resultat, thunkAPI);"));
+        assertTrue(ctrl.contains("ServicePageContractEntity.filtrer(requete.filtre)"));
+
+        for (String name : new String[] { "maj", "valider", "chercher", "preparer", "enregistrer" }) {
+            assertTrue(hook.contains("const " + name + "PageContractEntity = async ({ form, ...req }: Partial<ReqModifierPageContractEntity> & { form: FormInstance<IPageContractEntity> }) =>"), name);
+            assertTrue(hook.contains("CtrlModifierPageContractEntity." + name + "PageContractEntity({ ...req, request, ...params } as ReqModifierPageContractEntity)"), name);
+        }
+        assertTrue(hook.contains("const request = util.removeNonSerialisable(await form.validateFields()) as IPageContractEntity;"));
+        assertTrue(hook.contains("const filtre = util.removeNonSerialisable(form.getFieldsValue()) as IRequetePageContractEntity;"));
+        assertFalse(hook.contains("{ ...req, form"));
     }
 
     public static final class PageContractEntity extends Entity {

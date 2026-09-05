@@ -9,9 +9,6 @@ public class BasicCtrlInjection extends ActionCtrlInjection {
 
     public void addCtrlImport(CtrlFlow f) {
         f.addCtrlImport("Service" + entity().uname, "modele/" + entity().path + "/Service" + entity().uname);
-        if (byForm()) {
-            f.addCtrlImport("{ util }", "waxant");
-        }
     }
 
 
@@ -19,10 +16,6 @@ public class BasicCtrlInjection extends ActionCtrlInjection {
         if (byEntity()) {
             f.L____("const { mdl", uc(), " } = thunkAPI.getState() as any;");
             f.L____("const ", entity().lname, " = mdl", uc(), ".", entity().lname, ";");
-        }
-        if (byForm()) {
-            f.L____("await requete.form?.validateFields();");
-            f.L____("const dataForm = util.removeNonSerialisable(requete.form?.getFieldsValue());");
         }
 
         f.L____("");
@@ -47,9 +40,9 @@ public class BasicCtrlInjection extends ActionCtrlInjection {
         }
         if (byForm()) {
             if (byEntity()) {
-                f.__("{ ...", entity().lname, ", ...dataForm },");
+                f.__("{ ...", entity().lname, ", ...requete.request },");
             } else {
-                f.__("dataForm, ");
+                f.__("requete.request, ");
             }
             withComma = true;
         }
