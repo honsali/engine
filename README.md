@@ -110,6 +110,7 @@ Ce workflow demande des sorties stables : chemins, noms, ordre, imports, formata
 
 ## Pour poursuivre
 
+- [Décisions de la cible et contexte de reprise](../crud-fe/docs/DECISIONS.md) : arbitrages communs et enseignements des reviews à conserver lors d'une évolution coordonnée.
 - [Guide de développement](DEVELOPMENT.md) : installation, exécution, DSL, contrats de génération et points d'extension.
 - [Feuille de route](todos.md) : capacités à consolider et intentions encore à implémenter.
 - [Application frontend](../crud-fe/README.md) et [application backend](../crud-be/README.md) : usages et arbitrages de la cible actuelle.

@@ -3,7 +3,8 @@
 ## Sources de vérité
 
 - Lire `README.md` avant toute modification : il définit la finalité d'Engine, son architecture en Flow et le workflow d'intégration par comparaison.
-- Lire `todos.md` pour connaître les chantiers ouverts. Ne pas réintroduire un objectif ou un contrat absent de ces deux documents sans demande explicite.
+- Pour une review ou un travail architectural ou coordonné, lire les [décisions de la passation](../crud-fe/docs/DECISIONS.md). Elles conservent les raisons des arbitrages de la cible et distinguent décisions, défauts et capacités encore non démontrées.
+- Lire `todos.md` pour connaître les chantiers ouverts. Ne pas transformer une intention d'adaptation à plusieurs technologies en promesse de support universel déjà implémenté, ni réintroduire un objectif absent du cadre documenté sans demande explicite.
 - Le code de production est la référence opérationnelle ; `result` représente le plan généré. Lorsqu'une comparaison avec `C:\dev\crud` est demandée, ne prendre comme modèle que les modules et fichiers explicitement désignés pour l'itération.
 
 ## Architecture à préserver
