@@ -213,7 +213,7 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 
 `dev.cruding.engine.App` orchestre le cycle :
 
-1. chargement des entités depuis `src/main/java/model` ;
+1. appel à `EntityLoader.load(context, modelPath.toString())` pour charger les entités depuis `src/main/java/model` ;
 2. appel direct à `modules.ProjectBootstrap.init(context)` pour assembler les modules ;
 3. initialisation des entités ;
 4. composition et initialisation des pages ;

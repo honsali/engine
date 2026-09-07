@@ -21,7 +21,7 @@ class ProjectBootstrapTest {
     @Test
     void composesProjectModulesInDeclarationOrder() {
         Context context = new Context(tempDir.toString());
-        new EntityLoader(context).load(LoaderUtils.getModelPath().toString());
+        EntityLoader.load(context, LoaderUtils.getModelPath().toString());
 
         ProjectBootstrap.init(context);
         context.initEntities();

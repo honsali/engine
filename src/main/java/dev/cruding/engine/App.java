@@ -26,7 +26,7 @@ public class App {
             LOGGER.info("Using engine base path: {}", basePath);
 
             LOGGER.info("Loading entities from: {}", modelPath);
-            (new EntityLoader(context)).load(modelPath.toString());
+            EntityLoader.load(context, modelPath.toString());
 
             LOGGER.info("Initializing project modules");
             ProjectBootstrap.init(context);

@@ -8,20 +8,17 @@ import java.util.stream.Stream;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
 
-public class EntityLoader {
+public final class EntityLoader {
 
-    private final Context context;
+    private EntityLoader() {}
 
-    public EntityLoader(Context context) {
-        this.context = Objects.requireNonNull(context, "EntityLoader Context cannot be null");
-    }
-
-    public void load(String path) {
+    public static void load(Context context, String path) {
+        Objects.requireNonNull(context, "EntityLoader Context cannot be null");
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
             files.filter(Files::isRegularFile)
                     .filter(LoaderUtils::isJavaFile)
                     .sorted()
-                    .map(this::loadEntityClass)
+                    .map(EntityLoader::loadEntityClass)
                     .forEach(context::addEntity);
         } catch (Exception e) {
             throw new GeneratorException(String.format("Failed to load entities from directory: %s", path), e);
@@ -29,7 +26,7 @@ public class EntityLoader {
     }
 
 
-    private Entity loadEntityClass(Path file) {
+    private static Entity loadEntityClass(Path file) {
         try {
             String className = LoaderUtils.resolveClassName(file);
             Class<?> clazz = Class.forName(className);
