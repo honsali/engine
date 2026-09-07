@@ -1,6 +1,7 @@
 package dev.cruding.engine.gen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -37,10 +38,20 @@ class ContextLifecycleTest {
         PageRef pageReference = new PageRef("PageListerLifecycleEntity");
         assertSame(firstPage, first.getPage(pageReference));
 
-        Action firstAction = new EmptyAction(ActionType.NORMAL, "charger", firstEntity, firstView.element);
+        Action firstAction = new EmptyAction(ActionType.NORMAL, "charger", firstEntity, firstView.element) {
+            @Override
+            public int hashCode() {
+                assertNotNull(id, "Action id must be assigned before insertion into the set");
+                return super.hashCode();
+            }
+        };
         first.addLabel("ModuleLifecycle", "titre", "Première génération");
         assertEquals(List.of(firstAction), first.actionEntity(firstEntity));
-        assertEquals("1", first.nextActionId());
+        assertEquals("0", firstAction.id);
+
+        Action secondAction = new EmptyAction(ActionType.NORMAL, "charger", firstEntity, firstView.element);
+        assertEquals("1", secondAction.id);
+        assertEquals(List.of(firstAction, secondAction), first.actionEntity(firstEntity));
 
         Context current = Context.init(tempDir.resolve("second").toString());
         assertSame(current, Context.getInstance());
@@ -51,7 +62,6 @@ class ContextLifecycleTest {
         assertTrue(current.getPageList().isEmpty());
         assertNull(current.getLabelMap("ModuleLifecycle"));
         assertTrue(current.actionEntity(firstEntity).isEmpty());
-        assertEquals("0", current.nextActionId());
 
         LifecycleEntity currentEntity = new LifecycleEntity();
         current.addEntity(currentEntity);
@@ -65,6 +75,7 @@ class ContextLifecycleTest {
         assertSame(currentPage, current.getPage(pageReference));
 
         Action currentAction = new EmptyAction(ActionType.NORMAL, "charger", currentEntity, currentView.element);
+        assertEquals("0", currentAction.id);
         assertEquals(List.of(currentAction), current.actionEntity(currentEntity));
     }
 

@@ -87,7 +87,7 @@ public abstract class Action {
     public boolean onSuccessAction = false;
     public boolean asList = false;
     public boolean waitUntilReady = false;
-    private String id;
+    public String id;
     public String nameVariable;
     public boolean inInit;
     public boolean filterOnLoad;
@@ -98,7 +98,6 @@ public abstract class Action {
         this.declarationElement = Objects.requireNonNull(element, "Action element cannot be null");
         this.element = declarationElement;
         this.page = Objects.requireNonNull(element.page, "Action element must belong to a Page");
-        this.id = Context.getInstance().nextActionId();
         this.type = type;
         this.entity = entity;
         if (this.entity != null) {

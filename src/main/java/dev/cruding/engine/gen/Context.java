@@ -46,10 +46,6 @@ public class Context {
         return basePath;
     }
 
-    public String nextActionId() {
-        return Integer.toString(actionRank++);
-    }
-
     /* ****************************************************************************** */
     /* ********************************** ENTITIES ********************************** */
     /* ****************************************************************************** */
@@ -207,6 +203,7 @@ public class Context {
         if (action == null) {
             throw new ContextException("Action cannot be null");
         }
+        action.id = Integer.toString(actionRank++);
         actionList.add(action);
     }
 
