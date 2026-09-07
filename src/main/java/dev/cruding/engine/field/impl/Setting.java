@@ -2,7 +2,6 @@ package dev.cruding.engine.field.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
 
 public class Setting extends Field {
 
@@ -61,10 +60,6 @@ public class Setting extends Field {
         Setting s = makeCopy();
         s.vowel = true;
         return s;
-    }
-
-    public String getDbName(String entityUname) {
-        return Context.getInstance().getDbNameMapper().getLegacyDbName(entityUname, "id", "column", "id");
     }
 
     public String that() {

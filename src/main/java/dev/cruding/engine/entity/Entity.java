@@ -11,7 +11,6 @@ import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
@@ -56,8 +55,8 @@ public class Entity extends FieldFactory {
         this.id_ = new Setting();
 
 
-        this.dbName = Context.getInstance().getDbNameMapper().getTableName(uname);
-        this.seqName = Context.getInstance().getDbNameMapper().getSequenceName(uname);
+        this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), "_").toLowerCase();
+        this.seqName = "seq_" + dbName;
 
         java.lang.reflect.Field[] list = this.getClass().getFields();
         for (java.lang.reflect.Field f : list) {

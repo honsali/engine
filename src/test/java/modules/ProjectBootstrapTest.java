@@ -31,7 +31,8 @@ class ProjectBootstrapTest {
         assertEquals(List.of("admin", "admin.account", "rh", "rh.employe", "rh.departement"),
                 context.getModuleList().stream().map(module -> module.packge).toList());
         assertEquals(15, context.getPageList().size());
-        assertEquals("app_role", context.getEntity(Role.class).dbName);
+        assertEquals("role", context.getEntity(Role.class).dbName);
+        assertEquals("seq_role", context.getEntity(Role.class).seqName);
         assertEquals("admin.account", context.getPage(AdminModule.pageListerAccount).module.packge);
         assertEquals("rh.employe", context.getPage(RhModule.pageFiltrerEmploye).module.packge);
         assertEquals("rh.departement", context.getPage(RhModule.pageListerDepartement).module.packge);

@@ -24,7 +24,6 @@ public class Context {
     private final Map<String, Map<String, String>> labelMap = new LinkedHashMap<>();
     private final Set<Action> actionList = new LinkedHashSet<>();
     private final String basePath;
-    private final DbNameMapper dbNameMapper = new DbNameMapper();
     private int actionRank;
 
     public static Context init(String basePath) {
@@ -45,10 +44,6 @@ public class Context {
 
     public String getBasePath() {
         return basePath;
-    }
-
-    public DbNameMapper getDbNameMapper() {
-        return dbNameMapper;
     }
 
     public String nextActionId() {

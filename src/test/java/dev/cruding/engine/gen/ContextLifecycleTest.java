@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.action.Action;
@@ -26,12 +25,11 @@ class ContextLifecycleTest {
     void startsTheNextGenerationWithFreshState() {
         Context first = Context.init(tempDir.resolve("first").toString());
         assertSame(first, Context.getInstance());
-        first.getDbNameMapper().setLegacyDbMap(Map.of("LifecycleEntity.table", "legacy_entity"));
 
         LifecycleEntity firstEntity = new LifecycleEntity();
         first.addEntity(firstEntity);
         first.initEntities();
-        assertEquals("legacy_entity", firstEntity.dbName);
+        assertEquals("lifecycle_entity", firstEntity.dbName);
 
         Module firstModule = new Module("ModuleLifecycle", "lifecycle");
         ViewListerLifecycleEntity firstView = new ViewListerLifecycleEntity();

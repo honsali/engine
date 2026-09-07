@@ -37,9 +37,9 @@ public class RefField<T extends Entity> extends Field {
         this.dbTypeName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(type.getSimpleName()), "_").toLowerCase();
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase() + "_id";
         if (containingEntity != null && (isRef || isFather)) {
-            this.jtDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinTable", containingEntityDbname + "_" + this.dbTypeName);
-            this.jcDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinColumn", dbName);
-            this.ijcDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "inverseJoinColumn", this.dbTypeName);
+            this.jtDbName = containingEntityDbname + "_" + this.dbTypeName;
+            this.jcDbName = dbName;
+            this.ijcDbName = this.dbTypeName;
         }
         return this;
     }

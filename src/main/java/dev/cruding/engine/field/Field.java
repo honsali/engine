@@ -83,7 +83,6 @@ public class Field {
     public Field containingEntity(Entity entity) {
         this.containingEntity = entity.uname;
         this.containingEntityDbname = entity.dbName;
-        this.dbName = Context.getInstance().getDbNameMapper().getLegacyDbName(entity.uname, lname, "column", this.dbName);
         return this;
     }
 

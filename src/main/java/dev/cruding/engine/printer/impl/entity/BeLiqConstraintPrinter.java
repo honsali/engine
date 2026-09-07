@@ -33,7 +33,7 @@ public class BeLiqConstraintPrinter extends Printer {
             f.L____________("baseColumnNames=\"", entity.father.dbName, "\"");
             f.L____________("baseTableName=\"", entity.dbName, "\"");
             f.L____________("constraintName=\"fk_", entity.dbName, "_", entity.father.dbName, "\"");
-            f.L____________("referencedColumnNames=\"", entity.id_.getDbName(entity.uname), "\"");
+            f.L____________("referencedColumnNames=\"id\"");
             f.L____________("referencedTableName=\"", entity.father.dbTypeName, "\" />");
             isEmpty = false;
         }
@@ -44,7 +44,7 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L____________("baseColumnNames=\"", ref.dbName, "\"");
                 f.L____________("baseTableName=\"", entity.dbName, "\"");
                 f.L____________("constraintName=\"fk_", entity.dbName, "_", ref.dbName, "\"");
-                f.L____________("referencedColumnNames=\"", entity.id_.getDbName(entity.uname), "\"");
+                f.L____________("referencedColumnNames=\"id\"");
                 f.L____________("referencedTableName=\"", ref.dbTypeName, "\" />");
                 isEmpty = false;
             }

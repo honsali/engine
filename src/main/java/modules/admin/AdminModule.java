@@ -1,7 +1,5 @@
 package modules.admin;
 
-import java.util.Map;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.PageRef;
 import modules.admin.account.ViewConsulterAccount;
@@ -19,8 +17,6 @@ public final class AdminModule {
     private AdminModule() {}
 
     public static void init() {
-        Context.getInstance().getDbNameMapper().setLegacyDbMap(Map.of("Role.table", "app_role"));
-
         new Module("ModuleAdmin", "admin").parent().menuIcon("faUserShield");
 
         Module moduleAccount = new Module("ModuleAccount", "admin.account");

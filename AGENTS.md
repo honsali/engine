@@ -27,6 +27,7 @@
 - Ne transférer du code vers l'application cible que si la tâche le demande. Le transfert peut être complet pour une première intégration ou sélectif lorsque la production a divergé.
 - Ne placer aucun contenu manuel dans `result`. Avant tout nettoyage, préserver ou identifier `G0`, puis générer `G1` afin de permettre la comparaison avec la production `P`.
 - Préserver la compatibilité avec les conventions du projet cible plutôt que de chercher une abstraction universelle ou indépendante de la stack.
+- Le nommage SQL suit les conventions du générateur, sans table de correspondance vers un schéma existant. Les exceptions propres à l'application, comme `app_role`, sont adaptées manuellement dans `crud-be`, pas configurées dans Engine.
 - Maintenir une sortie adaptée au comparateur : chemins, noms, ordre, imports et formatage déterministes, fins de ligne LF et exactement une fin de ligne finale.
 
 ## Méthode de modification

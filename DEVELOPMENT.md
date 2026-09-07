@@ -222,13 +222,15 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 7. exécution du `Processor` ;
 8. écriture des résultats frontend et backend.
 
-Engine est utilisé manuellement pour une génération à la fois. `Context.init(basePath)` remplace l'instance courante par un contexte neuf, puis `Context.getInstance()` donne accès à ce singleton. Les registres d'entités, modules, pages, libellés et actions, le compteur d'actions et les mappings SQL repartent ensemble d'un état vide. Le constructeur est privé ; il n'y a plus de contexte à fournir aux loaders, modules, actions ou printers.
+Engine est utilisé manuellement pour une génération à la fois. `Context.init(basePath)` remplace l'instance courante par un contexte neuf, puis `Context.getInstance()` donne accès à ce singleton. Les registres d'entités, modules, pages, libellés et actions ainsi que le compteur d'actions repartent ensemble d'un état vide. Le constructeur est privé ; il n'y a plus de contexte à fournir aux loaders, modules, actions ou printers.
 
 Une initialisation marque le début d'une nouvelle génération, pas un changement de contexte en cours de traitement. Les objets de la génération précédente ne doivent pas être réutilisés. Le moteur ne prend pas en charge des générations concurrentes dans une même JVM. Les tests de génération qui n'appellent pas `App` commencent leur scénario par `Context.init(...)` et s'exécutent séquentiellement, comme le précise `src/test/resources/junit-platform.properties`.
 
 Le projet possède un seul bootstrap concret, placé par convention dans `src/main/java/modules/ProjectBootstrap.java`. `App` le référence directement : il n'y a ni interface de bootstrap ni recherche de son implémentation dans les sources. Sa méthode statique `init()` appelle `AdminModule.init()`, puis `RhModule.init()`. L'ajout ou le retrait d'un module se fait explicitement à cet endroit.
 
-Chaque module construit ses propres `Module` avec `new Module(...)` et y déclare ses pages. `RhModule` ne compose pas l'administration. Le bootstrap intervient avant `Context.getInstance().initEntities()` pour que les mappings SQL déclarés par les modules, comme `Role.table → app_role`, soient pris en compte.
+Chaque module construit ses propres `Module` avec `new Module(...)` et y déclare ses pages. `RhModule` ne compose pas l'administration.
+
+Le nommage SQL est conventionnel : tables et colonnes en snake_case, suffixe `_id` pour les références et colonne technique `id`. Engine ne maintient plus de table de correspondance vers un schéma existant. `Role` produit donc une table `role` ; une adaptation comme `app_role` reste un changement manuel dans `crud-be`, à préserver lors de l'intégration par comparaison.
 
 Les références de pages partagées par le DSL utilisent des `PageRef` immuables déclarées dans leur module ; elles sont résolues dans le `Context` courant au moment de composer les actions.
 
