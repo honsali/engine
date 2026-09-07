@@ -1,7 +1,6 @@
 package modules;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import dev.cruding.engine.EnginePaths;
@@ -23,14 +22,14 @@ class ProjectBootstrapTest {
         context.initPages();
         context.initActions();
 
-        assertEquals(List.of("admin", "admin.account", "rh", "rh.employe", "rh.departement"),
-                context.getModuleList().stream().map(module -> module.packge).toList());
+        assertEquals(List.of("admin", "admin/account", "rh", "rh/employe", "rh/departement"),
+                context.getModuleList().stream().map(module -> module.path).toList());
         assertEquals(15, context.getPageList().size());
         assertEquals("role", context.getEntity(Role.class).dbName);
         assertEquals("seq_role", context.getEntity(Role.class).seqName);
-        assertEquals("admin.account", context.getPage(AdminModule.pageListerAccount).module.packge);
-        assertEquals("rh.employe", context.getPage(RhModule.pageFiltrerEmploye).module.packge);
-        assertEquals("rh.departement", context.getPage(RhModule.pageListerDepartement).module.packge);
+        assertEquals("admin/account", context.getPage(AdminModule.pageListerAccount).module.path);
+        assertEquals("rh/employe", context.getPage(RhModule.pageFiltrerEmploye).module.path);
+        assertEquals("rh/departement", context.getPage(RhModule.pageListerDepartement).module.path);
     }
 
     @Test
@@ -40,7 +39,7 @@ class ProjectBootstrapTest {
         RhModule.init();
 
         assertEquals(List.of("rh", "rh.employe", "rh.departement"),
-                context.getModuleList().stream().map(module -> module.packge).toList());
+                context.getModuleList().stream().map(module -> module.path).toList());
         assertEquals(11, context.getPageList().size());
     }
 }

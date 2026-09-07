@@ -17,14 +17,6 @@ public class Context {
 
     private static Context instance;
 
-    private final Map<String, Entity> entityMapByName = new LinkedHashMap<>();
-    private final Map<Class<? extends Entity>, Entity> entityMapByClass = new LinkedHashMap<>();
-    private final Map<String, Page> pageMap = new LinkedHashMap<>();
-    private final Map<String, Module> moduleMap = new LinkedHashMap<>();
-    private final Map<String, Map<String, String>> labelMap = new LinkedHashMap<>();
-    private final Set<Action> actionList = new LinkedHashSet<>();
-    private int actionRank;
-
     public static Context init() {
         instance = new Context();
         return instance;
@@ -33,6 +25,16 @@ public class Context {
     public static Context getInstance() {
         return Objects.requireNonNull(instance, "Context must be initialized before generation");
     }
+
+    private final Map<String, Entity> entityMapByName = new LinkedHashMap<>();
+    private final Map<Class<? extends Entity>, Entity> entityMapByClass = new LinkedHashMap<>();
+    private final Map<String, Page> pageMap = new LinkedHashMap<>();
+    private final Map<String, Module> moduleMap = new LinkedHashMap<>();
+    private final Map<String, Map<String, String>> labelMap = new LinkedHashMap<>();
+
+    private final Set<Action> actionList = new LinkedHashSet<>();
+
+    private int actionRank;
 
     private Context() {}
 
@@ -87,13 +89,13 @@ public class Context {
     /* ********************************** MODULES ********************************** */
     /* ****************************************************************************** */
     public void addModule(Module module) {
-        if (module == null || StringUtils.isBlank(module.packge)) {
+        if (module == null || StringUtils.isBlank(module.path)) {
             throw new ContextException("Cannot add Module with null or empty package");
         }
-        if (moduleMap.containsKey(module.packge)) {
-            throw new ContextException("Doublon Module: " + module.packge);
+        if (moduleMap.containsKey(module.path)) {
+            throw new ContextException("Doublon Module: " + module.path);
         }
-        moduleMap.put(module.packge, module);
+        moduleMap.put(module.path, module);
     }
 
     public Collection<Module> getModuleList() {

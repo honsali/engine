@@ -4,12 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Module {
 
-    public String id;
     public String uname;
     public String unameLast;
     public String lnameLast;
     public String path;
-    public String packge;
     public String pageList;
     public Page pageIndex;
     public boolean isParent;
@@ -17,19 +15,18 @@ public class Module {
     public String icon;
     public int lastPosition = 0;
 
-    public Module(String uname, String packge) {
+    public Module(String uname, String path) {
         if (StringUtils.isBlank(uname)) {
             throw new ContextException("Module name cannot be null or empty");
         }
         if (!uname.startsWith("Module")) {
             throw new ContextException("Module name must start with 'Module': " + uname);
         }
-        if (StringUtils.isBlank(packge)) {
-            throw new ContextException("Module package cannot be null or empty");
+        if (StringUtils.isBlank(path)) {
+            throw new ContextException("Module path cannot be null or empty");
         }
         this.uname = uname;
-        this.packge = packge;
-        this.path = "modules/" + packge.replace('.', '/');
+        this.path = "modules/" + path;
         this.unameLast = uname.substring(6);
         this.lnameLast = StringUtils.uncapitalize(this.unameLast);
         this.pageList = "ListePage" + unameLast;
@@ -62,7 +59,8 @@ public class Module {
             throw new ContextException("Module " + uname + " has no index page: call .isIndex() on one module page");
         }
         if (pageIndex.icon == null) {
-            throw new ContextException("Index page " + pageIndex.name + " of module " + uname + " must have an icon: call .icon(...)");
+            throw new ContextException(
+                    "Index page " + pageIndex.name + " of module " + uname + " must have an icon: call .icon(...)");
         }
         return pageIndex;
     }

@@ -30,12 +30,10 @@ public final class RhModule {
     public static final PageRef pageModifierDepartement = new PageRef("PageModifierDepartement");
     public static final PageRef pageCreerDepartement = new PageRef("PageCreerDepartement");
 
-    private RhModule() {}
-
     public static void init() {
         new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
-        Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
+        Module moduleEmploye = new Module("ModuleEmploye", "rh/employe");
         moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser").isIndex();
         moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
         moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
@@ -44,11 +42,13 @@ public final class RhModule {
         moduleEmploye.addPage(new ViewConsulterConge()).route("/rh/employe/:idEmploye/conge/consulter/:idConge");
         moduleEmploye.addPage(new ViewModifierConge()).route("/rh/employe/:idEmploye/modifier/:idConge");
 
-        Module moduleDepartement = new Module("ModuleDepartement", "rh.departement");
+        Module moduleDepartement = new Module("ModuleDepartement", "rh/departement");
         moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();
         moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
         moduleDepartement.addPage(new ViewModifierDepartement()).pathById();
         moduleDepartement.addPage(new ViewCreerDepartement());
 
     }
+
+    private RhModule() {}
 }
