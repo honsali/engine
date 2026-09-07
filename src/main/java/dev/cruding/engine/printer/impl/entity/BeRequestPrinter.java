@@ -8,14 +8,10 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeRequestPrinter extends Printer {
 
-    public BeRequestPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Entity entity) {
         HashSet<String> requestNames = new HashSet<>();
 
-        for (Action action : context().actionEntity(entity)) {
+        for (Action action : Context.getInstance().actionEntity(entity)) {
             String requestName = action.requestActionInjection.name();
             if (!requestName.isEmpty() && requestNames.add(requestName)) {
                 printFile(action.requestActionInjection.content(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + requestName + ".java");

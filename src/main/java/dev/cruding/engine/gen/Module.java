@@ -1,11 +1,9 @@
 package dev.cruding.engine.gen;
 
-import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 
 public class Module {
 
-    private final Context context;
     public String id;
     public String uname;
     public String unameLast;
@@ -19,8 +17,7 @@ public class Module {
     public String icon;
     public int lastPosition = 0;
 
-    public Module(Context context, String uname, String packge) {
-        this.context = Objects.requireNonNull(context, "Module Context cannot be null");
+    public Module(String uname, String packge) {
         if (StringUtils.isBlank(uname)) {
             throw new ContextException("Module name cannot be null or empty");
         }
@@ -36,11 +33,7 @@ public class Module {
         this.unameLast = uname.substring(6);
         this.lnameLast = StringUtils.uncapitalize(this.unameLast);
         this.pageList = "ListePage" + unameLast;
-        context.addModule(this);
-    }
-
-    public Context context() {
-        return context;
+        Context.getInstance().addModule(this);
     }
 
     public String pageList(String path_, boolean inElement) {
@@ -55,7 +48,7 @@ public class Module {
     public Page addPage(ViewComposer<?> viewComposer) {
         Page page = new Page(this, viewComposer);
         page.position = lastPosition++;
-        context.addPage(page);
+        Context.getInstance().addPage(page);
         return page;
     }
 

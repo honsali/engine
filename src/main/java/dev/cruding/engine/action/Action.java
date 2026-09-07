@@ -35,7 +35,6 @@ public abstract class Action {
 
     public static final Comparator<Action> ORDER_BY_NAME = Action::compareByName;
 
-    private final Context context;
     private final Element declarationElement;
     public ActionCtrlInjection ctrlActionInjection;
     public ActionMdlInjection mdlActionInjection;
@@ -99,11 +98,7 @@ public abstract class Action {
         this.declarationElement = Objects.requireNonNull(element, "Action element cannot be null");
         this.element = declarationElement;
         this.page = Objects.requireNonNull(element.page, "Action element must belong to a Page");
-        this.context = page.context();
-        if (entity != null && entity.context() != context) {
-            throw new IllegalArgumentException("Action entity belongs to another Context: " + entity.uname);
-        }
-        this.id = context.nextActionId();
+        this.id = Context.getInstance().nextActionId();
         this.type = type;
         this.entity = entity;
         if (this.entity != null) {
@@ -115,7 +110,7 @@ public abstract class Action {
             this.confirm();
         }
         element(element);
-        context.addAction(this);
+        Context.getInstance().addAction(this);
     }
 
     public List<Field> requestFields() {
@@ -123,10 +118,6 @@ public abstract class Action {
             return List.of();
         }
         return declarationElement.formFields(entity).orElseGet(entity::listAllFieldButFather);
-    }
-
-    public Context context() {
-        return context;
     }
 
     public void init() {
@@ -283,11 +274,7 @@ public abstract class Action {
     }
 
     public Action targetPage(Page targetPage) {
-        Page candidate = Objects.requireNonNull(targetPage, "Target page cannot be null");
-        if (candidate.context() != context) {
-            throw new IllegalArgumentException("Target page belongs to another Context: " + candidate.name);
-        }
-        this.targetPage = candidate;
+        this.targetPage = Objects.requireNonNull(targetPage, "Target page cannot be null");
         return this;
     }
 
@@ -397,12 +384,12 @@ public abstract class Action {
 
         Action other = (Action) obj;
 
-        return context == other.context && Objects.equals(id, other.id);
+        return Objects.equals(id, other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(System.identityHashCode(context), id);
+        return Objects.hash(id);
     }
 
     private static int compareByName(Action left, Action right) {

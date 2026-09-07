@@ -213,19 +213,22 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 
 `dev.cruding.engine.App` orchestre le cycle :
 
-1. appel à `EntityLoader.load(context, modelPath.toString())` pour charger les entités depuis `src/main/java/model` ;
-2. appel direct à `modules.ProjectBootstrap.init(context)` pour assembler les modules ;
-3. initialisation des entités ;
-4. composition et initialisation des pages ;
-5. découverte et initialisation des actions ;
-6. exécution du `Processor` ;
-7. écriture des résultats frontend et backend.
+1. initialisation du singleton par `Context.init("result")` ;
+2. appel à `EntityLoader.load(modelPath.toString())` pour charger les entités depuis `src/main/java/model` ;
+3. appel direct à `modules.ProjectBootstrap.init()` pour assembler les modules ;
+4. initialisation des entités ;
+5. composition et initialisation des pages ;
+6. découverte et initialisation des actions ;
+7. exécution du `Processor` ;
+8. écriture des résultats frontend et backend.
 
-Chaque exécution crée son propre `Context`, puis le transmet explicitement à l'`EntityLoader`, au `ProjectBootstrap`, au `Processor` et aux printers. Les entités, modules, pages, actions, identifiants internes et mappings de noms SQL appartiennent ainsi à une seule génération. Un objet rattaché à un autre `Context` est refusé afin d'éviter qu'une exécution pollue la suivante.
+Engine est utilisé manuellement pour une génération à la fois. `Context.init(basePath)` remplace l'instance courante par un contexte neuf, puis `Context.getInstance()` donne accès à ce singleton. Les registres d'entités, modules, pages, libellés et actions, le compteur d'actions et les mappings SQL repartent ensemble d'un état vide. Le constructeur est privé ; il n'y a plus de contexte à fournir aux loaders, modules, actions ou printers.
 
-Le projet possède un seul bootstrap concret, placé par convention dans `src/main/java/modules/ProjectBootstrap.java`. `App` le référence directement : il n'y a ni interface de bootstrap ni recherche de son implémentation dans les sources. Sa méthode statique `init(Context context)` appelle `AdminModule.init(context)`, puis `RhModule.init(context)`. L'ajout ou le retrait d'un module se fait explicitement à cet endroit.
+Une initialisation marque le début d'une nouvelle génération, pas un changement de contexte en cours de traitement. Les objets de la génération précédente ne doivent pas être réutilisés. Le moteur ne prend pas en charge des générations concurrentes dans une même JVM. Les tests de génération qui n'appellent pas `App` commencent leur scénario par `Context.init(...)` et s'exécutent séquentiellement, comme le précise `src/test/resources/junit-platform.properties`.
 
-Chaque module construit ses propres `Module` avec `new Module(context, ...)` et y déclare ses pages. `RhModule` ne compose pas l'administration. Le bootstrap intervient avant `context.initEntities()` pour que les mappings SQL déclarés par les modules, comme `Role.table → app_role`, soient pris en compte.
+Le projet possède un seul bootstrap concret, placé par convention dans `src/main/java/modules/ProjectBootstrap.java`. `App` le référence directement : il n'y a ni interface de bootstrap ni recherche de son implémentation dans les sources. Sa méthode statique `init()` appelle `AdminModule.init()`, puis `RhModule.init()`. L'ajout ou le retrait d'un module se fait explicitement à cet endroit.
+
+Chaque module construit ses propres `Module` avec `new Module(...)` et y déclare ses pages. `RhModule` ne compose pas l'administration. Le bootstrap intervient avant `Context.getInstance().initEntities()` pour que les mappings SQL déclarés par les modules, comme `Role.table → app_role`, soient pris en compte.
 
 Les références de pages partagées par le DSL utilisent des `PageRef` immuables déclarées dans leur module ; elles sont résolues dans le `Context` courant au moment de composer les actions.
 

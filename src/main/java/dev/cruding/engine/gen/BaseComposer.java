@@ -107,19 +107,12 @@ public abstract class BaseComposer {
         return element(new ButtonElementComposer(action));
     }
 
-    protected Context context() {
-        if (page == null) {
-            throw new ContextException("Composer is not attached to a Page: " + getClass().getName());
-        }
-        return page.context();
-    }
-
     public Button button(Action action) {
         return new Button(action.element(element));
     }
 
     public <T extends Entity> T entity(Class<T> entityType) {
-        return context().getEntity(entityType);
+        return Context.getInstance().getEntity(entityType);
     }
 
     public Action primaryAction(Entity entity, String ltype) {
@@ -173,7 +166,7 @@ public abstract class BaseComposer {
     }
 
     public Action addAction(Entity entity, PageRef targetPage) {
-        return addAction(entity, context().getPage(targetPage));
+        return addAction(entity, Context.getInstance().getPage(targetPage));
     }
 
     public Action editAction(Entity entity, Page targetPage) {
@@ -181,7 +174,7 @@ public abstract class BaseComposer {
     }
 
     public Action editAction(Entity entity, PageRef targetPage) {
-        return editAction(entity, context().getPage(targetPage));
+        return editAction(entity, Context.getInstance().getPage(targetPage));
     }
 
     public Action backToListAction(Entity entity, Page targetPage) {
@@ -189,7 +182,7 @@ public abstract class BaseComposer {
     }
 
     public Action backToListAction(Entity entity, PageRef targetPage) {
-        return backToListAction(entity, context().getPage(targetPage));
+        return backToListAction(entity, Context.getInstance().getPage(targetPage));
     }
 
     public Action backToDetailAction(Entity entity, Page targetPage) {
@@ -197,7 +190,7 @@ public abstract class BaseComposer {
     }
 
     public Action backToDetailAction(Entity entity, PageRef targetPage) {
-        return backToDetailAction(entity, context().getPage(targetPage));
+        return backToDetailAction(entity, Context.getInstance().getPage(targetPage));
     }
 
     public Action getByFieldAction(Entity entity, Field... fieldList) {
@@ -225,7 +218,7 @@ public abstract class BaseComposer {
     }
 
     public Action goToPage(Entity entity, PageRef target) {
-        return goToPage(entity, context().getPage(target));
+        return goToPage(entity, Context.getInstance().getPage(target));
     }
 
     public Action emitEvent(Entity entity, String target) {

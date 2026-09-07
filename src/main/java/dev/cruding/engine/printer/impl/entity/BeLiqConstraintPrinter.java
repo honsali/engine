@@ -1,6 +1,5 @@
 package dev.cruding.engine.printer.impl.entity;
 
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
@@ -8,10 +7,6 @@ import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
 
 public class BeLiqConstraintPrinter extends Printer {
-
-    public BeLiqConstraintPrinter(Context context) {
-        super(context);
-    }
 
     public void print(Entity entity) {
         if (entity.isReferenceData()) {

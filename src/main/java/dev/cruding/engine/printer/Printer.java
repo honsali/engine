@@ -6,38 +6,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 
 public abstract class Printer {
 
-    private final Context context;
-
-    protected Printer(Context context) {
-        this.context = Objects.requireNonNull(context, "Printer Context cannot be null");
-    }
-
-    protected final Context context() {
-        return context;
-    }
-
     protected String getBasePath() {
-        return context.getBasePath();
+        return Context.getInstance().getBasePath();
     }
 
     protected Collection<Entity> entityList() {
-        return context.getEntityList();
+        return Context.getInstance().getEntityList();
     }
 
     protected Collection<Page> pageList() {
-        return context.getPageList();
+        return Context.getInstance().getPageList();
     }
 
 
     protected ArrayList<Page> sortedPageList(dev.cruding.engine.gen.Module module) {
-        ArrayList<Page> pageList = new ArrayList<>(context.getPageList(module));
+        ArrayList<Page> pageList = new ArrayList<>(Context.getInstance().getPageList(module));
         pageList.sort(Page.ORDER_BY_ACTION_AND_ENTITY);
         return pageList;
     }

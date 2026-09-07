@@ -11,10 +11,6 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeAclPrinter extends Printer {
 
-    public FeAclPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Module module) {
         JsFlow f = new JsFlow();
 
@@ -33,7 +29,7 @@ public class FeAclPrinter extends Printer {
         f.L("");
         for (Page page : pageList) {
             if (page.containsComponent()) {
-                List<Action> actionList = new ArrayList<>(context().actionPage(page));
+                List<Action> actionList = new ArrayList<>(Context.getInstance().actionPage(page));
                 for (Action action : actionList) {
                     if (!action.noUi() && !action.flow()) {
                         f.L____("Action", module.unameLast, ".Uc", page.uc, ".", action.actionKey, ",//");
@@ -56,7 +52,7 @@ public class FeAclPrinter extends Printer {
             if (!page.containsComponent()) {
                 continue;
             }
-            for (Action action : context().actionPage(page)) {
+            for (Action action : Context.getInstance().actionPage(page)) {
                 if (!action.noUi() && !action.flow()) {
                     return true;
                 }

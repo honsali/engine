@@ -10,6 +10,7 @@
 ## Architecture à préserver
 
 - Lire la composition du projet de haut en bas depuis `App.java`. Il appelle directement l'unique `modules.ProjectBootstrap`, qui assemble explicitement les modules du projet. Chaque module métier décrit ses propres pages ; il ne tient pas lieu de bootstrap du projet. Ne pas réintroduire de découverte automatique du bootstrap.
+- Le contrat d'usage est un lancement manuel pour une génération à la fois. `Context` est volontairement un singleton, initialisé par `Context.init(...)` à l'entrée d'`App` et accessible par `Context.getInstance()`. Les tests réinitialisent ce même singleton et s'exécutent séquentiellement. Ne pas réintroduire le passage explicite du contexte ni des contrôles de coexistence de contextes pour un besoin hypothétique de test ou de parallélisme.
 - Le DSL décrit l'intention fonctionnelle et structurelle. Le CRUD est un ensemble d'Actions disponibles, pas l'architecture ni la limite du générateur.
 - Une `Action` représente un cas d'usage. Elle sélectionne uniquement les `Injection` nécessaires aux couches auxquelles elle contribue.
 - Une `Injection` produit la contribution d'une Action à une couche. Un `Flow` construit le contenu et un printer assemble le fichier final.

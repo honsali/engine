@@ -15,10 +15,6 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeI18nPrinter extends Printer {
 
-    public FeI18nPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Module module) {
         Flow f = new Flow();
 
@@ -35,7 +31,7 @@ public class FeI18nPrinter extends Printer {
                 f.L____("Page", page.uc, ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
                 f.L____(TsLiteral.objectKey("Uc" + page.uc + ".titre"), ": ", TsLiteral.string(LabelMapper.getInstance().getTitle(page)), ",");
 
-                for (Action action : context().actionPage(page)) {
+                for (Action action : Context.getInstance().actionPage(page)) {
                     if (!action.noUi() && !action.flow()) {
                         action.viewActionInjection.addI18n(f);
                     }
@@ -43,7 +39,7 @@ public class FeI18nPrinter extends Printer {
 
             }
 
-            Map<String, String> labelMap = context().getLabelMap(module.uname);
+            Map<String, String> labelMap = Context.getInstance().getLabelMap(module.uname);
             if (labelMap != null) {
                 List<String> keySet = new ArrayList<>(labelMap.keySet());
                 Collections.sort(keySet);

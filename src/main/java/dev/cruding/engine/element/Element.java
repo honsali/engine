@@ -16,7 +16,6 @@ import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.Context;
 
 public class Element {
 
@@ -57,13 +56,6 @@ public class Element {
         }
         this.page = page;
         return this;
-    }
-
-    public Context context() {
-        if (page == null) {
-            throw new IllegalStateException("Element is not attached to a Page: " + name);
-        }
-        return page.context();
     }
 
     public void setRootComponent(Component component) {

@@ -7,7 +7,6 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.Context;
 
 
 
@@ -20,10 +19,6 @@ public class ActionWrapper {
     public void action(Action action) {
         this.action = action;
     };
-
-    protected Context context() {
-        return action.context();
-    }
 
     public void setInElement(boolean inElement) {
         action.inElement(inElement);

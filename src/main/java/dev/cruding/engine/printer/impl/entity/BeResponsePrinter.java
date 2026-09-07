@@ -1,6 +1,5 @@
 package dev.cruding.engine.printer.impl.entity;
 
-import dev.cruding.engine.gen.Context;
 import java.util.List;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -8,10 +7,6 @@ import dev.cruding.engine.flow.JavaFlow;
 import dev.cruding.engine.printer.Printer;
 
 public class BeResponsePrinter extends Printer {
-
-    public BeResponsePrinter(Context context) {
-        super(context);
-    }
 
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();

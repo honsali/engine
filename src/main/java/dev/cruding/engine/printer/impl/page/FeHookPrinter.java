@@ -12,13 +12,9 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeHookPrinter extends Printer {
 
-    public FeHookPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Page page) {
         MdlFlow f = new MdlFlow();
-        List<Action> actionList = context().actionPage(page);
+        List<Action> actionList = Context.getInstance().actionPage(page);
         List<Action> exposedActionList = actionList.stream()
                 .filter(action -> !action.inViewOnly && !action.isEmpty)
                 .toList();

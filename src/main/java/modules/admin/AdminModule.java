@@ -18,12 +18,12 @@ public final class AdminModule {
 
     private AdminModule() {}
 
-    public static void init(Context context) {
-        context.getDbNameMapper().setLegacyDbMap(Map.of("Role.table", "app_role"));
+    public static void init() {
+        Context.getInstance().getDbNameMapper().setLegacyDbMap(Map.of("Role.table", "app_role"));
 
-        new Module(context, "ModuleAdmin", "admin").parent().menuIcon("faUserShield");
+        new Module("ModuleAdmin", "admin").parent().menuIcon("faUserShield");
 
-        Module moduleAccount = new Module(context, "ModuleAccount", "admin.account");
+        Module moduleAccount = new Module("ModuleAccount", "admin.account");
         moduleAccount.addPage(new ViewListerAccount()).icon("faUsers").isIndex();
         moduleAccount.addPage(new ViewConsulterAccount()).pathById();
         moduleAccount.addPage(new ViewModifierAccount()).pathById();

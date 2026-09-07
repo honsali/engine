@@ -3,7 +3,6 @@ package dev.cruding.engine.loader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.stream.Stream;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
@@ -12,14 +11,13 @@ public final class EntityLoader {
 
     private EntityLoader() {}
 
-    public static void load(Context context, String path) {
-        Objects.requireNonNull(context, "EntityLoader Context cannot be null");
+    public static void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
             files.filter(Files::isRegularFile)
                     .filter(LoaderUtils::isJavaFile)
                     .sorted()
                     .map(EntityLoader::loadEntityClass)
-                    .forEach(context::addEntity);
+                    .forEach(Context.getInstance()::addEntity);
         } catch (Exception e) {
             throw new GeneratorException(String.format("Failed to load entities from directory: %s", path), e);
         }

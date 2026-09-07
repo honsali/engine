@@ -10,10 +10,6 @@ import dev.cruding.engine.printer.Printer;
 
 public class FeServicePrinter extends Printer {
 
-    public FeServicePrinter(Context context) {
-        super(context);
-    }
-
     public void print(Entity entity) {
 
         if (entity.isReferenceData()) {
@@ -21,7 +17,7 @@ public class FeServicePrinter extends Printer {
         }
 
         JsFlow f = new JsFlow();
-        List<Action> actionList = context().actionEntity(entity);
+        List<Action> actionList = Context.getInstance().actionEntity(entity);
 
 
         /* *********************************************************************** */

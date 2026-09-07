@@ -26,7 +26,7 @@ class BeFormRequestPrinterTest {
 
     @Test
     void generatesCreateAndUpdateContractsFromTheirForms() throws IOException {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
         FormEntity entity = new FormEntity();
@@ -34,16 +34,16 @@ class BeFormRequestPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module(context, "ModuleFormEntity", "test.formEntity");
+        Module module = new Module("ModuleFormEntity", "test.formEntity");
         module.addPage(new ViewCreerFormEntity());
         module.addPage(new ViewModifierFormEntity());
         context.initPages();
         context.initActions();
 
-        new BeRequestPrinter(context).print(entity);
-        new BeMapperPrinter(context).print(entity);
-        new BeBusinessPrinter(context).print(entity);
-        new BeRepositoryPrinter(context).print(entity);
+        new BeRequestPrinter().print(entity);
+        new BeMapperPrinter().print(entity);
+        new BeBusinessPrinter().print(entity);
+        new BeRepositoryPrinter().print(entity);
 
         Path packagePath = tempDir.resolve("be/src/main/java/app/domain/test/formentity");
         String createRequest = Files.readString(packagePath.resolve("FormEntityCreateRequest.java"));
@@ -82,18 +82,18 @@ class BeFormRequestPrinterTest {
 
     @Test
     void importsSizeForAFieldWithOnlyMinimumLength() throws IOException {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
         MinimumLengthEntity entity = new MinimumLengthEntity();
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module(context, "ModuleMinimumLengthEntity", "test.minimumLengthEntity");
+        Module module = new Module("ModuleMinimumLengthEntity", "test.minimumLengthEntity");
         module.addPage(new ViewCreerMinimumLengthEntity());
         context.initPages();
         context.initActions();
 
-        new BeRequestPrinter(context).print(entity);
+        new BeRequestPrinter().print(entity);
 
         Path requestPath = tempDir.resolve(
                 "be/src/main/java/app/domain/test/minimumlengthentity/MinimumLengthEntityCreateRequest.java");

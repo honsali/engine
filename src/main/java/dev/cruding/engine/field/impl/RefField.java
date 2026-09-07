@@ -8,6 +8,7 @@ import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.ViewFlow;
+import dev.cruding.engine.gen.Context;
 
 public class RefField<T extends Entity> extends Field {
 
@@ -36,9 +37,9 @@ public class RefField<T extends Entity> extends Field {
         this.dbTypeName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(type.getSimpleName()), "_").toLowerCase();
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase() + "_id";
         if (containingEntity != null && (isRef || isFather)) {
-            this.jtDbName = context().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinTable", containingEntityDbname + "_" + this.dbTypeName);
-            this.jcDbName = context().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinColumn", dbName);
-            this.ijcDbName = context().getDbNameMapper().getLegacyDbName(containingEntity, lname, "inverseJoinColumn", this.dbTypeName);
+            this.jtDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinTable", containingEntityDbname + "_" + this.dbTypeName);
+            this.jcDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "joinColumn", dbName);
+            this.ijcDbName = Context.getInstance().getDbNameMapper().getLegacyDbName(containingEntity, lname, "inverseJoinColumn", this.dbTypeName);
         }
         return this;
     }
@@ -48,8 +49,7 @@ public class RefField<T extends Entity> extends Field {
     }
 
     public Field containingEntity(Entity entity) {
-        this.context = entity.context();
-        this.referencedEntity = (T) context().getEntity(jtype);
+        this.referencedEntity = (T) Context.getInstance().getEntity(jtype);
         jstype("IReference");
 
         this.containingEntity = entity.uname;
@@ -66,14 +66,14 @@ public class RefField<T extends Entity> extends Field {
 
     public void addCtrlImport(CtrlFlow f) {
         if (init == null) {
-            Entity entity = context().getEntity(jtype);
+            Entity entity = Context.getInstance().getEntity(jtype);
             f.addCtrlImport("Service" + entity.uname, "modele/" + entity.path + "/Service" + entity.uname);
         }
     }
 
     public void addCtrlImplementation(CtrlFlow f) {
         if (init == null) {
-            Entity entity = context().getEntity(jtype);
+            Entity entity = Context.getInstance().getEntity(jtype);
             f.L____("resultat.liste", jtype, " = await Service", jtype);
             if (entity.haveFather) {
                 f.__(".listerParId", entity.ufather, "(requete.id" + entity.ufather, ");");

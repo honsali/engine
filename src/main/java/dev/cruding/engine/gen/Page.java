@@ -91,10 +91,6 @@ public class Page {
 
     }
 
-    public Context context() {
-        return module.context();
-    }
-
     public void init() {
         this.elementComposer.addElement();
     }

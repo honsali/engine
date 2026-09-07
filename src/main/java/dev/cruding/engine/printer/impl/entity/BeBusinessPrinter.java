@@ -13,13 +13,9 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeBusinessPrinter extends Printer {
 
-    public BeBusinessPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
-        List<Action> actionList = context().actionEntity(entity);
+        List<Action> actionList = Context.getInstance().actionEntity(entity);
         LinkedHashMap<String, Field> repositoryDependencies = repositoryDependencies(actionList);
         boolean entityResolverRequired = actionList.stream()
                 .anyMatch(action -> action.businessActionInjection.requiresEntityResolver());
@@ -34,7 +30,7 @@ public class BeBusinessPrinter extends Printer {
             f.addJavaImport("app.core.reference.Reference");
         }
         for (Field relation : repositoryDependencies.values()) {
-            Entity referenced = context().getEntity(relation.jtype);
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
             f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname);
             f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname + "Repository");
         }
@@ -50,20 +46,20 @@ public class BeBusinessPrinter extends Printer {
         f.L("");
         f.L____("private final ", entity.uname, "Repository ", entity.lname, "Repository;");
         for (Field relation : repositoryDependencies.values()) {
-            Entity referenced = context().getEntity(relation.jtype);
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
             f.L____("private final ", referenced.uname, "Repository ", referenced.lname, "Repository;");
         }
         f.L("");
         List<String> constructorParameters = new ArrayList<>();
         constructorParameters.add(entity.uname + "Repository " + entity.lname + "Repository");
         for (Field relation : repositoryDependencies.values()) {
-            Entity referenced = context().getEntity(relation.jtype);
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
             constructorParameters.add(referenced.uname + "Repository " + referenced.lname + "Repository");
         }
         f.addMethodDeclaration(4, "public " + entity.uname + "Service(", constructorParameters);
         f.L________("this.", entity.lname, "Repository = ", entity.lname, "Repository;");
         for (Field relation : repositoryDependencies.values()) {
-            Entity referenced = context().getEntity(relation.jtype);
+            Entity referenced = Context.getInstance().getEntity(relation.jtype);
             f.L________("this.", referenced.lname, "Repository = ", referenced.lname, "Repository;");
         }
         f.L____("}");
@@ -108,7 +104,7 @@ public class BeBusinessPrinter extends Printer {
     }
 
     private void addRelationResolver(JavaFlow f, Field relation) {
-        Entity referenced = context().getEntity(relation.jtype);
+        Entity referenced = Context.getInstance().getEntity(relation.jtype);
         f.L("");
         if (relation.isFather) {
             f.L____("private ", referenced.uname, " recuperer", referenced.uname, "(Long id", relation.uname, ") {");

@@ -1,6 +1,5 @@
 package dev.cruding.engine.printer.impl.module;
 
-import dev.cruding.engine.gen.Context;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.regex.Matcher;
@@ -14,10 +13,6 @@ import dev.cruding.engine.printer.Printer;
 public class FePageListPrinter extends Printer {
 
     private static final Pattern ROUTE_PARAMETER = Pattern.compile(":([A-Za-z][A-Za-z0-9_]*)");
-
-    public FePageListPrinter(Context context) {
-        super(context);
-    }
 
     public void print(Module module) {
         JsFlow f = new JsFlow();

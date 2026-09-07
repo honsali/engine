@@ -6,6 +6,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.ViewFlow;
+import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Util;
 
 public class Detail extends Component {
@@ -76,7 +77,7 @@ public class Detail extends Component {
             if (c.emptyIf != null && columnNumber == 2) {
                 indent(flow, level + 1).append("<ChampVide invisible={!" + c.emptyIf + "} />");
             }
-            element.context().addLabelForField(element.page.module.uname, c);
+            Context.getInstance().addLabelForField(element.page.module.uname, c);
         }
         return false;
     }

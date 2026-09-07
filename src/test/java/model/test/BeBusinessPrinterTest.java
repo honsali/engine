@@ -26,13 +26,13 @@ class BeBusinessPrinterTest {
 
     @Test
     void generatesOnePrivateEntityResolverSharedByBusinessActions() throws IOException {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
         LookupEntity entity = new LookupEntity();
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module(context, "ModuleLookupEntity", "test.lookupEntity");
+        Module module = new Module("ModuleLookupEntity", "test.lookupEntity");
         ViewConsulterLookupEntity view = new ViewConsulterLookupEntity();
         module.addPage(view);
 
@@ -41,7 +41,7 @@ class BeBusinessPrinterTest {
         new DeleteAction(entity, view.element);
         context.initActions();
 
-        new BeBusinessPrinter(context).print(entity);
+        new BeBusinessPrinter().print(entity);
 
         Path service = tempDir.resolve("be/src/main/java/app/domain/test/lookupentity/LookupEntityService.java");
         String generated = Files.readString(service);
@@ -58,7 +58,7 @@ class BeBusinessPrinterTest {
 
     @Test
     void keepsReferenceResolverLookupOnOneLine() throws IOException {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
         EntityWithReference entity = new EntityWithReference();
@@ -66,14 +66,14 @@ class BeBusinessPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module(context, "ModuleEntityWithReference", "test.entityWithReference");
+        Module module = new Module("ModuleEntityWithReference", "test.entityWithReference");
         ViewModifierEntityWithReference view = new ViewModifierEntityWithReference();
         module.addPage(view);
 
         new UpdateAction(entity, view.element);
         context.initActions();
 
-        new BeBusinessPrinter(context).print(entity);
+        new BeBusinessPrinter().print(entity);
 
         Path service = tempDir.resolve(
                 "be/src/main/java/app/domain/test/entitywithreference/EntityWithReferenceService.java");

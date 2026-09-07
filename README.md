@@ -20,6 +20,8 @@ Le projet se lit de haut en bas depuis [App.java](src/main/java/dev/cruding/engi
 
 Ce bootstrap assemble explicitement [AdminModule](src/main/java/modules/admin/AdminModule.java) et [RhModule](src/main/java/modules/rh/RhModule.java). Chaque module décrit ses pages et leurs parcours. Ajouter ou retirer un module du projet se fait dans ce point d'assemblage, sans découverte automatique et sans confier la composition globale à un module métier.
 
+L'usage retenu est un lancement manuel pour une génération à la fois. `App` initialise le singleton [Context](src/main/java/dev/cruding/engine/gen/Context.java), accessible ensuite par `Context.getInstance()`. Le contexte n'est pas transmis à travers le DSL, les modules et les printers. Les tests s'adaptent à ce cycle de vie en réinitialisant l'état entre scénarios séquentiels ; la coexistence de plusieurs générations dans une même JVM n'est pas un besoin du projet.
+
 ## Deux mécanismes structurent la génération
 
 ### La hiérarchie des composants frontend

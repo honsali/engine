@@ -26,19 +26,19 @@ class BeResourcePrinterTest {
 
     @Test
     void generatesConventionBasedController() throws IOException {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
         SecuredEntity entity = new SecuredEntity();
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module(context, "ModuleSecuredEntity", "test.securedEntity");
+        Module module = new Module("ModuleSecuredEntity", "test.securedEntity");
         ViewFiltrerSecuredEntity view = new ViewFiltrerSecuredEntity();
         module.addPage(view);
         new FilterAction(entity, view.element, true);
         context.initActions();
 
-        new BeControllerPrinter(context).print(entity);
+        new BeControllerPrinter().print(entity);
 
         Path controller = tempDir.resolve("be/src/main/java/app/domain/test/securedentity/SecuredEntityController.java");
         String generated = Files.readString(controller);

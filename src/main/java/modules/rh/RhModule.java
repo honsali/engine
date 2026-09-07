@@ -1,7 +1,6 @@
 package modules.rh;
 
 import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.PageRef;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
@@ -33,10 +32,10 @@ public final class RhModule {
 
     private RhModule() {}
 
-    public static void init(Context context) {
-        new Module(context, "ModuleRh", "rh").parent().menuIcon("faPeopleLine");
+    public static void init() {
+        new Module("ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
-        Module moduleEmploye = new Module(context, "ModuleEmploye", "rh.employe");
+        Module moduleEmploye = new Module("ModuleEmploye", "rh.employe");
         moduleEmploye.addPage(new ViewFiltrerEmploye()).icon("faUser").isIndex();
         moduleEmploye.addPage(new ViewConsulterEmploye()).pathById();
         moduleEmploye.addPage(new ViewModifierEmploye()).pathById();
@@ -45,7 +44,7 @@ public final class RhModule {
         moduleEmploye.addPage(new ViewConsulterConge()).route("/rh/employe/:idEmploye/conge/consulter/:idConge");
         moduleEmploye.addPage(new ViewModifierConge()).route("/rh/employe/:idEmploye/modifier/:idConge");
 
-        Module moduleDepartement = new Module(context, "ModuleDepartement", "rh.departement");
+        Module moduleDepartement = new Module("ModuleDepartement", "rh.departement");
         moduleDepartement.addPage(new ViewListerDepartement()).icon("faSitemap").isIndex();
         moduleDepartement.addPage(new ViewConsulterDepartement()).pathById();
         moduleDepartement.addPage(new ViewModifierDepartement()).pathById();

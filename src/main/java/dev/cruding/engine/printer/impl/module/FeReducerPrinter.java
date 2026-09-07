@@ -1,6 +1,5 @@
 package dev.cruding.engine.printer.impl.module;
 
-import dev.cruding.engine.gen.Context;
 import java.util.ArrayList;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.gen.Module;
@@ -8,10 +7,6 @@ import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.printer.Printer;
 
 public class FeReducerPrinter extends Printer {
-
-    public FeReducerPrinter(Context context) {
-        super(context);
-    }
 
     public void print(Module module) {
         Flow f = new Flow();

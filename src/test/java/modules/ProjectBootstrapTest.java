@@ -20,10 +20,10 @@ class ProjectBootstrapTest {
 
     @Test
     void composesProjectModulesInDeclarationOrder() {
-        Context context = new Context(tempDir.toString());
-        EntityLoader.load(context, LoaderUtils.getModelPath().toString());
+        Context context = Context.init(tempDir.toString());
+        EntityLoader.load(LoaderUtils.getModelPath().toString());
 
-        ProjectBootstrap.init(context);
+        ProjectBootstrap.init();
         context.initEntities();
         context.initPages();
         context.initActions();
@@ -39,9 +39,9 @@ class ProjectBootstrapTest {
 
     @Test
     void rhModuleDoesNotComposeAdministration() {
-        Context context = new Context(tempDir.toString());
+        Context context = Context.init(tempDir.toString());
 
-        RhModule.init(context);
+        RhModule.init();
 
         assertEquals(List.of("rh", "rh.employe", "rh.departement"),
                 context.getModuleList().stream().map(module -> module.packge).toList());

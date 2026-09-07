@@ -11,14 +11,10 @@ import dev.cruding.engine.printer.Printer;
 
 public class BeMapperPrinter extends Printer {
 
-    public BeMapperPrinter(Context context) {
-        super(context);
-    }
-
     public void print(Entity entity) {
         JavaFlow f = new JavaFlow();
         List<Field> fields = entity.fieldList;
-        List<Action> actionList = context().actionEntity(entity);
+        List<Action> actionList = Context.getInstance().actionEntity(entity);
 
         /* *********************************************************************** */
 
@@ -31,7 +27,7 @@ public class BeMapperPrinter extends Printer {
             action.mapperActionInjection.addMapperImport(f);
         }
         for (Field field : entity.listRefAndFather()) {
-            Entity referenced = context().getEntity(field.jtype);
+            Entity referenced = Context.getInstance().getEntity(field.jtype);
             if (!entity.uname.equals(referenced.uname)) {
                 f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname);
                 f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname + "Mapper");
