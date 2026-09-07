@@ -3,7 +3,7 @@ package modules.rh.conge;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Conge;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class TableauConge extends ElementComposer {
 
@@ -16,7 +16,7 @@ public class TableauConge extends ElementComposer {
                         e.dateDebutConge, //
                         e.dateFinConge, //
                         e.commentaire//
-                ).fillWith(listAll(e).byFatherId()).onRowClick(goToPage(e, RhProject.pageConsulterConge)) //
+                ).fillWith(listAll(e).byFatherId()).onRowClick(goToPage(e, RhModule.pageConsulterConge)) //
         );
     }
 

@@ -3,7 +3,7 @@ package modules.rh.conge;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Conge;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class FormulaireConge extends ElementComposer {
 
@@ -31,12 +31,12 @@ public class FormulaireConge extends ElementComposer {
                 ).columnNumber(1), //
                 actionBlock(//
                         enModification ? //
-                                element(updateAction(e).onSuccess(goToPage(e, RhProject.pageConsulterConge))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, RhProject.pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
+                                element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
 
                         enModification ? //
-                                button(backToDetailAction(e, RhProject.pageConsulterConge)) : //
-                                button(backToListAction(e, RhProject.pageConsulterEmploye))//
+                                button(backToDetailAction(e, RhModule.pageConsulterConge)) : //
+                                button(backToListAction(e, RhModule.pageConsulterEmploye))//
                 )//
         ).width("600px").margin("20px").background("blanc");//
     }

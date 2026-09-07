@@ -16,10 +16,6 @@ public final class LoaderUtils {
         return BASE_PATH.resolve("model");
     }
 
-    public static Path getModulesPath() {
-        return BASE_PATH.resolve("modules");
-    }
-
     public static String resolveClassName(Path file) {
         Path normalizedFile = file.toAbsolutePath().normalize();
         if (!normalizedFile.startsWith(BASE_PATH)) {

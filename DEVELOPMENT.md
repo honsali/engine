@@ -32,7 +32,10 @@ Avant de régénérer ou de nettoyer `result`, préserver ou identifier l'ancien
 ├── src/main/java/
 │   ├── dev/cruding/engine/     moteur, DSL, actions, injections et printers
 │   ├── model/                  description du domaine
-│   └── modules/                modules, pages et composants
+│   └── modules/                composition du projet, modules, pages et composants
+│       ├── ProjectBootstrap.java   point d'assemblage unique du projet
+│       ├── admin/AdminModule.java  pages du domaine administration
+│       └── rh/RhModule.java        pages du domaine RH
 ├── result/
 │   ├── be/                     proposition backend
 │   └── fe/                     proposition frontend
@@ -92,7 +95,7 @@ table(e,
         e.dateFinConge,
         e.commentaire)
     .fillWith(listAll(e).byFatherId())
-    .onRowClick(goToPage(e, RhProject.pageConsulterConge));
+    .onRowClick(goToPage(e, RhModule.pageConsulterConge));
 ```
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
@@ -211,16 +214,20 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 `dev.cruding.engine.App` orchestre le cycle :
 
 1. chargement des entités depuis `src/main/java/model` ;
-2. chargement du `ProjectBootstrap` depuis `src/main/java/modules` ;
+2. appel direct à `modules.ProjectBootstrap.init(context)` pour assembler les modules ;
 3. initialisation des entités ;
 4. composition et initialisation des pages ;
 5. découverte et initialisation des actions ;
 6. exécution du `Processor` ;
 7. écriture des résultats frontend et backend.
 
-Chaque exécution crée son propre `Context`, puis le transmet explicitement aux loaders, au `ProjectBootstrap`, au `Processor` et aux printers. Les entités, modules, pages, actions, identifiants internes et mappings de noms SQL appartiennent ainsi à une seule génération. Un objet rattaché à un autre `Context` est refusé afin d'éviter qu'une exécution pollue la suivante.
+Chaque exécution crée son propre `Context`, puis le transmet explicitement à l'`EntityLoader`, au `ProjectBootstrap`, au `Processor` et aux printers. Les entités, modules, pages, actions, identifiants internes et mappings de noms SQL appartiennent ainsi à une seule génération. Un objet rattaché à un autre `Context` est refusé afin d'éviter qu'une exécution pollue la suivante.
 
-Le bootstrap expose `init(Context context)` et construit ses modules avec `new Module(context, ...)`. Les références de pages partagées par le DSL utilisent des `PageRef` immuables ; elles sont résolues dans le `Context` courant au moment de composer les actions.
+Le projet possède un seul bootstrap concret, placé par convention dans `src/main/java/modules/ProjectBootstrap.java`. `App` le référence directement : il n'y a ni interface de bootstrap ni recherche de son implémentation dans les sources. Sa méthode statique `init(Context context)` appelle `AdminModule.init(context)`, puis `RhModule.init(context)`. L'ajout ou le retrait d'un module se fait explicitement à cet endroit.
+
+Chaque module construit ses propres `Module` avec `new Module(context, ...)` et y déclare ses pages. `RhModule` ne compose pas l'administration. Le bootstrap intervient avant `context.initEntities()` pour que les mappings SQL déclarés par les modules, comme `Role.table → app_role`, soient pris en compte.
+
+Les références de pages partagées par le DSL utilisent des `PageRef` immuables déclarées dans leur module ; elles sont résolues dans le `Context` courant au moment de composer les actions.
 
 `Processor` orchestre les familles de printers. Les printers concernés par les actions les parcourent ensuite et demandent à leurs injections de contribuer au fichier visé.
 

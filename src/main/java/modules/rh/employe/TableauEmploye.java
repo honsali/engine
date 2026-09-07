@@ -4,7 +4,7 @@ import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Employe;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class TableauEmploye extends ElementComposer {
 
@@ -24,7 +24,7 @@ public class TableauEmploye extends ElementComposer {
                         e.prenom, //
                         e.fonction, //
                         e.departement//
-                ).fillWith(action).onRowClick(goToPage(e, RhProject.pageConsulterEmploye)) //
+                ).fillWith(action).onRowClick(goToPage(e, RhModule.pageConsulterEmploye)) //
         );
     }
 

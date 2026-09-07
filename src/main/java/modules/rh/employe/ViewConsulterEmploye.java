@@ -4,7 +4,7 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ViewComposer;
 import model.rh.Conge;
 import model.rh.Employe;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 import modules.rh.conge.TableauConge;
 
 public class ViewConsulterEmploye extends ViewComposer<Employe> {
@@ -17,15 +17,15 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
                                                 block(//
                                                                 element(new EtatEmploye()), //
                                                                 actionBlock(//
-                                                                                button(editAction(e, RhProject.pageModifierEmploye)), //
-                                                                                button(backToListAction(e, RhProject.pageFiltrerEmploye)), //
-                                                                                button(deleteAction(e).onSuccess(goToPage(e, RhProject.pageFiltrerEmploye)))//
+                                                                                button(editAction(e, RhModule.pageModifierEmploye)), //
+                                                                                button(backToListAction(e, RhModule.pageFiltrerEmploye)), //
+                                                                                button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
                                                                 )//
                                                 ).margin("20px").name("employe"), //
                                                 block(//
                                                                 element(new TableauConge()), //
                                                                 actionBlock(//
-                                                                                button(addAction(c, RhProject.pageCreerConge)) //
+                                                                                button(addAction(c, RhModule.pageCreerConge)) //
                                                                 )//
                                                 ).margin("20px").name("conge")//
                                 )//

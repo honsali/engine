@@ -3,7 +3,7 @@ package modules.rh.departement;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Departement;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class FormulaireDepartement extends ElementComposer {
 
@@ -26,10 +26,10 @@ public class FormulaireDepartement extends ElementComposer {
                         enModification ? hidden(e.id_) : null //
                 ).columnNumber(1), //
                 actionBlock(//
-                        enModification ? element(updateAction(e).onSuccess(goToPage(e, RhProject.pageConsulterDepartement))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, RhProject.pageConsulterDepartement).byField(e.id_))).byForm(), //
+                        enModification ? element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement))).byForm() : //
+                                element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement).byField(e.id_))).byForm(), //
 
-                        enModification ? button(backToDetailAction(e, RhProject.pageConsulterDepartement)) : button(backToListAction(e, RhProject.pageListerDepartement))//
+                        enModification ? button(backToDetailAction(e, RhModule.pageConsulterDepartement)) : button(backToListAction(e, RhModule.pageListerDepartement))//
                 )//
         ).width("600px").margin("20px").background("blanc");//
     }

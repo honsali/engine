@@ -3,7 +3,7 @@ package modules.rh.conge;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Conge;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class EtatConge extends ElementComposer {
 
@@ -20,9 +20,9 @@ public class EtatConge extends ElementComposer {
                         e.dateFinConge, //
                         e.commentaire //
                 ).columnNumber(1), actionBlock(//
-                        button(editAction(e, RhProject.pageModifierConge)), //
-                        button(backToListAction(e, RhProject.pageConsulterEmploye)), //
-                        button(deleteAction(e).onSuccess(goToPage(e, RhProject.pageConsulterEmploye)))//
+                        button(editAction(e, RhModule.pageModifierConge)), //
+                        button(backToListAction(e, RhModule.pageConsulterEmploye)), //
+                        button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageConsulterEmploye)))//
                 )//
         ).width("600px").margin("20px").background("blanc");//
     }

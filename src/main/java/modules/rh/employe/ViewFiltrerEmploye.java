@@ -3,7 +3,7 @@ package modules.rh.employe;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ViewComposer;
 import model.rh.Employe;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class ViewFiltrerEmploye extends ViewComposer<Employe> {
 
@@ -17,7 +17,7 @@ public class ViewFiltrerEmploye extends ViewComposer<Employe> {
                                                 section( //
                                                                 primaryPanel(//
                                                                                 element(new TableauEmploye(filtre.action))//
-                                                                ).title("listeEmploye")).actionBlock(button(addAction(e, RhProject.pageCreerEmploye))//
+                                                                ).title("listeEmploye")).actionBlock(button(addAction(e, RhModule.pageCreerEmploye))//
                                                 ).margin("0"), //
                                                 block(elementFiltre).margin("62px 0px")//
                                 ).width(16, 8)//

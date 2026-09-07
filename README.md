@@ -14,6 +14,12 @@ Cette adaptabilité repose sur des responsabilités identifiables : composition 
 
 La cible actuellement implémentée est Java/Spring côté backend et React/TypeScript/Waxant côté frontend. Le passage à une autre cible demande un travail sur ces responsabilités ; la prise en charge de toutes les technologies par simple configuration n'est pas une capacité actuelle. Chaque adaptation vise du code directement exploitable dans les conventions du projet choisi.
 
+## Un point d'entrée explicite
+
+Le projet se lit de haut en bas depuis [App.java](src/main/java/dev/cruding/engine/App.java). Il appelle directement l'unique [ProjectBootstrap](src/main/java/modules/ProjectBootstrap.java), placé par convention à la racine de `modules`.
+
+Ce bootstrap assemble explicitement [AdminModule](src/main/java/modules/admin/AdminModule.java) et [RhModule](src/main/java/modules/rh/RhModule.java). Chaque module décrit ses pages et leurs parcours. Ajouter ou retirer un module du projet se fait dans ce point d'assemblage, sans découverte automatique et sans confier la composition globale à un module métier.
+
 ## Deux mécanismes structurent la génération
 
 ### La hiérarchie des composants frontend

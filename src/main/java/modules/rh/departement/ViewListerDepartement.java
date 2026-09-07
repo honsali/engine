@@ -3,7 +3,7 @@ package modules.rh.departement;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ViewComposer;
 import model.rh.Departement;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class ViewListerDepartement extends ViewComposer<Departement> {
 
@@ -12,7 +12,7 @@ public class ViewListerDepartement extends ViewComposer<Departement> {
         return //
         section( //
                 element(new TableauDepartement()) //
-        ).actionBlock(button(addAction(e, RhProject.pageCreerDepartement)));
+        ).actionBlock(button(addAction(e, RhModule.pageCreerDepartement)));
     }
 
 }

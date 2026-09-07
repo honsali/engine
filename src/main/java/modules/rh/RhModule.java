@@ -3,8 +3,6 @@ package modules.rh;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.PageRef;
-import dev.cruding.engine.gen.ProjectBootstrap;
-import modules.admin.AdminModule;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
 import modules.rh.conge.ViewModifierConge;
@@ -17,7 +15,7 @@ import modules.rh.employe.ViewCreerEmploye;
 import modules.rh.employe.ViewFiltrerEmploye;
 import modules.rh.employe.ViewModifierEmploye;
 
-public class RhProject implements ProjectBootstrap {
+public final class RhModule {
 
     public static final PageRef pageFiltrerEmploye = new PageRef("PageFiltrerEmploye");
     public static final PageRef pageConsulterEmploye = new PageRef("PageConsulterEmploye");
@@ -33,10 +31,9 @@ public class RhProject implements ProjectBootstrap {
     public static final PageRef pageModifierDepartement = new PageRef("PageModifierDepartement");
     public static final PageRef pageCreerDepartement = new PageRef("PageCreerDepartement");
 
-    @Override
-    public void init(Context context) {
-        AdminModule.init(context);
+    private RhModule() {}
 
+    public static void init(Context context) {
         new Module(context, "ModuleRh", "rh").parent().menuIcon("faPeopleLine");
 
         Module moduleEmploye = new Module(context, "ModuleEmploye", "rh.employe");

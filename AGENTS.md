@@ -9,6 +9,7 @@
 
 ## Architecture à préserver
 
+- Lire la composition du projet de haut en bas depuis `App.java`. Il appelle directement l'unique `modules.ProjectBootstrap`, qui assemble explicitement les modules du projet. Chaque module métier décrit ses propres pages ; il ne tient pas lieu de bootstrap du projet. Ne pas réintroduire de découverte automatique du bootstrap.
 - Le DSL décrit l'intention fonctionnelle et structurelle. Le CRUD est un ensemble d'Actions disponibles, pas l'architecture ni la limite du générateur.
 - Une `Action` représente un cas d'usage. Elle sélectionne uniquement les `Injection` nécessaires aux couches auxquelles elle contribue.
 - Une `Injection` produit la contribution d'une Action à une couche. Un `Flow` construit le contenu et un printer assemble le fichier final.

@@ -3,7 +3,7 @@ package modules.rh.departement;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.gen.ElementComposer;
 import model.rh.Departement;
-import modules.rh.RhProject;
+import modules.rh.RhModule;
 
 public class TableauDepartement extends ElementComposer {
 
@@ -13,7 +13,7 @@ public class TableauDepartement extends ElementComposer {
                 table(e, //
                         e.nom, //
                         e.description//
-                ).fillWith(listAll(e)).onRowClick(goToPage(e, RhProject.pageConsulterDepartement)) //
+                ).fillWith(listAll(e)).onRowClick(goToPage(e, RhModule.pageConsulterDepartement)) //
         );
     }
 
