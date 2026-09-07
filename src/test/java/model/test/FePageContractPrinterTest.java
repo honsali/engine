@@ -62,7 +62,7 @@ class FePageContractPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModulePageContract", "test.pageContract");
+        Module module = new Module("ModulePageContract", "test/pageContract");
         ViewFiltrerPageContractEntity view = new ViewFiltrerPageContractEntity(entity);
         Page page = module.addPage(view).icon("faFilter").isIndex();
         view.targetPage = page;
@@ -77,7 +77,7 @@ class FePageContractPrinterTest {
                 .route("/test/page-contract/:idParent/child/modifier/:idPageContractEntity");
         nestedPage.init();
 
-        Module viewOnlyModule = new Module("ModuleViewOnly", "test.viewOnly");
+        Module viewOnlyModule = new Module("ModuleViewOnly", "test/viewOnly");
         ViewGoToModulePageContractEntity goToModuleView = new ViewGoToModulePageContractEntity(entity);
         Page goToModulePage = viewOnlyModule.addPage(goToModuleView);
         goToModulePage.init();
@@ -85,7 +85,7 @@ class FePageContractPrinterTest {
         Page emitEventPage = viewOnlyModule.addPage(emitEventView);
         emitEventPage.init();
 
-        Module componentlessAclModule = new Module("ModuleComponentlessAcl", "test.componentlessAcl");
+        Module componentlessAclModule = new Module("ModuleComponentlessAcl", "test/componentlessAcl");
         ViewComponentlessPageContractEntity componentlessView = new ViewComponentlessPageContractEntity();
         Page componentlessPage = componentlessAclModule.addPage(componentlessView);
         componentlessPage.init();
@@ -185,7 +185,7 @@ class FePageContractPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModulePageContract", "test.pageContract");
+        Module module = new Module("ModulePageContract", "test/pageContract");
         ViewModifierPageContractEntity view = new ViewModifierPageContractEntity(entity);
         Page page = module.addPage(view).pathById();
         page.init();

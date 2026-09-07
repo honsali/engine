@@ -44,7 +44,7 @@ class BeFormRequestPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModuleFormEntity", "test.formEntity");
+        Module module = new Module("ModuleFormEntity", "test/formEntity");
         module.addPage(new ViewCreerFormEntity());
         module.addPage(new ViewModifierFormEntity());
         context.initPages();
@@ -99,7 +99,7 @@ class BeFormRequestPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModuleMinimumLengthEntity", "test.minimumLengthEntity");
+        Module module = new Module("ModuleMinimumLengthEntity", "test/minimumLengthEntity");
         module.addPage(new ViewCreerMinimumLengthEntity());
         context.initPages();
         context.initActions();

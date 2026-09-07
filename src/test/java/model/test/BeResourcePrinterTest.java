@@ -42,7 +42,7 @@ class BeResourcePrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModuleSecuredEntity", "test.securedEntity");
+        Module module = new Module("ModuleSecuredEntity", "test/securedEntity");
         ViewFiltrerSecuredEntity view = new ViewFiltrerSecuredEntity();
         module.addPage(view);
         new FilterAction(entity, view.element, true);

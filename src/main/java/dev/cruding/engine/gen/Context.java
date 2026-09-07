@@ -90,7 +90,7 @@ public class Context {
     /* ****************************************************************************** */
     public void addModule(Module module) {
         if (module == null || StringUtils.isBlank(module.path)) {
-            throw new ContextException("Cannot add Module with null or empty package");
+            throw new ContextException("Cannot add Module with null or empty path");
         }
         if (moduleMap.containsKey(module.path)) {
             throw new ContextException("Doublon Module: " + module.path);

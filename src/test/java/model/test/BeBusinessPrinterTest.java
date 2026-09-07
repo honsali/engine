@@ -42,7 +42,7 @@ class BeBusinessPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModuleLookupEntity", "test.lookupEntity");
+        Module module = new Module("ModuleLookupEntity", "test/lookupEntity");
         ViewConsulterLookupEntity view = new ViewConsulterLookupEntity();
         module.addPage(view);
 
@@ -77,7 +77,7 @@ class BeBusinessPrinterTest {
         context.addEntity(entity);
         context.initEntities();
 
-        Module module = new Module("ModuleEntityWithReference", "test.entityWithReference");
+        Module module = new Module("ModuleEntityWithReference", "test/entityWithReference");
         ViewModifierEntityWithReference view = new ViewModifierEntityWithReference();
         module.addPage(view);
 

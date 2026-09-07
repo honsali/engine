@@ -48,7 +48,7 @@ class FeServicePrinterTest {
         assertEquals("test/serviceentity", entity.javaPath());
         assertEquals("/test/service-entities", entity.apiCollectionPath());
 
-        Module module = new Module("ModuleServiceStyle", "test.serviceStyle");
+        Module module = new Module("ModuleServiceStyle", "test/serviceStyle");
         ViewTestServiceEntity view = new ViewTestServiceEntity();
         module.addPage(view);
 

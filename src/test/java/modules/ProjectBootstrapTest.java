@@ -22,14 +22,14 @@ class ProjectBootstrapTest {
         context.initPages();
         context.initActions();
 
-        assertEquals(List.of("admin", "admin/account", "rh", "rh/employe", "rh/departement"),
+        assertEquals(List.of("modules/admin", "modules/admin/account", "modules/rh", "modules/rh/employe", "modules/rh/departement"),
                 context.getModuleList().stream().map(module -> module.path).toList());
         assertEquals(15, context.getPageList().size());
         assertEquals("role", context.getEntity(Role.class).dbName);
         assertEquals("seq_role", context.getEntity(Role.class).seqName);
-        assertEquals("admin/account", context.getPage(AdminModule.pageListerAccount).module.path);
-        assertEquals("rh/employe", context.getPage(RhModule.pageFiltrerEmploye).module.path);
-        assertEquals("rh/departement", context.getPage(RhModule.pageListerDepartement).module.path);
+        assertEquals("modules/admin/account", context.getPage(AdminModule.pageListerAccount).module.path);
+        assertEquals("modules/rh/employe", context.getPage(RhModule.pageFiltrerEmploye).module.path);
+        assertEquals("modules/rh/departement", context.getPage(RhModule.pageListerDepartement).module.path);
     }
 
     @Test
@@ -38,7 +38,7 @@ class ProjectBootstrapTest {
 
         RhModule.init();
 
-        assertEquals(List.of("rh", "rh.employe", "rh.departement"),
+        assertEquals(List.of("modules/rh", "modules/rh/employe", "modules/rh/departement"),
                 context.getModuleList().stream().map(module -> module.path).toList());
         assertEquals(11, context.getPageList().size());
     }
