@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.entity;
 
 import java.util.List;
 import java.util.function.Predicate;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.filter.FilterAction;
 import dev.cruding.engine.entity.Entity;
@@ -55,7 +56,7 @@ public class BeFilterPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + '/' + entity.uname + "Filtre.java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + '/' + entity.uname + "Filtre.java");
     }
 
 }

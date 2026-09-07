@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.entity;
 
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.JsFlow;
@@ -42,7 +43,7 @@ public class FeDomainPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/modele/" + entity.path + "/Domaine" + entity.uname + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/modele/" + entity.path + "/Domaine" + entity.uname + ".ts");
     }
 
 }

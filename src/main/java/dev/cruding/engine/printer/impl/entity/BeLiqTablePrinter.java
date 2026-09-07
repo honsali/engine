@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.entity;
 
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.Flow;
@@ -63,7 +64,7 @@ public class BeLiqTablePrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/resources/liquibase/changelog/" + entity.lname + "_table.xml");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/resources/liquibase/changelog/" + entity.lname + "_table.xml");
     }
 
 }

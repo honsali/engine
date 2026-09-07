@@ -1,13 +1,11 @@
 package dev.cruding.engine;
 
-import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Processor;
 import dev.cruding.engine.loader.EntityLoader;
 import dev.cruding.engine.loader.GeneratorException;
-import dev.cruding.engine.loader.LoaderUtils;
 import modules.ProjectBootstrap;
 
 public class App {
@@ -18,15 +16,13 @@ public class App {
         try {
             long startTime = System.nanoTime();
 
-            Path basePath = LoaderUtils.getBasePath();
-            Path modelPath = LoaderUtils.getModelPath();
+            Context.init();
 
-            Context.init("result");
+            LOGGER.info("Using engine source root: {}", EnginePaths.sourceRoot);
+            LOGGER.info("Using engine output root: {}", EnginePaths.outputRoot);
 
-            LOGGER.info("Using engine base path: {}", basePath);
-
-            LOGGER.info("Loading entities from: {}", modelPath);
-            EntityLoader.load(modelPath.toString());
+            LOGGER.info("Loading entities from: {}", EnginePaths.modelPath);
+            EntityLoader.load(EnginePaths.modelPath.toString());
 
             LOGGER.info("Initializing project modules");
             ProjectBootstrap.init();

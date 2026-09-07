@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.gen.Context;
 
 class PrinterTest {
 
@@ -23,7 +22,6 @@ class PrinterTest {
         Path output = tempDir.resolve("generated.ts");
         Files.writeString(output, "previous\r\ncontent\r\n", StandardCharsets.UTF_8);
 
-        Context.init(tempDir.toString());
         new TestPrinter().write("first\r\nsecond\rthird\n\n", output);
 
         assertArrayEquals(

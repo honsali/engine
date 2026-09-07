@@ -3,6 +3,7 @@ package dev.cruding.engine.printer.impl.module;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.gen.Context;
@@ -36,7 +37,7 @@ public class FeActionPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + module.path + "/Action" + module.unameLast + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + module.path + "/Action" + module.unameLast + ".ts");
     }
 
 }

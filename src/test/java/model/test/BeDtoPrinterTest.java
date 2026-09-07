@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.gen.Context;
@@ -20,9 +22,17 @@ class BeDtoPrinterTest {
     @TempDir
     Path tempDir;
 
+    private final Path originalOutputRoot = EnginePaths.outputRoot;
+
+    @AfterEach
+    void restoreOutputRoot() {
+        EnginePaths.outputRoot = originalOutputRoot;
+    }
+
     @Test
     void marksGeneratedResponseIdentifiersForStringJsonSerialization() throws IOException {
-        Context context = Context.init(tempDir.toString());
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
 
         IdEntity entity = new IdEntity();
         context.addEntity(entity);

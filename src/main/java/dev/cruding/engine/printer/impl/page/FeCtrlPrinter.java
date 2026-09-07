@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.page;
 
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.CtrlFlow;
 import dev.cruding.engine.gen.Context;
@@ -47,6 +48,6 @@ public class FeCtrlPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + page.path + "/Ctrl" + page.uc + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + page.path + "/Ctrl" + page.uc + ".ts");
     }
 }

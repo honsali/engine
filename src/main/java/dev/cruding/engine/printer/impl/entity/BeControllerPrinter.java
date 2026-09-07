@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.JavaFlow;
@@ -44,6 +45,6 @@ public class BeControllerPrinter extends Printer {
 
         f.L("}");
 
-        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Controller.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Controller.java");
     }
 }

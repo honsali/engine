@@ -12,10 +12,6 @@ import dev.cruding.engine.gen.Page;
 
 public abstract class Printer {
 
-    protected String getBasePath() {
-        return Context.getInstance().getBasePath();
-    }
-
     protected Collection<Entity> entityList() {
         return Context.getInstance().getEntityList();
     }

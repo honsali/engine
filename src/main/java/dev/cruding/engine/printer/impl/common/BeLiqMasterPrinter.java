@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.common;
 
 import java.util.Comparator;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;
@@ -41,7 +42,7 @@ public class BeLiqMasterPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/resources/liquibase/master.xml");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/resources/liquibase/master.xml");
     }
 
 }

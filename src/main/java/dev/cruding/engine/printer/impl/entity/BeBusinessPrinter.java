@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -83,7 +84,7 @@ public class BeBusinessPrinter extends Printer {
         }
         f.L("}");
 
-        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Service.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Service.java");
     }
 
     private LinkedHashMap<String, Field> repositoryDependencies(List<Action> actionList) {

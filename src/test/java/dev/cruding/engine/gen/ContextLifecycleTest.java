@@ -9,8 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.action.inViewOnly.EmptyAction;
@@ -22,9 +24,17 @@ class ContextLifecycleTest {
     @TempDir
     Path tempDir;
 
+    private final Path originalOutputRoot = EnginePaths.outputRoot;
+
+    @AfterEach
+    void restoreOutputRoot() {
+        EnginePaths.outputRoot = originalOutputRoot;
+    }
+
     @Test
     void startsTheNextGenerationWithFreshState() {
-        Context first = Context.init(tempDir.resolve("first").toString());
+        EnginePaths.outputRoot = tempDir;
+        Context first = Context.init();
         assertSame(first, Context.getInstance());
 
         LifecycleEntity firstEntity = new LifecycleEntity();
@@ -53,10 +63,10 @@ class ContextLifecycleTest {
         assertEquals("1", secondAction.id);
         assertEquals(List.of(firstAction, secondAction), first.actionEntity(firstEntity));
 
-        Context current = Context.init(tempDir.resolve("second").toString());
+        Context current = Context.init();
         assertSame(current, Context.getInstance());
         assertNotSame(first, current);
-        assertEquals(tempDir.resolve("second").toString(), current.getBasePath());
+        assertEquals(tempDir, EnginePaths.outputRoot);
         assertTrue(current.getEntityList().isEmpty());
         assertTrue(current.getModuleList().isEmpty());
         assertTrue(current.getPageList().isEmpty());

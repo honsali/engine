@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.JsFlow;
@@ -54,7 +55,7 @@ public class FeServicePrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/modele/" + entity.path + "/" + "/Service" + entity.uname + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/modele/" + entity.path + "/" + "/Service" + entity.uname + ".ts");
     }
 
 }

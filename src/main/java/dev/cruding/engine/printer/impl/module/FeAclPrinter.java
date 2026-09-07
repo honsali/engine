@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.module;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.gen.Context;
@@ -44,7 +45,7 @@ public class FeAclPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/commun/securite/acl/acl" + module.unameLast + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/commun/securite/acl/acl" + module.unameLast + ".ts");
     }
 
     private boolean hasAclAction(List<Page> pageList) {

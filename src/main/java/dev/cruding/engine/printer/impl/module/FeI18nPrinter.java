@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
@@ -54,7 +55,7 @@ public class FeI18nPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + module.path + "/I18n" + module.unameLast + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + module.path + "/I18n" + module.unameLast + ".ts");
     }
 
 }

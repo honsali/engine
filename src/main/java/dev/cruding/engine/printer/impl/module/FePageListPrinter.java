@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.flow.JsFlow;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
@@ -139,7 +140,7 @@ public class FePageListPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + module.path + "/ListePage" + module.unameLast + ".tsx");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + module.path + "/ListePage" + module.unameLast + ".tsx");
     }
 
     private String getPath(Module module, Page page) {

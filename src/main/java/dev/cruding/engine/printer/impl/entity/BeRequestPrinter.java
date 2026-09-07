@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.gen.Context;
@@ -14,7 +15,7 @@ public class BeRequestPrinter extends Printer {
         for (Action action : Context.getInstance().actionEntity(entity)) {
             String requestName = action.requestActionInjection.name();
             if (!requestName.isEmpty() && requestNames.add(requestName)) {
-                printFile(action.requestActionInjection.content(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + requestName + ".java");
+                printFile(action.requestActionInjection.content(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + requestName + ".java");
             }
         }
     }

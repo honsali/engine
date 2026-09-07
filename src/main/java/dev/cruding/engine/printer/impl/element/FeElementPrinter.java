@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.element;
 
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
@@ -46,6 +47,6 @@ public class FeElementPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + element.path + "/" + element.name + ".tsx");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + element.path + "/" + element.name + ".tsx");
     }
 }

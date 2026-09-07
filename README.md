@@ -22,6 +22,8 @@ Ce bootstrap assemble explicitement [AdminModule](src/main/java/modules/admin/Ad
 
 L'usage retenu est un lancement manuel pour une génération à la fois. `App` initialise le singleton [Context](src/main/java/dev/cruding/engine/gen/Context.java), accessible ensuite par `Context.getInstance()`. Le contexte n'est pas transmis à travers le DSL, les modules et les printers. Les tests s'adaptent à ce cycle de vie en réinitialisant l'état entre scénarios séquentiels ; la coexistence de plusieurs générations dans une même JVM n'est pas un besoin du projet.
 
+Les chemins sont regroupés dans [EnginePaths](src/main/java/dev/cruding/engine/EnginePaths.java), à côté d'`App`. Ils relèvent de la configuration du moteur ; `Context` reste consacré au modèle en cours de construction et `LoaderUtils` aux opérations de chargement.
+
 ## Deux mécanismes structurent la génération
 
 ### La hiérarchie des composants frontend

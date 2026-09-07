@@ -2,26 +2,21 @@ package modules;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.loader.EntityLoader;
-import dev.cruding.engine.loader.LoaderUtils;
 import model.admin.Role;
 import modules.admin.AdminModule;
 import modules.rh.RhModule;
 
 class ProjectBootstrapTest {
 
-    @TempDir
-    Path tempDir;
-
     @Test
     void composesProjectModulesInDeclarationOrder() {
-        Context context = Context.init(tempDir.toString());
-        EntityLoader.load(LoaderUtils.getModelPath().toString());
+        Context context = Context.init();
+        EntityLoader.load(EnginePaths.modelPath.toString());
 
         ProjectBootstrap.init();
         context.initEntities();
@@ -40,7 +35,7 @@ class ProjectBootstrapTest {
 
     @Test
     void rhModuleDoesNotComposeAdministration() {
-        Context context = Context.init(tempDir.toString());
+        Context context = Context.init();
 
         RhModule.init();
 

@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -24,9 +26,17 @@ class BeFormRequestPrinterTest {
     @TempDir
     Path tempDir;
 
+    private final Path originalOutputRoot = EnginePaths.outputRoot;
+
+    @AfterEach
+    void restoreOutputRoot() {
+        EnginePaths.outputRoot = originalOutputRoot;
+    }
+
     @Test
     void generatesCreateAndUpdateContractsFromTheirForms() throws IOException {
-        Context context = Context.init(tempDir.toString());
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
         FormEntity entity = new FormEntity();
@@ -82,7 +92,8 @@ class BeFormRequestPrinterTest {
 
     @Test
     void importsSizeForAFieldWithOnlyMinimumLength() throws IOException {
-        Context context = Context.init(tempDir.toString());
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
 
         MinimumLengthEntity entity = new MinimumLengthEntity();
         context.addEntity(entity);

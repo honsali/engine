@@ -1,6 +1,7 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
@@ -99,7 +100,7 @@ public class BeDomainPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + ".java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + ".java");
     }
 
     private List<String> parameterList(List<Field> fields) {

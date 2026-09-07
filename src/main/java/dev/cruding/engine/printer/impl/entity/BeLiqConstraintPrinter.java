@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.entity;
 
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
@@ -85,7 +86,7 @@ public class BeLiqConstraintPrinter extends Printer {
             return;
         }
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/resources/liquibase/changelog/" + entity.lname + "_constraints.xml");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/resources/liquibase/changelog/" + entity.lname + "_constraints.xml");
     }
 
 }

@@ -23,11 +23,10 @@ public class Context {
     private final Map<String, Module> moduleMap = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> labelMap = new LinkedHashMap<>();
     private final Set<Action> actionList = new LinkedHashSet<>();
-    private final String basePath;
     private int actionRank;
 
-    public static Context init(String basePath) {
-        instance = new Context(basePath);
+    public static Context init() {
+        instance = new Context();
         return instance;
     }
 
@@ -35,16 +34,7 @@ public class Context {
         return Objects.requireNonNull(instance, "Context must be initialized before generation");
     }
 
-    private Context(String basePath) {
-        if (StringUtils.isBlank(basePath)) {
-            throw new ContextException("Base path cannot be null or empty");
-        }
-        this.basePath = basePath;
-    }
-
-    public String getBasePath() {
-        return basePath;
-    }
+    private Context() {}
 
     /* ****************************************************************************** */
     /* ********************************** ENTITIES ********************************** */

@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -94,7 +95,7 @@ public class BeMapperPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Mapper.java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Mapper.java");
     }
 
 }

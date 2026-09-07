@@ -213,8 +213,8 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 
 `dev.cruding.engine.App` orchestre le cycle :
 
-1. initialisation du singleton par `Context.init("result")` ;
-2. appel à `EntityLoader.load(modelPath.toString())` pour charger les entités depuis `src/main/java/model` ;
+1. initialisation du singleton par `Context.init()` ;
+2. appel à `EntityLoader.load(EnginePaths.modelPath.toString())` pour charger les entités depuis `src/main/java/model` ;
 3. appel direct à `modules.ProjectBootstrap.init()` pour assembler les modules ;
 4. initialisation des entités ;
 5. composition et initialisation des pages ;
@@ -222,11 +222,13 @@ Cette déduplication tardive couvre des cas réels, comme plusieurs usages de `r
 7. exécution du `Processor` ;
 8. écriture des résultats frontend et backend.
 
-Engine est utilisé manuellement pour une génération à la fois. `Context.init(basePath)` remplace l'instance courante par un contexte neuf, puis `Context.getInstance()` donne accès à ce singleton. Les registres d'entités, modules, pages, libellés et actions ainsi que le compteur d'actions repartent ensemble d'un état vide. Le constructeur est privé ; il n'y a plus de contexte à fournir aux loaders, modules, actions ou printers.
+Les chemins sont définis dans [EnginePaths](src/main/java/dev/cruding/engine/EnginePaths.java), à côté d'`App` : `sourceRoot` désigne `src/main/java`, `modelPath` est dérivé par `sourceRoot.resolve("model")`, et `outputRoot` désigne `result` par défaut. Les chemins par défaut sont absolus et normalisés depuis le répertoire de travail. `sourceRoot` et `modelPath` sont des constantes ; `outputRoot` peut être affecté avant une génération. Les printers le lisent directement et `LoaderUtils` utilise `sourceRoot` pour résoudre les noms de classes, sans posséder de configuration de chemins.
+
+Engine est utilisé manuellement pour une génération à la fois. `Context.init()` remplace l'instance courante par un contexte neuf, puis `Context.getInstance()` donne accès à ce singleton. Les registres d'entités, modules, pages, libellés et actions ainsi que le compteur d'actions repartent ensemble d'un état vide. Les chemins restent indépendants de cette réinitialisation. Le constructeur est privé ; il n'y a plus de contexte à fournir aux loaders, modules, actions ou printers.
 
 Le constructeur d'`Action` appelle une seule fois `Context.getInstance().addAction(this)`. Cette méthode attribue `action.id` avant l'insertion dans le `LinkedHashSet` et gère elle-même le compteur. `equals` et `hashCode` restent fondés sur l'id ; cet id ne doit donc plus être modifié après l'enregistrement. Le champ est public pour permettre cette affectation directe par le contexte, sans méthode séparée de réservation d'identifiant.
 
-Une initialisation marque le début d'une nouvelle génération, pas un changement de contexte en cours de traitement. Les objets de la génération précédente ne doivent pas être réutilisés. Le moteur ne prend pas en charge des générations concurrentes dans une même JVM. Les tests de génération qui n'appellent pas `App` commencent leur scénario par `Context.init(...)` et s'exécutent séquentiellement, comme le précise `src/test/resources/junit-platform.properties`.
+Une initialisation marque le début d'une nouvelle génération, pas un changement de contexte en cours de traitement. Les objets de la génération précédente ne doivent pas être réutilisés. Le moteur ne prend pas en charge des générations concurrentes dans une même JVM. Les tests de génération qui n'appellent pas `App` commencent leur scénario par `Context.init()` et s'exécutent séquentiellement, comme le précise `src/test/resources/junit-platform.properties`. Les tests de printers affectent `EnginePaths.outputRoot` à leur dossier temporaire et restaurent sa valeur après chaque scénario.
 
 Le projet possède un seul bootstrap concret, placé par convention dans `src/main/java/modules/ProjectBootstrap.java`. `App` le référence directement : il n'y a ni interface de bootstrap ni recherche de son implémentation dans les sources. Sa méthode statique `init()` appelle `AdminModule.init()`, puis `RhModule.init()`. L'ajout ou le retrait d'un module se fait explicitement à cet endroit.
 

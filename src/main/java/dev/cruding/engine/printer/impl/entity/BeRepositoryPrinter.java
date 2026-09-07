@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.JavaFlow;
@@ -52,6 +53,6 @@ public class BeRepositoryPrinter extends Printer {
 
         f.L("}");
 
-        printFile(f.toString(), getBasePath() + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Repository.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Repository.java");
     }
 }

@@ -7,8 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.create.CreateAction;
 import dev.cruding.engine.action.delete.DeleteAction;
 import dev.cruding.engine.action.filter.FilterAction;
@@ -39,6 +41,13 @@ class FePageContractPrinterTest {
     @TempDir
     Path tempDir;
 
+    private final Path originalOutputRoot = EnginePaths.outputRoot;
+
+    @AfterEach
+    void restoreOutputRoot() {
+        EnginePaths.outputRoot = originalOutputRoot;
+    }
+
     @Test
     void rendersApiDatesWithTheFormattedReadOnlyComponent() {
         assertEquals("DateFormatee", new Date("date").ui(Element.DETAIL));
@@ -46,7 +55,8 @@ class FePageContractPrinterTest {
 
     @Test
     void generatesStrictPageContractsAndCallbackSignatures() throws IOException {
-        Context context = Context.init(tempDir.toString());
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
 
         PageContractEntity entity = new PageContractEntity();
         context.addEntity(entity);
@@ -169,7 +179,8 @@ class FePageContractPrinterTest {
 
     @Test
     void keepsUpdateFindAndCustomActionFormsInHooks() throws IOException {
-        Context context = Context.init(tempDir.toString());
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
         PageContractEntity entity = new PageContractEntity();
         context.addEntity(entity);
         context.initEntities();

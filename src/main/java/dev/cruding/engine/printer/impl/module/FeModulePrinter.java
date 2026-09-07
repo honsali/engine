@@ -1,5 +1,6 @@
 package dev.cruding.engine.printer.impl.module;
 
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.printer.Printer;
@@ -43,7 +44,7 @@ public class FeModulePrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + module.path + "/Module" + module.unameLast + ".tsx");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + module.path + "/Module" + module.unameLast + ".tsx");
     }
 
     private String getPageIndex(Module module) {

@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.page;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
 import dev.cruding.engine.flow.helper.Attribute;
@@ -114,6 +115,6 @@ public class FeMdlPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, getBasePath() + "/fe/src/" + page.path + "/Mdl" + page.uc + ".ts");
+        printFile(s, EnginePaths.outputRoot + "/fe/src/" + page.path + "/Mdl" + page.uc + ".ts");
     }
 }
