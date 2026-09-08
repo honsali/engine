@@ -9,11 +9,20 @@ public class Tag extends Field {
         super(f);
     }
 
+    private Tag(String lname) {
+        super(true);
+        lname(lname);
+    }
+
     public String ui(String element) {
         if (element.equals(Element.TABLE)) {
             return "Colonne tc=\"tag\"";
         }
         return super.ui(element);
+    }
+
+    protected Field initCopy() {
+        return new Tag(lname);
     }
 
 }

@@ -24,6 +24,6 @@ public class Hour extends Field {
     }
 
     protected Field initCopy() {
-        return new Date(lname);
+        return new Hour(lname);
     }
 }

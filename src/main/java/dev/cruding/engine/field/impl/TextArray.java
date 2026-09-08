@@ -23,4 +23,8 @@ public class TextArray extends Field {
         }
 
     }
+
+    protected Field initCopy() {
+        return new TextArray(lname);
+    }
 }

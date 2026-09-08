@@ -100,6 +100,8 @@ table(e,
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
 
+Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray` et `Tag`.
+
 Pour `CreateAction` et `UpdateAction`, le contrat Request est dérivé des champs effectivement présents dans les `Form` associés à l'action, et non de tous les champs de l'`Entity`. Les champs répartis dans plusieurs formulaires sont réunis dans leur ordre de déclaration ; un champ déclaré `readOnly()` n'appartient pas au contrat d'écriture. Les validations déclarées sur les copies utilisées par le formulaire sont conservées. Un champ typé propre au formulaire peut donc enrichir la Request sans devenir automatiquement une propriété persistée.
 
 Pour les champs qui appartiennent à l'`Entity`, les contrôles d'unicité, les références résolues et le mapper utilisent le même sous-ensemble. Lors d'une modification, les propriétés absentes du formulaire conservent leur valeur courante.

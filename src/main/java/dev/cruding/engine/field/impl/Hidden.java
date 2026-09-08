@@ -25,6 +25,6 @@ public class Hidden extends Field {
     }
 
     protected Field initCopy() {
-        return new Custom(lname);
+        return new Hidden(lname);
     }
 }

@@ -23,4 +23,8 @@ public class ArabicText extends Field {
                 return "";
         }
     }
+
+    protected Field initCopy() {
+        return new ArabicText(lname);
+    }
 }
