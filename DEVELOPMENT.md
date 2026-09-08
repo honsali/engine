@@ -62,6 +62,10 @@ public class Conge extends Entity {
 }
 ```
 
+`Entity.init()` collecte les champs publics de type `Field` du modèle et de ses bases métier, notamment `ReferenceData.name`. Les champs techniques déclarés par `Entity` (`id_`, `father`, `setting`) sont exclus de cette collecte. L'identifiant technique par défaut est initialisé explicitement ; un `Setting` déclaré dans le DSL reste pris en compte.
+
+Une entité peut déclarer plusieurs `Ref`, y compris vers la même cible, mais au plus un `Father`. Deux déclarations de `Father`, même réparties dans la hiérarchie d'héritage, lèvent une `EntityInitializationException` qui indique l'entité et les deux champs concernés. Ces règles sont couvertes par `EntityInitializationTest`.
+
 Le nom de collection REST est dérivé par défaut du nom d'entité avec un `s`. Une entité dont le pluriel est irrégulier peut le déclarer dans son constructeur :
 
 ```java

@@ -51,10 +51,11 @@ public class Entity extends FieldFactory {
 
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), "_").toLowerCase();
         this.seqName = "seq_" + dbName;
+        this.id_.containingEntity(this);
 
         java.lang.reflect.Field[] list = this.getClass().getFields();
         for (java.lang.reflect.Field f : list) {
-            if (Field.class.isAssignableFrom(f.getType())) {
+            if (Field.class.isAssignableFrom(f.getType()) && f.getDeclaringClass() != Entity.class) {
                 try {
                     Field field = (Field) f.get(this);
                     if (field != null) {
@@ -67,11 +68,14 @@ public class Entity extends FieldFactory {
                             field.lname(f.getName());
                             fieldList.add(field);
                         } else if (field instanceof Father) {
-                            if (this.father == null) {
-                                fieldList.add(field);
-                                this.father = (Father<?>) field;
-                                this.father.lname(f.getName());
+                            if (this.father != null) {
+                                throw new EntityInitializationException(String.format(
+                                        "Entity '%s' declares multiple Father fields: '%s' and '%s'. Only one Father is allowed.",
+                                        uname, this.father.lname, f.getName()));
                             }
+                            fieldList.add(field);
+                            this.father = (Father<?>) field;
+                            this.father.lname(f.getName());
                         } else if (field instanceof Setting) {
                             this.id_ = (Setting) field;
                         } else {
