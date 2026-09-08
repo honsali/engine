@@ -15,10 +15,6 @@ import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
 
-
-    public record DateOrderConstraint(String name, Field begin, Field end) {
-    }
-
     public String pkg;
     public String path;
     public String key;
@@ -38,8 +34,6 @@ public class Entity extends FieldFactory {
 
     public Setting setting;
     public ArrayList<Field> fieldList = new ArrayList<>();
-
-    public ArrayList<DateOrderConstraint> dateOrderConstraints = new ArrayList<>();
 
     public Entity() {
         this.uname = this.getClass().getSimpleName();

@@ -75,9 +75,6 @@ public class BeLiqConstraintPrinter extends Printer {
                 f.L________("</createIndex>");
             }
         }
-        for (Entity.DateOrderConstraint constraint : entity.dateOrderConstraints) {
-            f.L________("<sql>ALTER TABLE ", entity.dbName, " ADD CONSTRAINT ", constraint.name(), " CHECK (", constraint.end().dbName, " IS NULL OR ", constraint.begin().dbName, " IS NULL OR ", constraint.end().dbName, " &gt;= ", constraint.begin().dbName, ")</sql>");
-        }
         f.L____("</changeSet>");
         f.L("</databaseChangeLog>");
 
