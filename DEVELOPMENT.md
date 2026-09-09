@@ -66,6 +66,8 @@ public class Conge extends Entity {
 
 `Setting` conserve la convention d'identifiant technique de la cible actuelle : `id`, de type Java `Long`, SQL `bigint` et TypeScript `string`, auto-généré côté backend. Il porte aussi le libellé de l'entité et ses accords grammaticaux. Une autre stratégie d'identifiant demande une adaptation cohérente du moteur et du core cible, pas l'activation d'une option du DSL existant.
 
+Un choix explicite comme `Setting().vowel().label("Établissement")` est conservé à l'initialisation ; sinon, l'accord par défaut est déduit du nom de classe. `Setting.readOnly()` utilise le même indicateur que les autres champs : il rend le champ technique non modifiable dans un formulaire et l'exclut de sa Request d'écriture. Il ne rend pas toute l'entité non modifiable.
+
 Une entité peut déclarer plusieurs `Ref`, y compris vers la même cible, mais au plus un `Father`. Deux déclarations de `Father`, même réparties dans la hiérarchie d'héritage, lèvent une `EntityInitializationException` qui indique l'entité et les deux champs concernés. Ces règles sont couvertes par `EntityInitializationTest`.
 
 Le nom de collection REST est dérivé par défaut du nom d'entité avec un `s`. Une entité dont le pluriel est irrégulier peut le déclarer dans son constructeur :
@@ -108,7 +110,11 @@ Ici, le tableau exprime notamment le besoin de lister les congés d'un employé 
 
 Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray`, `Tag` et `Setting`.
 
-Pour `Text`, la longueur maximale vaut `250` par défaut et détermine aussi la taille SQL : `Text("libelle").maxLength("500")` produit une colonne `nvarchar(500)` et une validation `@Size(max = 500)` dans la Request. Une copie de ce champ limitée à `100` dans un formulaire restreint la validation de ce cas d'usage sans réduire la colonne du modèle. `LongText("description").maxLength("1000")` conserve le type SQL `text` ; la limite concerne sa validation.
+Les copies de `Ref` et de `Father` conservent également leur cible déjà résolue, ainsi que leurs noms de rôle et métadonnées SQL. La conversion d'un `Ref` en `RefList` et les copies suivantes suivent ce même contrat, couvert par `RefFieldCopyTest`. L'entité référencée reste partagée ; elle n'est pas dupliquée avec le champ.
+
+Pour `Text`, `ArabicText`, `Email`, `Tel` et `StaticList`, la longueur maximale vaut `250` par défaut et détermine aussi la taille SQL : `Text("libelle").maxLength("500")` produit une colonne `nvarchar(500)` et une validation `@Size(max = 500)` dans la Request. Ces variantes réutilisent le comportement de `Text` et conservent leurs rendus propres ; une `StaticList` obligatoire conserve sa validation `@NotNull`, distincte du `@NotBlank` d'un champ texte. Une copie d'un champ limitée à `100` dans un formulaire restreint la validation de ce cas d'usage sans réduire la colonne du modèle. `LongText("description").maxLength("1000")` conserve le type SQL `text` ; la limite concerne sa validation.
+
+`Hour` produit un type Java `LocalTime` et un type SQL `time`. Les imports des entités et des réponses suivent le type temporel du champ, y compris pour un champ transitoire ; `Date` et `Year` conservent `LocalDate` et le type SQL `date`.
 
 Pour `CreateAction` et `UpdateAction`, le contrat Request est dérivé des champs effectivement présents dans les `Form` associés à l'action, et non de tous les champs de l'`Entity`. Les champs répartis dans plusieurs formulaires sont réunis dans leur ordre de déclaration ; un champ déclaré `readOnly()` n'appartient pas au contrat d'écriture. Les validations déclarées sur les copies utilisées par le formulaire sont conservées. Un champ typé propre au formulaire peut donc enrichir la Request sans devenir automatiquement une propriété persistée.
 

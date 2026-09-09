@@ -35,8 +35,9 @@ public class BeDomainPrinter extends Printer {
                 f.addJavaImport("jakarta.persistence.ManyToOne");
                 f.addJavaImport("jakarta.persistence.JoinColumn");
                 f.addJavaImport("jakarta.persistence.FetchType");
-            } else if (field.isDate) {
-                f.addJavaImport("java.time.LocalDate");
+            }
+            if (field.isDate) {
+                f.addJavaImport("java.time." + field.jtype);
             }
 
         }

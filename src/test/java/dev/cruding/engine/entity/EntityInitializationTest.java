@@ -13,6 +13,7 @@ import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.gen.Context;
+import dev.cruding.engine.gen.LabelMapper;
 
 class EntityInitializationTest {
 
@@ -53,6 +54,21 @@ class EntityInitializationTest {
         assertEquals(entity.dbName, entity.setting.containingEntityDbname);
         assertEquals("Configuration métier", entity.setting.label);
         assertTrue(entity.setting.feminine);
+    }
+
+    @Test
+    void preservesExplicitSettingOptionsDuringInitialization() {
+        LabelEntity entity = new LabelEntity();
+        Context.getInstance().addEntity(entity);
+        Context.getInstance().initEntities();
+
+        assertSame(entity.configuration, entity.setting);
+        assertSame(entity.configuration, entity.id_);
+        assertTrue(entity.setting.vowel);
+        assertTrue(((Field) entity.id_).readOnly);
+        assertEquals("Établissement", entity.setting.label);
+        assertEquals("Êtes-vous sûr de vouloir créer cet Établissement ?",
+                LabelMapper.getInstance().enteteConfirmation("creer", entity));
     }
 
     @Test
@@ -122,6 +138,10 @@ class EntityInitializationTest {
 
     public static final class ConfiguredEntity extends SimpleEntity {
         public final CountingSetting configuration = new CountingSetting();
+    }
+
+    public static final class LabelEntity extends SimpleEntity {
+        public final Field configuration = Setting().vowel().readOnly().label("Établissement");
     }
 
     public static final class ReferenceEntity extends ReferenceData {

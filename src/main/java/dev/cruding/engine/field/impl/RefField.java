@@ -125,10 +125,14 @@ public class RefField<T extends Entity> extends Field {
     }
 
     protected RefField<T> makeCopy() {
-        RefField<T> p = initCopy();
-        p.jcDbName = this.jcDbName;
-        p.dbTypeName = this.dbTypeName;
-        return copyFieldProps(this, p);
+        return copyRefFieldProps(this, initCopy());
+    }
+
+    protected <R extends RefField<T>> R copyRefFieldProps(RefField<T> from, R to) {
+        to.referencedEntity = from.referencedEntity;
+        to.jcDbName = from.jcDbName;
+        to.dbTypeName = from.dbTypeName;
+        return copyFieldProps(from, to);
     }
 
 }

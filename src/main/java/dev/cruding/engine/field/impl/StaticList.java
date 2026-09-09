@@ -3,18 +3,17 @@ package dev.cruding.engine.field.impl;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.field.Field;
 
-public class StaticList extends Field {
+public class StaticList extends Text {
 
     private String type;
 
     public StaticList(String lname) {
-        super(true);
-        lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
+        super(lname);
+        isText = false;
     }
 
     public StaticList(String lname, String type) {
-        super(true);
-        lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
+        this(lname);
         this.type = type;
     }
 

@@ -3,12 +3,10 @@ package dev.cruding.engine.field.impl;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.field.Field;
 
-public class ArabicText extends Field {
+public class ArabicText extends Text {
 
     public ArabicText(String lname) {
-        super(true);
-        lname(lname).jtype("String").jstype("string").stype("nvarchar(250)");
-        isText = true;
+        super(lname);
     }
 
     public String ui(String element) {

@@ -7,7 +7,7 @@ public class Hour extends Field {
 
     public Hour(String lname) {
         super(true);
-        lname(lname).jtype("LocalTime").jstype("string").stype("date").isDate(true);
+        lname(lname).jtype("LocalTime").jstype("string").stype("time").isDate(true);
     }
 
     public String ui(String element) {

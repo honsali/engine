@@ -76,6 +76,27 @@ class FieldCopyTest {
         assertNull(feminine.label);
     }
 
+    @Test
+    void sharesTheSameReadOnlyFlagBetweenSettingAndFieldOnCopies() {
+        Setting original = new Setting();
+        Setting readOnly = original.readOnly();
+        Field labelled = readOnly.label("Établissement").required();
+
+        assertFalse(original.readOnly);
+        assertFalse(((Field) original).readOnly);
+        assertTrue(readOnly.readOnly);
+        assertTrue(((Field) readOnly).readOnly);
+        assertTrue(labelled.readOnly);
+        assertTrue(((Setting) labelled).readOnly);
+    }
+
+    @Test
+    void keepsAutomaticGrammaticalDefaults() {
+        assertEquals("ce", new Setting().init("Departement").that());
+        assertEquals("cet", new Setting().init("Employe").that());
+        assertEquals("cette", new Setting().feminine().init("Adresse").that());
+    }
+
     private void assertPreservesField(Field original) {
         Field labelled = original.label("Libellé");
         Field required = labelled.required();

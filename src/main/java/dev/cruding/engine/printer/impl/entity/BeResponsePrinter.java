@@ -22,7 +22,7 @@ public class BeResponsePrinter extends Printer {
         f.addJavaImport("app.core.reference.JsonId");
         for (Field field : fields) {
             if (field.isDate) {
-                f.addJavaImport("java.time.LocalDate");
+                f.addJavaImport("java.time." + field.jtype);
             } else if (field.isRef || field.isFather) {
                 f.addJavaImport("app.core.reference.Reference");
             }

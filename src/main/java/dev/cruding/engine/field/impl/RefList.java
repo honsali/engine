@@ -7,7 +7,7 @@ public class RefList<T extends Entity> extends Ref<T> {
 
     public RefList(Ref<T> r) {
         super(r.type, r.lname);
-        copyFieldProps(r, this);
+        copyRefFieldProps(r, this);
     }
 
     private RefList(Class<T> type, String lname) {

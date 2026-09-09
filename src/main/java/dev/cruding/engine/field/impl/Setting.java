@@ -5,7 +5,6 @@ import dev.cruding.engine.field.Field;
 
 public class Setting extends Field {
 
-    public boolean readOnly = false;
     public boolean feminine = false;
     public boolean vowel = false;
 
@@ -19,11 +18,12 @@ public class Setting extends Field {
         if (label == null) {
             label = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), " ");
         }
-        vowel = uname.startsWith("A") || uname.startsWith("E") || uname.startsWith("I") || uname.startsWith("O") || uname.startsWith("U");
+        vowel = vowel || uname.startsWith("A") || uname.startsWith("E") || uname.startsWith("I") || uname.startsWith("O") || uname.startsWith("U");
 
         return this;
     }
 
+    @Override
     public Setting readOnly() {
         Setting s = makeCopy();
         s.readOnly = true;
@@ -58,7 +58,6 @@ public class Setting extends Field {
 
     protected Setting makeCopy() {
         Setting s = initCopy();
-        s.readOnly = this.readOnly;
         s.feminine = this.feminine;
         s.vowel = this.vowel;
         return copyFieldProps(this, s);
