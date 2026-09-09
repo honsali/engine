@@ -254,6 +254,8 @@ Le nommage SQL est conventionnel : tables et colonnes en snake_case, suffixe `_i
 
 Les références de pages partagées par le DSL utilisent des `PageRef` immuables déclarées dans leur module ; elles sont résolues dans le `Context` courant au moment de composer les actions.
 
+`Action.targetPage(PageRef)` effectue directement cette résolution, par exemple `.targetPage(RhModule.pageConsulterEmploye)`. Les helpers `addAction`, `editAction`, `backToListAction` et `backToDetailAction` lui transmettent la référence ; les composants et injections utilisent ensuite la `Page` résolue.
+
 `Processor` orchestre les familles de printers. Les printers concernés par les actions les parcourent ensuite et demandent à leurs injections de contribuer au fichier visé.
 
 ## Ce qu'Engine génère

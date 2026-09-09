@@ -55,6 +55,8 @@ class ContextLifecycleTest {
                 return super.hashCode();
             }
         };
+        assertSame(firstAction, firstAction.targetPage(pageReference));
+        assertSame(firstPage, firstAction.targetPage);
         first.addLabel("ModuleLifecycle", "titre", "Première génération");
         assertEquals(List.of(firstAction), first.actionEntity(firstEntity));
         assertEquals("0", firstAction.id);
@@ -85,6 +87,8 @@ class ContextLifecycleTest {
         assertSame(currentPage, current.getPage(pageReference));
 
         Action currentAction = new EmptyAction(ActionType.NORMAL, "charger", currentEntity, currentView.element);
+        assertSame(currentAction, currentAction.targetPage(pageReference));
+        assertSame(currentPage, currentAction.targetPage);
         assertEquals("0", currentAction.id);
         assertEquals(List.of(currentAction), current.actionEntity(currentEntity));
     }

@@ -161,36 +161,20 @@ public abstract class BaseComposer {
         return new UpdateAction(entity, element);
     }
 
-    public Action addAction(Entity entity, Page targetPage) {
+    public Action addAction(Entity entity, PageRef targetPage) {
         return new EmptyAction(ActionType.UCA, "ajouter", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action addAction(Entity entity, PageRef targetPage) {
-        return addAction(entity, Context.getInstance().getPage(targetPage));
-    }
-
-    public Action editAction(Entity entity, Page targetPage) {
+    public Action editAction(Entity entity, PageRef targetPage) {
         return new EmptyAction(ActionType.UCA, "modifier", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action editAction(Entity entity, PageRef targetPage) {
-        return editAction(entity, Context.getInstance().getPage(targetPage));
-    }
-
-    public Action backToListAction(Entity entity, Page targetPage) {
+    public Action backToListAction(Entity entity, PageRef targetPage) {
         return new EmptyAction(ActionType.UCA, "retourListe", entity, element).targetPage(targetPage).inViewOnly();
     }
 
-    public Action backToListAction(Entity entity, PageRef targetPage) {
-        return backToListAction(entity, Context.getInstance().getPage(targetPage));
-    }
-
-    public Action backToDetailAction(Entity entity, Page targetPage) {
-        return new EmptyAction(ActionType.UCA, "retourConsulter", entity, element).targetPage(targetPage).inViewOnly();
-    }
-
     public Action backToDetailAction(Entity entity, PageRef targetPage) {
-        return backToDetailAction(entity, Context.getInstance().getPage(targetPage));
+        return new EmptyAction(ActionType.UCA, "retourConsulter", entity, element).targetPage(targetPage).inViewOnly();
     }
 
     public Action getByFieldAction(Entity entity, Field... fieldList) {

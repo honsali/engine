@@ -11,6 +11,7 @@ import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.PageRef;
 import dev.cruding.engine.injection.ActionBusinessInjection;
 import dev.cruding.engine.injection.ActionCtrlInjection;
 import dev.cruding.engine.injection.ActionMapperInjection;
@@ -272,8 +273,8 @@ public abstract class Action {
         return this;
     }
 
-    public Action targetPage(Page targetPage) {
-        this.targetPage = Objects.requireNonNull(targetPage, "Target page cannot be null");
+    public Action targetPage(PageRef targetPage) {
+        this.targetPage = Context.getInstance().getPage(targetPage);
         return this;
     }
 
