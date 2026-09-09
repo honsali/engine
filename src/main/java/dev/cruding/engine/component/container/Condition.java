@@ -26,16 +26,8 @@ public class Condition extends Component {
         this.childInLine = childInLine;
     }
 
-    public void addContent(Component fatherComponent, ViewFlow flow, boolean inline, int level) {
-        inElement = inElement || (fatherComponent != null && fatherComponent.inElement);
-        this.fatherComponent = fatherComponent;
-        this.inline = inline;
-        addImport(flow);
-        addScript(flow);
-        if (level == 1) {
-            flow.totalUi().__("(");
-        }
-
+    @Override
+    protected void addBody(ViewFlow flow, int level) {
         if (!isElement) {
             if (componentList != null) {
                 if (componentList.length == 1) {
@@ -60,10 +52,6 @@ public class Condition extends Component {
 
                 }
             }
-        }
-
-        if (level == 1) {
-            indent(flow, 0).append(");");
         }
     }
 

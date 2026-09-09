@@ -122,6 +122,10 @@ table(e,
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
 
+`Component.addContent()` porte le cycle commun du rendu : préparation du parent et des indicateurs de rendu, collecte des imports et du script, puis encadrement de l'expression racine. Il délègue le contenu à `addBody(ViewFlow, int)`, dont le comportement par défaut produit l'ouverture, parcourt les enfants et produit la fermeture.
+
+`InColumn` et `Condition` spécialisent seulement `addBody()` : le premier enveloppe chaque enfant dans une colonne, le second organise ses branches et leurs délimiteurs. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`. Le DSL et les règles de rendu restent inchangés.
+
 Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray`, `Tag` et `Setting`.
 
 Les copies de `Ref` et de `Father` conservent également leur cible déjà résolue, ainsi que leurs noms de rôle et métadonnées SQL. La conversion d'un `Ref` en `RefList` et les copies suivantes suivent ce même contrat, couvert par `RefFieldCopyTest`. L'entité référencée reste partagée ; elle n'est pas dupliquée avec le champ.

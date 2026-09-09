@@ -30,15 +30,8 @@ public class InColumn extends Component {
         return false;
     }
 
-    public void addContent(Component fatherComponent, ViewFlow flow, boolean inline, int level) {
-        inElement = inElement || (fatherComponent != null && fatherComponent.inElement);
-        this.fatherComponent = fatherComponent;
-        this.inline = inline;
-        addImport(flow);
-        addScript(flow);
-        if (level == 1) {
-            flow.totalUi().__("(");
-        }
+    @Override
+    protected void addBody(ViewFlow flow, int level) {
         boolean childInline = addOpenTag(flow, level);
         if (!isElement) {
             if (componentList != null) {
@@ -57,9 +50,6 @@ public class InColumn extends Component {
             }
         }
         addCloseTag(flow, level);
-        if (level == 1) {
-            indent(flow, 0).append(");");
-        }
     }
 
     public void addCloseTag(ViewFlow flow, int level) {

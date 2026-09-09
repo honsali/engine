@@ -78,6 +78,13 @@ public abstract class Component {
         if (level == 1) {
             flow.totalUi().__("(");
         }
+        addBody(flow, level);
+        if (level == 1) {
+            indent(flow, 0).append(");");
+        }
+    }
+
+    protected void addBody(ViewFlow flow, int level) {
         boolean childInline = addOpenTag(flow, level);
         if (!isElement) {
             if (componentList != null) {
@@ -87,9 +94,6 @@ public abstract class Component {
             }
         }
         addCloseTag(flow, level);
-        if (level == 1) {
-            indent(flow, 0).append(");");
-        }
     }
 
     public Flow indent(ViewFlow flow, int level) {
