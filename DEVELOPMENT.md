@@ -64,6 +64,8 @@ public class Conge extends Entity {
 
 `Entity.init()` collecte les champs publics de type `Field` du modèle et de ses bases métier, notamment `ReferenceData.name`. Les champs techniques déclarés par `Entity` (`id_`, `father`, `setting`) sont exclus de cette collecte. L'identifiant technique par défaut est initialisé explicitement ; un `Setting` déclaré dans le DSL reste pris en compte.
 
+`Setting` conserve la convention d'identifiant technique de la cible actuelle : `id`, de type Java `Long`, SQL `bigint` et TypeScript `string`, auto-généré côté backend. Il porte aussi le libellé de l'entité et ses accords grammaticaux. Une autre stratégie d'identifiant demande une adaptation cohérente du moteur et du core cible, pas l'activation d'une option du DSL existant.
+
 Une entité peut déclarer plusieurs `Ref`, y compris vers la même cible, mais au plus un `Father`. Deux déclarations de `Father`, même réparties dans la hiérarchie d'héritage, lèvent une `EntityInitializationException` qui indique l'entité et les deux champs concernés. Ces règles sont couvertes par `EntityInitializationTest`.
 
 Le nom de collection REST est dérivé par défaut du nom d'entité avec un `s`. Une entité dont le pluriel est irrégulier peut le déclarer dans son constructeur :
@@ -104,7 +106,9 @@ table(e,
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
 
-Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray` et `Tag`.
+Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray`, `Tag` et `Setting`.
+
+Pour `Text`, la longueur maximale vaut `250` par défaut et détermine aussi la taille SQL : `Text("libelle").maxLength("500")` produit une colonne `nvarchar(500)` et une validation `@Size(max = 500)` dans la Request. Une copie de ce champ limitée à `100` dans un formulaire restreint la validation de ce cas d'usage sans réduire la colonne du modèle. `LongText("description").maxLength("1000")` conserve le type SQL `text` ; la limite concerne sa validation.
 
 Pour `CreateAction` et `UpdateAction`, le contrat Request est dérivé des champs effectivement présents dans les `Form` associés à l'action, et non de tous les champs de l'`Entity`. Les champs répartis dans plusieurs formulaires sont réunis dans leur ordre de déclaration ; un champ déclaré `readOnly()` n'appartient pas au contrat d'écriture. Les validations déclarées sur les copies utilisées par le formulaire sont conservées. Un champ typé propre au formulaire peut donc enrichir la Request sans devenir automatiquement une propriété persistée.
 

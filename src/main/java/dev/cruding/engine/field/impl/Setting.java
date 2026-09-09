@@ -5,9 +5,7 @@ import dev.cruding.engine.field.Field;
 
 public class Setting extends Field {
 
-    public boolean idLong = true;
     public boolean readOnly = false;
-    public boolean idSequence = true;
     public boolean feminine = false;
     public boolean vowel = false;
 
@@ -24,24 +22,6 @@ public class Setting extends Field {
         vowel = uname.startsWith("A") || uname.startsWith("E") || uname.startsWith("I") || uname.startsWith("O") || uname.startsWith("U");
 
         return this;
-    }
-
-    public Setting idLong() {
-        idLong = true;
-        jtype("Long").jstype("string").stype("bigint");
-        return this;
-    }
-
-    public Setting idText() {
-        idLong = false;
-        jtype("String").jstype("string").stype("varchar");
-        return this;
-    }
-
-    public Setting idSequence(boolean idSequence) {
-        Setting s = makeCopy();
-        s.idSequence = idSequence;
-        return s;
     }
 
     public Setting readOnly() {
@@ -78,9 +58,7 @@ public class Setting extends Field {
 
     protected Setting makeCopy() {
         Setting s = initCopy();
-        s.idLong = this.idLong;
         s.readOnly = this.readOnly;
-        s.idSequence = this.idSequence;
         s.feminine = this.feminine;
         s.vowel = this.vowel;
         return copyFieldProps(this, s);

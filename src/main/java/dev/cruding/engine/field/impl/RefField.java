@@ -15,9 +15,7 @@ public class RefField<T extends Entity> extends Field {
     protected Class<T> type;
     public T referencedEntity;
     public String dbTypeName;
-    public String jtDbName;
     public String jcDbName;
-    public String ijcDbName;
 
     public RefField(Class<T> type, boolean father, String lname) {
         super(false);
@@ -37,9 +35,7 @@ public class RefField<T extends Entity> extends Field {
         this.dbTypeName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(type.getSimpleName()), "_").toLowerCase();
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase() + "_id";
         if (containingEntity != null && (isRef || isFather)) {
-            this.jtDbName = containingEntityDbname + "_" + this.dbTypeName;
             this.jcDbName = dbName;
-            this.ijcDbName = this.dbTypeName;
         }
         return this;
     }
@@ -130,9 +126,7 @@ public class RefField<T extends Entity> extends Field {
 
     protected RefField<T> makeCopy() {
         RefField<T> p = initCopy();
-        p.jtDbName = this.jtDbName;
         p.jcDbName = this.jcDbName;
-        p.ijcDbName = this.ijcDbName;
         p.dbTypeName = this.dbTypeName;
         return copyFieldProps(this, p);
     }

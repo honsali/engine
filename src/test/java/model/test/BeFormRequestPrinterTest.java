@@ -17,6 +17,7 @@ import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
+import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
 import dev.cruding.engine.printer.impl.entity.BeMapperPrinter;
 import dev.cruding.engine.printer.impl.entity.BeRepositoryPrinter;
 import dev.cruding.engine.printer.impl.entity.BeRequestPrinter;
@@ -114,6 +115,45 @@ class BeFormRequestPrinterTest {
         assertTrue(createRequest.contains("@NotBlank @Size(min = 3) String description)"));
     }
 
+    @Test
+    void generatesTextStorageFromTheModelAndValidationFromEachForm() throws IOException {
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
+
+        TextLengthEntity entity = new TextLengthEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module("ModuleTextLengthEntity", "test/textLengthEntity");
+        module.addPage(new ViewCreerTextLengthEntity());
+        module.addPage(new ViewModifierTextLengthEntity());
+        context.initPages();
+        context.initActions();
+
+        new BeRequestPrinter().print(entity);
+        new BeLiqTablePrinter().print(entity);
+
+        Path packagePath = tempDir.resolve("be/src/main/java/app/domain/test/textlengthentity");
+        String createRequest = Files.readString(packagePath.resolve("TextLengthEntityCreateRequest.java"));
+        String updateRequest = Files.readString(packagePath.resolve("TextLengthEntityUpdateRequest.java"));
+        String table = Files.readString(tempDir.resolve(
+                "be/src/main/resources/liquibase/changelog/textLengthEntity_table.xml"));
+
+        assertTrue(createRequest.contains("@NotBlank @Size(max = 250) String code,"));
+        assertTrue(createRequest.contains("@NotBlank @Size(max = 100) String libelle,"));
+        assertTrue(createRequest.contains("@Size(max = 1000) String description)"));
+        assertTrue(updateRequest.contains("@NotBlank @Size(max = 500) String libelle,"));
+        assertTrue(updateRequest.contains("@Size(max = 1000) String description,"));
+
+        assertTrue(table.contains("<column name=\"code\" type=\"nvarchar(250)\">"));
+        assertTrue(table.contains("<column name=\"code\" type=\"nvarchar(250)\" />"));
+        assertTrue(table.contains("<column name=\"libelle\" type=\"nvarchar(500)\">"));
+        assertTrue(table.contains("<column name=\"libelle\" type=\"nvarchar(500)\" />"));
+        assertTrue(table.contains("<column name=\"description\" type=\"text\">"));
+        assertTrue(table.contains("<column name=\"description\" type=\"text\" />"));
+        assertFalse(table.contains("nvarchar(100)"));
+    }
+
     public static final class ReferenceTarget extends Entity {
         public final Field code = Text("code").isId();
     }
@@ -128,6 +168,12 @@ class BeFormRequestPrinterTest {
 
     public static final class MinimumLengthEntity extends Entity {
         public final Field description = LongText("description").required().minLength("3").isId();
+    }
+
+    public static final class TextLengthEntity extends Entity {
+        public final Field code = Text("code").isId();
+        public final Field libelle = Text("libelle").maxLength("500").required();
+        public final Field description = LongText("description").maxLength("1000");
     }
 
     public static final class ViewCreerFormEntity extends ViewComposer<FormEntity> {
@@ -162,6 +208,28 @@ class BeFormRequestPrinterTest {
             return block(
                     form(entity, entity.description),
                     element(createAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewCreerTextLengthEntity extends ViewComposer<TextLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            TextLengthEntity entity = entity(TextLengthEntity.class);
+            return block(
+                    form(entity, entity.code, entity.libelle.maxLength("100"), entity.description),
+                    element(createAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewModifierTextLengthEntity extends ViewComposer<TextLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            TextLengthEntity entity = entity(TextLengthEntity.class);
+            return block(
+                    form(entity, entity.code.readOnly(), entity.libelle, entity.description, hidden(entity.id_)),
+                    element(updateAction(entity)).byForm());
         }
     }
 }

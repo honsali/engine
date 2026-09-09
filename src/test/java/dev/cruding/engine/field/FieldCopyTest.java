@@ -12,6 +12,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.field.impl.ArabicText;
 import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.field.impl.Hour;
+import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.field.impl.Tag;
 import dev.cruding.engine.field.impl.Text;
 import dev.cruding.engine.field.impl.TextArray;
@@ -46,6 +47,33 @@ class FieldCopyTest {
     @Test
     void preservesTagWhenCustomizingACopy() {
         assertPreservesField(new Tag(new Text("statut")));
+    }
+
+    @Test
+    void preservesSettingIdentityAndGrammaticalOptionsOnCopies() {
+        assertPreservesField(new Setting());
+
+        Setting original = new Setting();
+        Setting feminine = original.feminine();
+        Setting vowel = original.vowel();
+        Setting labelled = (Setting) feminine.label("Structure");
+
+        for (Setting setting : List.of(original, feminine, vowel, labelled)) {
+            assertEquals("id", setting.lname);
+            assertEquals("Long", setting.jtype);
+            assertEquals("string", setting.jstype);
+            assertEquals("bigint", setting.stype);
+        }
+        assertNotSame(original, feminine);
+        assertNotSame(original, vowel);
+        assertNotSame(feminine, labelled);
+        assertEquals("ce", original.that());
+        assertEquals("cette", feminine.that());
+        assertEquals("cet", vowel.that());
+        assertEquals("cette", labelled.that());
+        assertEquals("Structure", labelled.label);
+        assertNull(original.label);
+        assertNull(feminine.label);
     }
 
     private void assertPreservesField(Field original) {

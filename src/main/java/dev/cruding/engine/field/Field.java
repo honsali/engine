@@ -37,7 +37,6 @@ public class Field {
     public boolean isText;
     public boolean isDate;
 
-    public boolean cloned = false;
     public String maxLength;
     public String minLength;
 
@@ -449,8 +448,6 @@ public class Field {
 
         to.containingEntity = from.containingEntity;
         to.containingEntityDbname = from.containingEntityDbname;
-
-        to.cloned = true;
 
         return to;
     }

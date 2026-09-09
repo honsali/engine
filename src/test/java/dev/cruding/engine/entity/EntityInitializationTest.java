@@ -29,6 +29,9 @@ class EntityInitializationTest {
 
         assertEquals(List.of(entity.code), entity.fieldList);
         assertSame(entity.id_, entity.setting);
+        assertEquals("Long", entity.id_.jtype);
+        assertEquals("string", entity.id_.jstype);
+        assertEquals("bigint", entity.id_.stype);
         assertEquals(entity.uname, entity.id_.containingEntity);
         assertEquals(entity.dbName, entity.id_.containingEntityDbname);
         assertEquals("code", entity.lid);
