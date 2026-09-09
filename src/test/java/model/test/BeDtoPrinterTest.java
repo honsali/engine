@@ -16,7 +16,7 @@ import dev.cruding.engine.printer.impl.entity.BeResponsePrinter;
 class BeDtoPrinterTest {
 
     public static final class IdEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     @TempDir

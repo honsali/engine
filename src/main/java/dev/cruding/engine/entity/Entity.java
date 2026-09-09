@@ -59,6 +59,9 @@ public class Entity extends FieldFactory {
                 try {
                     Field field = (Field) f.get(this);
                     if (field != null) {
+                        if (field.lname == null) {
+                            field.lname(f.getName());
+                        }
                         field.containingEntity(this);
                         if (field.isId) {
                             identifier = field;

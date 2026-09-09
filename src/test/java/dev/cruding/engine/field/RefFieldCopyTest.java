@@ -98,18 +98,18 @@ class RefFieldCopyTest {
     }
 
     public static final class TargetEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class SourceEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
         public final Father<TargetEntity> parent = Father(TargetEntity.class);
         public final Ref<TargetEntity> origine = Ref(TargetEntity.class);
         public final Ref<TargetEntity> destination = Ref(TargetEntity.class);
     }
 
     public static final class CopiesEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
         public final Field parent = Father(TargetEntity.class).required();
         public final Field origine = Ref(TargetEntity.class).required();
         public final Field destination = new RefList<>(Ref(TargetEntity.class)).required();

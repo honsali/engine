@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class Year extends Field {
 
-    public Year(String lname) {
+    public Year() {
         super(true);
-        lname(lname).jtype("LocalDate").jstype("string").stype("date").isDate(true);
+        jtype("LocalDate").jstype("string").stype("date").isDate(true);
     }
 
 
@@ -25,6 +25,6 @@ public class Year extends Field {
     }
 
     protected Field initCopy() {
-        return new Year(lname);
+        return new Year();
     }
 }

@@ -6,18 +6,18 @@ import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.inViewOnly.injection.GoToPageViewInjection;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.PageRef;
 
 public class GoToPageAction extends Action {
 
-    public GoToPageAction(Entity entity, Element element, Page targetPage) {
+    public GoToPageAction(Entity entity, Element element, PageRef targetPage) {
         super(ActionType.NOUI, actionName(targetPage), entity, element);
-        this.targetPage = Objects.requireNonNull(targetPage, "Target page cannot be null");
+        targetPage(targetPage);
         inViewOnly();
     }
 
-    private static String actionName(Page targetPage) {
-        return "goTo" + Objects.requireNonNull(targetPage, "Target page cannot be null").name;
+    private static String actionName(PageRef targetPage) {
+        return "goTo" + Objects.requireNonNull(targetPage, "Target page cannot be null").name();
     }
 
     public Action lcoreName(String lcoreName) {

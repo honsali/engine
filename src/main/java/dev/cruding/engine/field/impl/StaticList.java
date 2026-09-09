@@ -7,14 +7,15 @@ public class StaticList extends Text {
 
     private String type;
 
-    public StaticList(String lname) {
-        super(lname);
+    public StaticList() {
+        super();
         isText = false;
     }
 
-    public StaticList(String lname, String type) {
-        this(lname);
-        this.type = type;
+    public StaticList type(String type) {
+        StaticList p = (StaticList) makeCopy();
+        p.type = type;
+        return p;
     }
 
     public String ui(String element) {
@@ -42,7 +43,9 @@ public class StaticList extends Text {
 
 
     protected Field initCopy() {
-        return type != null ? new StaticList(lname, type) : new StaticList(lname);
+        StaticList p = new StaticList();
+        p.type = type;
+        return p;
     }
 
     private String typeExtension() {

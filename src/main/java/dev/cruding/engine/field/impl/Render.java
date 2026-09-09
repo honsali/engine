@@ -10,9 +10,8 @@ public class Render extends Field {
         super(f);
     }
 
-    public Render(String lname) {
+    public Render() {
         super(true);
-        lname(lname);
     }
 
     public boolean addViewScript(ViewFlow f, String uc, String mvcPath) {
@@ -32,6 +31,6 @@ public class Render extends Field {
     }
 
     protected Field initCopy() {
-        return new Render(lname);
+        return new Render();
     }
 }

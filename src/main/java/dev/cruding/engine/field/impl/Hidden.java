@@ -10,9 +10,8 @@ public class Hidden extends Field {
         label = null;
     }
 
-    public Hidden(String lname) {
+    public Hidden() {
         super(true);
-        lname(lname);
     }
 
 
@@ -25,6 +24,6 @@ public class Hidden extends Field {
     }
 
     protected Field initCopy() {
-        return new Hidden(lname);
+        return new Hidden();
     }
 }

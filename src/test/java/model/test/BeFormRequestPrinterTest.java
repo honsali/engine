@@ -155,25 +155,25 @@ class BeFormRequestPrinterTest {
     }
 
     public static final class ReferenceTarget extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class FormEntity extends Entity {
-        public final Field code = Text("code").isId();
-        public final Field libelle = Text("libelle").required();
-        public final Field internalNote = Text("internalNote");
-        public final Field active = Boolean("active").required();
+        public final Field code = Text().isId();
+        public final Field libelle = Text().required();
+        public final Field internalNote = Text();
+        public final Field active = Boolean().required();
         public final Field referenceTarget = Ref(ReferenceTarget.class);
     }
 
     public static final class MinimumLengthEntity extends Entity {
-        public final Field description = LongText("description").required().minLength("3").isId();
+        public final Field description = LongText().required().minLength(3).isId();
     }
 
     public static final class TextLengthEntity extends Entity {
-        public final Field code = Text("code").isId();
-        public final Field libelle = Text("libelle").maxLength("500").required();
-        public final Field description = LongText("description").maxLength("1000");
+        public final Field code = Text().isId();
+        public final Field libelle = Text().maxLength(500).required();
+        public final Field description = LongText().maxLength(1000);
     }
 
     public static final class ViewCreerFormEntity extends ViewComposer<FormEntity> {
@@ -183,7 +183,7 @@ class BeFormRequestPrinterTest {
             FormEntity entity = entity(FormEntity.class);
             return block(
                     form(entity, entity.libelle.required(false), entity.code,
-                            entity.Text("password").required().minLength("8").maxLength("100")),
+                            entity.Text().lname("password").required().minLength(8).maxLength(100)),
                     form(entity, entity.referenceTarget),
                     element(createAction(entity)).byForm());
         }
@@ -217,7 +217,7 @@ class BeFormRequestPrinterTest {
         public Component rootComponent() {
             TextLengthEntity entity = entity(TextLengthEntity.class);
             return block(
-                    form(entity, entity.code, entity.libelle.maxLength("100"), entity.description),
+                    form(entity, entity.code, entity.libelle.maxLength(100), entity.description),
                     element(createAction(entity)).byForm());
         }
     }

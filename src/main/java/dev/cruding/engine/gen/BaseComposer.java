@@ -197,12 +197,8 @@ public abstract class BaseComposer {
         return new GoToModuleAction(entity, element, target);
     }
 
-    public Action goToPage(Entity entity, Page target) {
-        return new GoToPageAction(entity, element, target);
-    }
-
     public Action goToPage(Entity entity, PageRef target) {
-        return goToPage(entity, Context.getInstance().getPage(target));
+        return new GoToPageAction(entity, element, target);
     }
 
     public Action emitEvent(Entity entity, String target) {
@@ -424,12 +420,8 @@ public abstract class BaseComposer {
         return null;
     }
 
-    public StaticList staticList(String lname) {
-        return new StaticList(lname);
-    }
-
-    public StaticList staticList(String lname, String type) {
-        return new StaticList(lname, type);
+    public StaticList staticList() {
+        return new StaticList();
     }
 
     public Field tag(Field f) {
@@ -442,8 +434,8 @@ public abstract class BaseComposer {
         return new Custom(f);
     }
 
-    public Custom custom(String lname) {
-        return new Custom(lname);
+    public Custom custom() {
+        return new Custom();
     }
 
     public Field actionColumn(Entity entity, Button button) {
@@ -456,15 +448,15 @@ public abstract class BaseComposer {
     }
 
     public Field actionColumn(Entity entity, String lname, ComponentWrappingElement c) {
-        return new ActionColumn(entity, lname + entity.uname, c);
+        return new ActionColumn(entity, c).lname(lname + entity.uname);
     }
 
     public Field editActionColumn(Entity entity, ComponentWrappingElement c) {
-        return new ActionColumn(entity, "modifier" + entity.uname, c);
+        return new ActionColumn(entity, c).lname("modifier" + entity.uname);
     }
 
     public Field deleteActionColumn(Entity entity, ComponentWrappingElement c) {
-        return new ActionColumn(entity, "supprimer" + entity.uname, c);
+        return new ActionColumn(entity, c).lname("supprimer" + entity.uname);
     }
 
     public Field dateRangeBegin(Field f) {
@@ -483,8 +475,8 @@ public abstract class BaseComposer {
         return new Id(f);
     }
 
-    public Field render(String lname) {
-        return new Render(lname);
+    public Field render() {
+        return new Render();
     }
 
     public Breadcrumb breadcrumb(String uname, Component... componentList) {

@@ -9,9 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import dev.cruding.engine.element.Element;
+import dev.cruding.engine.entity.FieldFactory;
 import dev.cruding.engine.field.impl.ArabicText;
+import dev.cruding.engine.field.impl.Custom;
 import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.field.impl.Hour;
+import dev.cruding.engine.field.impl.Render;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.field.impl.Tag;
 import dev.cruding.engine.field.impl.Text;
@@ -20,33 +23,48 @@ import dev.cruding.engine.field.impl.TextArray;
 class FieldCopyTest {
 
     @Test
+    void copiesAllSimpleFieldsBeforeTheyAreNamed() {
+        FieldFactory factory = new FieldFactory();
+        for (Field field : List.of(factory.Text(), factory.ArabicText(), factory.Year(),
+                factory.Double(), factory.Int(), factory.Date(), factory.Tel(), factory.Email(),
+                factory.Hour(), factory.File(), factory.StaticList(), factory.TextArray(),
+                factory.Boolean(), factory.LongText(), new Hidden(factory.Text()),
+                new Custom(factory.Text()), new Render(factory.Text()), new Tag(factory.Text()))) {
+            assertNull(field.lname);
+            assertNull(field.uname);
+            assertNull(field.dbName);
+            assertPreservesField(field);
+        }
+    }
+
+    @Test
     void preservesTextWhenCustomizingACopy() {
-        assertPreservesField(new Text("nom"));
+        assertPreservesField(new Text().lname("nom"));
     }
 
     @Test
     void preservesArabicTextWhenCustomizingACopy() {
-        assertPreservesField(new ArabicText("nomArabe"));
+        assertPreservesField(new ArabicText().lname("nomArabe"));
     }
 
     @Test
     void preservesHourWhenCustomizingACopy() {
-        assertPreservesField(new Hour("heure"));
+        assertPreservesField(new Hour().lname("heure"));
     }
 
     @Test
     void preservesHiddenWhenCustomizingACopy() {
-        assertPreservesField(new Hidden(new Text("id")));
+        assertPreservesField(new Hidden(new Text().lname("id")));
     }
 
     @Test
     void preservesTextArrayWhenCustomizingACopy() {
-        assertPreservesField(new TextArray("motsCles"));
+        assertPreservesField(new TextArray().lname("motsCles"));
     }
 
     @Test
     void preservesTagWhenCustomizingACopy() {
-        assertPreservesField(new Tag(new Text("statut")));
+        assertPreservesField(new Tag(new Text().lname("statut")));
     }
 
     @Test

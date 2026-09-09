@@ -5,8 +5,8 @@ import dev.cruding.engine.field.Field;
 
 public class Email extends Text {
 
-    public Email(String lname) {
-        super(lname);
+    public Email() {
+        super();
     }
 
     public String ui(String element) {
@@ -23,6 +23,6 @@ public class Email extends Text {
     }
 
     protected Field initCopy() {
-        return new Email(lname);
+        return new Email();
     }
 }

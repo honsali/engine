@@ -5,7 +5,8 @@ import dev.cruding.engine.field.Field;
 public class DateRangeEnd extends Date {
 
     public DateRangeEnd(Field f) {
-        super("fin" + f.uname);
+        super();
+        lname("fin" + f.uname);
         label = null;
     }
 

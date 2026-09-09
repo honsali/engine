@@ -10,7 +10,7 @@ public class FormulaireCreerAccount extends ElementComposer {
 
     public Component rootComponent() {
         Account e = entity(Account.class);
-        Field password = e.Text("password").maxLength("256").minLength("8").required();
+        Field password = e.Text().lname("password").maxLength(256).minLength(8).required();
 
         return block(
                 form(e,

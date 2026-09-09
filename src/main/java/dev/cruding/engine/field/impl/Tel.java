@@ -5,8 +5,8 @@ import dev.cruding.engine.field.Field;
 
 public class Tel extends Text {
 
-    public Tel(String lname) {
-        super(lname);
+    public Tel() {
+        super();
     }
 
     public String ui(String element) {
@@ -23,6 +23,6 @@ public class Tel extends Text {
     }
 
     protected Field initCopy() {
-        return new Tel(lname);
+        return new Tel();
     }
 }

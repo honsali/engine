@@ -25,52 +25,48 @@ public class FieldFactory {
         return new Setting();
     }
 
-    public Field Text(String name) {
-        return new Text(name);
+    public Field Text() {
+        return new Text();
     }
 
-    public Field ArabicText(String name) {
-        return new ArabicText(name);
+    public Field ArabicText() {
+        return new ArabicText();
     }
 
-    public Field Year(String name) {
-        return new Year(name);
+    public Field Year() {
+        return new Year();
     }
 
-    public Field Double(String name) {
-        return new Double(name);
+    public Field Double() {
+        return new Double();
     }
 
-    public Field Int(String name) {
-        return new Int(name);
+    public Field Int() {
+        return new Int();
     }
 
-    public Field Date(String name) {
-        return new Date(name);
+    public Field Date() {
+        return new Date();
     }
 
-    public Field Tel(String name) {
-        return new Tel(name);
+    public Field Tel() {
+        return new Tel();
     }
 
-    public Field Email(String name) {
-        return new Email(name);
+    public Field Email() {
+        return new Email();
     }
 
-    public Field Hour(String name) {
-        return new Hour(name);
+    public Field Hour() {
+        return new Hour();
     }
 
-    public Field File(String name) {
-        return new File(name);
+    public Field File() {
+        return new File();
     }
 
-    public StaticList StaticList(String name) {
-        return new StaticList(name);
-    }
-
-    public StaticList StaticList(String name, String type) {
-        return new StaticList(name, type);
+    public StaticList StaticList() {
+        return new StaticList();
     }
 
 
@@ -83,20 +79,16 @@ public class FieldFactory {
     }
 
 
-    public <T extends Entity> Ref<T> Ref(Class<T> type, String lname) {
-        return new Ref<T>(type, lname);
+    public Field TextArray() {
+        return new TextArray();
     }
 
-    public Field TextArray(String name) {
-        return new TextArray(name);
+    public Field Boolean() {
+        return new Boolean();
     }
 
-    public Field Boolean(String name) {
-        return new Boolean(name);
-    }
-
-    public Field LongText(String name) {
-        return new LongText(name);
+    public Field LongText() {
+        return new LongText();
     }
 
 }

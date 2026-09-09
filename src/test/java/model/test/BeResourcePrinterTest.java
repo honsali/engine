@@ -20,7 +20,7 @@ import dev.cruding.engine.printer.impl.entity.BeControllerPrinter;
 class BeResourcePrinterTest {
 
     public static final class SecuredEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     @TempDir

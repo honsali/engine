@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class Boolean extends Field {
 
-    public Boolean(String lname) {
+    public Boolean() {
         super(true);
-        lname(lname).jtype("Boolean").jstype("boolean").stype("boolean");
+        jtype("Boolean").jstype("boolean").stype("boolean");
     }
 
     public String ui(String element) {
@@ -35,6 +35,6 @@ public class Boolean extends Field {
     }
 
     protected Boolean initCopy() {
-        return new Boolean(lname);
+        return new Boolean();
     }
 }

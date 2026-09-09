@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class Double extends Field {
 
-    public Double(String lname) {
+    public Double() {
         super(true);
-        lname(lname).jtype("Double").jstype("number").stype("double");
+        jtype("Double").jstype("number").stype("double");
     }
 
     public String ui(String element) {
@@ -24,7 +24,7 @@ public class Double extends Field {
     }
 
     protected Field initCopy() {
-        return new Double(lname);
+        return new Double();
     }
 
 }

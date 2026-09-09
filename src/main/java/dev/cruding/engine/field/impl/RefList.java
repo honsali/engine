@@ -6,12 +6,12 @@ import dev.cruding.engine.entity.Entity;
 public class RefList<T extends Entity> extends Ref<T> {
 
     public RefList(Ref<T> r) {
-        super(r.type, r.lname);
+        super(r.type);
         copyRefFieldProps(r, this);
     }
 
-    private RefList(Class<T> type, String lname) {
-        super(type, lname);
+    private RefList(Class<T> type) {
+        super(type);
     }
 
     public String getExtension() {
@@ -32,6 +32,6 @@ public class RefList<T extends Entity> extends Ref<T> {
     }
 
     protected Ref<T> initCopy() {
-        return new RefList<T>(type, lname);
+        return new RefList<T>(type);
     }
 }

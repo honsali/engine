@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class TextArray extends Field {
 
-    public TextArray(String lname) {
+    public TextArray() {
         super(true);
-        lname(lname).jtype("String[]").jstype("string[]").stype("varchar");
+        jtype("String[]").jstype("string[]").stype("varchar");
     }
 
     public String ui(String element) {
@@ -25,6 +25,6 @@ public class TextArray extends Field {
     }
 
     protected Field initCopy() {
-        return new TextArray(lname);
+        return new TextArray();
     }
 }

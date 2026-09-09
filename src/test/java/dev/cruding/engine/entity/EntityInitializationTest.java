@@ -1,6 +1,7 @@
 package dev.cruding.engine.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -84,6 +85,49 @@ class EntityInitializationTest {
     }
 
     @Test
+    void infersOwnAndInheritedFieldNamesWithoutOverwritingExplicitNames() {
+        UnnamedEntity entity = new UnnamedEntity();
+        assertNull(entity.code.lname);
+        assertNull(entity.dateEntree.lname);
+        Context.getInstance().addEntity(entity);
+        Context.getInstance().initEntities();
+
+        assertEquals("code", entity.code.lname);
+        assertEquals("Code", entity.uid);
+        assertEquals("dateEntree", entity.dateEntree.lname);
+        assertEquals("DateEntree", entity.dateEntree.uname);
+        assertEquals("date_entree", entity.dateEntree.dbName);
+        assertEquals(entity.uname, entity.dateEntree.containingEntity);
+        assertEquals(entity.dbName, entity.dateEntree.containingEntityDbname);
+        assertEquals("libelle", entity.name.lname);
+        assertEquals("Libelle", entity.name.uname);
+        assertEquals("libelle", entity.name.dbName);
+        assertEquals(4, entity.fieldList.size());
+        assertEquals("id", entity.setting.lname);
+    }
+
+    @Test
+    void resolvesImplicitOnChangeNamesAfterFluentCopies() {
+        UnnamedEntity entity = new UnnamedEntity();
+        Context.getInstance().addEntity(entity);
+        Context.getInstance().initEntities();
+
+        assertEquals("nomUsuel", entity.nomUsuel.onChange);
+        assertEquals("libelle", entity.name.onChange);
+        assertEquals(3, entity.nomUsuel.minLength);
+        assertEquals(150, entity.nomUsuel.maxLength);
+        assertEquals("nvarchar(150)", entity.nomUsuel.stype);
+        assertTrue(entity.nomUsuel.required);
+
+        Field formCopy = entity.nomUsuel.maxLength(100).label("Nom court");
+        assertEquals("nomUsuel", formCopy.onChange);
+        assertEquals("nomUsuel", formCopy.lname);
+        assertEquals(100, formCopy.maxLength);
+        assertEquals(150, entity.nomUsuel.maxLength);
+        assertNull(entity.nomUsuel.label);
+    }
+
+    @Test
     void bindsAFatherOnlyOnceAndAllowsSeveralReferencesToItsTarget() {
         SimpleEntity parent = new SimpleEntity();
         EntityWithRelations entity = new EntityWithRelations();
@@ -133,7 +177,7 @@ class EntityInitializationTest {
     }
 
     public static class SimpleEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class ConfiguredEntity extends SimpleEntity {
@@ -145,7 +189,13 @@ class EntityInitializationTest {
     }
 
     public static final class ReferenceEntity extends ReferenceData {
-        public final Field description = Text("description");
+        public final Field description = Text();
+    }
+
+    public static final class UnnamedEntity extends SimpleEntity {
+        public final Field nomUsuel = ArabicText().onChange().minLength(3).maxLength(150).required();
+        public final Field name = Text().onChange().required().lname("libelle");
+        public final Field dateEntree = Date().filtrable();
     }
 
     public static class EntityWithRelations extends SimpleEntity {

@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class LongText extends Field {
 
-    public LongText(String lname) {
+    public LongText() {
         super(true);
-        lname(lname).jtype("String").jstype("string").stype("text");
+        jtype("String").jstype("string").stype("text");
         isText = true;
     }
 
@@ -25,6 +25,6 @@ public class LongText extends Field {
     }
 
     protected Field initCopy() {
-        return new LongText(lname);
+        return new LongText();
     }
 }

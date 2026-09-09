@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class Int extends Field {
 
-    public Int(String lname) {
+    public Int() {
         super(true);
-        lname(lname).jtype("Integer").jstype("number").stype("int");
+        jtype("Integer").jstype("number").stype("int");
     }
 
     public String ui(String element) {
@@ -24,6 +24,6 @@ public class Int extends Field {
     }
 
     protected Field initCopy() {
-        return new Int(lname);
+        return new Int();
     }
 }

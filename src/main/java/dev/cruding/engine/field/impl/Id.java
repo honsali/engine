@@ -6,7 +6,8 @@ public class Id extends Text {
 
 
     public Id(Field f) {
-        super("id" + f.uname);
+        super();
+        lname("id" + f.uname);
     }
 
 

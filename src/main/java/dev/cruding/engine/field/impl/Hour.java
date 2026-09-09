@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class Hour extends Field {
 
-    public Hour(String lname) {
+    public Hour() {
         super(true);
-        lname(lname).jtype("LocalTime").jstype("string").stype("time").isDate(true);
+        jtype("LocalTime").jstype("string").stype("time").isDate(true);
     }
 
     public String ui(String element) {
@@ -24,6 +24,6 @@ public class Hour extends Field {
     }
 
     protected Field initCopy() {
-        return new Hour(lname);
+        return new Hour();
     }
 }

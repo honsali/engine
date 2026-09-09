@@ -25,9 +25,8 @@ public class ActionColumn extends Field {
         this.component.action.byProp(entity.lname + ":element");
     }
 
-    public ActionColumn(Entity entity, String lname, ComponentWrappingElement c) {
+    public ActionColumn(Entity entity, ComponentWrappingElement c) {
         super(true);
-        lname(lname);
         this.componentWrappingElement = c;
         this.componentWrappingElement.byProp(entity.lname + ":element");
     }

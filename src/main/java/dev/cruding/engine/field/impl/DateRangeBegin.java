@@ -5,7 +5,8 @@ import dev.cruding.engine.field.Field;
 public class DateRangeBegin extends Date {
 
     public DateRangeBegin(Field f) {
-        super("debut" + f.uname);
+        super();
+        lname("debut" + f.uname);
         label = null;
     }
 

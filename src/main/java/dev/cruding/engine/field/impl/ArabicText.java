@@ -5,8 +5,8 @@ import dev.cruding.engine.field.Field;
 
 public class ArabicText extends Text {
 
-    public ArabicText(String lname) {
-        super(lname);
+    public ArabicText() {
+        super();
     }
 
     public String ui(String element) {
@@ -23,6 +23,6 @@ public class ArabicText extends Text {
     }
 
     protected Field initCopy() {
-        return new ArabicText(lname);
+        return new ArabicText();
     }
 }

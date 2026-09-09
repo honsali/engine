@@ -78,7 +78,7 @@ class FeServicePrinterTest {
     }
 
     public static final class ServiceEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
 
         ServiceEntity() {
             apiCollectionName("service-entities");

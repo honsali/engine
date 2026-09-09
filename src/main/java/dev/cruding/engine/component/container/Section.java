@@ -6,6 +6,7 @@ import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.PageRef;
 
 public class Section extends Container {
 
@@ -73,8 +74,8 @@ public class Section extends Container {
         return this;
     }
 
-    public Section backPage(Page backPage) {
-        this.backPage = backPage;
+    public Section backPage(PageRef backPage) {
+        this.backPage = Context.getInstance().getPage(backPage);
         return this;
     }
 

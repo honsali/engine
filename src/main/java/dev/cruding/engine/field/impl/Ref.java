@@ -12,10 +12,6 @@ public class Ref<T extends Entity> extends RefField<T> {
         super(t, false);
     }
 
-    public Ref(Class<T> t, String lname) {
-        super(t, false, lname);
-    }
-
     public void addJsDeclaration(JsFlow f) {
         addJsDeclaration(f, lname, "IReference");
     }

@@ -2,6 +2,7 @@ package model.test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.action.specifique.BasicAction;
 import dev.cruding.engine.action.update.UpdateAction;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.component.container.Section;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
@@ -28,6 +30,7 @@ import dev.cruding.engine.field.impl.Date;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.gen.Page;
+import dev.cruding.engine.gen.PageRef;
 import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.module.FeAclPrinter;
@@ -50,7 +53,7 @@ class FePageContractPrinterTest {
 
     @Test
     void rendersApiDatesWithTheFormattedReadOnlyComponent() {
-        assertEquals("DateFormatee", new Date("date").ui(Element.DETAIL));
+        assertEquals("DateFormatee", new Date().lname("date").ui(Element.DETAIL));
     }
 
     @Test
@@ -65,7 +68,7 @@ class FePageContractPrinterTest {
         Module module = new Module("ModulePageContract", "test/pageContract");
         ViewFiltrerPageContractEntity view = new ViewFiltrerPageContractEntity(entity);
         Page page = module.addPage(view).icon("faFilter").isIndex();
-        view.targetPage = page;
+        view.targetPage = new PageRef(page.name);
         page.init();
 
         ViewConsulterPageContractEntity detailView = new ViewConsulterPageContractEntity(entity);
@@ -231,13 +234,90 @@ class FePageContractPrinterTest {
         assertFalse(hook.contains("{ ...req, form"));
     }
 
+    @Test
+    void generatesOnChangeHandlersAfterDeferredAndExplicitNaming() throws IOException {
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
+        OnChangeEntity entity = new OnChangeEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module("ModuleOnChange", "test/onChange");
+        ViewModifierOnChangeEntity view = new ViewModifierOnChangeEntity();
+        Page page = module.addPage(view);
+        page.init();
+        context.initActions();
+        new FeElementPrinter().print(view.element);
+
+        String generated = Files.readString(tempDir.resolve(
+                "fe/src/modules/test/onChange/onChangeEntity/modifier/ViewModifierOnChangeEntity.tsx"));
+        assertTrue(generated.contains("const [nom, setNom] = useState(null);"));
+        assertTrue(generated.contains("useOnChange('nom', form, (valeur) => {"));
+        assertTrue(generated.contains("setNom(valeur);"));
+        assertTrue(generated.contains("const [valeurChoisie, setValeurChoisie] = useState(null);"));
+        assertTrue(generated.contains("useOnChange('choix', form, (valeur) => {"));
+        assertTrue(generated.contains("setValeurChoisie(valeur);"));
+        assertTrue(generated.contains("useOnChange('declencheur', form, (valeur) => {"));
+        assertTrue(generated.contains("actualiserOnChangeEntity(valeur);"));
+        assertFalse(generated.contains("setDeclencheur"));
+        assertFalse(generated.contains("useOnChange('sansSuivi'"));
+    }
+
+    @Test
+    void resolvesNavigationAndSectionBackPageReferencesAcrossModules() throws IOException {
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
+        PageContractEntity entity = new PageContractEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module sourceModule = new Module("ModuleSource", "test/source");
+        PageRef destination = new PageRef("PageConsulterPageContractEntity");
+        ViewRetourPageContractEntity view = new ViewRetourPageContractEntity(destination);
+        sourceModule.addPage(view);
+
+        Module destinationModule = new Module("ModuleDestination", "test/destination");
+        Page targetPage = destinationModule.addPage(new ViewConsulterPageContractEntity(entity));
+        context.initPages();
+        context.initActions();
+
+        assertSame(targetPage, ((Section) view.element.rootComponent).backPage);
+        assertSame(targetPage, context.actionElement(view.element).getFirst().targetPage);
+        new FeElementPrinter().print(view.element);
+
+        String generatedView = Files.readString(tempDir.resolve(
+                "fe/src/modules/test/source/pageContractEntity/retour/ViewRetourPageContractEntity.tsx"));
+        assertTrue(generatedView.contains(
+                "import { PageConsulterPageContractEntity } from '../../../destination/ListePageDestination';"));
+        assertTrue(generatedView.contains("backPage={PageConsulterPageContractEntity}"));
+        assertTrue(generatedView.contains(
+                "goToPage(PageConsulterPageContractEntity, { idPageContractEntity: pageContractEntity.id });"));
+    }
+
     public static final class PageContractEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
+    }
+
+    public static final class OnChangeEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field nom = Text().onChange().required();
+    }
+
+    public static final class ViewModifierOnChangeEntity extends ViewComposer<OnChangeEntity> {
+        @Override
+        public Component rootComponent() {
+            OnChangeEntity entity = entity(OnChangeEntity.class);
+            BasicAction action = new BasicAction(ActionType.NOUI, "actualiser", entity, element);
+            return form(entity, entity.nom.width(120),
+                    entity.Text().onChange().onChange("valeurChoisie").required().lname("choix"),
+                    entity.Text().onChange().onChange(action).required().lname("declencheur"),
+                    entity.Text().onChange().onChange((String) null).lname("sansSuivi"));
+        }
     }
 
     public static final class ViewFiltrerPageContractEntity extends ViewComposer<PageContractEntity> {
         private final PageContractEntity entity;
-        private Page targetPage;
+        private PageRef targetPage;
 
         ViewFiltrerPageContractEntity(PageContractEntity entity) {
             this.entity = entity;
@@ -307,5 +387,20 @@ class FePageContractPrinterTest {
     }
 
     public static final class ViewComponentlessPageContractEntity extends ViewComposer<PageContractEntity> {
+    }
+
+    public static final class ViewRetourPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageRef targetPage;
+
+        ViewRetourPageContractEntity(PageRef targetPage) {
+            this.targetPage = targetPage;
+        }
+
+        @Override
+        public Component rootComponent() {
+            PageContractEntity entity = entity(PageContractEntity.class);
+            return section(table(entity, entity.code).onRowClick(goToPage(entity, targetPage)))
+                    .backPage(targetPage);
+        }
     }
 }

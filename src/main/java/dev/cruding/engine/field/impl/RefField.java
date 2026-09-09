@@ -17,16 +17,12 @@ public class RefField<T extends Entity> extends Field {
     public String dbTypeName;
     public String jcDbName;
 
-    public RefField(Class<T> type, boolean father, String lname) {
+    public RefField(Class<T> type, boolean father) {
         super(false);
         this.type = type;
         isFather = father;
         isRef = !father;
-        lname(lname).jtype(type.getSimpleName());
-    }
-
-    public RefField(Class<T> type, boolean father) {
-        this(type, father, StringUtils.uncapitalize(type.getSimpleName()));
+        lname(StringUtils.uncapitalize(type.getSimpleName())).jtype(type.getSimpleName());
     }
 
     public RefField<?> lname(String lname) {

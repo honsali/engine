@@ -94,7 +94,7 @@ class ContextLifecycleTest {
     }
 
     public static final class LifecycleEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class ViewListerLifecycleEntity extends ViewComposer<LifecycleEntity> {

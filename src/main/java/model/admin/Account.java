@@ -5,7 +5,7 @@ import dev.cruding.engine.field.Field;
 
 public class Account extends Entity {
 
-    public final Field username = Text("username").required().isId().maxLength("100").minLength("3");
+    public final Field username = Text().required().isId().maxLength(100).minLength(3);
     public final Field role = Ref(Role.class).required();
-    public final Field activated = Boolean("activated").required();
+    public final Field activated = Boolean().required();
 }

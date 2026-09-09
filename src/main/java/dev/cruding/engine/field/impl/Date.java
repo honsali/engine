@@ -7,9 +7,9 @@ import dev.cruding.engine.flow.JsFlow;
 
 public class Date extends Field {
 
-    public Date(String lname) {
+    public Date() {
         super(true);
-        lname(lname).jtype("LocalDate").jstype("string").stype("date").isDate(true);
+        jtype("LocalDate").jstype("string").stype("date").isDate(true);
     }
 
 
@@ -76,6 +76,6 @@ public class Date extends Field {
     }
 
     protected Field initCopy() {
-        return new Date(lname);
+        return new Date();
     }
 }

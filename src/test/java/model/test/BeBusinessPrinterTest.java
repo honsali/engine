@@ -100,15 +100,15 @@ class BeBusinessPrinterTest {
     }
 
     public static final class LookupEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class ReferenceTarget extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
     }
 
     public static final class EntityWithReference extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
         public final Field referenceTarget = Ref(ReferenceTarget.class);
     }
 

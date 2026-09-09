@@ -37,13 +37,14 @@ public class Field {
     public boolean isText;
     public boolean isDate;
 
-    public String maxLength;
-    public String minLength;
+    public Integer maxLength;
+    public Integer minLength;
 
     public String label;
     public int width;
     public String onChange;
     public Action onChangeAction;
+    protected boolean onChangeNamePending;
     public boolean readOnly;
     public String readOnlyIf;
     public String hiddenIf;
@@ -76,6 +77,10 @@ public class Field {
         this.lname = lname;
         this.uname = StringUtils.capitalize(lname);
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(lname), "_").toLowerCase();
+        if (onChangeNamePending) {
+            this.onChange = lname;
+            this.onChangeNamePending = false;
+        }
         return this;
     }
 
@@ -196,12 +201,14 @@ public class Field {
     public Field onChange() {
         Field p = makeCopy();
         p.onChange = this.lname;
+        p.onChangeNamePending = this.lname == null;
         return p;
     }
 
     public Field onChange(String onChange) {
         Field p = makeCopy();
         p.onChange = onChange;
+        p.onChangeNamePending = false;
         return p;
     }
 
@@ -209,6 +216,7 @@ public class Field {
         Field p = makeCopy();
         p.onChange = "";
         p.onChangeAction = action;
+        p.onChangeNamePending = false;
         return p;
     }
 
@@ -219,13 +227,13 @@ public class Field {
     }
 
 
-    public Field maxLength(String maxLength) {
+    public Field maxLength(int maxLength) {
         Field p = makeCopy();
         p.maxLength = maxLength;
         return p;
     }
 
-    public Field minLength(String minLength) {
+    public Field minLength(int minLength) {
         Field p = makeCopy();
         p.minLength = minLength;
         return p;
@@ -338,10 +346,10 @@ public class Field {
     public void addFilterJavaDeclaration(JavaFlow f) {
         f.L________("");
         if (minLength != null) {
-            f.__("@Size(min = ", minLength, ") ");
+            f.__("@Size(min = ", minLength.toString(), ") ");
         }
         if (maxLength != null) {
-            f.__("@Size(max = ", maxLength, ") ");
+            f.__("@Size(max = ", maxLength.toString(), ") ");
         }
         f.__(jtype + " " + lname);
     }
@@ -432,6 +440,7 @@ public class Field {
         to.emptyIf = from.emptyIf;
         to.onChange = from.onChange;
         to.onChangeAction = from.onChangeAction;
+        to.onChangeNamePending = from.onChangeNamePending;
         to.defaultValue = from.defaultValue;
         to.watched = from.watched;
         to.aloneInRow = from.aloneInRow;

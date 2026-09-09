@@ -9,9 +9,8 @@ public class Tag extends Field {
         super(f);
     }
 
-    private Tag(String lname) {
+    private Tag() {
         super(true);
-        lname(lname);
     }
 
     public String ui(String element) {
@@ -22,7 +21,7 @@ public class Tag extends Field {
     }
 
     protected Field initCopy() {
-        return new Tag(lname);
+        return new Tag();
     }
 
 }

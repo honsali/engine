@@ -5,9 +5,9 @@ import dev.cruding.engine.field.Field;
 
 public class File extends Field {
 
-    public File(String lname) {
+    public File() {
         super(false);
-        lname(lname).jtype("Media").jstype("any").stype("blob");
+        jtype("Media").jstype("any").stype("blob");
     }
 
 
@@ -25,6 +25,6 @@ public class File extends Field {
     }
 
     protected Field initCopy() {
-        return new File(lname);
+        return new File();
     }
 }

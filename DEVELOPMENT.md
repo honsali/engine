@@ -53,16 +53,30 @@ Exemple réel :
 ```java
 public class Conge extends Entity {
 
-    public final Field code = Text("code").isId();
+    public final Field code = Text().isId();
     public final Field typeConge = Ref(TypeConge.class);
-    public final Field dateDebutConge = Date("dateDebutConge");
-    public final Field dateFinConge = Date("dateFinConge");
-    public final Field commentaire = LongText("commentaire");
+    public final Field dateDebutConge = Date();
+    public final Field dateFinConge = Date();
+    public final Field commentaire = LongText();
     public final Field employe = Father(Employe.class);
 }
 ```
 
 `Entity.init()` collecte les champs publics de type `Field` du modèle et de ses bases métier, notamment `ReferenceData.name`. Les champs techniques déclarés par `Entity` (`id_`, `father`, `setting`) sont exclus de cette collecte. L'identifiant technique par défaut est initialisé explicitement ; un `Setting` déclaré dans le DSL reste pris en compte.
+
+Les fabriques de champs simples ne prennent pas de nom :
+
+```java
+public final Field code = Text().isId();
+public final Field nom = Text().required().minLength(3).maxLength(150);
+public final Field dateNaissance = Date().filtrable();
+```
+
+Le constructeur configure le type ; `Entity.init()` déduit ensuite le nom de l'attribut Java lorsqu'il n'a pas été fourni. Ainsi, `dateNaissance` donne `lname = "dateNaissance"`, `uname = "DateNaissance"` et `dbName = "date_naissance"`. Les champs hérités suivent la même règle. Les copies créées par les méthodes fluides fonctionnent avant cette attribution ; `onChange()` attend également le nom lorsqu'il manque.
+
+Le nom explicite passe uniquement par la méthode existante `lname(...)` : `Field name = Text().lname("libelle")` pour un alias, ou `Text().lname("password")` pour un champ propre à un formulaire, qui n'est pas collecté par `Entity.init()`. Les constructeurs et fabriques prenant le nom en argument sont supprimés. Un alias scalaire explicite n'est pas remplacé par le nom Java. `Ref(Cible.class)` et `Father(Cible.class)` conservent leur convention de nommage par l'attribut Java.
+
+L'option de rendu d'une liste statique se déclare séparément : `StaticList().type("radioVertical")`, ou `StaticList().type("radioVertical").lname("choix")` hors d'une entité. `type(...)` crée une copie, comme les autres personnalisations du champ.
 
 `Setting` conserve la convention d'identifiant technique de la cible actuelle : `id`, de type Java `Long`, SQL `bigint` et TypeScript `string`, auto-généré côté backend. Il porte aussi le libellé de l'entité et ses accords grammaticaux. Une autre stratégie d'identifiant demande une adaptation cohérente du moteur et du core cible, pas l'activation d'une option du DSL existant.
 
@@ -112,7 +126,9 @@ Les personnalisations de champs comme `required(...)`, `label(...)` et `width(..
 
 Les copies de `Ref` et de `Father` conservent également leur cible déjà résolue, ainsi que leurs noms de rôle et métadonnées SQL. La conversion d'un `Ref` en `RefList` et les copies suivantes suivent ce même contrat, couvert par `RefFieldCopyTest`. L'entité référencée reste partagée ; elle n'est pas dupliquée avec le champ.
 
-Pour `Text`, `ArabicText`, `Email`, `Tel` et `StaticList`, la longueur maximale vaut `250` par défaut et détermine aussi la taille SQL : `Text("libelle").maxLength("500")` produit une colonne `nvarchar(500)` et une validation `@Size(max = 500)` dans la Request. Ces variantes réutilisent le comportement de `Text` et conservent leurs rendus propres ; une `StaticList` obligatoire conserve sa validation `@NotNull`, distincte du `@NotBlank` d'un champ texte. Une copie d'un champ limitée à `100` dans un formulaire restreint la validation de ce cas d'usage sans réduire la colonne du modèle. `LongText("description").maxLength("1000")` conserve le type SQL `text` ; la limite concerne sa validation.
+Les méthodes `maxLength(int)` et `minLength(int)` prennent des entiers, par exemple `.minLength(3).maxLength(150)`. Les métadonnées correspondantes sont des `Integer` ; `null` signifie qu'aucune limite n'a été déclarée.
+
+Pour `Text`, `ArabicText`, `Email`, `Tel` et `StaticList`, la longueur maximale vaut `250` par défaut et détermine aussi la taille SQL : `Text().maxLength(500)` produit une colonne `nvarchar(500)` et une validation `@Size(max = 500)` dans la Request. Ces variantes réutilisent le comportement de `Text` et conservent leurs rendus propres ; une `StaticList` obligatoire conserve sa validation `@NotNull`, distincte du `@NotBlank` d'un champ texte. Une copie d'un champ limitée à `100` dans un formulaire restreint la validation de ce cas d'usage sans réduire la colonne du modèle. `LongText().maxLength(1000)` conserve le type SQL `text` ; la limite concerne sa validation.
 
 `Hour` produit un type Java `LocalTime` et un type SQL `time`. Les imports des entités et des réponses suivent le type temporel du champ, y compris pour un champ transitoire ; `Date` et `Year` conservent `LocalDate` et le type SQL `date`.
 
@@ -255,6 +271,8 @@ Le nommage SQL est conventionnel : tables et colonnes en snake_case, suffixe `_i
 Les références de pages partagées par le DSL utilisent des `PageRef` immuables déclarées dans leur module ; elles sont résolues dans le `Context` courant au moment de composer les actions.
 
 `Action.targetPage(PageRef)` effectue directement cette résolution, par exemple `.targetPage(RhModule.pageConsulterEmploye)`. Les helpers `addAction`, `editAction`, `backToListAction` et `backToDetailAction` lui transmettent la référence ; les composants et injections utilisent ensuite la `Page` résolue.
+
+`goToPage(Entity, PageRef)` transmet également la référence à `GoToPageAction`, qui réutilise `targetPage(PageRef)`. `Section.backPage(PageRef)` résout sa page de retour selon la même convention. Ces points d'entrée du DSL n'acceptent plus directement de `Page` ; les objets internes conservent la définition résolue pour produire les imports et la navigation.
 
 `Processor` orchestre les familles de printers. Les printers concernés par les actions les parcourent ensuite et demandent à leurs injections de contribuer au fichier visé.
 

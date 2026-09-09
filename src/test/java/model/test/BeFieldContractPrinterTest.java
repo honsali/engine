@@ -119,25 +119,25 @@ class BeFieldContractPrinterTest {
     }
 
     public static final class HourEntity extends Entity {
-        public final Field code = Text("code").isId();
-        public final Field heure = Hour("heure").required();
+        public final Field code = Text().isId();
+        public final Field heure = Hour().required();
     }
 
     public static final class TransientHourEntity extends Entity {
-        public final Field code = Text("code").isId();
-        public final Field heure = Hour("heure").tranzient();
+        public final Field code = Text().isId();
+        public final Field heure = Hour().tranzient();
     }
 
     public static final class TextVariantsEntity extends Entity {
-        public final Field code = Text("code").isId();
-        public final Field arabe = ArabicText("arabe").maxLength("500").required();
-        public final Field email = Email("email").maxLength("500").required();
-        public final Field tel = Tel("tel").maxLength("500").required();
-        public final Field choix = StaticList("choix", "radioVertical").maxLength("500").required();
+        public final Field code = Text().isId();
+        public final Field arabe = ArabicText().maxLength(500).required();
+        public final Field email = Email().maxLength(500).required();
+        public final Field tel = Tel().maxLength(500).required();
+        public final Field choix = StaticList().type("radioVertical").maxLength(500).required();
     }
 
     public static final class ReadOnlyEntity extends Entity {
-        public final Field code = Text("code").isId();
+        public final Field code = Text().isId();
         public final Field configuration = Setting().readOnly().label("Structure");
     }
 
@@ -153,8 +153,8 @@ class BeFieldContractPrinterTest {
 
         public Component rootComponent() {
             TextVariantsEntity e = entity(TextVariantsEntity.class);
-            return block(form(e, e.code, e.arabe.maxLength("100"), e.email.maxLength("100"),
-                    e.tel.maxLength("100"), e.choix.maxLength("100")), element(createAction(e)).byForm());
+            return block(form(e, e.code, e.arabe.maxLength(100), e.email.maxLength(100),
+                    e.tel.maxLength(100), e.choix.maxLength(100)), element(createAction(e)).byForm());
         }
     }
 

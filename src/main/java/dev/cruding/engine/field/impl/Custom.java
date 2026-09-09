@@ -11,9 +11,8 @@ public class Custom extends Field {
         super(f);
     }
 
-    public Custom(String lname) {
+    public Custom() {
         super(true);
-        lname(lname);
     }
 
     public boolean addViewScript(ViewFlow f, String uc, String mvcPath) {
@@ -32,6 +31,6 @@ public class Custom extends Field {
     }
 
     protected Field initCopy() {
-        return new Custom(lname);
+        return new Custom();
     }
 }
