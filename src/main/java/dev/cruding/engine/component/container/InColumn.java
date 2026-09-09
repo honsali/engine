@@ -1,5 +1,7 @@
 package dev.cruding.engine.component.container;
 
+import java.util.Arrays;
+import java.util.Objects;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
@@ -14,7 +16,10 @@ public class InColumn extends Component {
 
     public InColumn(Element element, Component... componentList) {
         super(element, componentList);
-        this.width = null;// Integer.toString(24 / columnNumber);
+        if (componentList == null || Arrays.stream(componentList).anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("InColumn cannot contain null components: column positions must be preserved.");
+        }
+        this.width = Integer.toString(24 / columnNumber);
     }
 
     public void addImport(ViewFlow flow) {

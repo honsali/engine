@@ -124,7 +124,13 @@ Ici, le tableau exprime notamment le besoin de lister les congés d'un employé 
 
 `Component.addContent()` porte le cycle commun du rendu : préparation du parent et des indicateurs de rendu, collecte des imports et du script, puis encadrement de l'expression racine. Il délègue le contenu à `addBody(ViewFlow, int)`, dont le comportement par défaut produit l'ouverture, parcourt les enfants et produit la fermeture.
 
-`InColumn` et `Condition` spécialisent seulement `addBody()` : le premier enveloppe chaque enfant dans une colonne, le second organise ses branches et leurs délimiteurs. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`. Le DSL et les règles de rendu restent inchangés.
+`InColumn` et `Condition` spécialisent seulement `addBody()` : le premier enveloppe chaque enfant dans une colonne, le second organise ses branches et leurs délimiteurs. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`.
+
+À la construction, les conteneurs ordinaires ignorent les enfants `null` et conservent l'ordre des autres composants. Une liste d'enfants `null` est traitée comme une liste vide. `TabMenu` applique ce traitement avant de créer ses onglets. `Condition` et `InColumn` refusent en revanche les enfants `null` avec une `IllegalArgumentException` explicite : les positions portent respectivement le sens des branches et la correspondance avec les largeurs des colonnes.
+
+Sans appel à `width(...)`, `inColumn(...)` utilise deux colonnes égales, soit `span={12}` par enfant. Les largeurs explicites conservent leur comportement : nombre de colonnes, liste de spans ou liste de largeurs flex.
+
+Une `Condition` simple (`siVrai`, `siFaux` ou un prédicat `util`) attend exactement un enfant ; `siVraiFaux` attend exactement deux enfants, dans l'ordre vrai puis faux. Un autre nombre d'enfants lève une `IllegalArgumentException` dès la construction. Pour afficher plusieurs composants dans une même branche, les regrouper dans `block(...)`.
 
 Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray`, `Tag` et `Setting`.
 

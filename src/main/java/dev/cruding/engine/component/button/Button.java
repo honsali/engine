@@ -70,7 +70,7 @@ public class Button extends Component {
         }
 
         if (action.confirm || action.hasSuccessInViewOnly) {
-            flow.__(" rid={rid}");
+            flow.__(" rid={etat", action.unameWithEntity, ".rid}");
         }
 
         flow.__(" />");

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.create.CreateAction;
 import dev.cruding.engine.action.delete.DeleteAction;
 import dev.cruding.engine.action.filter.FilterAction;
@@ -294,6 +295,46 @@ class FePageContractPrinterTest {
                 "goToPage(PageConsulterPageContractEntity, { idPageContractEntity: pageContractEntity.id });"));
     }
 
+    @Test
+    void usesActionStateForOrdinaryAndColumnButtonRequestIds() throws IOException {
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
+        PageContractEntity entity = new PageContractEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module("ModulePageContract", "test/pageContract");
+        ViewActionsPageContractEntity view = new ViewActionsPageContractEntity();
+        Page page = module.addPage(view);
+        page.init();
+        context.initActions();
+
+        new FeElementPrinter().print(view.element);
+        new FeHookPrinter().print(page);
+        new FeMdlPrinter().print(page);
+
+        Path pageDirectory = tempDir.resolve("fe/src/modules/test/pageContract/pageContractEntity/actions");
+        String generatedView = Files.readString(pageDirectory.resolve("ViewActionsPageContractEntity.tsx"));
+        String hook = Files.readString(pageDirectory.resolve("useActionsPageContractEntity.ts"));
+        String mdl = Files.readString(pageDirectory.resolve("MdlActionsPageContractEntity.ts"));
+        String selectors = generatedView.lines()
+                .filter(line -> line.endsWith(" } = useActionsPageContractEntity();"))
+                .findFirst().orElseThrow();
+
+        for (String name : new String[] { "Supprimer", "Notifier" }) {
+            String state = "etat" + name + "PageContractEntity";
+            assertEquals(2L, generatedView.lines()
+                    .filter(line -> line.contains("rid={" + state + ".rid}")).count(), state);
+            assertTrue(selectors.contains(state), state);
+            assertTrue(hook.contains("const " + state + " = useSelector(selectEtat" + name + "PageContractEntity);"));
+            assertTrue(mdl.contains(state + ": EtatMdl;"));
+        }
+        assertEquals(4L, generatedView.lines().filter(line -> line.contains(" rid={")).count());
+        assertFalse(generatedView.contains("rid={rid}"));
+        assertTrue(generatedView.contains("const getColonneSupprimer = (texte, element) => {"));
+        assertTrue(generatedView.contains("const getColonneNotifier = (texte, element) => {"));
+    }
+
     public static final class PageContractEntity extends Entity {
         public final Field code = Text().isId();
     }
@@ -387,6 +428,25 @@ class FePageContractPrinterTest {
     }
 
     public static final class ViewComponentlessPageContractEntity extends ViewComposer<PageContractEntity> {
+    }
+
+    public static final class ViewActionsPageContractEntity extends ViewComposer<PageContractEntity> {
+        @Override
+        public Component rootComponent() {
+            PageContractEntity entity = entity(PageContractEntity.class);
+            Action supprimer = deleteAction(entity);
+            Action notifier = normalAction(entity, "notifier").onSuccess(emitEvent(entity, "actualise"));
+            Action executer = normalAction(entity, "executer");
+            return block(
+                    button(supprimer),
+                    button(notifier),
+                    button(executer),
+                    table(entity, entity.code,
+                            actionColumn(entity, button(supprimer)),
+                            actionColumn(entity, button(notifier)),
+                            actionColumn(entity, button(executer)))
+                            .fillWith(listAll(entity)));
+        }
     }
 
     public static final class ViewRetourPageContractEntity extends ViewComposer<PageContractEntity> {

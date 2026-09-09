@@ -1,9 +1,11 @@
 package dev.cruding.engine.component;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -13,8 +15,12 @@ import org.junit.jupiter.api.Test;
 import dev.cruding.engine.component.container.Block;
 import dev.cruding.engine.component.container.Condition;
 import dev.cruding.engine.component.container.InColumn;
+import dev.cruding.engine.component.container.Section;
 import dev.cruding.engine.component.container.Span;
+import dev.cruding.engine.component.container.Tab;
+import dev.cruding.engine.component.container.TabMenu;
 import dev.cruding.engine.element.Element;
+import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 
 class ComponentRenderingTest {
@@ -70,6 +76,78 @@ class ComponentRenderingTest {
     }
 
     @Test
+    void ignoresNullChildrenWithoutChangingTheirOrder() {
+        Span first = new Span(element, "A");
+        Span second = new Span(element, "B");
+        Component[] children = {null, first, null, second, null};
+        Block block = new Block(element, children);
+        Section section = new Section(element, (Entity) null, children);
+
+        assertArrayEquals(new Component[] {first, second}, block.componentList);
+        assertArrayEquals(new Component[] {first, second}, section.componentList);
+        assertArrayEquals(new Component[] {null, first, null, second, null}, children);
+        assertEquals(render(new Block(element, first, second)), render(block));
+        assertEquals(render(new Section(element, (Entity) null, first, second)), render(section));
+    }
+
+    @Test
+    void rendersOrdinaryContainersWithOnlyNullChildrenAsEmpty() {
+        String emptyBlock = render(new Block(element));
+        assertEquals(emptyBlock, render(new Block(element, (Component) null)));
+        assertEquals(emptyBlock, render(new Block(element, null, null)));
+        assertEquals(emptyBlock, render(new Block(element, (Component[]) null)));
+
+        String emptySection = render(new Section(element, (Entity) null, new Component[0]));
+        assertEquals(emptySection, render(new Section(element, (Entity) null, (Component[]) null)));
+    }
+
+    @Test
+    void ignoresNullChildrenBeforeWrappingTabs() {
+        Component first = new Span(element, "A").name("premier");
+        Component second = new Span(element, "B").name("second");
+        TabMenu menu = new TabMenu(element, null, first, null, second, null);
+
+        assertEquals(2, menu.componentList.length);
+        assertEquals("premier", ((Tab) menu.componentList[0]).title);
+        assertEquals("second", ((Tab) menu.componentList[1]).title);
+        assertArrayEquals(new Component[] {first}, menu.componentList[0].componentList);
+        assertArrayEquals(new Component[] {second}, menu.componentList[1].componentList);
+        assertEquals(0, new TabMenu(element, (Component) null).componentList.length);
+        assertEquals(0, new TabMenu(element, (Component[]) null).componentList.length);
+    }
+
+    @Test
+    void rejectsNullConditionalBranchesAtConstruction() {
+        Span child = new Span(element, "A");
+        Component[][] invalidChildren = {{null}, {null, child}, {child, null}, {null, null}, null};
+        for (Component[] children : invalidChildren) {
+            IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                    () -> new Condition(element, "visible", "siVraiFaux", true, children));
+            assertTrue(error.getMessage().contains("Condition"));
+            assertTrue(error.getMessage().contains("branch positions"));
+
+            IllegalArgumentException namedError = assertThrows(IllegalArgumentException.class,
+                    () -> new Condition("visible", element, "visible", "siVraiFaux", true, children));
+            assertEquals(error.getMessage(), namedError.getMessage());
+        }
+        assertThrows(IllegalArgumentException.class,
+                () -> new Condition(element, "visible", "siVrai", false, (Component) null));
+    }
+
+    @Test
+    void rejectsNullColumnChildrenAtConstruction() {
+        Span first = new Span(element, "A");
+        Span second = new Span(element, "B");
+        Component[][] invalidChildren = {{null}, {null, first}, {first, null}, {first, null, second}, null};
+        for (Component[] children : invalidChildren) {
+            IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                    () -> new InColumn(element, children));
+            assertTrue(error.getMessage().contains("InColumn"));
+            assertTrue(error.getMessage().contains("column positions"));
+        }
+    }
+
+    @Test
     void preservesColumnWidthsAndTheAdditionalIndentationLevel() {
         String expected = """
                 (
@@ -83,6 +161,7 @@ class ComponentRenderingTest {
                         </Row>
                     );""";
 
+        assertEquals(expected.formatted("span={12}", "span={12}"), render(columns()));
         assertEquals(expected.formatted("span={12}", "span={12}"), render(columns().width(2)));
         assertEquals(expected.formatted("span={16}", "span={8}"), render(columns().width(16, 8)));
         assertEquals(expected.formatted("flex=\"400px\"", "flex=\"auto\""),
@@ -104,6 +183,40 @@ class ComponentRenderingTest {
         assertEquals(expected.formatted("{visible && <span>A</span>}"), render(new Block(element, oneBranch)));
         assertEquals(expected.formatted("{visible ? <span>A</span> : <span>B</span>}"),
                 render(new Block(element, twoBranches)));
+    }
+
+    @Test
+    void requiresOneBranchForSimpleConditions() {
+        Span first = new Span(element, "A");
+        Span second = new Span(element, "B");
+        Span third = new Span(element, "C");
+        Component[][] invalidBranches = {{}, {first, second}, {first, second, third}};
+        for (String type : new String[] {"siVrai", "siFaux", "nonVide", "estVide"}) {
+            Condition valid = new Condition(element, "visible", type, true, first);
+            assertTrue(render(new Block(element, valid)).contains("<span>A</span>"));
+            for (Component[] branches : invalidBranches) {
+                IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                        () -> new Condition(element, "visible", type, true, branches));
+                assertTrue(error.getMessage().contains("Condition '" + type + "'"));
+                assertTrue(error.getMessage().contains("exactly 1"));
+                assertTrue(error.getMessage().contains("got " + branches.length));
+            }
+        }
+    }
+
+    @Test
+    void requiresTwoBranchesForTernaryConditions() {
+        Span first = new Span(element, "A");
+        Span second = new Span(element, "B");
+        Span third = new Span(element, "C");
+        Component[][] invalidBranches = {{}, {first}, {first, second, third}};
+        for (Component[] branches : invalidBranches) {
+            IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                    () -> new Condition("visible", element, "visible", "siVraiFaux", false, branches));
+            assertTrue(error.getMessage().contains("Condition 'siVraiFaux'"));
+            assertTrue(error.getMessage().contains("exactly 2"));
+            assertTrue(error.getMessage().contains("got " + branches.length));
+        }
     }
 
     @Test

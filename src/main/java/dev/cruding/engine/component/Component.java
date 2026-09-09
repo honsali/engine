@@ -42,7 +42,7 @@ public abstract class Component {
 
     public Component(Element element, Entity entity, Component... componentList) {
         this(element, entity);
-        this.componentList = componentList;
+        this.componentList = clean(componentList);
     }
 
     public Component(Element element, Entity entity, Field... fieldList) {
@@ -52,7 +52,7 @@ public abstract class Component {
 
     public Component(Element element, Component... componentList) {
         this(element);
-        this.componentList = componentList;
+        this.componentList = clean(componentList);
     }
 
     public Component name(String name) {
@@ -113,6 +113,13 @@ public abstract class Component {
 
 
     public void addScript(ViewFlow c) {}
+
+    private Component[] clean(Component[] componentList) {
+        if (componentList == null) {
+            return new Component[0];
+        }
+        return Arrays.stream(componentList).filter(Objects::nonNull).toArray(Component[]::new);
+    }
 
     private Field[] clean(Field[] fieldList) {
         return Arrays.stream(fieldList).filter(Objects::nonNull).toArray(Field[]::new);

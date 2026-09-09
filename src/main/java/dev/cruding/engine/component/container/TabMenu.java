@@ -8,8 +8,8 @@ import dev.cruding.engine.flow.ViewFlow;
 public class TabMenu extends Component {
 
     public TabMenu(Element element, Component... componentList) {
-        super(element);
-        this.componentList = Arrays.asList(componentList).stream().map(c -> new Tab(element, c).title(c.name)).toArray(Tab[]::new);
+        super(element, componentList);
+        this.componentList = Arrays.stream(this.componentList).map(c -> new Tab(element, c).title(c.name)).toArray(Tab[]::new);
     }
 
     public void addImport(ViewFlow flow) {

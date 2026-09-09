@@ -1,5 +1,7 @@
 package dev.cruding.engine.component.container;
 
+import java.util.Arrays;
+import java.util.Objects;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
@@ -13,6 +15,14 @@ public class Condition extends Component {
 
     public Condition(String nameVariable, Element element, String condition, String type, boolean childInLine, Component... componentList) {
         super(element, componentList);
+        if (componentList == null || Arrays.stream(componentList).anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("Condition cannot contain null components: branch positions must be preserved.");
+        }
+        int expectedBranches = "siVraiFaux".equals(type) ? 2 : 1;
+        if (componentList.length != expectedBranches) {
+            throw new IllegalArgumentException("Condition '" + type + "' requires exactly "
+                    + expectedBranches + " branch(es), but got " + componentList.length + ".");
+        }
         this.condition = condition;
         this.type = type;
         this.childInLine = childInLine;
@@ -20,10 +30,7 @@ public class Condition extends Component {
     }
 
     public Condition(Element element, String condition, String type, boolean childInLine, Component... componentList) {
-        super(element, componentList);
-        this.condition = condition;
-        this.type = type;
-        this.childInLine = childInLine;
+        this(null, element, condition, type, childInLine, componentList);
     }
 
     @Override
