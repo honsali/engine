@@ -103,9 +103,9 @@ class ContainerContentTest {
     void keepsColumnWidthsWhenColumnsComeLast() {
         Span first = new Span(element, "A");
         Span second = new Span(element, "B");
-        InColumn defaults = composer.inColumn().name("colonnes").column(first, second);
-        InColumn spans = composer.inColumn().spans(16, 8).column(first, second);
-        InColumn flex = composer.inColumn().flex("400px", "auto").column(first, second);
+        InColumn defaults = composer.inColumn().name("colonnes").column(first).column(second);
+        InColumn spans = composer.inColumn().spans(16, 8).column(first).column(second);
+        InColumn flex = composer.inColumn().flex("400px", "auto").column(first).column(second);
 
         assertEquals(render(new InColumn(element, first, second)), render(defaults));
         assertEquals(render(new InColumn(element, first, second).spans(16, 8)), render(spans));
@@ -114,18 +114,26 @@ class ContainerContentTest {
     }
 
     @Test
+    void appendsOneColumnWithoutReplacingExistingChildren() {
+        Span first = new Span(element, "A");
+        Component grouped = composer.block(new Span(element, "B"), new Span(element, "C"));
+        InColumn columns = composer.inColumn(new Span[] {first}).spans(16, 8);
+        Component[] previousChildren = columns.componentList;
+
+        assertSame(columns, columns.column(grouped));
+        assertArrayEquals(new Component[] {first, grouped}, columns.componentList);
+        assertArrayEquals(new Component[] {first}, previousChildren);
+        assertEquals(render(new InColumn(element, first, grouped).spans(16, 8)), render(columns));
+    }
+
+    @Test
     void rejectsNullColumnsWithoutDiscardingExistingChildren() {
         Span child = new Span(element, "A");
         InColumn columns = composer.inColumn().columnNumber(2).column(child);
-        Component[][] invalidChildren = {{null}, {child, null}, null};
-        for (Component[] children : invalidChildren) {
-            IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
-                    () -> columns.column(children));
-            assertTrue(error.getMessage().contains("column positions"));
-            assertArrayEquals(new Component[] {child}, columns.componentList);
-        }
-        assertSame(columns, columns.column());
-        assertEquals(0, columns.componentList.length);
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                () -> columns.column(null));
+        assertTrue(error.getMessage().contains("column positions"));
+        assertArrayEquals(new Component[] {child}, columns.componentList);
     }
 
     private String render(Component component) {

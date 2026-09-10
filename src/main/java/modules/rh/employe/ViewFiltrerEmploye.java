@@ -25,7 +25,9 @@ public class ViewFiltrerEmploye extends ViewComposer<Employe> {
                                     .title("listeEmploye")
                                     .content(element(new TableauEmploye(filtre.action)))
                             )
-                            .actionBlock(button(addAction(e, RhModule.pageCreerEmploye))),
+                            .actionBlock(button(addAction(e, RhModule.pageCreerEmploye)))
+                    )
+                    .column(
                         block()
                             .margin("62px 0px")
                             .content(elementFiltre)

@@ -20,8 +20,12 @@ public class InColumn extends Component {
         this.width = Integer.toString(24 / columnNumber);
     }
 
-    public InColumn column(Component... componentList) {
-        this.componentList = checkedContent(componentList);
+    public InColumn column(Component component) {
+        if (component == null) {
+            throw new IllegalArgumentException("InColumn cannot contain null components: column positions must be preserved.");
+        }
+        this.componentList = Arrays.copyOf(this.componentList, this.componentList.length + 1, Component[].class);
+        this.componentList[this.componentList.length - 1] = component;
         return this;
     }
 
