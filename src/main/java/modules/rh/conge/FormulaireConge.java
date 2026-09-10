@@ -19,7 +19,9 @@ public class FormulaireConge extends ElementComposer {
             initUpdate(e, getByFieldAction(e, e.id_)).inInit();
         }
 
-        return block(//
+        return block()
+            .width("600px").margin("20px").background("blanc")
+            .content(//
                 form(e, //
                         e.code, //
                         e.typeConge, //
@@ -38,7 +40,7 @@ public class FormulaireConge extends ElementComposer {
                                 button(backToDetailAction(e, RhModule.pageConsulterConge)) : //
                                 button(backToListAction(e, RhModule.pageConsulterEmploye))//
                 )//
-        ).width("600px").margin("20px").background("blanc");//
+            );
     }
 
 }

@@ -11,7 +11,9 @@ public class FormulaireModifierAccount extends ElementComposer {
         Account e = entity(Account.class);
         initUpdate(e, getByFieldAction(e, e.id_)).inInit();
 
-        return block(
+        return block()
+            .width("600px").margin("20px").background("blanc")
+            .content(
                 detail(e, e.username),
                 form(e,
                         e.role,
@@ -19,6 +21,6 @@ public class FormulaireModifierAccount extends ElementComposer {
                         hidden(e.id_)).columnNumber(1),
                 actionBlock(
                         element(updateAction(e).onSuccess(goToPage(e, AdminModule.pageConsulterAccount))).byForm(),
-                        button(backToDetailAction(e, AdminModule.pageConsulterAccount)))).width("600px").margin("20px").background("blanc");
+                        button(backToDetailAction(e, AdminModule.pageConsulterAccount))));
     }
 }

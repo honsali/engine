@@ -7,21 +7,30 @@ import modules.rh.RhModule;
 
 public class ViewFiltrerEmploye extends ViewComposer<Employe> {
 
-        public Component rootComponent() {
-                Employe e = entity(Employe.class);
-                FiltreEmploye filtre = new FiltreEmploye();
-                Component elementFiltre = element(filtre);
+    public Component rootComponent() {
+        Employe e = entity(Employe.class);
+        FiltreEmploye filtre = new FiltreEmploye();
+        Component elementFiltre = element(filtre);
 
-                return block(//
-                                inColumn(//
-                                                section( //
-                                                                primaryPanel(//
-                                                                                element(new TableauEmploye(filtre.action))//
-                                                                ).title("listeEmploye")).actionBlock(button(addAction(e, RhModule.pageCreerEmploye))//
-                                                ).margin("0"), //
-                                                block(elementFiltre).margin("62px 0px")//
-                                ).width(16, 8)//
-                ).margin("20px 40px");
-        }
+        return block()
+            .margin("20px 40px")
+            .content(
+                inColumn()
+                    .spans(16, 8)
+                    .content(
+                        section()
+                            .margin("0")
+                            .content(
+                                primaryPanel()
+                                    .title("listeEmploye")
+                                    .content(element(new TableauEmploye(filtre.action)))
+                            )
+                            .actionBlock(button(addAction(e, RhModule.pageCreerEmploye))),
+                        block()
+                            .margin("62px 0px")
+                            .content(elementFiltre)
+                    )
+            );
+    }
 
 }

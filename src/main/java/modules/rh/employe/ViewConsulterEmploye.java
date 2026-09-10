@@ -9,27 +9,31 @@ import modules.rh.conge.TableauConge;
 
 public class ViewConsulterEmploye extends ViewComposer<Employe> {
 
-        public Component rootComponent() {
-                Employe e = entity(Employe.class);
-                Conge c = entity(Conge.class);
-                return section( //
-                                tabMenu(//
-                                                block(//
-                                                                element(new EtatEmploye()), //
-                                                                actionBlock(//
-                                                                                button(editAction(e, RhModule.pageModifierEmploye)), //
-                                                                                button(backToListAction(e, RhModule.pageFiltrerEmploye)), //
-                                                                                button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
-                                                                )//
-                                                ).margin("20px").name("employe"), //
-                                                block(//
-                                                                element(new TableauConge()), //
-                                                                actionBlock(//
-                                                                                button(addAction(c, RhModule.pageCreerConge)) //
-                                                                )//
-                                                ).margin("20px").name("conge")//
-                                )//
-                );
-        }
+    public Component rootComponent() {
+        Employe e = entity(Employe.class);
+        Conge c = entity(Conge.class);
+        return section(
+            tabMenu(
+                block()
+                    .name("employe").margin("20px")
+                    .content(
+                        element(new EtatEmploye()),
+                        actionBlock(
+                            button(editAction(e, RhModule.pageModifierEmploye)),
+                            button(backToListAction(e, RhModule.pageFiltrerEmploye)),
+                            button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))
+                        )
+                    ),
+                block()
+                    .name("conge").margin("20px")
+                    .content(
+                        element(new TableauConge()),
+                        actionBlock(
+                            button(addAction(c, RhModule.pageCreerConge))
+                        )
+                    )
+            )
+        );
+    }
 
 }

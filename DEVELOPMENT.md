@@ -122,13 +122,39 @@ table(e,
 
 Ici, le tableau exprime notamment le besoin de lister les congés d'un employé et de naviguer vers la consultation d'un congé.
 
+Pour les conteneurs configurés, les options peuvent précéder les enfants :
+
+```java
+Employe e = entity(Employe.class);
+return primaryPanel()
+    .title("employe")
+    .width("500px")
+    .content(
+        detail(e, e.matricule, e.dateEntree)
+    );
+```
+
+Cette forme est disponible sur la famille `Container` (blocs, panneaux, sections et onglets) et sur `InColumn`. `content(...)` remplace la liste des enfants ; il ne les ajoute pas à ceux déjà présents. Les formes courtes comme `block(a, b)` restent disponibles et construisent le même arbre. Les formulaires et tableaux conservent leurs arguments `Field`, et les conditions leurs branches explicites dès la construction.
+
+`Container<T>` conserve le type concret pendant le chaînage : chaque conteneur déclare son propre type, par exemple `ExtendedPanel extends Container<ExtendedPanel>`. Ainsi, `extendedPanel().title("employe").open().content(...)` reste un `ExtendedPanel`. Ce changement de typage reste limité aux conteneurs ; il ne se propage pas à `Component`, aux vues ni aux actions.
+
+Les options de présentation peuvent être déplacées avant `content(...)` sans changer l'arbre. En revanche, les appels construisant des actions ou des éléments s'exécutent immédiatement : déplacer un `actionBlock(button(...))` peut changer leur ordre d'enregistrement. Les compositions de référence conservent cet ordre, ainsi que l'appel à `element(filtre)` avant la lecture de `filtre.action`.
+
 `Component.addContent()` porte le cycle commun du rendu : préparation du parent et des indicateurs de rendu, collecte des imports et du script, puis encadrement de l'expression racine. Il délègue le contenu à `addBody(ViewFlow, int)`, dont le comportement par défaut produit l'ouverture, parcourt les enfants et produit la fermeture.
 
 `InColumn` et `Condition` spécialisent seulement `addBody()` : le premier enveloppe chaque enfant dans une colonne, le second organise ses branches et leurs délimiteurs. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`.
 
 À la construction, les conteneurs ordinaires ignorent les enfants `null` et conservent l'ordre des autres composants. Une liste d'enfants `null` est traitée comme une liste vide. `TabMenu` applique ce traitement avant de créer ses onglets. `Condition` et `InColumn` refusent en revanche les enfants `null` avec une `IllegalArgumentException` explicite : les positions portent respectivement le sens des branches et la correspondance avec les largeurs des colonnes.
 
-Sans appel à `width(...)`, `inColumn(...)` utilise deux colonnes égales, soit `span={12}` par enfant. Les largeurs explicites conservent leur comportement : nombre de colonnes, liste de spans ou liste de largeurs flex.
+Sans configuration explicite, `inColumn(...)` utilise deux colonnes égales, soit `span={12}` par enfant. Trois méthodes distinguent les modes de répartition :
+
+```java
+inColumn().columnNumber(2).content(a, b);       // Deux colonnes égales : 12/24 chacune
+inColumn().spans(16, 8).content(a, b);          // Largeurs sur la grille de 24 unités
+inColumn().flex("400px", "auto").content(a, b); // Valeur flex de chaque colonne
+```
+
+Le dernier appel à `columnNumber(...)`, `spans(...)` ou `flex(...)` choisit le mode actif. `spans(16)` désigne sans ambiguïté une colonne de 16 unités, et non un nombre de colonnes. Ces noms remplacent les anciennes surcharges de `InColumn.width(...)` ; les méthodes `width(...)` des autres composants restent inchangées.
 
 Une `Condition` simple (`siVrai`, `siFaux` ou un prédicat `util`) attend exactement un enfant ; `siVraiFaux` attend exactement deux enfants, dans l'ordre vrai puis faux. Un autre nombre d'enfants lève une `IllegalArgumentException` dès la construction. Pour afficher plusieurs composants dans une même branche, les regrouper dans `block(...)`.
 

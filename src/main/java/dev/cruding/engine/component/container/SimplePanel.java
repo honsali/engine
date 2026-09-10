@@ -4,7 +4,7 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class SimplePanel extends Container {
+public class SimplePanel extends Container<SimplePanel> {
 
     public SimplePanel(Element element, Component... componentList) {
         super(element, componentList);

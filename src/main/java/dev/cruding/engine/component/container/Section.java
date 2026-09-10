@@ -8,7 +8,7 @@ import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.gen.PageRef;
 
-public class Section extends Container {
+public class Section extends Container<Section> {
 
     public Page backPage = null;
     public boolean statePanel = false;

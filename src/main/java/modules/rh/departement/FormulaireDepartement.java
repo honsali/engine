@@ -19,7 +19,9 @@ public class FormulaireDepartement extends ElementComposer {
             initUpdate(e, getByFieldAction(e, e.id_));
         }
 
-        return block(//
+        return block()
+            .width("600px").margin("20px").background("blanc")
+            .content(//
                 form(e, //
                         e.nom, //
                         e.description, //
@@ -31,7 +33,7 @@ public class FormulaireDepartement extends ElementComposer {
 
                         enModification ? button(backToDetailAction(e, RhModule.pageConsulterDepartement)) : button(backToListAction(e, RhModule.pageListerDepartement))//
                 )//
-        ).width("600px").margin("20px").background("blanc");//
+            );
     }
 
 }

@@ -5,7 +5,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class FilterPanel extends Container {
+public class FilterPanel extends Container<FilterPanel> {
 
     public FilterPanel(Element element, Entity entity, boolean initFilter, Component... componentList) {
         super(element, entity, componentList);

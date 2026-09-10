@@ -6,7 +6,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 
-public class Tab extends Container {
+public class Tab extends Container<Tab> {
 
     public Tab(Element element, Component... componentList) {
         super(element, componentList);

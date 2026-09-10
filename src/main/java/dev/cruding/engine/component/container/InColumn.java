@@ -15,11 +15,27 @@ public class InColumn extends Component {
     public int[] spanWidth;
 
     public InColumn(Element element, Component... componentList) {
-        super(element, componentList);
+        super(element);
+        this.componentList = checkedContent(componentList);
+        this.width = Integer.toString(24 / columnNumber);
+    }
+
+    public InColumn content(Component... componentList) {
+        this.componentList = checkedContent(componentList);
+        return this;
+    }
+
+    @Override
+    public InColumn name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    private Component[] checkedContent(Component[] componentList) {
         if (componentList == null || Arrays.stream(componentList).anyMatch(Objects::isNull)) {
             throw new IllegalArgumentException("InColumn cannot contain null components: column positions must be preserved.");
         }
-        this.width = Integer.toString(24 / columnNumber);
+        return componentList.clone();
     }
 
     public void addImport(ViewFlow flow) {
@@ -66,7 +82,7 @@ public class InColumn extends Component {
         return this;
     }
 
-    public InColumn width(int columnNumber) {
+    public InColumn columnNumber(int columnNumber) {
         this.columnNumber = columnNumber;
         this.width = Integer.toString(24 / columnNumber);
         this.flexWidth = null;
@@ -74,7 +90,7 @@ public class InColumn extends Component {
         return this;
     }
 
-    public InColumn width(String... width) {
+    public InColumn flex(String... width) {
         this.columnNumber = width.length;
         this.width = null;
         this.flexWidth = width;
@@ -82,7 +98,7 @@ public class InColumn extends Component {
         return this;
     }
 
-    public InColumn width(int... width) {
+    public InColumn spans(int... width) {
         this.columnNumber = width.length;
         this.width = null;
         this.flexWidth = null;

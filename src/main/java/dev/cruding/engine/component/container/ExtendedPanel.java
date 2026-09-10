@@ -5,7 +5,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class ExtendedPanel extends Container {
+public class ExtendedPanel extends Container<ExtendedPanel> {
 
     public boolean open = false;
 

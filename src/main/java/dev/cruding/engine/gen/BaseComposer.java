@@ -31,7 +31,6 @@ import dev.cruding.engine.component.container.ActionBlock;
 import dev.cruding.engine.component.container.Block;
 import dev.cruding.engine.component.container.Breadcrumb;
 import dev.cruding.engine.component.container.Condition;
-import dev.cruding.engine.component.container.Container;
 import dev.cruding.engine.component.container.Div;
 import dev.cruding.engine.component.container.ExtendedPanel;
 import dev.cruding.engine.component.container.FilterPanel;
@@ -305,11 +304,11 @@ public abstract class BaseComposer {
         return new PrimaryPanel(element, componentList);
     }
 
-    public Container secondaryPanel(Component... componentList) {
+    public SecondaryPanel secondaryPanel(Component... componentList) {
         return new SecondaryPanel(element, componentList);
     }
 
-    public Container simplePanel(Component... componentList) {
+    public SimplePanel simplePanel(Component... componentList) {
         return new SimplePanel(element, componentList);
     }
 

@@ -10,14 +10,16 @@ public class ViewConsulterDepartement extends ViewComposer<Departement> {
         public Component rootComponent() {
                 Departement e = entity(Departement.class);
                 return section( //
-                                block(//
+                                block()
+                                        .width("600px").margin("20px").background("blanc")
+                                        .content(//
                                                 element(new EtatDepartement()), //
                                                 actionBlock(//
                                                                 button(editAction(e, RhModule.pageModifierDepartement)), //
                                                                 button(backToListAction(e, RhModule.pageListerDepartement)), //
                                                                 button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageListerDepartement)))//
                                                 )//
-                                ).width("600px").margin("20px").background("blanc")//
+                                        )//
                 );
         }
 

@@ -7,7 +7,7 @@ import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 import dev.cruding.engine.gen.Context;
 
-public class Container extends Component {
+public class Container<T extends Container<T>> extends Component {
 
     public String title = null;
     public String width = null;
@@ -28,25 +28,41 @@ public class Container extends Component {
         }
     }
 
-    public Container title(String title) {
+    public T content(Component... componentList) {
+        this.componentList = clean(componentList);
+        return self();
+    }
+
+    @Override
+    public T name(String name) {
+        this.name = name;
+        return self();
+    }
+
+    public T title(String title) {
         this.title = title;
-        return this;
+        return self();
 
     }
 
-    public Container background(String background) {
+    public T background(String background) {
         this.background = background;
-        return this;
+        return self();
     }
 
-    public Container margin(String margin) {
+    public T margin(String margin) {
         this.margin = margin;
-        return this;
+        return self();
     }
 
-    public Container width(String width) {
+    public T width(String width) {
         this.width = width;
-        return this;
+        return self();
+    }
+
+    @SuppressWarnings("unchecked")
+    private T self() {
+        return (T) this;
     }
 
     public String title() {

@@ -12,13 +12,15 @@ public class FormulaireCreerAccount extends ElementComposer {
         Account e = entity(Account.class);
         Field password = e.Text().lname("password").maxLength(256).minLength(8).required();
 
-        return block(
+        return block()
+            .width("600px").margin("20px").background("blanc")
+            .content(
                 form(e,
                         e.username,
                         password,
                         e.role).columnNumber(1),
                 actionBlock(
                         element(createAction(e).onSuccess(goToPage(e, AdminModule.pageConsulterAccount).byField(e.id_))).byForm(),
-                        button(backToListAction(e, AdminModule.pageListerAccount)))).width("600px").margin("20px").background("blanc");
+                        button(backToListAction(e, AdminModule.pageListerAccount))));
     }
 }

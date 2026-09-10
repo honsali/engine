@@ -10,13 +10,12 @@ public class ViewConsulterAccount extends ViewComposer<Account> {
     public Component rootComponent() {
         Account e = entity(Account.class);
         return section(
-                block(
+                block()
+                    .width("600px").margin("20px").background("blanc")
+                    .content(
                         element(new EtatAccount()),
                         actionBlock(
                                 button(editAction(e, AdminModule.pageModifierAccount)),
-                                button(backToListAction(e, AdminModule.pageListerAccount))))
-                        .width("600px")
-                        .margin("20px")
-                        .background("blanc"));
+                                button(backToListAction(e, AdminModule.pageListerAccount)))));
     }
 }

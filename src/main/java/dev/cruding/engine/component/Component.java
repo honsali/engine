@@ -114,7 +114,7 @@ public abstract class Component {
 
     public void addScript(ViewFlow c) {}
 
-    private Component[] clean(Component[] componentList) {
+    protected static Component[] clean(Component[] componentList) {
         if (componentList == null) {
             return new Component[0];
         }

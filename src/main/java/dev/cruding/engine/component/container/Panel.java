@@ -5,7 +5,7 @@ import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class Panel extends Container {
+public class Panel extends Container<Panel> {
 
     public boolean statePanel = false;
     public ActionBlock actionBlock = null;

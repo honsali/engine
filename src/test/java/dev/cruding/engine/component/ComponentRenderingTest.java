@@ -162,10 +162,37 @@ class ComponentRenderingTest {
                     );""";
 
         assertEquals(expected.formatted("span={12}", "span={12}"), render(columns()));
-        assertEquals(expected.formatted("span={12}", "span={12}"), render(columns().width(2)));
-        assertEquals(expected.formatted("span={16}", "span={8}"), render(columns().width(16, 8)));
+        assertEquals(expected.formatted("span={12}", "span={12}"), render(columns().columnNumber(2)));
+        assertEquals(expected.formatted("span={16}", "span={8}"), render(columns().spans(16, 8)));
         assertEquals(expected.formatted("flex=\"400px\"", "flex=\"auto\""),
-                render(columns().width("400px", "auto")));
+                render(columns().flex("400px", "auto")));
+    }
+
+    @Test
+    void distinguishesSingleSpanFromColumnCount() {
+        InColumn column = new InColumn(element, new Span(element, "A"));
+        String expected = """
+                (
+                        <Row gutter={20}>
+                            <Col span={%d}>
+                                <span>A</span>
+                            </Col>
+                        </Row>
+                    );""";
+
+        assertEquals(expected.formatted(16), render(column.spans(16)));
+        assertEquals(expected.formatted(2), render(column.spans(2)));
+        assertEquals(expected.formatted(12), render(column.columnNumber(2)));
+        assertEquals(expected.formatted(24), render(column.columnNumber(1)));
+    }
+
+    @Test
+    void usesTheLastColumnLayoutConfiguration() {
+        InColumn layout = columns().flex("400px", "auto");
+
+        assertEquals(render(columns().spans(16, 8)), render(layout.spans(16, 8)));
+        assertEquals(render(columns().columnNumber(2)), render(layout.columnNumber(2)));
+        assertEquals(render(columns().flex("400px", "auto")), render(layout.flex("400px", "auto")));
     }
 
     @Test
@@ -243,7 +270,7 @@ class ComponentRenderingTest {
     @Test
     void propagatesRenderMetadataThroughDefaultAndSpecializedBodies() {
         assertRenderMetadata(child -> new Block(element, child), false);
-        assertRenderMetadata(child -> new InColumn(element, child).width(2), false);
+        assertRenderMetadata(child -> new InColumn(element, child).columnNumber(2), false);
         assertRenderMetadata(child -> new Condition(element, "visible", "siVrai", true, child), true);
     }
 

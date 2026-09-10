@@ -12,7 +12,9 @@ public class EtatConge extends ElementComposer {
         Conge e = entity(Conge.class);
         getByFieldAction(e, e.id_).inInit();
 
-        return block(//
+        return block()
+            .width("600px").margin("20px").background("blanc")
+            .content(//
                 detail(e, //
                         e.code, //
                         e.typeConge, //
@@ -24,7 +26,7 @@ public class EtatConge extends ElementComposer {
                         button(backToListAction(e, RhModule.pageConsulterEmploye)), //
                         button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageConsulterEmploye)))//
                 )//
-        ).width("600px").margin("20px").background("blanc");//
+            );
     }
 
 }

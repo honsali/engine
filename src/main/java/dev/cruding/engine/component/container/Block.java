@@ -4,7 +4,7 @@ import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
 
-public class Block extends Container {
+public class Block extends Container<Block> {
 
 
     public Block(Element element, Component... componentList) {
