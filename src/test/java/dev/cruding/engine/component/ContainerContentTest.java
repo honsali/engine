@@ -100,12 +100,12 @@ class ContainerContentTest {
     }
 
     @Test
-    void keepsColumnWidthsWhenContentComesLast() {
+    void keepsColumnWidthsWhenColumnsComeLast() {
         Span first = new Span(element, "A");
         Span second = new Span(element, "B");
-        InColumn defaults = composer.inColumn().name("colonnes").content(first, second);
-        InColumn spans = composer.inColumn().spans(16, 8).content(first, second);
-        InColumn flex = composer.inColumn().flex("400px", "auto").content(first, second);
+        InColumn defaults = composer.inColumn().name("colonnes").column(first, second);
+        InColumn spans = composer.inColumn().spans(16, 8).column(first, second);
+        InColumn flex = composer.inColumn().flex("400px", "auto").column(first, second);
 
         assertEquals(render(new InColumn(element, first, second)), render(defaults));
         assertEquals(render(new InColumn(element, first, second).spans(16, 8)), render(spans));
@@ -114,17 +114,17 @@ class ContainerContentTest {
     }
 
     @Test
-    void rejectsNullColumnContentWithoutDiscardingExistingChildren() {
+    void rejectsNullColumnsWithoutDiscardingExistingChildren() {
         Span child = new Span(element, "A");
-        InColumn columns = composer.inColumn().columnNumber(2).content(child);
+        InColumn columns = composer.inColumn().columnNumber(2).column(child);
         Component[][] invalidChildren = {{null}, {child, null}, null};
         for (Component[] children : invalidChildren) {
             IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
-                    () -> columns.content(children));
+                    () -> columns.column(children));
             assertTrue(error.getMessage().contains("column positions"));
             assertArrayEquals(new Component[] {child}, columns.componentList);
         }
-        assertSame(columns, columns.content());
+        assertSame(columns, columns.column());
         assertEquals(0, columns.componentList.length);
     }
 

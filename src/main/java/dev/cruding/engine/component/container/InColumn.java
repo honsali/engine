@@ -20,7 +20,7 @@ public class InColumn extends Component {
         this.width = Integer.toString(24 / columnNumber);
     }
 
-    public InColumn content(Component... componentList) {
+    public InColumn column(Component... componentList) {
         this.componentList = checkedContent(componentList);
         return this;
     }

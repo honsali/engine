@@ -134,7 +134,7 @@ return primaryPanel()
     );
 ```
 
-Cette forme est disponible sur la famille `Container` (blocs, panneaux, sections et onglets) et sur `InColumn`. `content(...)` remplace la liste des enfants ; il ne les ajoute pas à ceux déjà présents. Les formes courtes comme `block(a, b)` restent disponibles et construisent le même arbre. Les formulaires et tableaux conservent leurs arguments `Field`, et les conditions leurs branches explicites dès la construction.
+Cette forme est disponible sur la famille `Container` (blocs, panneaux, sections et onglets). `content(...)` remplace la liste des enfants ; il ne les ajoute pas à ceux déjà présents. Sur `InColumn`, la méthode équivalente s'appelle `column(...)` : chaque enfant définit une colonne, et l'appel remplace la liste des colonnes. Les formes courtes comme `block(a, b)` et `inColumn(a, b)` restent disponibles et construisent le même arbre. Les formulaires et tableaux conservent leurs arguments `Field`, et les conditions leurs branches explicites dès la construction.
 
 `Container<T>` conserve le type concret pendant le chaînage : chaque conteneur déclare son propre type, par exemple `ExtendedPanel extends Container<ExtendedPanel>`. Ainsi, `extendedPanel().title("employe").open().content(...)` reste un `ExtendedPanel`. Ce changement de typage reste limité aux conteneurs ; il ne se propage pas à `Component`, aux vues ni aux actions.
 
@@ -149,9 +149,9 @@ Les options de présentation peuvent être déplacées avant `content(...)` sans
 Sans configuration explicite, `inColumn(...)` utilise deux colonnes égales, soit `span={12}` par enfant. Trois méthodes distinguent les modes de répartition :
 
 ```java
-inColumn().columnNumber(2).content(a, b);       // Deux colonnes égales : 12/24 chacune
-inColumn().spans(16, 8).content(a, b);          // Largeurs sur la grille de 24 unités
-inColumn().flex("400px", "auto").content(a, b); // Valeur flex de chaque colonne
+inColumn().columnNumber(2).column(a, b);       // Deux colonnes égales : 12/24 chacune
+inColumn().spans(16, 8).column(a, b);          // Largeurs sur la grille de 24 unités
+inColumn().flex("400px", "auto").column(a, b); // Valeur flex de chaque colonne
 ```
 
 Le dernier appel à `columnNumber(...)`, `spans(...)` ou `flex(...)` choisit le mode actif. `spans(16)` désigne sans ambiguïté une colonne de 16 unités, et non un nombre de colonnes. Ces noms remplacent les anciennes surcharges de `InColumn.width(...)` ; les méthodes `width(...)` des autres composants restent inchangées.

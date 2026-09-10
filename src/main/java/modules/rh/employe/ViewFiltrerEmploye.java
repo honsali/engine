@@ -17,7 +17,7 @@ public class ViewFiltrerEmploye extends ViewComposer<Employe> {
             .content(
                 inColumn()
                     .spans(16, 8)
-                    .content(
+                    .column(
                         section()
                             .margin("0")
                             .content(
