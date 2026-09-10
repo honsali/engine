@@ -14,7 +14,7 @@ public class FiltreEmploye extends ElementComposer {
         Employe e = entity(Employe.class);
         action = filter(e).filterOnLoad();
 
-        return filterPanel(e, true)
+        return filterPanel(e)
             .title("filtreEmploye")
             .content(
                 extendedPanel()

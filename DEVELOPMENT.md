@@ -138,25 +138,46 @@ Cette forme est disponible sur la famille `Container` (blocs, panneaux, sections
 
 `Container<T>` conserve le type concret pendant le chaînage : chaque conteneur déclare son propre type, par exemple `ExtendedPanel extends Container<ExtendedPanel>`. Ainsi, `extendedPanel().title("employe").open().content(...)` reste un `ExtendedPanel`. Ce changement de typage reste limité aux conteneurs ; il ne se propage pas à `Component`, aux vues ni aux actions.
 
+Les attributs de présentation et leurs méthodes fluentes appartiennent uniquement aux composants qui les rendent. `Container` ne stocke ni `title`, ni `width`, ni `margin`, ni `background` ; il conserve la composition et un helper protégé de rendu des titres. Par exemple, `Block` expose `width`, `margin` et `background`, `Section` expose `title` et `margin`, et `InlineBlock` n'expose aucune de ces options. Un appel non pris en charge échoue donc à la compilation. `filterPanel(e)` n'accepte plus le booléen historique sans effet ; `DialogAction.width(...)` transmet la largeur demandée.
+
 Les options de présentation peuvent être déplacées avant `content(...)` sans changer l'arbre. En revanche, les appels construisant des actions ou des éléments s'exécutent immédiatement : déplacer un `actionBlock(button(...))` peut changer leur ordre d'enregistrement. Les compositions de référence conservent cet ordre, ainsi que l'appel à `element(filtre)` avant la lecture de `filtre.action`.
+
+Les marqueurs `//` du DSL préservent les coupures de lignes et la lecture de la hiérarchie face au formateur automatique. Ils font partie de la convention d'écriture et ne doivent pas être supprimés comme des commentaires inutiles.
 
 `Component.addContent()` porte le cycle commun du rendu : préparation du parent et des indicateurs de rendu, collecte des imports et du script, puis encadrement de l'expression racine. Il délègue le contenu à `addBody(ViewFlow, int)`, dont le comportement par défaut produit l'ouverture, parcourt les enfants et produit la fermeture.
 
-`InColumn` et `Condition` spécialisent seulement `addBody()` : le premier enveloppe chaque enfant dans une colonne, le second organise ses branches et leurs délimiteurs. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`.
+`Condition` spécialise `addBody()` pour organiser ses branches et leurs délimiteurs. `InColumn` contient des nœuds internes `Column`, chacun portant un seul composant et sa largeur éventuelle ; leur rendu utilise le parcours commun. Les autres composants conservent leurs spécialisations `addImport`, `addScript`, `addOpenTag` et `addCloseTag`. L'indentation est calculée par `Component.indent(level)` sans tableau de profondeur fixe, avec les mêmes espaces qu'auparavant.
 
-À la construction, les conteneurs ordinaires ignorent les enfants `null` et conservent l'ordre des autres composants. Une liste d'enfants `null` est traitée comme une liste vide. `TabMenu` applique ce traitement avant de créer ses onglets. `Condition` et `InColumn` refusent en revanche les enfants `null` avec une `IllegalArgumentException` explicite : les positions portent respectivement le sens des branches et la correspondance avec les largeurs des colonnes.
+À la construction, les conteneurs ordinaires ignorent les enfants `null` et conservent l'ordre des autres composants. Une liste d'enfants `null` est traitée comme une liste vide. `TabMenu` applique ce traitement aux onglets explicites qu'il reçoit. `Condition` et `InColumn` refusent en revanche les enfants `null` avec une `IllegalArgumentException` explicite : les positions portent respectivement le sens des branches et celui des colonnes.
 
-Sans configuration explicite, `inColumn(...)` utilise deux colonnes égales, soit `span={12}` par enfant. Trois méthodes distinguent les modes de répartition :
+Sans configuration explicite, `inColumn(...)` utilise une répartition par défaut sur deux colonnes, soit `span={12}` par enfant. Les trois signatures de `column(...)` acceptent chacune un seul composant :
 
 ```java
-inColumn().columnNumber(2).column(a).column(b);       // Deux colonnes égales : 12/24 chacune
-inColumn().spans(16, 8).column(a).column(b);          // Largeurs sur la grille de 24 unités
-inColumn().flex("400px", "auto").column(a).column(b); // Valeur flex de chaque colonne
+inColumn().columnNumber(2).column(a).column(b);      // Répartition égale : 12/24 chacune
+inColumn().column(16, a).column(8, b);               // Span propre à chaque colonne
+inColumn().column("400px", a).column("auto", b);     // Flex propre à chaque colonne
 ```
 
-Le dernier appel à `columnNumber(...)`, `spans(...)` ou `flex(...)` choisit le mode actif. `spans(16)` désigne sans ambiguïté une colonne de 16 unités, et non un nombre de colonnes. Ces noms remplacent les anciennes surcharges de `InColumn.width(...)` ; les méthodes `width(...)` des autres composants restent inchangées.
+`columnNumber(n)` doit être positif et définit uniquement la largeur des colonnes sans largeur explicite (`24 / n`, calculée au rendu). Il ne limite pas le nombre d'enfants et ne remplace ni les spans ni les valeurs flex déjà associés à des colonnes. Les trois formes peuvent cohabiter. Les méthodes globales `spans(...)` et `flex(...)` sont supprimées : il n'y a plus de listes parallèles de largeurs et de composants à synchroniser.
+
+Un onglet porte explicitement son titre et sa clé, indépendamment du nom de son contenu :
+
+```java
+tabMenu(//
+    tab("employe").content(//
+        block().margin("20px").content(contenuEmploye)//
+    ),//
+    tab("conge").content(contenuConge)//
+);
+```
+
+`tabMenu(Tab...)` accepte uniquement des onglets, sans envelopper implicitement les composants à partir de leur `name`. `Tab` et `Block` restent deux descendants distincts de `Container` ; le bloc est contenu dans l'onglet, il n'en hérite pas.
+
+Dans `Section`, `statePanel()` et `actionBlock(...)` sont exclusifs : le second appel incompatible lève une `IllegalArgumentException`, quel que soit l'ordre des appels, sans modifier la configuration précédente.
 
 Une `Condition` simple (`siVrai`, `siFaux` ou un prédicat `util`) attend exactement un enfant ; `siVraiFaux` attend exactement deux enfants, dans l'ordre vrai puis faux. Un autre nombre d'enfants lève une `IllegalArgumentException` dès la construction. Pour afficher plusieurs composants dans une même branche, les regrouper dans `block(...)`.
+
+Le contrat des conditions reste une valeur simple (`pret`, `etat.succes`, `liste`), pas une expression composée avec des opérateurs. Elles peuvent être la racine d'un élément ou être imbriquées : les accolades JSX ne sont émises que dans un parent JSX ; une condition enfant d'une autre condition est parenthésée.
 
 Les personnalisations de champs comme `required(...)`, `label(...)` et `width(...)` créent des copies : elles conservent la nature et le rendu du champ, sans modifier l'original ni les variantes déjà créées. Une spécialisation de rendu doit fournir un `initCopy()` adapté ; `makeCopy()` reprend les propriétés communes et, lorsqu'il est redéfini, les propriétés propres au sous-type. Le contrat est protégé par `FieldCopyTest` pour `Text`, `ArabicText`, `Hour`, `Hidden`, `TextArray`, `Tag` et `Setting`.
 

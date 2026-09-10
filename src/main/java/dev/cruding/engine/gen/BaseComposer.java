@@ -45,6 +45,7 @@ import dev.cruding.engine.component.container.SimplePanel;
 import dev.cruding.engine.component.container.Space;
 import dev.cruding.engine.component.container.Span;
 import dev.cruding.engine.component.container.StatePanel;
+import dev.cruding.engine.component.container.Tab;
 import dev.cruding.engine.component.container.TabMenu;
 import dev.cruding.engine.component.entity.ContextButtonProvider;
 import dev.cruding.engine.component.entity.Detail;
@@ -327,18 +328,18 @@ public abstract class BaseComposer {
 
 
     public FilterPanel filterPanel(Entity entity, Component... componentList) {
-        return new FilterPanel(element, entity, false, componentList);
-    }
-
-    public FilterPanel filterPanel(Entity entity, boolean initFilter, Component... componentList) {
-        return new FilterPanel(element, entity, initFilter, componentList);
+        return new FilterPanel(element, entity, componentList);
     }
 
     public ExtendedPanel extendedPanel(Component... componentList) {
         return new ExtendedPanel(element, componentList);
     }
 
-    public TabMenu tabMenu(Component... componentList) {
+    public Tab tab(String title) {
+        return new Tab(element).title(title);
+    }
+
+    public TabMenu tabMenu(Tab... componentList) {
         return new TabMenu(element, componentList);
     }
 

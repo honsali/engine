@@ -10,16 +10,6 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public abstract class Component {
     public static final String tab = "    ";
-    public static final String[] indent = new String[] {//
-            "\n" + tab, //
-            "\n" + tab + tab, "\n" + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab + tab + tab + tab + tab, //
-            "\n" + tab + tab + tab + tab + tab + tab + tab + tab + tab//
-    };
 
     public Component[] componentList;
     public Field[] fieldList;
@@ -100,7 +90,11 @@ public abstract class Component {
         if (inline) {
             return flow.totalUi().__("");
         }
-        return flow.totalUi().__(indent[level]);
+        return flow.totalUi().__(indent(level));
+    }
+
+    public static String indent(int level) {
+        return "\n" + tab.repeat(level + 1);
     }
 
     public void addImport(ViewFlow flow) {}

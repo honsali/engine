@@ -6,6 +6,25 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class SimplePanel extends Container<SimplePanel> {
 
+    public String title;
+    public String width;
+    public String margin;
+
+    public SimplePanel title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public SimplePanel width(String width) {
+        this.width = width;
+        return this;
+    }
+
+    public SimplePanel margin(String margin) {
+        this.margin = margin;
+        return this;
+    }
+
     public SimplePanel(Element element, Component... componentList) {
         super(element, componentList);
     }
@@ -15,7 +34,7 @@ public class SimplePanel extends Container<SimplePanel> {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<CadreSimple").append(title());
+        indent(flow, level).append("<CadreSimple").append(titleAttribute(title));
         if (width != null) {
             flow.totalUi().__(" largeur=\"").append(width).append("\"");
         }

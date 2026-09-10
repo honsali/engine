@@ -10,6 +10,8 @@ import dev.cruding.engine.gen.PageRef;
 
 public class Section extends Container<Section> {
 
+    public String title;
+    public String margin;
     public Page backPage = null;
     public boolean statePanel = false;
     public Component actionBlock = null;
@@ -33,7 +35,7 @@ public class Section extends Container<Section> {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<Section").append(title());
+        indent(flow, level).append("<Section").append(titleAttribute(title));
         if (backPage != null) {
             if (actionBlock != null) {
                 indent(flow, level + 1);
@@ -64,12 +66,28 @@ public class Section extends Container<Section> {
         indent(flow, level).append("</Section>");
     }
 
+    public Section title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Section margin(String margin) {
+        this.margin = margin;
+        return this;
+    }
+
     public Section statePanel() {
+        if (actionBlock != null) {
+            throw new IllegalArgumentException("Section statePanel and actionBlock are mutually exclusive.");
+        }
         this.statePanel = true;
         return this;
     }
 
     public Section actionBlock(Component actionBlock) {
+        if (statePanel && actionBlock != null) {
+            throw new IllegalArgumentException("Section statePanel and actionBlock are mutually exclusive.");
+        }
         this.actionBlock = actionBlock;
         return this;
     }

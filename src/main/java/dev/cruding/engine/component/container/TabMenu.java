@@ -1,15 +1,13 @@
 package dev.cruding.engine.component.container;
 
-import java.util.Arrays;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
 
 public class TabMenu extends Component {
 
-    public TabMenu(Element element, Component... componentList) {
+    public TabMenu(Element element, Tab... componentList) {
         super(element, componentList);
-        this.componentList = Arrays.stream(this.componentList).map(c -> new Tab(element, c).title(c.name)).toArray(Tab[]::new);
     }
 
     public void addImport(ViewFlow flow) {

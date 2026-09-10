@@ -10,22 +10,32 @@ public class InColumn extends Component {
 
     public int columnNumber = 2;
     public String margin = "20";
-    public String width;
-    public String[] flexWidth;
-    public int[] spanWidth;
 
     public InColumn(Element element, Component... componentList) {
         super(element);
-        this.componentList = checkedContent(componentList);
-        this.width = Integer.toString(24 / columnNumber);
+        this.componentList = Arrays.stream(checkedContent(componentList))
+                .map(component -> new Column(component, null, null))
+                .toArray(Component[]::new);
     }
 
     public InColumn column(Component component) {
+        return addColumn(component, null, null);
+    }
+
+    public InColumn column(int span, Component component) {
+        return addColumn(component, span, null);
+    }
+
+    public InColumn column(String flex, Component component) {
+        return addColumn(component, null, flex);
+    }
+
+    private InColumn addColumn(Component component, Integer span, String flex) {
         if (component == null) {
             throw new IllegalArgumentException("InColumn cannot contain null components: column positions must be preserved.");
         }
         this.componentList = Arrays.copyOf(this.componentList, this.componentList.length + 1, Component[].class);
-        this.componentList[this.componentList.length - 1] = component;
+        this.componentList[this.componentList.length - 1] = new Column(component, span, flex);
         return this;
     }
 
@@ -55,28 +65,6 @@ public class InColumn extends Component {
         return false;
     }
 
-    @Override
-    protected void addBody(ViewFlow flow, int level) {
-        boolean childInline = addOpenTag(flow, level);
-        if (!isElement) {
-            if (componentList != null) {
-                for (int i = 0; i < componentList.length; i++) {
-                    Component component = componentList[i];
-                    if (flexWidth != null) {
-                        indent(flow, level + 1).append("<Col flex=\"").append(flexWidth[i]).append("\">");
-                    } else if (spanWidth != null) {
-                        indent(flow, level + 1).append("<Col span={").append(String.valueOf(spanWidth[i])).append("}>");
-                    } else {
-                        indent(flow, level + 1).append("<Col span={").append(width).append("}>");
-                    }
-                    component.addContent(this, flow, childInline, level + 2);
-                    indent(flow, level + 1).append("</Col>");
-                }
-            }
-        }
-        addCloseTag(flow, level);
-    }
-
     public void addCloseTag(ViewFlow flow, int level) {
         indent(flow, level).append("</Row>");
     }
@@ -87,27 +75,39 @@ public class InColumn extends Component {
     }
 
     public InColumn columnNumber(int columnNumber) {
+        if (columnNumber <= 0) {
+            throw new IllegalArgumentException("InColumn columnNumber must be positive.");
+        }
         this.columnNumber = columnNumber;
-        this.width = Integer.toString(24 / columnNumber);
-        this.flexWidth = null;
-        this.spanWidth = null;
         return this;
     }
 
-    public InColumn flex(String... width) {
-        this.columnNumber = width.length;
-        this.width = null;
-        this.flexWidth = width;
-        this.spanWidth = null;
-        return this;
-    }
+    private class Column extends Component {
 
-    public InColumn spans(int... width) {
-        this.columnNumber = width.length;
-        this.width = null;
-        this.flexWidth = null;
-        this.spanWidth = width;
-        return this;
+        private final Integer span;
+        private final String flex;
+
+        private Column(Component component, Integer span, String flex) {
+            super(InColumn.this.element, component);
+            this.span = span;
+            this.flex = flex;
+        }
+
+        @Override
+        public boolean addOpenTag(ViewFlow flow, int level) {
+            if (flex != null) {
+                indent(flow, level).append("<Col flex=\"").append(flex).append("\">");
+            } else {
+                int columnSpan = span != null ? span : 24 / columnNumber;
+                indent(flow, level).append("<Col span={").append(String.valueOf(columnSpan)).append("}>");
+            }
+            return false;
+        }
+
+        @Override
+        public void addCloseTag(ViewFlow flow, int level) {
+            indent(flow, level).append("</Col>");
+        }
     }
 
 }

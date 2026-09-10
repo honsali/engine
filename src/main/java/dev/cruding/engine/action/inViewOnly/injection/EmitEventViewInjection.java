@@ -15,7 +15,7 @@ public class EmitEventViewInjection extends ActionViewInjection {
 
     public void addFlowScript(ViewFlow f, int level, String args) {
         f.useEventBus();
-        f.totalScript().__(Component.indent[level]).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
+        f.totalScript().__(Component.indent(level)).__("emit(APP_EVENT.").append(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(targetEvent), "_").toUpperCase());
         if (args != null) {
             f.totalScript().__(", { ", args, " }");
         }

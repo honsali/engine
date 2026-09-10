@@ -14,8 +14,8 @@ public class ViewFiltrerEmploye extends ViewComposer<Employe> {
 
     return //
     block().margin("20px 40px").content(
-        inColumn().spans(16, 8)
-            .column(
+        inColumn()
+            .column(16,
                 section().margin("0")
                     .content(
                         primaryPanel().title("listeEmploye").content(
@@ -24,7 +24,7 @@ public class ViewFiltrerEmploye extends ViewComposer<Employe> {
                     .actionBlock(//
                         button(addAction(e, RhModule.pageCreerEmploye))//
                     ))//
-            .column(
+            .column(8,
                 block().margin("62px 0px").content(elementFiltre)//
             )//
     );

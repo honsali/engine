@@ -6,6 +6,24 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class Block extends Container<Block> {
 
+    public String width;
+    public String margin;
+    public String background;
+
+    public Block width(String width) {
+        this.width = width;
+        return this;
+    }
+
+    public Block margin(String margin) {
+        this.margin = margin;
+        return this;
+    }
+
+    public Block background(String background) {
+        this.background = background;
+        return this;
+    }
 
     public Block(Element element, Component... componentList) {
         super(element, componentList);

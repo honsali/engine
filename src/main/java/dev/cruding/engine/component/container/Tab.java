@@ -8,6 +8,13 @@ import dev.cruding.engine.gen.Context;
 
 public class Tab extends Container<Tab> {
 
+    public String title;
+
+    public Tab title(String title) {
+        this.title = title;
+        return this;
+    }
+
     public Tab(Element element, Component... componentList) {
         super(element, componentList);
     }

@@ -13,26 +13,26 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
         Employe e = entity(Employe.class);
         Conge c = entity(Conge.class);
         return section(
-            tabMenu(
-                block()
-                    .name("employe").margin("20px")
-                    .content(
-                        element(new EtatEmploye()),
-                        actionBlock(
-                            button(editAction(e, RhModule.pageModifierEmploye)),
-                            button(backToListAction(e, RhModule.pageFiltrerEmploye)),
-                            button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))
-                        )
-                    ),
-                block()
-                    .name("conge").margin("20px")
-                    .content(
-                        element(new TableauConge()),
-                        actionBlock(
-                            button(addAction(c, RhModule.pageCreerConge))
-                        )
-                    )
-            )
+            tabMenu(//
+                tab("employe").content(//
+                    block().margin("20px").content(//
+                        element(new EtatEmploye()),//
+                        actionBlock(//
+                            button(editAction(e, RhModule.pageModifierEmploye)),//
+                            button(backToListAction(e, RhModule.pageFiltrerEmploye)),//
+                            button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
+                        )//
+                    )//
+                ),//
+                tab("conge").content(//
+                    block().margin("20px").content(//
+                        element(new TableauConge()),//
+                        actionBlock(//
+                            button(addAction(c, RhModule.pageCreerConge))//
+                        )//
+                    )//
+                )//
+            )//
         );
     }
 

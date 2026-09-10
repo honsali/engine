@@ -12,7 +12,6 @@ public class EtatEmploye extends ElementComposer {
         Employe e = entity(Employe.class);
         getByFieldAction(e, e.id_).inInit();
         return inlineBlock()
-            .width("600px")
             .content(
                 primaryPanel()
                     .title("employe").width("500px")

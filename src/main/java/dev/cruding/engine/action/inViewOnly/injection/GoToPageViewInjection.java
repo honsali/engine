@@ -38,7 +38,7 @@ public class GoToPageViewInjection extends ActionViewInjection {
 
     public void addFlowScript(ViewFlow f, int level, String args) {
         f.addJsImport("{ " + targetPage.name + " }", targetPage.module.pageList(element().path, false));
-        f.totalScript().__(Component.indent[level]).__("goToPage(", targetPage.name);
+        f.totalScript().__(Component.indent(level)).__("goToPage(", targetPage.name);
         if (args != null) {
             f.totalScript().__(", { ", args, " }");
         }

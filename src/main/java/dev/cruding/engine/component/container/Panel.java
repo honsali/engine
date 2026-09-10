@@ -7,6 +7,7 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class Panel extends Container<Panel> {
 
+    public String title;
     public boolean statePanel = false;
     public ActionBlock actionBlock = null;
 
@@ -24,7 +25,7 @@ public class Panel extends Container<Panel> {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<Panneau").append(title());
+        indent(flow, level).append("<Panneau").append(titleAttribute(title));
 
         if (statePanel) {
             flow.totalUi().__(" etat={").append(entity.lname).append("?.etat?.libelle}");
@@ -43,6 +44,11 @@ public class Panel extends Container<Panel> {
 
     public void addCloseTag(ViewFlow flow, int level) {
         indent(flow, level).append("</Panneau>");
+    }
+
+    public Panel title(String title) {
+        this.title = title;
+        return this;
     }
 
     public Panel statePanel() {

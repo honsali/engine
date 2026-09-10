@@ -7,12 +7,19 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class FilterPanel extends Container<FilterPanel> {
 
-    public FilterPanel(Element element, Entity entity, boolean initFilter, Component... componentList) {
+    public String title;
+
+    public FilterPanel title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public FilterPanel(Element element, Entity entity, Component... componentList) {
         super(element, entity, componentList);
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<Filtre").append(title());
+        indent(flow, level).append("<Filtre").append(titleAttribute(title));
         flow.totalUi().__(">");
         return false;
     }

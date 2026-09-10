@@ -7,7 +7,13 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class ExtendedPanel extends Container<ExtendedPanel> {
 
+    public String title;
     public boolean open = false;
+
+    public ExtendedPanel title(String title) {
+        this.title = title;
+        return this;
+    }
 
     public ExtendedPanel(Element element, Component... componentList) {
         super(element, componentList);
@@ -23,7 +29,7 @@ public class ExtendedPanel extends Container<ExtendedPanel> {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<PanneauEtendable").append(title());
+        indent(flow, level).append("<PanneauEtendable").append(titleAttribute(title));
 
         if (open) {
             flow.totalUi().__(" open={true}");

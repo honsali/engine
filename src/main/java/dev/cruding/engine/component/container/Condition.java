@@ -63,7 +63,7 @@ public class Condition extends Component {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("{");
+        indent(flow, level).append(fatherComponent == null ? "" : fatherComponent instanceof Condition ? "(" : "{");
         String open = childInLine ? "" : "(";
         if (type.equals("siVrai")) {
             flow.totalUi().__(condition).append(" && " + open);
@@ -82,12 +82,12 @@ public class Condition extends Component {
     }
 
     public void addCloseTag(ViewFlow flow, int level) {
-
+        String close = fatherComponent == null ? "" : fatherComponent instanceof Condition ? ")" : "}";
         if (childInLine) {
-            flow.totalUi().__("}");
+            flow.totalUi().__(close);
         } else {
             indent(flow, level);
-            flow.totalUi().__(")}");
+            flow.totalUi().__(")" + close);
         }
     }
 }

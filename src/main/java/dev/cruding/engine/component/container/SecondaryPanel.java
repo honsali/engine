@@ -6,6 +6,25 @@ import dev.cruding.engine.flow.ViewFlow;
 
 public class SecondaryPanel extends Container<SecondaryPanel> {
 
+    public String title;
+    public String width;
+    public String margin;
+
+    public SecondaryPanel title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public SecondaryPanel width(String width) {
+        this.width = width;
+        return this;
+    }
+
+    public SecondaryPanel margin(String margin) {
+        this.margin = margin;
+        return this;
+    }
+
     public SecondaryPanel(Element element, Component... componentList) {
         super(element, componentList);
     }
@@ -15,7 +34,7 @@ public class SecondaryPanel extends Container<SecondaryPanel> {
     }
 
     public boolean addOpenTag(ViewFlow flow, int level) {
-        indent(flow, level).append("<CadreNormal").append(title());
+        indent(flow, level).append("<CadreNormal").append(titleAttribute(title));
         if (width != null) {
             flow.totalUi().__(" largeur=\"").append(width).append("\"");
         }

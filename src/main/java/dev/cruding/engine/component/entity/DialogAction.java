@@ -79,7 +79,7 @@ public class DialogAction extends Component {
             indent(flow, level + 1).append("siInit={siInit}");
         }
         if (width != null) {
-            indent(flow, level + 1).append("width=\"500px\"");
+            indent(flow, level + 1).append("width=\"").append(width).append("\"");
         }
         indent(flow, level).append(">");
         if (action.icon != null) {

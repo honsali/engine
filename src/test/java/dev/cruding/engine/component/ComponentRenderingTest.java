@@ -102,18 +102,18 @@ class ComponentRenderingTest {
     }
 
     @Test
-    void ignoresNullChildrenBeforeWrappingTabs() {
-        Component first = new Span(element, "A").name("premier");
-        Component second = new Span(element, "B").name("second");
+    void preservesExplicitTabsAndIgnoresNullTabs() {
+        Tab first = new Tab(element).title("premier").content(new Span(element, "A"));
+        Tab second = new Tab(element).title("second").content(new Span(element, "B"));
         TabMenu menu = new TabMenu(element, null, first, null, second, null);
 
         assertEquals(2, menu.componentList.length);
         assertEquals("premier", ((Tab) menu.componentList[0]).title);
         assertEquals("second", ((Tab) menu.componentList[1]).title);
-        assertArrayEquals(new Component[] {first}, menu.componentList[0].componentList);
-        assertArrayEquals(new Component[] {second}, menu.componentList[1].componentList);
-        assertEquals(0, new TabMenu(element, (Component) null).componentList.length);
-        assertEquals(0, new TabMenu(element, (Component[]) null).componentList.length);
+        assertSame(first, menu.componentList[0]);
+        assertSame(second, menu.componentList[1]);
+        assertEquals(0, new TabMenu(element, (Tab) null).componentList.length);
+        assertEquals(0, new TabMenu(element, (Tab[]) null).componentList.length);
     }
 
     @Test
@@ -163,9 +163,11 @@ class ComponentRenderingTest {
 
         assertEquals(expected.formatted("span={12}", "span={12}"), render(columns()));
         assertEquals(expected.formatted("span={12}", "span={12}"), render(columns().columnNumber(2)));
-        assertEquals(expected.formatted("span={16}", "span={8}"), render(columns().spans(16, 8)));
+        assertEquals(expected.formatted("span={16}", "span={8}"), render(new InColumn(element)
+                .column(16, new Span(element, "A")).column(8, new Span(element, "B"))));
         assertEquals(expected.formatted("flex=\"400px\"", "flex=\"auto\""),
-                render(columns().flex("400px", "auto")));
+                render(new InColumn(element)
+                        .column("400px", new Span(element, "A")).column("auto", new Span(element, "B"))));
     }
 
     @Test
@@ -180,19 +182,28 @@ class ComponentRenderingTest {
                         </Row>
                     );""";
 
-        assertEquals(expected.formatted(16), render(column.spans(16)));
-        assertEquals(expected.formatted(2), render(column.spans(2)));
+        assertEquals(expected.formatted(16), render(new InColumn(element).column(16, new Span(element, "A"))));
+        assertEquals(expected.formatted(2), render(new InColumn(element).column(2, new Span(element, "A"))));
         assertEquals(expected.formatted(12), render(column.columnNumber(2)));
         assertEquals(expected.formatted(24), render(column.columnNumber(1)));
     }
 
     @Test
-    void usesTheLastColumnLayoutConfiguration() {
-        InColumn layout = columns().flex("400px", "auto");
+    void usesColumnNumberOnlyForColumnsWithoutAnExplicitWidth() {
+        InColumn layout = new InColumn(element).columnNumber(2)
+                .column(16, new Span(element, "A"))
+                .column("auto", new Span(element, "B"))
+                .column(new Span(element, "C"));
 
-        assertEquals(render(columns().spans(16, 8)), render(layout.spans(16, 8)));
-        assertEquals(render(columns().columnNumber(2)), render(layout.columnNumber(2)));
-        assertEquals(render(columns().flex("400px", "auto")), render(layout.flex("400px", "auto")));
+        assertTrue(render(layout).contains("<Col span={12}>"));
+        String output = render(layout.columnNumber(3));
+        assertTrue(output.contains("<Col span={16}>"));
+        assertTrue(output.contains("<Col flex=\"auto\">"));
+        assertTrue(output.contains("<Col span={8}>"));
+        assertEquals(3, output.lines().filter(line -> line.contains("<Col ")).count());
+        assertThrows(IllegalArgumentException.class, () -> layout.columnNumber(0));
+        assertThrows(IllegalArgumentException.class, () -> layout.columnNumber(-1));
+        assertEquals(3, layout.columnNumber);
     }
 
     @Test
@@ -274,6 +285,50 @@ class ComponentRenderingTest {
         assertRenderMetadata(child -> new Condition(element, "visible", "siVrai", true, child), true);
     }
 
+    @Test
+    void rendersBeyondTheFormerIndentationLimit() {
+        Component blocks = new Span(element, "A");
+        for (int i = 0; i < 12; i++) {
+            blocks = new Block(element, blocks);
+        }
+        assertTrue(render(blocks).contains(Component.indent(13) + "<span>A</span>"));
+
+        Component columns = new Span(element, "B");
+        for (int i = 0; i < 8; i++) {
+            columns = new InColumn(element, columns);
+        }
+        assertTrue(render(columns).contains(Component.indent(17) + "<span>B</span>"));
+        assertEquals("\n" + Component.tab.repeat(21), Component.indent(20));
+    }
+
+    @Test
+    void rendersSimpleConditionsAsRootExpressionsWithoutJsxBraces() {
+        String expected = """
+                (
+                        %s && (
+                            <span>A</span>
+                        )
+                    );""";
+        assertEquals(expected.formatted("etat.succes"), render(new Condition(element,
+                "etat.succes", "siVrai", false, new Span(element, "A"))));
+        assertEquals(expected.formatted("!etat.succes"), render(new Condition(element,
+                "etat.succes", "siFaux", false, new Span(element, "A"))));
+        assertEquals(expected.formatted("util.nonVide(liste)"), render(new Condition(element,
+                "liste", "nonVide", false, new Span(element, "A"))));
+        assertEquals("(\n        visible ? <span>A</span> : <span>B</span>\n    );",
+                render(new Condition(element, "visible", "siVraiFaux", true,
+                        new Span(element, "A"), new Span(element, "B"))));
+    }
+
+    @Test
+    void groupsNestedConditionsAsExpressions() {
+        Condition inner = new Condition(element, "choix", "siVraiFaux", true,
+                new Span(element, "A"), new Span(element, "B"));
+        Condition outer = new Condition(element, "visible", "siVrai", true, inner);
+        assertTrue(render(new Block(element, outer))
+                .contains("{visible && (choix ? <span>A</span> : <span>B</span>)}"));
+    }
+
     private void assertRenderMetadata(Function<Component, Component> createRoot, boolean childInline) {
         Span child = new Span(element, "A");
         Component root = createRoot.apply(child);
@@ -284,7 +339,12 @@ class ComponentRenderingTest {
 
         assertNull(root.fatherComponent);
         assertTrue(root.inline);
-        assertSame(root, child.fatherComponent);
+        if (root instanceof InColumn) {
+            assertSame(root.componentList[0], child.fatherComponent);
+            assertSame(root, child.fatherComponent.fatherComponent);
+        } else {
+            assertSame(root, child.fatherComponent);
+        }
         assertTrue(child.inElement);
         assertEquals(childInline, child.inline);
         assertTrue(flow.totalUi().toString().startsWith("("));

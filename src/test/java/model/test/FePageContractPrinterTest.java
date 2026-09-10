@@ -335,6 +335,40 @@ class FePageContractPrinterTest {
         assertTrue(generatedView.contains("const getColonneNotifier = (texte, element) => {"));
     }
 
+    @Test
+    void rendersExplicitTabIdentityAndTheRequestedDialogWidth() throws IOException {
+        EnginePaths.outputRoot = tempDir;
+        Context context = Context.init();
+        PageContractEntity entity = new PageContractEntity();
+        context.addEntity(entity);
+        context.initEntities();
+
+        Module module = new Module("ModulePageContract", "test/pageContract");
+        ViewConsulterPageContractEntity view = new ViewConsulterPageContractEntity(entity);
+        module.addPage(view);
+        view.element.setRootComponent(view.tabMenu(
+                view.tab("informations").content(
+                        view.block().name("autreNom").margin("20px").content(
+                                view.dialogAction(entity, entity.code)
+                                        .action(view.normalAction(entity, "valider").byForm()).width("720px"))),
+                view.tab("historique").content(view.span("Historique"))));
+        context.initActions();
+
+        new FeElementPrinter().print(view.element);
+        String generatedView = Files.readString(tempDir.resolve(
+                "fe/src/modules/test/pageContract/pageContractEntity/consulter/ViewConsulterPageContractEntity.tsx"));
+
+        assertEquals(2, generatedView.lines().filter(line -> line.contains("<Onglet key=")).count());
+        assertTrue(generatedView.contains("<Onglet key=\"informations\" >"));
+        assertTrue(generatedView.contains("<Onglet key=\"historique\" >"));
+        assertFalse(generatedView.contains("key=\"autreNom\""));
+        assertTrue(generatedView.contains("<Bloc marge=\"20px\">"));
+        assertTrue(generatedView.contains("width=\"720px\""));
+        assertFalse(generatedView.contains("width=\"500px\""));
+        assertEquals("Informations", context.getLabelMap(module.uname).get("onglet.informations"));
+        assertEquals("Historique", context.getLabelMap(module.uname).get("onglet.historique"));
+    }
+
     public static final class PageContractEntity extends Entity {
         public final Field code = Text().isId();
     }
