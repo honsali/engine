@@ -151,12 +151,12 @@ class FePageContractPrinterTest {
         assertFalse(mdl.contains(".rejected, (state, action)"));
 
         assertTrue(hook.contains("(req?: Partial<ReqFiltrerPageContractEntity>)"));
-        assertTrue(hook.contains("const creerPageContractEntity = async (form: FormInstance<IPageContractEntity>) =>"));
+        assertTrue(hook.contains("const creerPageContractEntity = useCallback(async (form: FormInstance<IPageContractEntity>) =>"));
         assertTrue(hook.contains("const request = util.removeNonSerialisable(await form.validateFields()) as IPageContractEntity;"));
-        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.creerPageContractEntity({ request, ...params })"));
-        assertTrue(hook.contains("const filtrerPageContractEntity = async ({ form, ...req }: Partial<ReqFiltrerPageContractEntity> & { form: FormInstance<IRequetePageContractEntity> }) =>"));
+        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.creerPageContractEntity({ request } as ReqFiltrerPageContractEntity)"));
+        assertTrue(hook.contains("const filtrerPageContractEntity = useCallback(async ({ form, ...req }: Partial<ReqFiltrerPageContractEntity> & { form: FormInstance<IRequetePageContractEntity> }) =>"));
         assertTrue(hook.contains("const filtre = util.removeNonSerialisable(form.getFieldsValue()) as IRequetePageContractEntity;"));
-        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.filtrerPageContractEntity({ ...req, filtre, ...params } as ReqFiltrerPageContractEntity)"));
+        assertTrue(hook.contains("CtrlFiltrerPageContractEntity.filtrerPageContractEntity({ ...req, filtre } as ReqFiltrerPageContractEntity)"));
         assertTrue(ctrl.contains("ServicePageContractEntity.filtrer(requete.filtre)"));
         assertTrue(generatedView.contains("Form.useForm<IPageContractEntity>()"));
         assertTrue(generatedView.contains("(pageContractEntity: IPageContractEntity) =>"));
@@ -227,8 +227,8 @@ class FePageContractPrinterTest {
         assertTrue(ctrl.contains("ServicePageContractEntity.filtrer(requete.filtre)"));
 
         for (String name : new String[] { "maj", "valider", "chercher", "preparer", "enregistrer" }) {
-            assertTrue(hook.contains("const " + name + "PageContractEntity = async ({ form, ...req }: Partial<ReqModifierPageContractEntity> & { form: FormInstance<IPageContractEntity> }) =>"), name);
-            assertTrue(hook.contains("CtrlModifierPageContractEntity." + name + "PageContractEntity({ ...req, request, ...params } as ReqModifierPageContractEntity)"), name);
+            assertTrue(hook.contains("const " + name + "PageContractEntity = useCallback(async ({ form, ...req }: Partial<ReqModifierPageContractEntity> & { form: FormInstance<IPageContractEntity> }) =>"), name);
+            assertTrue(hook.contains("CtrlModifierPageContractEntity." + name + "PageContractEntity({ ...req, request, idPageContractEntity } as ReqModifierPageContractEntity)"), name);
         }
         assertTrue(hook.contains("const request = util.removeNonSerialisable(await form.validateFields()) as IPageContractEntity;"));
         assertTrue(hook.contains("const filtre = util.removeNonSerialisable(form.getFieldsValue()) as IRequetePageContractEntity;"));
@@ -317,15 +317,12 @@ class FePageContractPrinterTest {
         String generatedView = Files.readString(pageDirectory.resolve("ViewActionsPageContractEntity.tsx"));
         String hook = Files.readString(pageDirectory.resolve("useActionsPageContractEntity.ts"));
         String mdl = Files.readString(pageDirectory.resolve("MdlActionsPageContractEntity.ts"));
-        String selectors = generatedView.lines()
-                .filter(line -> line.endsWith(" } = useActionsPageContractEntity();"))
-                .findFirst().orElseThrow();
 
         for (String name : new String[] { "Supprimer", "Notifier" }) {
             String state = "etat" + name + "PageContractEntity";
             assertEquals(2L, generatedView.lines()
                     .filter(line -> line.contains("rid={" + state + ".rid}")).count(), state);
-            assertTrue(selectors.contains(state), state);
+            assertTrue(generatedView.lines().anyMatch(line -> line.contains(state) && line.endsWith(" } = use" + name + "PageContractEntity();")), state);
             assertTrue(hook.contains("const " + state + " = useSelector(selectEtat" + name + "PageContractEntity);"));
             assertTrue(mdl.contains(state + ": EtatMdl;"));
         }

@@ -199,6 +199,18 @@ Dans le frontend généré, l'instance Ant Design reste dans les vues et les hoo
 
 Le DSL porte donc l'intention. Les actions traduisent cette intention dans les couches techniques.
 
+### Hooks frontend par action
+
+Le fichier `use<UC>.ts` regroupe des exports nommés par action (`useRecupererDepartementParId`, `useSupprimerDepartement`, etc.), et non un hook global abonné à tout le modèle de page. Les contrôleurs et modèles Redux restent inchangés dans leur rôle.
+
+Les injections d'initialisation déclarent leur usage par `ViewFlow.useInitAction`. `ViewFlow` collecte les commandes, données, statuts et resets effectivement consommés par chaque composant ; `FeHookPrinter` assemble ces contributions. Il ne reconnaît pas une liste de classes CRUD. Les paramètres de route sont pris parmi ceux présents dans le contrat `Req*`, puis utilisés explicitement dans les dépendances React.
+
+Le hook initialiseur lance l'action dans `useEffect`. Une consultation simple retourne seulement l'entité ; une initialisation de formulaire conserve aussi le statut utilisé pour le remplir. Une commande utilisateur est exposée via `useCallback`. Le filtre conserve sa fonction de réinitialisation manuelle en plus de l'effet initial.
+
+Un composant lecteur sans action locale utilise directement les sélecteurs du `Mdl` : il partage les données sans rappeler le hook initialiseur d'un autre composant. Le DSL doit placer l'initialisation dans un seul composant. Pour isoler les abonnements d'un bouton, utiliser `element(action)` ; des hooks distincts appelés dans un même composant ne séparent pas ses rendus.
+
+Le modèle de page reste partagé, sans provider ni copie locale des données. Le cycle succès/reset/navigation est conservé. Ce découpage ne déduplique pas les requêtes lorsque StrictMode rejoue les effets en développement.
+
 ## L'architecture en Flow
 
 Une action ne génère pas directement un fichier complet.

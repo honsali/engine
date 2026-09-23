@@ -17,7 +17,7 @@ public class ViewConsulterDepartement extends ViewComposer<Departement> {
                                                 actionBlock(//
                                                                 button(editAction(e, RhModule.pageModifierDepartement)), //
                                                                 button(backToListAction(e, RhModule.pageListerDepartement)), //
-                                                                button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageListerDepartement)))//
+                                                                element(deleteAction(e).onSuccess(goToPage(e, RhModule.pageListerDepartement)))//
                                                 )//
                                         )//
                 );

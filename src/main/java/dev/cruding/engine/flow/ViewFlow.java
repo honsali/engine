@@ -1,11 +1,20 @@
 package dev.cruding.engine.flow;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.flow.helper.HookBinding;
+import dev.cruding.engine.gen.Context;
 
 public class ViewFlow extends JsFlow {
 
@@ -13,6 +22,7 @@ public class ViewFlow extends JsFlow {
     private HashSet<String> propSet = new HashSet<>();
     private HashMap<String, String> propTypeMap = new HashMap<>();
     private HashSet<String> selectorSet = new HashSet<>();
+    private Map<Action, HookBinding> initHooks = new TreeMap<>(Action.ORDER_BY_NAME);
     private HashMap<String, String> stateSet = new HashMap<>();
     private Flow totalScript = new Flow();
     private Flow totalUi = new Flow();
@@ -40,6 +50,24 @@ public class ViewFlow extends JsFlow {
 
     public ViewFlow(Element element) {
         this.element = element;
+    }
+
+    public static ViewFlow create(Element element) {
+        ViewFlow flow = new ViewFlow(element);
+        if (element.byForm) {
+            flow.addJsImport("{ FormInstance }", "antd");
+            flow.addProp("form", "FormInstance");
+        }
+        flow.addProp(element.byProp);
+        List<Action> actions = Context.getInstance().actionElement(element);
+        for (int i = 0; i < actions.size(); i++) {
+            boolean newLine = actions.get(i).viewActionInjection.addViewScript(flow);
+            if (newLine && i < actions.size() - 1) {
+                flow.totalScript().L();
+            }
+        }
+        element.addContent(flow);
+        return flow;
     }
 
     public void flushScriptBlock() {
@@ -82,16 +110,23 @@ public class ViewFlow extends JsFlow {
             initFlow.L____("const { emit } = useEventBus();");
         }
 
-        if (selectorSet.size() > 0) {
-            initFlow.L____("const { ");
-            initFlow.__(selectorSet.stream().sorted().collect(Collectors.joining(", ")));
-            initFlow.__(" } = use", element.page.uc, "();");
-        }
         if (hasForm()) {
             initFlow.L____("const [", form, "] = Form.useForm", formType == null ? "" : "<" + formType + ">", "();");
         }
         for (String state : stateSet.keySet()) {
             initFlow.L____("const [", state, ", set", StringUtils.capitalize(state), "] = useState(", stateSet.get(state), ");");
+        }
+
+        for (HookBinding hook : hookBindings().values()) {
+            String arguments = String.join(", ", hook.parameters);
+            if (hook.members.isEmpty()) {
+                initFlow.L____(hook.name(), "(", arguments, ");");
+            } else {
+                initFlow.L____("const { ", String.join(", ", hook.members), " } = ", hook.name(), "(", arguments, ");");
+            }
+        }
+        for (String selector : readSelectors()) {
+            initFlow.L____("const ", selector, " = useSelector(select", StringUtils.capitalize(selector), ");");
         }
 
         initFlow.clean();
@@ -122,9 +157,16 @@ public class ViewFlow extends JsFlow {
         if (hasNavigate()) {
             addJsImport("{ useNavigate }", "react-router");
         }
-        if (hasSelector()) {
+        if (!hookBindings().isEmpty()) {
             String relativePath = (element.path != null && element.path.endsWith("element") ? ".." : ".") + "/use" + element.page.uc;
-            addJsImport("use" + element.page.uc, relativePath);
+            for (HookBinding hook : hookBindings().values()) {
+                addJsImport("{ " + hook.name() + " }", relativePath);
+            }
+        }
+        for (String selector : readSelectors()) {
+            String relativePath = (element.path != null && element.path.endsWith("element") ? ".." : ".") + "/Mdl" + element.page.uc;
+            addJsImport("{ useSelector }", "react-redux");
+            addJsImport("{ select" + StringUtils.capitalize(selector) + " }", relativePath);
         }
         if (hasForm()) {
             addJsImport("{ Form }", "antd");
@@ -232,6 +274,55 @@ public class ViewFlow extends JsFlow {
 
     public void addSelector(String selector) {
         selectorSet.add(selector);
+    }
+
+    public void useInitAction(Action action, String... parameters) {
+        HookBinding hook = initHooks.computeIfAbsent(action, HookBinding::new);
+        hook.initialize = true;
+        hook.parameters.addAll(List.of(parameters));
+        if (action.byProp != null) {
+            hook.parameters.add(action.byProp);
+        }
+        if (action.waitUntilReady) {
+            hook.parameters.add("pret");
+        }
+    }
+
+    public Map<Action, HookBinding> hookBindings() {
+        Map<Action, HookBinding> hooks = new TreeMap<>(Action.ORDER_BY_NAME);
+        initHooks.forEach((action, binding) -> hooks.computeIfAbsent(action, HookBinding::new).merge(binding));
+        if (element == null) {
+            return hooks;
+        }
+        var actions = Context.getInstance().actionPage(element.page).stream()
+                .filter(action -> !action.inViewOnly && !action.isEmpty).toList();
+        Set<String> remaining = new TreeSet<>(selectorSet);
+        for (Action action : actions) {
+            for (String member : List.of(action.lnameWithEntity, "resetEtat" + action.unameWithEntity)) {
+                if (remaining.remove(member)) {
+                    hooks.computeIfAbsent(action, HookBinding::new).members.add(member);
+                }
+            }
+            String status = "etat" + action.unameWithEntity;
+            if (hooks.containsKey(action) && remaining.remove(status)) {
+                hooks.get(action).members.add(status);
+            }
+        }
+        // Bind data to an action already used here; reading elsewhere must not
+        // call another component's initialization hook.
+        for (String member : remaining) {
+            hooks.values().stream()
+                    .filter(hook -> hook.action.mdlActionInjection.hookStateMembers().contains(member))
+                    .sorted(Comparator.comparing(hook -> !hook.initialize))
+                    .findFirst().ifPresent(hook -> hook.members.add(member));
+        }
+        return hooks;
+    }
+
+    public Set<String> readSelectors() {
+        Set<String> selectors = new TreeSet<>(selectorSet);
+        hookBindings().values().forEach(hook -> selectors.removeAll(hook.members));
+        return selectors;
     }
 
     public boolean hasState() {

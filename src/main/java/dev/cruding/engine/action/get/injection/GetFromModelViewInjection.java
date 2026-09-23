@@ -12,20 +12,9 @@ public class GetFromModelViewInjection extends ActionViewInjection {
     }
 
     public boolean addViewScript(ViewFlow f) {
-        f.totalScript().L____("useEffect(() => {");
-        if (waitUntilReady()) {
-            f.totalScript().L________("if (pret) {");
-            f.totalScript().L____________(lnameWithEntity(), "();");
-            f.totalScript().L________("}");
-            f.totalScript().L____("}, [pret]);");
-        } else {
-            f.totalScript().L________(lnameWithEntity(), "();");
-            f.totalScript().L____("}, []);");
-        }
-        f.useEffect();
+        f.useInitAction(action);
         f.addSelector(variable);
-        f.addSelector(lnameWithEntity());
-        return true;
+        return false;
     }
 
     public void addViewSelector(ViewFlow f) {

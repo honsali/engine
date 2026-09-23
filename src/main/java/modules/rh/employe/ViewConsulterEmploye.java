@@ -20,7 +20,7 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
                         actionBlock(//
                             button(editAction(e, RhModule.pageModifierEmploye)),//
                             button(backToListAction(e, RhModule.pageFiltrerEmploye)),//
-                            button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
+                            element(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
                         )//
                     )//
                 ),//

@@ -12,11 +12,7 @@ public class GetByFieldViewInjection extends ActionViewInjection {
         if (flow()) {
             return false;
         } else if (inInit()) {
-            f.totalScript().L____("useEffect(() => {");
-            f.totalScript().L________(lnameWithEntity(), "();");
-            f.totalScript().L____("}, [", lnameField.equals("id") ? "" : lnameField, "]);");
-            f.useEffect();
-            f.addSelector(lnameWithEntity());
+            f.useInitAction(action, lnameField.equals("id") ? new String[0] : new String[] { lnameField });
         } else if (byForm()) {
             f.totalScript().L____("const ", lnameWithEntity(), " = () => {");
             f.totalScript().L________(lnameWithEntity(), "({ ", lnameField, ": form.getFieldValue('", lnameField, "') });");

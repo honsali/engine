@@ -1,6 +1,8 @@
 package dev.cruding.engine.injection;
 
 import java.util.regex.Pattern;
+import java.util.Set;
+import java.util.stream.Collectors;
 import dev.cruding.engine.action.ActionWrapper;
 import dev.cruding.engine.flow.MdlFlow;
 
@@ -18,6 +20,15 @@ public class ActionMdlInjection extends ActionWrapper {
 
     public void addUseSelector(MdlFlow f) {}
 
+    public Set<String> hookStateMembers() {
+        MdlFlow f = new MdlFlow();
+        addMdlStateAttribute(f);
+        if (resultIn() != null) {
+            f.addMdlSelectorAttribute(resultIn().lname + entity().uname, resultIn().uname + entity().uname);
+        }
+        return f.mdlSelectorAttributeSet.stream().map(attribute -> attribute.type).collect(Collectors.toSet());
+    }
+
     public void addHookImport(MdlFlow f) {
         ActionMdlInjection formInput = formInputInjection();
         if (formInput != null) {
@@ -33,18 +44,18 @@ public class ActionMdlInjection extends ActionWrapper {
         return formInputInjection() == null;
     }
 
-    public void addHookAction(MdlFlow f) {
+    public void addHookAction(MdlFlow f, String routeArguments, String dependencies) {
         ActionMdlInjection formInput = formInputInjection();
         String attribute = formInput.formRequestAttribute();
         String type = formInput.formRequestType();
         String values = formInput.validatesFormInHook() ? "await form.validateFields()" : "form.getFieldsValue()";
 
-        f.L____("const ", lnameWithEntity(), " = async ({ form, ...req }: Partial<Req", uc(),
+        f.L____("const ", lnameWithEntity(), " = useCallback(async ({ form, ...req }: Partial<Req", uc(),
                 "> & { form: FormInstance<", type, "> }) => {");
         f.L________("const ", attribute, " = util.removeNonSerialisable(", values, ") as ", type, ";");
         f.L________("return dispatch(Ctrl", uc(), ".", lnameWithEntity(), "({ ...req, ", attribute,
-                ", ...params } as Req", uc(), "));");
-        f.L____("};");
+                routeArguments, " } as Req", uc(), "));");
+        f.L____("}, [", dependencies, "]);");
     }
 
     protected ActionMdlInjection formInputInjection() {
