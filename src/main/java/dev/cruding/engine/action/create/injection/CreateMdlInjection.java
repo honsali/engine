@@ -21,7 +21,9 @@ public class CreateMdlInjection extends ActionMdlInjection {
         f.addMdlImport("{ FormInstance }", "antd");
         f.addMdlImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
         f.addMdlImport("{ util }", "waxant");
-        f.addMdlImport("{ Req" + uc() + " }", "./Mdl" + uc());
+        if (hasAdditionalHookParameters()) {
+            f.addMdlImport("{ Req" + uc() + " }", "./Mdl" + uc());
+        }
     }
 
     @Override
@@ -30,8 +32,8 @@ public class CreateMdlInjection extends ActionMdlInjection {
     }
 
     @Override
-    public void addHookAction(MdlFlow f, String routeArguments, String dependencies) {
-        f.L____("const ", lnameWithEntity(), " = useCallback(async (form: FormInstance<I", entity().uname, ">");
+    public void addHookAction(MdlFlow f) {
+        f.L____("const ", lnameWithEntity(), " = async (form: FormInstance<I", entity().uname, ">");
         if (hasAdditionalHookParameters()) {
             f.__(", req: Partial<Req", uc(), ">");
         }
@@ -41,8 +43,12 @@ public class CreateMdlInjection extends ActionMdlInjection {
         if (hasAdditionalHookParameters()) {
             f.__("...req, ");
         }
-        f.__("request", routeArguments, " } as Req", uc(), "));");
-        f.L____("}, [", dependencies, "]);");
+        f.__("request, ...params");
+        if (byFatherId() && entity().haveFather) {
+            f.__(", id", entity().ufather, ": params.id", entity().ufather, "!");
+        }
+        f.__(" }));");
+        f.L____("};");
     }
 
     private boolean hasAdditionalHookParameters() {

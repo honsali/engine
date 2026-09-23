@@ -36,10 +36,6 @@ public class MdlFlow extends Flow {
         mdlRequiredRequestAttributeSet.add(name);
     }
 
-    public boolean hasMdlRequestAttribute(String name) {
-        return mdlRequestAttributeSet.stream().anyMatch(attribute -> attribute.name.equals(name));
-    }
-
     public void addMdlResultAttribute(String name, String type) {
         mdlResultAttributeSet.add(new Attribute(name, type));
     }

@@ -7,9 +7,19 @@ public class ListViewInjection extends ActionViewInjection {
 
     public boolean addViewScript(ViewFlow f) {
 
-        if (!flow()) {
-            f.useInitAction(action);
+        f.addSelector(lnameWithEntity());
+        f.useEffect();
+        f.totalScript().L____("useEffect(() => {");
+        f.totalScript().L________(lnameWithEntity(), "(");
+        if (byProp() != null) {
+            f.totalScript().append("{ ").append(byProp()).append(" }");
         }
-        return false;
+        f.totalScript().append(");");
+        f.totalScript().L____("}, [");
+        if (byProp() != null) {
+            f.totalScript().append(byProp());
+        }
+        f.totalScript().append("]);");
+        return true;
     }
 }

@@ -6,9 +6,10 @@ import dev.cruding.engine.injection.ActionViewInjection;
 public class ListPaginatedViewInjection extends ActionViewInjection {
 
     public boolean addViewScript(ViewFlow f) {
-        if (!flow()) {
-            f.useInitAction(action);
-        }
-        return false;
+        f.totalScript().L____("useEffect(() => {");
+        f.totalScript().L________(lnameWithEntity(), "();");
+        f.totalScript().L____("}, []);");
+        f.useEffect();
+        return true;
     }
 }
