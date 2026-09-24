@@ -1,6 +1,7 @@
 package dev.cruding.engine.gen;
 
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.loader.GeneratorException;
 
 public class Module {
 
@@ -17,13 +18,13 @@ public class Module {
 
     public Module(String uname, String path) {
         if (StringUtils.isBlank(uname)) {
-            throw new ContextException("Module name cannot be null or empty");
+            throw new GeneratorException("Module name cannot be null or empty");
         }
         if (!uname.startsWith("Module")) {
-            throw new ContextException("Module name must start with 'Module': " + uname);
+            throw new GeneratorException("Module name must start with 'Module': " + uname);
         }
         if (StringUtils.isBlank(path)) {
-            throw new ContextException("Module path cannot be null or empty");
+            throw new GeneratorException("Module path cannot be null or empty");
         }
         this.uname = uname;
         this.path = "modules/" + path;
@@ -56,10 +57,10 @@ public class Module {
 
     public Page requirePageIndex() {
         if (pageIndex == null) {
-            throw new ContextException("Module " + uname + " has no index page: call .isIndex() on one module page");
+            throw new GeneratorException("Module " + uname + " has no index page: call .isIndex() on one module page");
         }
         if (pageIndex.icon == null) {
-            throw new ContextException(
+            throw new GeneratorException(
                     "Index page " + pageIndex.name + " of module " + uname + " must have an icon: call .icon(...)");
         }
         return pageIndex;

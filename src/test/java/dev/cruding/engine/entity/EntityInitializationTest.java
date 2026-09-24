@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,70 @@ import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
 import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.gen.LabelMapper;
+import dev.cruding.engine.loader.GeneratorException;
 
 class EntityInitializationTest {
+
+    public static class SimpleEntity extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class ConfiguredEntity extends SimpleEntity {
+        public final CountingSetting configuration = new CountingSetting();
+    }
+
+    public static final class LabelEntity extends SimpleEntity {
+        public final Field configuration = Setting().vowel().readOnly().label("Établissement");
+    }
+
+    public static final class ReferenceEntity extends ReferenceData {
+        public final Field description = Text();
+    }
+
+    public static final class UnnamedEntity extends SimpleEntity {
+        public final Field nomUsuel = ArabicText().onChange().minLength(3).maxLength(150).required();
+        public final Field name = Text().onChange().required().lname("libelle");
+        public final Field dateEntree = Date().filtrable();
+    }
+
+    public static class EntityWithRelations extends SimpleEntity {
+        public final CountingFather parent = new CountingFather();
+        public final Ref<SimpleEntity> origine = Ref(SimpleEntity.class);
+        public final Ref<SimpleEntity> destination = Ref(SimpleEntity.class);
+    }
+
+    public static final class EntityWithTwoFathers extends SimpleEntity {
+        public final Field principal = Father(SimpleEntity.class);
+        public final Field secondaire = Father(SimpleEntity.class);
+    }
+
+    public static final class EntityWithInheritedFather extends EntityWithRelations {
+        public final Field secondaire = Father(SimpleEntity.class);
+    }
+
+    public static final class CountingFather extends Father<SimpleEntity> {
+        public int bindingCount;
+
+        public CountingFather() {
+            super(SimpleEntity.class);
+        }
+
+        @Override
+        public Field containingEntity(Entity entity) {
+            bindingCount++;
+            return super.containingEntity(entity);
+        }
+    }
+
+    public static final class CountingSetting extends Setting {
+        public int bindingCount;
+
+        @Override
+        public Field containingEntity(Entity entity) {
+            bindingCount++;
+            return super.containingEntity(entity);
+        }
+    }
 
     @BeforeEach
     void initializeContext() {
@@ -154,8 +215,8 @@ class EntityInitializationTest {
         Context.getInstance().addEntity(new SimpleEntity());
         Context.getInstance().addEntity(entity);
 
-        EntityInitializationException error = assertThrows(
-                EntityInitializationException.class, () -> Context.getInstance().initEntities());
+        GeneratorException error = assertThrows(
+                GeneratorException.class, () -> Context.getInstance().initEntities());
 
         assertTrue(error.getMessage().contains(entity.uname));
         assertTrue(error.getMessage().contains("principal"));
@@ -168,72 +229,11 @@ class EntityInitializationTest {
         Context.getInstance().addEntity(new SimpleEntity());
         Context.getInstance().addEntity(entity);
 
-        EntityInitializationException error = assertThrows(
-                EntityInitializationException.class, () -> Context.getInstance().initEntities());
+        GeneratorException error = assertThrows(
+                GeneratorException.class, () -> Context.getInstance().initEntities());
 
         assertTrue(error.getMessage().contains(entity.uname));
         assertTrue(error.getMessage().contains("parent"));
         assertTrue(error.getMessage().contains("secondaire"));
-    }
-
-    public static class SimpleEntity extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class ConfiguredEntity extends SimpleEntity {
-        public final CountingSetting configuration = new CountingSetting();
-    }
-
-    public static final class LabelEntity extends SimpleEntity {
-        public final Field configuration = Setting().vowel().readOnly().label("Établissement");
-    }
-
-    public static final class ReferenceEntity extends ReferenceData {
-        public final Field description = Text();
-    }
-
-    public static final class UnnamedEntity extends SimpleEntity {
-        public final Field nomUsuel = ArabicText().onChange().minLength(3).maxLength(150).required();
-        public final Field name = Text().onChange().required().lname("libelle");
-        public final Field dateEntree = Date().filtrable();
-    }
-
-    public static class EntityWithRelations extends SimpleEntity {
-        public final CountingFather parent = new CountingFather();
-        public final Ref<SimpleEntity> origine = Ref(SimpleEntity.class);
-        public final Ref<SimpleEntity> destination = Ref(SimpleEntity.class);
-    }
-
-    public static final class EntityWithTwoFathers extends SimpleEntity {
-        public final Field principal = Father(SimpleEntity.class);
-        public final Field secondaire = Father(SimpleEntity.class);
-    }
-
-    public static final class EntityWithInheritedFather extends EntityWithRelations {
-        public final Field secondaire = Father(SimpleEntity.class);
-    }
-
-    public static final class CountingFather extends Father<SimpleEntity> {
-        public int bindingCount;
-
-        public CountingFather() {
-            super(SimpleEntity.class);
-        }
-
-        @Override
-        public Field containingEntity(Entity entity) {
-            bindingCount++;
-            return super.containingEntity(entity);
-        }
-    }
-
-    public static final class CountingSetting extends Setting {
-        public int bindingCount;
-
-        @Override
-        public Field containingEntity(Entity entity) {
-            bindingCount++;
-            return super.containingEntity(entity);
-        }
     }
 }

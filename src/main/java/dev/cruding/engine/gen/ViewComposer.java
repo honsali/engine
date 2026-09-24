@@ -3,6 +3,7 @@ package dev.cruding.engine.gen;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.loader.GeneratorException;
 
 public abstract class ViewComposer<T extends Entity> extends BaseComposer {
 
@@ -20,7 +21,7 @@ public abstract class ViewComposer<T extends Entity> extends BaseComposer {
     private Class<T> resolveEntityType() {
         Type genericSuperclass = getClass().getGenericSuperclass();
         if (!(genericSuperclass instanceof ParameterizedType parameterizedType)) {
-            throw new ContextException("ViewComposer subclass must directly declare an entity type: " + getClass().getName());
+            throw new GeneratorException("ViewComposer subclass must directly declare an entity type: " + getClass().getName());
         }
 
         return (Class<T>) parameterizedType.getActualTypeArguments()[0];

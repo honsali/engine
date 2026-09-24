@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
+import dev.cruding.engine.loader.GeneratorException;
 
 public class Page {
     public static final Comparator<Page> ORDER_BY_ACTION_AND_ENTITY = Page::compareByActionAndEntity;
@@ -53,10 +54,10 @@ public class Page {
 
     public Page(Module module, ViewComposer<?> elementComposer) {
         if (module == null) {
-            throw new ContextException("Page module cannot be null");
+            throw new GeneratorException("Page module cannot be null");
         }
         if (elementComposer == null) {
-            throw new ContextException("Page element composer cannot be null");
+            throw new GeneratorException("Page element composer cannot be null");
         }
         this.module = module;
         this.elementComposer = elementComposer;
@@ -67,15 +68,15 @@ public class Page {
 
         String viewName = elementComposer.getClass().getSimpleName();
         if (!viewName.startsWith("View")) {
-            throw new ContextException("Page view class name must start with 'View': " + viewName);
+            throw new GeneratorException("Page view class name must start with 'View': " + viewName);
         }
         this.uc = viewName.substring(4);
         if (!this.uc.endsWith(entityUname)) {
-            throw new ContextException("Page view class name must end with entity name '" + entityUname + "': " + viewName);
+            throw new GeneratorException("Page view class name must end with entity name '" + entityUname + "': " + viewName);
         }
         actionUname = this.uc.substring(0, this.uc.length() - entityUname.length());
         if (StringUtils.isBlank(actionUname)) {
-            throw new ContextException("Page view class name must contain a page name before entity name: " + viewName);
+            throw new GeneratorException("Page view class name must contain a page name before entity name: " + viewName);
         }
         actionLname = StringUtils.uncapitalize(actionUname);
         this.name = "Page" + this.uc;
@@ -123,7 +124,7 @@ public class Page {
 
     public Page route(String route) {
         if (StringUtils.isBlank(route) || !route.startsWith("/")) {
-            throw new ContextException("Page route must be an absolute application path: " + route);
+            throw new GeneratorException("Page route must be an absolute application path: " + route);
         }
         this.route = route;
         return this;
