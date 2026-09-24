@@ -22,9 +22,9 @@ public class ListPaginatedServiceInjection extends ActionServiceInjection {
         f.__("pageCourante: number = 0) => {");
         f.L____("const pageable = MapperPagination.creerPageable(pageCourante);");
         if (byFatherId() && entity().haveFather) {
-            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}", entity().father.referencedEntity.path, "/${id", entity().ufather, "}/", entity().lname, "/", lcoreName());
+            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}/", entity().father.referencedEntity.path, "/${id", entity().ufather, "}/", entity().lname, "/", lcoreName());
         } else {
-            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}", entity().path, "/", lcoreName());
+            f.L____("const { data } = await axios.get<PageResponse<I", entity().uname, ">>(`${API_URL}/", entity().path, "/", lcoreName());
         }
         f.__("`, { params: { page: pageable.page, size: pageable.size } });");
         f.L____("return {");

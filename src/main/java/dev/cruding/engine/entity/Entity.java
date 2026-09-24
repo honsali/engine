@@ -54,7 +54,6 @@ public class Entity extends FieldFactory {
         this.key = UUID.nameUUIDFromBytes(this.path.getBytes(StandardCharsets.UTF_8)).toString();
         this.id_ = new Setting();
         this.id_.containingEntity(this);
-        this.setting = this.id_.init(uname);
     }
 
     public void init() {
@@ -98,7 +97,7 @@ public class Entity extends FieldFactory {
             }
         }
         validateFields();
-
+        this.setting = this.id_.init(uname);
 
         this.lid = identifier == null ? "id" : identifier.lname;
         this.uid = identifier == null ? "Id" : identifier.uname;

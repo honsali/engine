@@ -55,6 +55,7 @@ class BeResourcePrinterTest {
 
         assertTrue(generated.contains("@RestController"));
         assertTrue(generated.contains("@RequestMapping(\"/api/test\")"));
+        assertTrue(generated.contains("@PostMapping(\"/securedEntity/filtrer\")"));
         assertTrue(generated.contains("public class SecuredEntityController"));
         assertTrue(generated.contains(
                 "public PageResponse<SecuredEntityResponse> filtrer(@Valid @RequestBody(required = false) SecuredEntityFiltre filtre, Pageable pageable) {"));

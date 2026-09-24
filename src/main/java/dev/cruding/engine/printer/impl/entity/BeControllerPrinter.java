@@ -26,7 +26,7 @@ public class BeControllerPrinter extends Printer {
         f.L("");
         f.L("@RestController");;
 
-        f.L("@RequestMapping(\"/api", entity.pkg.replace('.', '/'), "\")");
+        f.L("@RequestMapping(\"/api/", entity.pkg.replace('.', '/'), "\")");
         f.L("public class ", entity.uname, "Controller {");
         f.L("");
         f.L____("private final ", entity.uname, "Service ", entity.lname, "Service;");
