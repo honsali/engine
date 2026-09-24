@@ -9,11 +9,10 @@ import dev.cruding.engine.gen.Context;
 
 public final class EntityLoader {
 
-    private EntityLoader() {}
-
     public static void load(String path) {
         try (Stream<Path> files = Files.walk(Paths.get(path))) {
-            files.filter(Files::isRegularFile)
+            files
+                    .filter(Files::isRegularFile)
                     .filter(LoaderUtils::isJavaFile)
                     .sorted()
                     .map(EntityLoader::loadEntityClass)
@@ -22,7 +21,6 @@ public final class EntityLoader {
             throw new GeneratorException(String.format("Failed to load entities from directory: %s", path), e);
         }
     }
-
 
     private static Entity loadEntityClass(Path file) {
         try {
@@ -46,5 +44,6 @@ public final class EntityLoader {
         }
     }
 
+    private EntityLoader() {}
 
 }

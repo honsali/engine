@@ -2,6 +2,7 @@ package dev.cruding.engine.printer.impl.page;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.flow.MdlFlow;
@@ -31,7 +32,8 @@ public class FeHookPrinter extends Printer {
             }
             if (action.resultIn != null) {
                 f.addMdlStateAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.jstype);
-                f.addMdlSelectorAttribute(action.resultIn.lname + action.entity.uname, action.resultIn.uname + action.entity.uname);
+                f.addMdlSelectorAttribute(action.resultIn.lname + action.entity.uname,
+                        action.resultIn.uname + action.entity.uname);
             }
 
         }
@@ -55,7 +57,6 @@ public class FeHookPrinter extends Printer {
         f.L("");
         f.L("const use", page.uc, " = () => {");
 
-
         f.L("");
         f.L____("const dispatch = useAppDispatch();");
         f.L____("const params = useParams();");
@@ -65,16 +66,14 @@ public class FeHookPrinter extends Printer {
             f.L____("const ", att.type, " = useSelector(select", att.name, ");");
         }
 
-
         if (hasDefaultHookAction) {
             f.L("");
-            f.L____("const createAction = (action: any) => (req?: Partial<Req", page.uc, ">) => dispatch(action({ ...req, ...params }));");
+            f.L____("const createAction = (action: any) => (req?: Partial<Req", page.uc,
+                    ">) => dispatch(action({ ...req, ...params }));");
         }
         for (Action action : exposedActionList) {
-            if (!action.mdlActionInjection.usesDefaultHookAction()) {
-                f.L("");
-                action.mdlActionInjection.addHookAction(f);
-            }
+            f.L("");
+            action.mdlActionInjection.addHookAction(f);
         }
         f.L("");
         f.L____("return {");
@@ -88,7 +87,8 @@ public class FeHookPrinter extends Printer {
             }
         }
         for (Action action : exposedActionList) {
-            f.L________("resetEtat", action.unameWithEntity, ": () => dispatch(Mdl", page.uc, ".resetEtat", action.unameWithEntity, "()),");
+            f.L________("resetEtat", action.unameWithEntity, ": () => dispatch(Mdl", page.uc, ".resetEtat",
+                    action.unameWithEntity, "()),");
         }
         f.L("");
         f.L________("// State");

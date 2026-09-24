@@ -12,6 +12,7 @@ import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
+import dev.cruding.engine.loader.GeneratorException;
 
 public class Context {
 
@@ -43,13 +44,13 @@ public class Context {
     /* ****************************************************************************** */
     public void addEntity(Entity entity) {
         if (entity == null || StringUtils.isBlank(entity.uname)) {
-            throw new ContextException("Cannot add null Entity or Entity with null or empty uname");
+            throw new GeneratorException("Cannot add null Entity or Entity with null or empty uname");
         }
         if (entityMapByName.containsKey(entity.uname)) {
-            throw new ContextException("Doublon Entity: " + entity.uname);
+            throw new GeneratorException("Doublon Entity: " + entity.uname);
         }
         if (entityMapByClass.containsKey(entity.getClass())) {
-            throw new ContextException("Doublon Entity class: " + entity.getClass().getName());
+            throw new GeneratorException("Doublon Entity class: " + entity.getClass().getName());
         }
         entityMapByName.put(entity.uname, entity);
         entityMapByClass.put(entity.getClass(), entity);
@@ -65,22 +66,22 @@ public class Context {
 
     public Entity getEntity(String uname) {
         if (StringUtils.isBlank(uname)) {
-            throw new ContextException("Entity name cannot be null or empty");
+            throw new GeneratorException("Entity name cannot be null or empty");
         }
         Entity entity = entityMapByName.get(uname);
         if (entity == null) {
-            throw new ContextException(String.format("Entity '%s' not found", uname));
+            throw new GeneratorException(String.format("Entity '%s' not found", uname));
         }
         return entity;
     }
 
     public <T extends Entity> T getEntity(Class<T> entityType) {
         if (entityType == null) {
-            throw new ContextException("Entity type cannot be null");
+            throw new GeneratorException("Entity type cannot be null");
         }
         Entity entity = entityMapByClass.get(entityType);
         if (entity == null) {
-            throw new ContextException(String.format("Entity '%s' not found", entityType.getSimpleName()));
+            throw new GeneratorException(String.format("Entity '%s' not found", entityType.getSimpleName()));
         }
         return entityType.cast(entity);
     }
@@ -90,10 +91,10 @@ public class Context {
     /* ****************************************************************************** */
     public void addModule(Module module) {
         if (module == null || StringUtils.isBlank(module.path)) {
-            throw new ContextException("Cannot add Module with null or empty path");
+            throw new GeneratorException("Cannot add Module with null or empty path");
         }
         if (moduleMap.containsKey(module.path)) {
-            throw new ContextException("Doublon Module: " + module.path);
+            throw new GeneratorException("Doublon Module: " + module.path);
         }
         moduleMap.put(module.path, module);
     }
@@ -108,10 +109,10 @@ public class Context {
 
     public void addPage(Page page) {
         if (page == null || StringUtils.isBlank(page.name)) {
-            throw new ContextException("Cannot add null page or page with empty name");
+            throw new GeneratorException("Cannot add null page or page with empty name");
         }
         if (pageMap.containsKey(page.name)) {
-            throw new ContextException("Doublon Page: " + page.name);
+            throw new GeneratorException("Doublon Page: " + page.name);
         }
         pageMap.put(page.name, page);
     }
@@ -126,11 +127,11 @@ public class Context {
 
     public Page getPage(String name) {
         if (StringUtils.isBlank(name)) {
-            throw new ContextException("Page name cannot be null or empty");
+            throw new GeneratorException("Page name cannot be null or empty");
         }
         Page page = pageMap.get(name);
         if (page == null) {
-            throw new ContextException(String.format("Page '%s' not found", name));
+            throw new GeneratorException(String.format("Page '%s' not found", name));
         }
         return page;
     }
@@ -141,10 +142,10 @@ public class Context {
 
     public List<Page> getPageList(Module module) {
         if (module == null) {
-            throw new ContextException("Module cannot be null");
+            throw new GeneratorException("Module cannot be null");
         }
         if (StringUtils.isBlank(module.uname)) {
-            throw new ContextException("Module uname cannot be null or empty");
+            throw new GeneratorException("Module uname cannot be null or empty");
         }
 
         return pageMap.values().stream().filter(page -> page.module == module).toList();
@@ -152,10 +153,10 @@ public class Context {
 
     public void addLabelForField(String module, Field c) {
         if (StringUtils.isBlank(module)) {
-            throw new ContextException("Module name cannot be null or empty");
+            throw new GeneratorException("Module name cannot be null or empty");
         }
         if (c == null || StringUtils.isBlank(c.lname)) {
-            throw new ContextException("Field or field lname cannot be null or empty");
+            throw new GeneratorException("Field or field lname cannot be null or empty");
         }
 
         if (c.lname.startsWith("code") || c.lname.startsWith("id") || c.lname.startsWith("libelle")) {
@@ -166,13 +167,13 @@ public class Context {
 
     public void addLabel(String module, String key, String label) {
         if (StringUtils.isBlank(module)) {
-            throw new ContextException("Module name cannot be null or empty");
+            throw new GeneratorException("Module name cannot be null or empty");
         }
         if (StringUtils.isBlank(key)) {
-            throw new ContextException("Label key cannot be null or empty");
+            throw new GeneratorException("Label key cannot be null or empty");
         }
         if (StringUtils.isBlank(label)) {
-            throw new ContextException("Label value cannot be null or empty");
+            throw new GeneratorException("Label value cannot be null or empty");
         }
 
         labelMap.computeIfAbsent(module, k -> new LinkedHashMap<>()).put(key, label);
@@ -180,7 +181,7 @@ public class Context {
 
     public Map<String, String> getLabelMap(String module) {
         if (StringUtils.isBlank(module)) {
-            throw new ContextException("Module name cannot be null or empty");
+            throw new GeneratorException("Module name cannot be null or empty");
         }
         return labelMap.get(module);
     }
@@ -193,7 +194,7 @@ public class Context {
 
     public void addAction(Action action) {
         if (action == null) {
-            throw new ContextException("Action cannot be null");
+            throw new GeneratorException("Action cannot be null");
         }
         action.id = Integer.toString(actionRank++);
         actionList.add(action);
@@ -205,21 +206,21 @@ public class Context {
 
     public List<Action> actionPage(Page page) {
         if (page == null || StringUtils.isBlank(page.name)) {
-            throw new ContextException("Page cannot be null and must have a name");
+            throw new GeneratorException("Page cannot be null and must have a name");
         }
         return actionList.stream().filter(action -> action.page == page).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionElement(Element element) {
         if (element == null) {
-            throw new ContextException("Element cannot be null");
+            throw new GeneratorException("Element cannot be null");
         }
         return actionList.stream().filter(action -> action.element == element).sorted(Action.ORDER_BY_NAME).toList();
     }
 
     public List<Action> actionEntity(Entity entity) {
         if (entity == null || StringUtils.isBlank(entity.lname)) {
-            throw new ContextException("Entity cannot be null and must have an lname");
+            throw new GeneratorException("Entity cannot be null and must have an lname");
         }
         return actionList.stream().filter(action -> action.entity == entity).sorted(Action.ORDER_BY_NAME).toList();
     }

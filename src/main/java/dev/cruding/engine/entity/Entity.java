@@ -11,6 +11,7 @@ import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
+import dev.cruding.engine.loader.GeneratorException;
 import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
@@ -42,15 +43,13 @@ public class Entity extends FieldFactory {
         this.path = this.pkg.replace('.', '/') + '/' + this.lname;
         this.key = UUID.nameUUIDFromBytes(this.path.getBytes(StandardCharsets.UTF_8)).toString();
         this.apiCollectionName = this.lname + "s";
+        this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), "_").toLowerCase();
+        this.seqName = "seq_" + dbName;
     }
 
     public void init() {
         Field identifier = null;
         this.id_ = new Setting();
-
-
-        this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), "_").toLowerCase();
-        this.seqName = "seq_" + dbName;
         this.id_.containingEntity(this);
 
         java.lang.reflect.Field[] list = this.getClass().getFields();
@@ -72,9 +71,7 @@ public class Entity extends FieldFactory {
                             fieldList.add(field);
                         } else if (field instanceof Father) {
                             if (this.father != null) {
-                                throw new EntityInitializationException(String.format(
-                                        "Entity '%s' declares multiple Father fields: '%s' and '%s'. Only one Father is allowed.",
-                                        uname, this.father.lname, f.getName()));
+                                throw new GeneratorException(String.format("Entity '%s' declares multiple Father fields: '%s' and '%s'. Only one Father is allowed.", uname, this.father.lname, f.getName()));
                             }
                             fieldList.add(field);
                             this.father = (Father<?>) field;
@@ -86,9 +83,9 @@ public class Entity extends FieldFactory {
                         }
                     }
                 } catch (IllegalAccessException e) {
-                    throw new EntityInitializationException(String.format("Cannot access field '%s' in entity '%s'. " + "Ensure field is public and properly initialized.", f.getName(), uname), e);
+                    throw new GeneratorException(String.format("Cannot access field '%s' in entity '%s'. " + "Ensure field is public and properly initialized.", f.getName(), uname), e);
                 } catch (ClassCastException e) {
-                    throw new EntityInitializationException(String.format("Field '%s' in entity '%s' is not a valid Field type.", f.getName(), uname), e);
+                    throw new GeneratorException(String.format("Field '%s' in entity '%s' is not a valid Field type.", f.getName(), uname), e);
                 }
             }
         }
@@ -122,10 +119,6 @@ public class Entity extends FieldFactory {
         return apiCollectionName;
     }
 
-    protected void apiCollectionName(String apiCollectionName) {
-        this.apiCollectionName = apiCollectionName;
-    }
-
     public String apiCollectionPath() {
         return apiDomainPath() + "/" + apiCollectionName;
     }
@@ -140,7 +133,7 @@ public class Entity extends FieldFactory {
 
     public String idFather() {
         if (father == null) {
-            throw new EntityInitializationException(String.format("Entity '%s' has no Father defined. Cannot get idFather.", uname));
+            throw new GeneratorException(String.format("Entity '%s' has no Father defined. Cannot get idFather.", uname));
         }
         return "Id" + ufather;
     }
@@ -155,6 +148,10 @@ public class Entity extends FieldFactory {
 
     public List<Field> listRefAndFather() {
         return fieldList.stream().filter(field -> field.isRef || field.isFather).toList();
+    }
+
+    protected void apiCollectionName(String apiCollectionName) {
+        this.apiCollectionName = apiCollectionName;
     }
 
 

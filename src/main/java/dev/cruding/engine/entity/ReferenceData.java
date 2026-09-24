@@ -4,7 +4,7 @@ import dev.cruding.engine.field.Field;
 
 public abstract class ReferenceData extends Entity {
 
-    public final Field name = Text().lname("libelle").required().isId();
+    public final Field name = Text().lname("libelle").isId();
 
     public boolean isReferenceData() {
         return true;

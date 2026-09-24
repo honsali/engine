@@ -5,21 +5,16 @@ import dev.cruding.engine.injection.ActionViewInjection;
 
 public class GetByFieldViewInjection extends ActionViewInjection {
 
-
-
     public boolean addViewScript(ViewFlow f) {
         String lnameField = byField()[0].lname;
         if (flow()) {
             return false;
         } else if (inInit()) {
-            f.totalScript().L____("useEffect(() => {");
-            f.totalScript().L________(lnameWithEntity(), "();");
-            f.totalScript().L____("}, [", lnameField.equals("id") ? "" : lnameField, "]);");
-            f.useEffect();
-            f.addSelector(lnameWithEntity());
+
         } else if (byForm()) {
             f.totalScript().L____("const ", lnameWithEntity(), " = () => {");
-            f.totalScript().L________(lnameWithEntity(), "({ ", lnameField, ": form.getFieldValue('", lnameField, "') });");
+            f.totalScript().L________(lnameWithEntity(), "({ ", lnameField, ": form.getFieldValue('", lnameField,
+                    "') });");
             f.totalScript().L____("};");
             f.useForm();
         } else {
