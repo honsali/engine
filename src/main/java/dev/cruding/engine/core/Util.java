@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

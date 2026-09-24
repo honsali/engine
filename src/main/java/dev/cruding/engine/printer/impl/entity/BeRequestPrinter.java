@@ -1,10 +1,10 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.HashSet;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class BeRequestPrinter extends Printer {

@@ -1,7 +1,7 @@
 package modules.admin.account;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.admin.Account;
 
 public class EtatAccount extends ElementComposer {
@@ -13,6 +13,6 @@ public class EtatAccount extends ElementComposer {
                 e.username,
                 e.role,
                 e.activated.yesValue("Oui").noValue("Non"))
-                .columnNumber(1);
+                        .columnNumber(1);
     }
 }

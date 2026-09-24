@@ -1,7 +1,7 @@
 package modules.rh.employe;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ViewComposer;
+import dev.cruding.engine.core.ViewComposer;
 import model.rh.Conge;
 import model.rh.Employe;
 import modules.rh.RhModule;
@@ -13,26 +13,26 @@ public class ViewConsulterEmploye extends ViewComposer<Employe> {
         Employe e = entity(Employe.class);
         Conge c = entity(Conge.class);
         return section(
-            tabMenu(//
-                tab("employe").content(//
-                    block().margin("20px").content(//
-                        element(new EtatEmploye()),//
-                        actionBlock(//
-                            button(editAction(e, RhModule.pageModifierEmploye)),//
-                            button(backToListAction(e, RhModule.pageFiltrerEmploye)),//
-                            button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
+                tabMenu(//
+                        tab("employe").content(//
+                                block().margin("20px").content(//
+                                        element(new EtatEmploye()), //
+                                        actionBlock(//
+                                                button(editAction(e, RhModule.pageModifierEmploye)), //
+                                                button(backToListAction(e, RhModule.pageFiltrerEmploye)), //
+                                                button(deleteAction(e).onSuccess(goToPage(e, RhModule.pageFiltrerEmploye)))//
+                                        )//
+                                )//
+                        ), //
+                        tab("conge").content(//
+                                block().margin("20px").content(//
+                                        element(new TableauConge()), //
+                                        actionBlock(//
+                                                button(addAction(c, RhModule.pageCreerConge))//
+                                        )//
+                                )//
                         )//
-                    )//
-                ),//
-                tab("conge").content(//
-                    block().margin("20px").content(//
-                        element(new TableauConge()),//
-                        actionBlock(//
-                            button(addAction(c, RhModule.pageCreerConge))//
-                        )//
-                    )//
                 )//
-            )//
         );
     }
 

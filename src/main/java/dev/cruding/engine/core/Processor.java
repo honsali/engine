@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;

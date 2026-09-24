@@ -1,7 +1,7 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.rh.Conge;
 import modules.rh.RhModule;
 
@@ -20,27 +20,27 @@ public class FormulaireConge extends ElementComposer {
         }
 
         return block()
-            .width("600px").margin("20px").background("blanc")
-            .content(//
-                form(e, //
-                        e.code, //
-                        e.typeConge, //
-                        e.dateDebutConge, //
-                        e.dateFinConge, //
-                        e.commentaire, //
-                        enModification ? hidden(e.id_) : null, //
-                        enModification ? hidden(e.father) : null //
-                ).columnNumber(1), //
-                actionBlock(//
-                        enModification ? //
-                                element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
+                .width("600px").margin("20px").background("blanc")
+                .content(//
+                        form(e, //
+                                e.code, //
+                                e.typeConge, //
+                                e.dateDebutConge, //
+                                e.dateFinConge, //
+                                e.commentaire, //
+                                enModification ? hidden(e.id_) : null, //
+                                enModification ? hidden(e.father) : null //
+                        ).columnNumber(1), //
+                        actionBlock(//
+                                enModification ? //
+                                        element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge))).byForm() : //
+                                        element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterConge).byField(e.id_)).byFatherId()).byForm(), //
 
-                        enModification ? //
-                                button(backToDetailAction(e, RhModule.pageConsulterConge)) : //
-                                button(backToListAction(e, RhModule.pageConsulterEmploye))//
-                )//
-            );
+                                enModification ? //
+                                        button(backToDetailAction(e, RhModule.pageConsulterConge)) : //
+                                        button(backToListAction(e, RhModule.pageConsulterEmploye))//
+                        )//
+                );
     }
 
 }

@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import java.util.HashMap;
 import org.apache.commons.lang3.StringUtils;

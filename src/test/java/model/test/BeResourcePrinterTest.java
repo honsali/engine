@@ -8,19 +8,22 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.filter.FilterAction;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.BeControllerPrinter;
 
 class BeResourcePrinterTest {
 
     public static final class SecuredEntity extends Entity {
         public final Field code = Text().isId();
+    }
+
+    public static final class ViewFiltrerSecuredEntity extends ViewComposer<SecuredEntity> {
     }
 
     @TempDir
@@ -60,8 +63,5 @@ class BeResourcePrinterTest {
         assertTrue(generated.contains(
                 "public PageResponse<SecuredEntityResponse> filtrer(@Valid @RequestBody(required = false) SecuredEntityFiltre filtre, Pageable pageable) {"));
         assertFalse(generated.contains("filtrer(\n"));
-    }
-
-    public static final class ViewFiltrerSecuredEntity extends ViewComposer<SecuredEntity> {
     }
 }

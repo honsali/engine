@@ -6,9 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.Page;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Page;
 
 public abstract class Printer {
 
@@ -21,7 +21,7 @@ public abstract class Printer {
     }
 
 
-    protected ArrayList<Page> sortedPageList(dev.cruding.engine.gen.Module module) {
+    protected ArrayList<Page> sortedPageList(dev.cruding.engine.core.Module module) {
         ArrayList<Page> pageList = new ArrayList<>(Context.getInstance().getPageList(module));
         pageList.sort(Page.ORDER_BY_ACTION_AND_ENTITY);
         return pageList;

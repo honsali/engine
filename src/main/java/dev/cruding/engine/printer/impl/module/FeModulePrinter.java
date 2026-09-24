@@ -1,8 +1,8 @@
 package dev.cruding.engine.printer.impl.module;
 
-import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
 import dev.cruding.engine.flow.Flow;
-import dev.cruding.engine.gen.Module;
 import dev.cruding.engine.printer.Printer;
 
 public class FeModulePrinter extends Printer {

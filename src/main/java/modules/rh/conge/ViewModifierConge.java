@@ -1,7 +1,7 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ViewComposer;
+import dev.cruding.engine.core.ViewComposer;
 import model.rh.Conge;
 
 public class ViewModifierConge extends ViewComposer<Conge> {

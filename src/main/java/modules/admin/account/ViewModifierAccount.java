@@ -1,7 +1,7 @@
 package modules.admin.account;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ViewComposer;
+import dev.cruding.engine.core.ViewComposer;
 import model.admin.Account;
 
 public class ViewModifierAccount extends ViewComposer<Account> {

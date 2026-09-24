@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.action.create.CreateAction;
 import dev.cruding.engine.action.delete.DeleteAction;
@@ -22,14 +21,30 @@ import dev.cruding.engine.action.list.ListAction;
 import dev.cruding.engine.action.listPaginated.ListPaginatedAction;
 import dev.cruding.engine.action.specifique.BasicAction;
 import dev.cruding.engine.action.update.UpdateAction;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.FeServicePrinter;
 
 class FeServicePrinterTest {
+
+    public static final class ServiceEntity extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class ServiceChild extends Entity {
+        public final Field code = Text().isId();
+        public final Field parent = Father(ServiceEntity.class);
+    }
+
+    public static final class ViewTestServiceEntity extends ViewComposer<ServiceEntity> {
+    }
+
+    public static final class ViewTestServiceChild extends ViewComposer<ServiceChild> {
+    }
 
     @TempDir
     Path tempDir;
@@ -120,20 +135,5 @@ class FeServicePrinterTest {
         for (String call : calls) {
             assertTrue(call.contains("`${API_URL}/test/serviceEntity/${idParent}/serviceChild"), call);
         }
-    }
-
-    public static final class ServiceEntity extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class ServiceChild extends Entity {
-        public final Field code = Text().isId();
-        public final Field parent = Father(ServiceEntity.class);
-    }
-
-    public static final class ViewTestServiceEntity extends ViewComposer<ServiceEntity> {
-    }
-
-    public static final class ViewTestServiceChild extends ViewComposer<ServiceChild> {
     }
 }

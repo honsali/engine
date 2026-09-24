@@ -1,11 +1,11 @@
 package dev.cruding.engine.printer.impl.element;
 
 import java.util.List;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class FeElementPrinter extends Printer {

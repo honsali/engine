@@ -7,10 +7,10 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.impl.entity.BeResponsePrinter;
 
 class BeDtoPrinterTest {

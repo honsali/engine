@@ -1,7 +1,7 @@
 package modules.admin.account;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.admin.Account;
 import modules.admin.AdminModule;
 
@@ -14,7 +14,7 @@ public class TableauAccount extends ElementComposer {
                         e.username,
                         e.role,
                         e.activated)
-                        .fillWith(listAll(e))
-                        .onRowClick(goToPage(e, AdminModule.pageConsulterAccount)));
+                                .fillWith(listAll(e))
+                                .onRowClick(goToPage(e, AdminModule.pageConsulterAccount)));
     }
 }

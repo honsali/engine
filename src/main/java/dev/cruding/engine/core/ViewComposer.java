@@ -1,9 +1,8 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.loader.GeneratorException;
 
 public abstract class ViewComposer<T extends Entity> extends BaseComposer {
 

@@ -10,18 +10,37 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.delete.DeleteAction;
 import dev.cruding.engine.action.get.GetByFieldAction;
 import dev.cruding.engine.action.update.UpdateAction;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
 
 class BeBusinessPrinterTest {
+
+    public static final class LookupEntity extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class ReferenceTarget extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class EntityWithReference extends Entity {
+        public final Field code = Text().isId();
+        public final Field referenceTarget = Ref(ReferenceTarget.class);
+    }
+
+    public static final class ViewConsulterLookupEntity extends ViewComposer<LookupEntity> {
+    }
+
+    public static final class ViewModifierEntityWithReference extends ViewComposer<EntityWithReference> {
+    }
 
     @TempDir
     Path tempDir;
@@ -97,24 +116,5 @@ class BeBusinessPrinterTest {
 
     private int occurrences(String value, String searched) {
         return value.split(java.util.regex.Pattern.quote(searched), -1).length - 1;
-    }
-
-    public static final class LookupEntity extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class ReferenceTarget extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class EntityWithReference extends Entity {
-        public final Field code = Text().isId();
-        public final Field referenceTarget = Ref(ReferenceTarget.class);
-    }
-
-    public static final class ViewConsulterLookupEntity extends ViewComposer<LookupEntity> {
-    }
-
-    public static final class ViewModifierEntityWithReference extends ViewComposer<EntityWithReference> {
     }
 }

@@ -22,10 +22,10 @@ import dev.cruding.engine.component.container.Section;
 import dev.cruding.engine.component.container.SimplePanel;
 import dev.cruding.engine.component.container.Span;
 import dev.cruding.engine.component.container.Tab;
+import dev.cruding.engine.core.BaseComposer;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.BaseComposer;
 
 class ContainerContentTest {
 
@@ -66,7 +66,7 @@ class ContainerContentTest {
                 new Section(element, new Span(element, "A"))
                         .actionBlock(new Span(element, "Action")).margin("0"),
                 new Span(element, "B"))
-                .width("600px").margin("20px").background("blanc");
+                        .width("600px").margin("20px").background("blanc");
         Component after = composer.block()
                 .width("600px").margin("20px").background("blanc")
                 .content(

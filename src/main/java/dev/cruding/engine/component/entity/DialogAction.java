@@ -2,11 +2,11 @@ package dev.cruding.engine.component.entity;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.Util;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Util;
 
 public class DialogAction extends Component {
 

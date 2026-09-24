@@ -1,7 +1,7 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ViewComposer;
+import dev.cruding.engine.core.ViewComposer;
 import model.rh.Departement;
 
 public class ViewCreerDepartement extends ViewComposer<Departement> {

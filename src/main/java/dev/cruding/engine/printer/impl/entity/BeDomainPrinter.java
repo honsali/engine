@@ -1,12 +1,12 @@
 package dev.cruding.engine.printer.impl.entity;
 
 import java.util.List;
-import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.RefField;
 import dev.cruding.engine.flow.JavaFlow;
-import dev.cruding.engine.gen.Context;
 import dev.cruding.engine.printer.Printer;
 
 public class BeDomainPrinter extends Printer {

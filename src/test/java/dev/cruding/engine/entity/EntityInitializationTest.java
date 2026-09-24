@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.GeneratorException;
+import dev.cruding.engine.core.LabelMapper;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.LabelMapper;
-import dev.cruding.engine.loader.GeneratorException;
 
 class EntityInitializationTest {
 

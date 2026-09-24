@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.loader.GeneratorException;
 
 public class Page {
     public static final Comparator<Page> ORDER_BY_ACTION_AND_ENTITY = Page::compareByActionAndEntity;

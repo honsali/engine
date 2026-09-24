@@ -1,7 +1,7 @@
 package modules.rh.departement;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.rh.Departement;
 import modules.rh.RhModule;
 
@@ -20,20 +20,20 @@ public class FormulaireDepartement extends ElementComposer {
         }
 
         return block()
-            .width("600px").margin("20px").background("blanc")
-            .content(//
-                form(e, //
-                        e.nom, //
-                        e.description, //
-                        enModification ? hidden(e.id_) : null //
-                ).columnNumber(1), //
-                actionBlock(//
-                        enModification ? element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement))).byForm() : //
-                                element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement).byField(e.id_))).byForm(), //
+                .width("600px").margin("20px").background("blanc")
+                .content(//
+                        form(e, //
+                                e.nom, //
+                                e.description, //
+                                enModification ? hidden(e.id_) : null //
+                        ).columnNumber(1), //
+                        actionBlock(//
+                                enModification ? element(updateAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement))).byForm() : //
+                                        element(createAction(e).onSuccess(goToPage(e, RhModule.pageConsulterDepartement).byField(e.id_))).byForm(), //
 
-                        enModification ? button(backToDetailAction(e, RhModule.pageConsulterDepartement)) : button(backToListAction(e, RhModule.pageListerDepartement))//
-                )//
-            );
+                                enModification ? button(backToDetailAction(e, RhModule.pageConsulterDepartement)) : button(backToListAction(e, RhModule.pageListerDepartement))//
+                        )//
+                );
     }
 
 }

@@ -2,7 +2,7 @@ package dev.cruding.engine.component.button;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.BaseComposer;
+import dev.cruding.engine.core.BaseComposer;
 
 public class ButtonElementComposer extends BaseComposer {
     private Action action;

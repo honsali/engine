@@ -1,6 +1,6 @@
 package dev.cruding.engine.printer.impl.entity;
 
-import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.flow.Flow;

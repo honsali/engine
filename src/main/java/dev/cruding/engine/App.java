@@ -2,10 +2,11 @@ package dev.cruding.engine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Processor;
-import dev.cruding.engine.loader.EntityLoader;
-import dev.cruding.engine.loader.GeneratorException;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.EntityLoader;
+import dev.cruding.engine.core.GeneratorException;
+import dev.cruding.engine.core.Processor;
 import modules.ProjectBootstrap;
 
 public class App {

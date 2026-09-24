@@ -1,12 +1,12 @@
 package dev.cruding.engine.component.container;
 
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.Page;
+import dev.cruding.engine.core.PageRef;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.PageRef;
 
 public class Section extends Container<Section> {
 

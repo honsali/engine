@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -12,7 +12,6 @@ import dev.cruding.engine.action.Action;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.loader.GeneratorException;
 
 public class Context {
 

@@ -2,7 +2,6 @@ package model.test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,19 +9,67 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.BeDomainPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
 import dev.cruding.engine.printer.impl.entity.BeRequestPrinter;
 import dev.cruding.engine.printer.impl.entity.BeResponsePrinter;
 
 class BeFieldContractPrinterTest {
+
+    public static final class HourEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field heure = Hour().required();
+    }
+
+    public static final class TransientHourEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field heure = Hour().tranzient();
+    }
+
+    public static final class TextVariantsEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field arabe = ArabicText().maxLength(500).required();
+        public final Field email = Email().maxLength(500).required();
+        public final Field tel = Tel().maxLength(500).required();
+        public final Field choix = StaticList().type("radioVertical").maxLength(500).required();
+    }
+
+    public static final class ReadOnlyEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field configuration = Setting().readOnly().label("Structure");
+    }
+
+    public static final class ViewCreerHourEntity extends ViewComposer<HourEntity> {
+
+        public Component rootComponent() {
+            HourEntity e = entity(HourEntity.class);
+            return block(form(e, e.code, e.heure), element(createAction(e)).byForm());
+        }
+    }
+
+    public static final class ViewCreerTextVariantsEntity extends ViewComposer<TextVariantsEntity> {
+
+        public Component rootComponent() {
+            TextVariantsEntity e = entity(TextVariantsEntity.class);
+            return block(form(e, e.code, e.arabe.maxLength(100), e.email.maxLength(100),
+                    e.tel.maxLength(100), e.choix.maxLength(100)), element(createAction(e)).byForm());
+        }
+    }
+
+    public static final class ViewCreerReadOnlyEntity extends ViewComposer<ReadOnlyEntity> {
+
+        public Component rootComponent() {
+            ReadOnlyEntity e = entity(ReadOnlyEntity.class);
+            return block(form(e, e.code, e.id_), element(createAction(e)).byForm());
+        }
+    }
 
     @TempDir
     Path tempDir;
@@ -116,53 +163,5 @@ class BeFieldContractPrinterTest {
         }
         context.initPages();
         context.initActions();
-    }
-
-    public static final class HourEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field heure = Hour().required();
-    }
-
-    public static final class TransientHourEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field heure = Hour().tranzient();
-    }
-
-    public static final class TextVariantsEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field arabe = ArabicText().maxLength(500).required();
-        public final Field email = Email().maxLength(500).required();
-        public final Field tel = Tel().maxLength(500).required();
-        public final Field choix = StaticList().type("radioVertical").maxLength(500).required();
-    }
-
-    public static final class ReadOnlyEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field configuration = Setting().readOnly().label("Structure");
-    }
-
-    public static final class ViewCreerHourEntity extends ViewComposer<HourEntity> {
-
-        public Component rootComponent() {
-            HourEntity e = entity(HourEntity.class);
-            return block(form(e, e.code, e.heure), element(createAction(e)).byForm());
-        }
-    }
-
-    public static final class ViewCreerTextVariantsEntity extends ViewComposer<TextVariantsEntity> {
-
-        public Component rootComponent() {
-            TextVariantsEntity e = entity(TextVariantsEntity.class);
-            return block(form(e, e.code, e.arabe.maxLength(100), e.email.maxLength(100),
-                    e.tel.maxLength(100), e.choix.maxLength(100)), element(createAction(e)).byForm());
-        }
-    }
-
-    public static final class ViewCreerReadOnlyEntity extends ViewComposer<ReadOnlyEntity> {
-
-        public Component rootComponent() {
-            ReadOnlyEntity e = entity(ReadOnlyEntity.class);
-            return block(form(e, e.code, e.id_), element(createAction(e)).byForm());
-        }
     }
 }

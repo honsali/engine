@@ -1,7 +1,7 @@
 package modules.admin;
 
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.PageRef;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.PageRef;
 import modules.admin.account.ViewConsulterAccount;
 import modules.admin.account.ViewCreerAccount;
 import modules.admin.account.ViewListerAccount;

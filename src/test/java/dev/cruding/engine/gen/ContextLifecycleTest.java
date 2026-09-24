@@ -12,14 +12,26 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.Action.ActionType;
 import dev.cruding.engine.action.inViewOnly.EmptyAction;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.Page;
+import dev.cruding.engine.core.PageRef;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 
 class ContextLifecycleTest {
+
+    public static final class LifecycleEntity extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class ViewListerLifecycleEntity extends ViewComposer<LifecycleEntity> {
+    }
 
     @TempDir
     Path tempDir;
@@ -91,12 +103,5 @@ class ContextLifecycleTest {
         assertSame(currentPage, currentAction.targetPage);
         assertEquals("0", currentAction.id);
         assertEquals(List.of(currentAction), current.actionEntity(currentEntity));
-    }
-
-    public static final class LifecycleEntity extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class ViewListerLifecycleEntity extends ViewComposer<LifecycleEntity> {
     }
 }

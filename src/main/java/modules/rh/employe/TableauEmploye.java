@@ -2,7 +2,7 @@ package modules.rh.employe;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.rh.Employe;
 import modules.rh.RhModule;
 

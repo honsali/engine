@@ -1,7 +1,7 @@
 package modules.rh.conge;
 
 import dev.cruding.engine.component.Component;
-import dev.cruding.engine.gen.ElementComposer;
+import dev.cruding.engine.core.ElementComposer;
 import model.rh.Conge;
 import modules.rh.RhModule;
 

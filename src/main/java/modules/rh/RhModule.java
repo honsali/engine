@@ -1,7 +1,7 @@
 package modules.rh;
 
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.PageRef;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.PageRef;
 import modules.rh.conge.ViewConsulterConge;
 import modules.rh.conge.ViewCreerConge;
 import modules.rh.conge.ViewModifierConge;

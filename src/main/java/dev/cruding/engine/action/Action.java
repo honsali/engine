@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.Page;
+import dev.cruding.engine.core.PageRef;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.PageRef;
 import dev.cruding.engine.injection.ActionBusinessInjection;
 import dev.cruding.engine.injection.ActionCtrlInjection;
 import dev.cruding.engine.injection.ActionMapperInjection;
@@ -35,6 +35,23 @@ public abstract class Action {
     }
 
     public static final Comparator<Action> ORDER_BY_NAME = Action::compareByName;
+
+    private static int compareByName(Action left, Action right) {
+        if (left == right) {
+            return 0;
+        }
+        if (left == null) {
+            return -1;
+        }
+        if (right == null) {
+            return 1;
+        }
+        int nameComparison = Strings.CS.compare(left.lnameWithEntity, right.lnameWithEntity);
+        if (nameComparison != 0) {
+            return nameComparison;
+        }
+        return Strings.CS.compare(left.id, right.id);
+    }
 
     private final Element declarationElement;
     public ActionCtrlInjection ctrlActionInjection;
@@ -92,8 +109,9 @@ public abstract class Action {
     public String nameVariable;
     public boolean inInit;
     public boolean filterOnLoad;
-    public boolean delayedCall;
 
+
+    public boolean delayedCall;
 
     public Action(ActionType type, String lcoreName, Entity entity, Element element) {
         this.declarationElement = Objects.requireNonNull(element, "Action element cannot be null");
@@ -326,7 +344,7 @@ public abstract class Action {
         this.lrest = lrest;
         this.urest = StringUtils.capitalize(lrest);
         return this;
-    }
+    };
 
     public boolean noUi() {
         return type == ActionType.NOUI;
@@ -368,7 +386,7 @@ public abstract class Action {
 
     public boolean nfc() {
         return normal() || primary() || ucConfirmer();
-    };
+    }
 
     public Action paginationAction(Action action) {
         this.paginationAction = action;
@@ -390,23 +408,6 @@ public abstract class Action {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    private static int compareByName(Action left, Action right) {
-        if (left == right) {
-            return 0;
-        }
-        if (left == null) {
-            return -1;
-        }
-        if (right == null) {
-            return 1;
-        }
-        int nameComparison = Strings.CS.compare(left.lnameWithEntity, right.lnameWithEntity);
-        if (nameComparison != 0) {
-            return nameComparison;
-        }
-        return Strings.CS.compare(left.id, right.id);
     }
 
     public Action waitUntilReady() {

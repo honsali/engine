@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 public abstract class ElementComposer extends BaseComposer {
 

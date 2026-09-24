@@ -2,11 +2,11 @@ package dev.cruding.engine.action.inViewOnly.injection;
 
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.LabelMapper;
+import dev.cruding.engine.core.Page;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.LabelMapper;
-import dev.cruding.engine.gen.Page;
 import dev.cruding.engine.injection.ActionViewInjection;
 
 public class GoToPageViewInjection extends ActionViewInjection {

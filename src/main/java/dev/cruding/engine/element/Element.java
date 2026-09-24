@@ -11,11 +11,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.component.entity.Form;
+import dev.cruding.engine.core.Page;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Hidden;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Page;
 
 public class Element {
 

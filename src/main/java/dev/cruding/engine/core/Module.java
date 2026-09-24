@@ -1,7 +1,6 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import org.apache.commons.lang3.StringUtils;
-import dev.cruding.engine.loader.GeneratorException;
 
 public class Module {
 

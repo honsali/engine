@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.LabelMapper;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.LabelMapper;
 import dev.cruding.engine.injection.ActionViewInjection;
 
 public class CreateViewInjection extends ActionViewInjection {

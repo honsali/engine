@@ -1,4 +1,4 @@
-package dev.cruding.engine.gen;
+package dev.cruding.engine.core;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.Action.ActionType;

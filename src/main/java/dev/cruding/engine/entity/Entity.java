@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
+import dev.cruding.engine.core.GeneratorException;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Father;
 import dev.cruding.engine.field.impl.Ref;
 import dev.cruding.engine.field.impl.Setting;
-import dev.cruding.engine.loader.GeneratorException;
 import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {

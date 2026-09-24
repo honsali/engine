@@ -9,13 +9,13 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.entity.BeBusinessPrinter;
 import dev.cruding.engine.printer.impl.entity.BeLiqTablePrinter;
 import dev.cruding.engine.printer.impl.entity.BeMapperPrinter;
@@ -23,6 +23,85 @@ import dev.cruding.engine.printer.impl.entity.BeRepositoryPrinter;
 import dev.cruding.engine.printer.impl.entity.BeRequestPrinter;
 
 class BeFormRequestPrinterTest {
+
+    public static final class ReferenceTarget extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class FormEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field libelle = Text().required();
+        public final Field internalNote = Text();
+        public final Field active = Boolean().required();
+        public final Field referenceTarget = Ref(ReferenceTarget.class);
+    }
+
+    public static final class MinimumLengthEntity extends Entity {
+        public final Field description = LongText().required().minLength(3).isId();
+    }
+
+    public static final class TextLengthEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field libelle = Text().maxLength(500).required();
+        public final Field description = LongText().maxLength(1000);
+    }
+
+    public static final class ViewCreerFormEntity extends ViewComposer<FormEntity> {
+
+        @Override
+        public Component rootComponent() {
+            FormEntity entity = entity(FormEntity.class);
+            return block(
+                    form(entity, entity.libelle.required(false), entity.code,
+                            entity.Text().lname("password").required().minLength(8).maxLength(100)),
+                    form(entity, entity.referenceTarget),
+                    element(createAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewModifierFormEntity extends ViewComposer<FormEntity> {
+
+        @Override
+        public Component rootComponent() {
+            FormEntity entity = entity(FormEntity.class);
+            return block(
+                    form(entity, entity.code.readOnly(), entity.libelle, entity.active, hidden(entity.id_)),
+                    element(updateAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewCreerMinimumLengthEntity extends ViewComposer<MinimumLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            MinimumLengthEntity entity = entity(MinimumLengthEntity.class);
+            return block(
+                    form(entity, entity.description),
+                    element(createAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewCreerTextLengthEntity extends ViewComposer<TextLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            TextLengthEntity entity = entity(TextLengthEntity.class);
+            return block(
+                    form(entity, entity.code, entity.libelle.maxLength(100), entity.description),
+                    element(createAction(entity)).byForm());
+        }
+    }
+
+    public static final class ViewModifierTextLengthEntity extends ViewComposer<TextLengthEntity> {
+
+        @Override
+        public Component rootComponent() {
+            TextLengthEntity entity = entity(TextLengthEntity.class);
+            return block(
+                    form(entity, entity.code.readOnly(), entity.libelle, entity.description, hidden(entity.id_)),
+                    element(updateAction(entity)).byForm());
+        }
+    }
 
     @TempDir
     Path tempDir;
@@ -152,84 +231,5 @@ class BeFormRequestPrinterTest {
         assertTrue(table.contains("<column name=\"description\" type=\"text\">"));
         assertTrue(table.contains("<column name=\"description\" type=\"text\" />"));
         assertFalse(table.contains("nvarchar(100)"));
-    }
-
-    public static final class ReferenceTarget extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class FormEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field libelle = Text().required();
-        public final Field internalNote = Text();
-        public final Field active = Boolean().required();
-        public final Field referenceTarget = Ref(ReferenceTarget.class);
-    }
-
-    public static final class MinimumLengthEntity extends Entity {
-        public final Field description = LongText().required().minLength(3).isId();
-    }
-
-    public static final class TextLengthEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field libelle = Text().maxLength(500).required();
-        public final Field description = LongText().maxLength(1000);
-    }
-
-    public static final class ViewCreerFormEntity extends ViewComposer<FormEntity> {
-
-        @Override
-        public Component rootComponent() {
-            FormEntity entity = entity(FormEntity.class);
-            return block(
-                    form(entity, entity.libelle.required(false), entity.code,
-                            entity.Text().lname("password").required().minLength(8).maxLength(100)),
-                    form(entity, entity.referenceTarget),
-                    element(createAction(entity)).byForm());
-        }
-    }
-
-    public static final class ViewModifierFormEntity extends ViewComposer<FormEntity> {
-
-        @Override
-        public Component rootComponent() {
-            FormEntity entity = entity(FormEntity.class);
-            return block(
-                    form(entity, entity.code.readOnly(), entity.libelle, entity.active, hidden(entity.id_)),
-                    element(updateAction(entity)).byForm());
-        }
-    }
-
-    public static final class ViewCreerMinimumLengthEntity extends ViewComposer<MinimumLengthEntity> {
-
-        @Override
-        public Component rootComponent() {
-            MinimumLengthEntity entity = entity(MinimumLengthEntity.class);
-            return block(
-                    form(entity, entity.description),
-                    element(createAction(entity)).byForm());
-        }
-    }
-
-    public static final class ViewCreerTextLengthEntity extends ViewComposer<TextLengthEntity> {
-
-        @Override
-        public Component rootComponent() {
-            TextLengthEntity entity = entity(TextLengthEntity.class);
-            return block(
-                    form(entity, entity.code, entity.libelle.maxLength(100), entity.description),
-                    element(createAction(entity)).byForm());
-        }
-    }
-
-    public static final class ViewModifierTextLengthEntity extends ViewComposer<TextLengthEntity> {
-
-        @Override
-        public Component rootComponent() {
-            TextLengthEntity entity = entity(TextLengthEntity.class);
-            return block(
-                    form(entity, entity.code.readOnly(), entity.libelle, entity.description, hidden(entity.id_)),
-                    element(updateAction(entity)).byForm());
-        }
     }
 }

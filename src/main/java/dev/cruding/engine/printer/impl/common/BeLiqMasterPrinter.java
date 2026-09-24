@@ -2,7 +2,7 @@ package dev.cruding.engine.printer.impl.common;
 
 import java.util.Comparator;
 import java.util.List;
-import dev.cruding.engine.EnginePaths;
+import dev.cruding.engine.core.EnginePaths;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.printer.Printer;

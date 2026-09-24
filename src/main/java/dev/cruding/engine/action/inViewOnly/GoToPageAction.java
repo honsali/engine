@@ -4,9 +4,9 @@ import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.inViewOnly.injection.GoToPageViewInjection;
+import dev.cruding.engine.core.PageRef;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
-import dev.cruding.engine.gen.PageRef;
 
 public class GoToPageAction extends Action {
 

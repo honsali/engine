@@ -1,4 +1,4 @@
-package dev.cruding.engine.loader;
+package dev.cruding.engine.core;
 
 public class GeneratorException extends RuntimeException {
     public GeneratorException(String message) {

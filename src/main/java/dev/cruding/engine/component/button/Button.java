@@ -2,9 +2,9 @@ package dev.cruding.engine.component.button;
 
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.component.Component;
+import dev.cruding.engine.core.Util;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Util;
 
 public class Button extends Component {
 

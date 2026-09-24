@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import dev.cruding.engine.EnginePaths;
 import dev.cruding.engine.action.Action;
 import dev.cruding.engine.action.create.CreateAction;
 import dev.cruding.engine.action.delete.DeleteAction;
@@ -24,15 +23,16 @@ import dev.cruding.engine.action.specifique.BasicAction;
 import dev.cruding.engine.action.update.UpdateAction;
 import dev.cruding.engine.component.Component;
 import dev.cruding.engine.component.container.Section;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.EnginePaths;
+import dev.cruding.engine.core.Module;
+import dev.cruding.engine.core.Page;
+import dev.cruding.engine.core.PageRef;
+import dev.cruding.engine.core.ViewComposer;
 import dev.cruding.engine.element.Element;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.field.Field;
 import dev.cruding.engine.field.impl.Date;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.Module;
-import dev.cruding.engine.gen.Page;
-import dev.cruding.engine.gen.PageRef;
-import dev.cruding.engine.gen.ViewComposer;
 import dev.cruding.engine.printer.impl.element.FeElementPrinter;
 import dev.cruding.engine.printer.impl.module.FeAclPrinter;
 import dev.cruding.engine.printer.impl.module.FePageListPrinter;
@@ -41,6 +41,135 @@ import dev.cruding.engine.printer.impl.page.FeHookPrinter;
 import dev.cruding.engine.printer.impl.page.FeMdlPrinter;
 
 class FePageContractPrinterTest {
+
+    public static final class PageContractEntity extends Entity {
+        public final Field code = Text().isId();
+    }
+
+    public static final class OnChangeEntity extends Entity {
+        public final Field code = Text().isId();
+        public final Field nom = Text().onChange().required();
+    }
+
+    public static final class ViewModifierOnChangeEntity extends ViewComposer<OnChangeEntity> {
+        @Override
+        public Component rootComponent() {
+            OnChangeEntity entity = entity(OnChangeEntity.class);
+            BasicAction action = new BasicAction(ActionType.NOUI, "actualiser", entity, element);
+            return form(entity, entity.nom.width(120),
+                    entity.Text().onChange().onChange("valeurChoisie").required().lname("choix"),
+                    entity.Text().onChange().onChange(action).required().lname("declencheur"),
+                    entity.Text().onChange().onChange((String) null).lname("sansSuivi"));
+        }
+    }
+
+    public static final class ViewFiltrerPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+        private PageRef targetPage;
+
+        ViewFiltrerPageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            FilterAction filter = filter(entity);
+            return block(
+                    form(entity, entity.code),
+                    table(entity, entity.code)
+                            .fillWith(filter)
+                            .onRowClick(goToPage(entity, targetPage)));
+        }
+    }
+
+    public static final class ViewConsulterPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+
+        ViewConsulterPageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            return table(entity, entity.code);
+        }
+    }
+
+    public static final class ViewModifierPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+
+        ViewModifierPageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            return table(entity, entity.code);
+        }
+    }
+
+    public static final class ViewGoToModulePageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+
+        ViewGoToModulePageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            return table(entity, entity.code).onRowClick(goToModule(entity, "target"));
+        }
+    }
+
+    public static final class ViewEmitEventPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageContractEntity entity;
+
+        ViewEmitEventPageContractEntity(PageContractEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public Component rootComponent() {
+            return table(entity, entity.code).onRowClick(emitEvent(entity, "rowSelected"));
+        }
+    }
+
+    public static final class ViewComponentlessPageContractEntity extends ViewComposer<PageContractEntity> {
+    }
+
+    public static final class ViewActionsPageContractEntity extends ViewComposer<PageContractEntity> {
+        @Override
+        public Component rootComponent() {
+            PageContractEntity entity = entity(PageContractEntity.class);
+            Action supprimer = deleteAction(entity);
+            Action notifier = normalAction(entity, "notifier").onSuccess(emitEvent(entity, "actualise"));
+            Action executer = normalAction(entity, "executer");
+            return block(
+                    button(supprimer),
+                    button(notifier),
+                    button(executer),
+                    table(entity, entity.code,
+                            actionColumn(entity, button(supprimer)),
+                            actionColumn(entity, button(notifier)),
+                            actionColumn(entity, button(executer)))
+                                    .fillWith(listAll(entity)));
+        }
+    }
+
+    public static final class ViewRetourPageContractEntity extends ViewComposer<PageContractEntity> {
+        private final PageRef targetPage;
+
+        ViewRetourPageContractEntity(PageRef targetPage) {
+            this.targetPage = targetPage;
+        }
+
+        @Override
+        public Component rootComponent() {
+            PageContractEntity entity = entity(PageContractEntity.class);
+            return section(table(entity, entity.code).onRowClick(goToPage(entity, targetPage)))
+                    .backPage(targetPage);
+        }
+    }
 
     @TempDir
     Path tempDir;
@@ -226,7 +355,7 @@ class FePageContractPrinterTest {
         assertTrue(ctrl.contains("await enregistrerPageContractEntityImpl(requete, resultat, thunkAPI);"));
         assertTrue(ctrl.contains("ServicePageContractEntity.filtrer(requete.filtre)"));
 
-        for (String name : new String[] { "maj", "valider", "chercher", "preparer", "enregistrer" }) {
+        for (String name : new String[] {"maj", "valider", "chercher", "preparer", "enregistrer"}) {
             assertTrue(hook.contains("const " + name + "PageContractEntity = async ({ form, ...req }: Partial<ReqModifierPageContractEntity> & { form: FormInstance<IPageContractEntity> }) =>"), name);
             assertTrue(hook.contains("CtrlModifierPageContractEntity." + name + "PageContractEntity({ ...req, request, ...params } as ReqModifierPageContractEntity)"), name);
         }
@@ -321,7 +450,7 @@ class FePageContractPrinterTest {
                 .filter(line -> line.endsWith(" } = useActionsPageContractEntity();"))
                 .findFirst().orElseThrow();
 
-        for (String name : new String[] { "Supprimer", "Notifier" }) {
+        for (String name : new String[] {"Supprimer", "Notifier"}) {
             String state = "etat" + name + "PageContractEntity";
             assertEquals(2L, generatedView.lines()
                     .filter(line -> line.contains("rid={" + state + ".rid}")).count(), state);
@@ -367,134 +496,5 @@ class FePageContractPrinterTest {
         assertFalse(generatedView.contains("width=\"500px\""));
         assertEquals("Informations", context.getLabelMap(module.uname).get("onglet.informations"));
         assertEquals("Historique", context.getLabelMap(module.uname).get("onglet.historique"));
-    }
-
-    public static final class PageContractEntity extends Entity {
-        public final Field code = Text().isId();
-    }
-
-    public static final class OnChangeEntity extends Entity {
-        public final Field code = Text().isId();
-        public final Field nom = Text().onChange().required();
-    }
-
-    public static final class ViewModifierOnChangeEntity extends ViewComposer<OnChangeEntity> {
-        @Override
-        public Component rootComponent() {
-            OnChangeEntity entity = entity(OnChangeEntity.class);
-            BasicAction action = new BasicAction(ActionType.NOUI, "actualiser", entity, element);
-            return form(entity, entity.nom.width(120),
-                    entity.Text().onChange().onChange("valeurChoisie").required().lname("choix"),
-                    entity.Text().onChange().onChange(action).required().lname("declencheur"),
-                    entity.Text().onChange().onChange((String) null).lname("sansSuivi"));
-        }
-    }
-
-    public static final class ViewFiltrerPageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageContractEntity entity;
-        private PageRef targetPage;
-
-        ViewFiltrerPageContractEntity(PageContractEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public Component rootComponent() {
-            FilterAction filter = filter(entity);
-            return block(
-                    form(entity, entity.code),
-                    table(entity, entity.code)
-                            .fillWith(filter)
-                            .onRowClick(goToPage(entity, targetPage)));
-        }
-    }
-
-    public static final class ViewConsulterPageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageContractEntity entity;
-
-        ViewConsulterPageContractEntity(PageContractEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public Component rootComponent() {
-            return table(entity, entity.code);
-        }
-    }
-
-    public static final class ViewModifierPageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageContractEntity entity;
-
-        ViewModifierPageContractEntity(PageContractEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public Component rootComponent() {
-            return table(entity, entity.code);
-        }
-    }
-
-    public static final class ViewGoToModulePageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageContractEntity entity;
-
-        ViewGoToModulePageContractEntity(PageContractEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public Component rootComponent() {
-            return table(entity, entity.code).onRowClick(goToModule(entity, "target"));
-        }
-    }
-
-    public static final class ViewEmitEventPageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageContractEntity entity;
-
-        ViewEmitEventPageContractEntity(PageContractEntity entity) {
-            this.entity = entity;
-        }
-
-        @Override
-        public Component rootComponent() {
-            return table(entity, entity.code).onRowClick(emitEvent(entity, "rowSelected"));
-        }
-    }
-
-    public static final class ViewComponentlessPageContractEntity extends ViewComposer<PageContractEntity> {
-    }
-
-    public static final class ViewActionsPageContractEntity extends ViewComposer<PageContractEntity> {
-        @Override
-        public Component rootComponent() {
-            PageContractEntity entity = entity(PageContractEntity.class);
-            Action supprimer = deleteAction(entity);
-            Action notifier = normalAction(entity, "notifier").onSuccess(emitEvent(entity, "actualise"));
-            Action executer = normalAction(entity, "executer");
-            return block(
-                    button(supprimer),
-                    button(notifier),
-                    button(executer),
-                    table(entity, entity.code,
-                            actionColumn(entity, button(supprimer)),
-                            actionColumn(entity, button(notifier)),
-                            actionColumn(entity, button(executer)))
-                            .fillWith(listAll(entity)));
-        }
-    }
-
-    public static final class ViewRetourPageContractEntity extends ViewComposer<PageContractEntity> {
-        private final PageRef targetPage;
-
-        ViewRetourPageContractEntity(PageRef targetPage) {
-            this.targetPage = targetPage;
-        }
-
-        @Override
-        public Component rootComponent() {
-            PageContractEntity entity = entity(PageContractEntity.class);
-            return section(table(entity, entity.code).onRowClick(goToPage(entity, targetPage)))
-                    .backPage(targetPage);
-        }
     }
 }

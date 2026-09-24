@@ -1,12 +1,12 @@
 package dev.cruding.engine.injection;
 
 import dev.cruding.engine.action.ActionWrapper;
+import dev.cruding.engine.core.Context;
+import dev.cruding.engine.core.LabelMapper;
 import dev.cruding.engine.entity.Entity;
 import dev.cruding.engine.flow.Flow;
 import dev.cruding.engine.flow.TsLiteral;
 import dev.cruding.engine.flow.ViewFlow;
-import dev.cruding.engine.gen.Context;
-import dev.cruding.engine.gen.LabelMapper;
 
 public class ActionViewInjection extends ActionWrapper {
 
@@ -15,11 +15,6 @@ public class ActionViewInjection extends ActionWrapper {
     }
 
     public void addFlowScript(ViewFlow flow, int level, String args) {}
-
-    protected String typedEntityParameter(ViewFlow flow) {
-        flow.addJsImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
-        return entity().lname + ": I" + entity().uname;
-    }
 
     public void addI18n(Flow f) {
         if (!noUi()) {
@@ -43,5 +38,10 @@ public class ActionViewInjection extends ActionWrapper {
                 }
             }
         }
+    }
+
+    protected String typedEntityParameter(ViewFlow flow) {
+        flow.addJsImport("{ I" + entity().uname + " }", "modele/" + entity().path + "/Domaine" + entity().uname);
+        return entity().lname + ": I" + entity().uname;
     }
 }

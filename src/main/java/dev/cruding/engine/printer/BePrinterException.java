@@ -1,6 +1,6 @@
 package dev.cruding.engine.printer;
 
-import dev.cruding.engine.loader.GeneratorException;
+import dev.cruding.engine.core.GeneratorException;
 
 public class BePrinterException extends GeneratorException {
 
