@@ -32,13 +32,13 @@ public class BeBusinessPrinter extends Printer {
         }
         for (Field relation : repositoryDependencies.values()) {
             Entity referenced = Context.getInstance().getEntity(relation.jtype);
-            f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname);
-            f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname + "Repository");
+            f.addJavaImport("app.domain." + referenced.javaPackage + "." + referenced.uname);
+            f.addJavaImport("app.domain." + referenced.javaPackage + "." + referenced.uname + "Repository");
         }
         f.addJavaImport("org.springframework.stereotype.Service");
         f.addJavaImport("org.springframework.transaction.annotation.Transactional");
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
@@ -84,7 +84,7 @@ public class BeBusinessPrinter extends Printer {
         }
         f.L("}");
 
-        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Service.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + "Service.java");
     }
 
     private LinkedHashMap<String, Field> repositoryDependencies(List<Action> actionList) {

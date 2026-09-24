@@ -9,7 +9,7 @@ public class DeleteServiceInjection extends ActionServiceInjection {
     public void addServiceImplementation(Flow f) {
         f.L("");
         f.L("const supprimer = async (id", entity().uname, ": string) => {");
-        f.L____("await axios.delete(`${API_URL}", entity().apiCollectionPath(), "/${id", entity().uname, "}`);");
+        f.L____("await axios.delete(`${API_URL}", entity().path, "/${id", entity().uname, "}`);");
         f.L("};");
 
     }

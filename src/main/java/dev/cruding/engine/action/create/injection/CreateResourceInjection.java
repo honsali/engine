@@ -21,9 +21,9 @@ public class CreateResourceInjection extends BasicResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         if (byFatherId() && entity().haveFather) {
-            f.L____("@PostMapping(\"/", entity().father.referencedEntity.apiCollectionName(), "/{id", entity().ufather, "}/", entity().apiCollectionName(), "\")");
+            f.L____("@PostMapping(\"/", entity().father.referencedEntity.lname, "/{id", entity().ufather, "}/", entity().lname, "\")");
         } else {
-            f.L____("@PostMapping(\"/", entity().apiCollectionName(), "\")");
+            f.L____("@PostMapping(\"/", entity().lname, "\")");
         }
         List<String> parameters = new ArrayList<>();
         if (byFatherId() && entity().haveFather) {

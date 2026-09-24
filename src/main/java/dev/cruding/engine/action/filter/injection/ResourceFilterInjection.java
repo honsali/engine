@@ -16,7 +16,7 @@ public class ResourceFilterInjection extends ActionResourceInjection {
 
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
-        f.L____("@PostMapping(\"/", entity().apiCollectionName(), "/", lnameWithoutEntity(), "\")");
+        f.L____("@PostMapping(\"/", entity().lname, "/", lnameWithoutEntity(), "\")");
         f.addSingleLineMethodDeclaration(
                 4,
                 "public PageResponse<" + entity().uname + "Response> " + lnameWithoutEntity() + "(",

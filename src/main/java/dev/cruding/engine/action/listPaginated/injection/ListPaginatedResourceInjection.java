@@ -13,9 +13,9 @@ public class ListPaginatedResourceInjection extends ActionResourceInjection {
     public void addResourceDeclaration(JavaFlow f) {
         f.L("");
         if (byFatherId() && entity().haveFather) {
-            f.L____("@GetMapping(\"/", entity().father.referencedEntity.apiCollectionName(), "/{id", entity().ufather, "}/", entity().apiCollectionName(), "/", lcoreName());
+            f.L____("@GetMapping(\"/", entity().father.referencedEntity.lname, "/{id", entity().ufather, "}/", entity().lname, "/", lcoreName());
         } else {
-            f.L____("@GetMapping(\"/", entity().apiCollectionName(), "/", lcoreName());
+            f.L____("@GetMapping(\"/", entity().lname, "/", lcoreName());
         }
         f.__("\")");
         f.L____("public PageResponse<", entity().uname, "Dto> ", lnameWithoutEntity());

@@ -19,7 +19,7 @@ public class BeMapperPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
 
         /* *********************************************************************** */
 
@@ -30,8 +30,8 @@ public class BeMapperPrinter extends Printer {
         for (Field field : entity.listRefAndFather()) {
             Entity referenced = Context.getInstance().getEntity(field.jtype);
             if (!entity.uname.equals(referenced.uname)) {
-                f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname);
-                f.addJavaImport("app.domain." + referenced.javaPackage() + "." + referenced.uname + "Mapper");
+                f.addJavaImport("app.domain." + referenced.javaPackage + "." + referenced.uname);
+                f.addJavaImport("app.domain." + referenced.javaPackage + "." + referenced.uname + "Mapper");
             }
         }
 
@@ -95,7 +95,7 @@ public class BeMapperPrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Mapper.java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + "Mapper.java");
     }
 
 }

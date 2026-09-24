@@ -34,9 +34,9 @@ public class BasicServiceInjection extends ActionServiceInjection {
         }
         f.__(") => {");
         if (byFatherId() && entity().haveFather) {
-            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().father.referencedEntity.apiCollectionPath(), "/${id" + entity().ufather, "}/", entity().apiCollectionName());
+            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().father.referencedEntity.path, "/${id" + entity().ufather, "}/", entity().lname);
         } else {
-            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().apiCollectionPath());
+            f.L____("const { data } = await axios.", lrest(), "(`${API_URL}", entity().path);
         }
         if (byId()) {
             f.__("/${id", entity().uname, "}");

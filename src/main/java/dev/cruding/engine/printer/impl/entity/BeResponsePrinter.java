@@ -15,7 +15,7 @@ public class BeResponsePrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
 
         /* *********************************************************************** */
 
@@ -47,7 +47,7 @@ public class BeResponsePrinter extends Printer {
         /* *********************************************************************** */
 
         String s = f.toString();
-        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Response.java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + "Response.java");
     }
 
 

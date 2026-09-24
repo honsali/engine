@@ -16,41 +16,49 @@ import dev.cruding.engine.printer.BePrinterException;
 
 public class Entity extends FieldFactory {
 
-    public String pkg;
-    public String path;
-    public String key;
-    public String lid;// lowerCaseId
-    public String uid;// upperCaseId
     public String lname;
     public String uname;
     public String dbName;
     public String seqName;
-    private String apiCollectionName;
-    public boolean haveFather = false;
+
+    public String pkg;
+    public String path;
+    public String javaPackage;
+    public String javaPath;
+
+    public String key;
     public Setting id_;
+    public Setting setting;
+    public String lid;// lowerCaseId
+    public String uid;// upperCaseId
+
+    public boolean haveFather = false;
     public Father<?> father;
     public String lfather;
-
     public String ufather;
 
-    public Setting setting;
     public ArrayList<Field> fieldList = new ArrayList<>();
 
     public Entity() {
         this.uname = this.getClass().getSimpleName();
         this.lname = StringUtils.uncapitalize(uname);
-        this.pkg = StringUtils.substringAfter(this.getClass().getPackageName(), "model.");
-        this.path = this.pkg.replace('.', '/') + '/' + this.lname;
-        this.key = UUID.nameUUIDFromBytes(this.path.getBytes(StandardCharsets.UTF_8)).toString();
-        this.apiCollectionName = this.lname + "s";
         this.dbName = StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(uname), "_").toLowerCase();
         this.seqName = "seq_" + dbName;
+
+        this.pkg = StringUtils.substringAfter(this.getClass().getPackageName(), "model.");
+        this.path = this.pkg.replace('.', '/') + '/' + this.lname;
+        this.javaPackage = (pkg + "." + lname).toLowerCase(Locale.ROOT);
+        this.javaPath = javaPackage.replace('.', '/');
+
+
+        this.key = UUID.nameUUIDFromBytes(this.path.getBytes(StandardCharsets.UTF_8)).toString();
+        this.id_ = new Setting();
+        this.id_.containingEntity(this);
+        this.setting = this.id_.init(uname);
     }
 
     public void init() {
         Field identifier = null;
-        this.id_ = new Setting();
-        this.id_.containingEntity(this);
 
         java.lang.reflect.Field[] list = this.getClass().getFields();
         for (java.lang.reflect.Field f : list) {
@@ -90,15 +98,10 @@ public class Entity extends FieldFactory {
             }
         }
         validateFields();
-        this.setting = this.id_.init(uname);
 
-        if (identifier == null) {
-            this.lid = "id";
-            this.uid = "Id";
-        } else {
-            this.lid = identifier.lname;
-            this.uid = identifier.uname;
-        }
+
+        this.lid = identifier == null ? "id" : identifier.lname;
+        this.uid = identifier == null ? "Id" : identifier.uname;
 
         if (this.father != null) {
             this.haveFather = true;
@@ -109,26 +112,6 @@ public class Entity extends FieldFactory {
 
     public boolean isReferenceData() {
         return false;
-    }
-
-    public String apiDomainPath() {
-        return "/" + pkg.replace('.', '/');
-    }
-
-    public String apiCollectionName() {
-        return apiCollectionName;
-    }
-
-    public String apiCollectionPath() {
-        return apiDomainPath() + "/" + apiCollectionName;
-    }
-
-    public String javaPackage() {
-        return (pkg + "." + lname).toLowerCase(Locale.ROOT);
-    }
-
-    public String javaPath() {
-        return javaPackage().replace('.', '/');
     }
 
     public String idFather() {
@@ -149,11 +132,6 @@ public class Entity extends FieldFactory {
     public List<Field> listRefAndFather() {
         return fieldList.stream().filter(field -> field.isRef || field.isFather).toList();
     }
-
-    protected void apiCollectionName(String apiCollectionName) {
-        this.apiCollectionName = apiCollectionName;
-    }
-
 
     private void validateFields() {
         List<Field> fields = fieldList.stream().filter(field -> field.isBasic || field.isRef || field.isFather).toList();

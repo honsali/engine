@@ -20,12 +20,13 @@ public class BeControllerPrinter extends Printer {
         f.addJavaImport("org.springframework.web.bind.annotation.RequestMapping");
         f.addJavaImport("org.springframework.web.bind.annotation.RestController");
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
-        f.L("@RestController");
-        f.L("@RequestMapping(\"/api", entity.apiDomainPath(), "\")");
+        f.L("@RestController");;
+
+        f.L("@RequestMapping(\"/api", entity.pkg.replace('.', '/'), "\")");
         f.L("public class ", entity.uname, "Controller {");
         f.L("");
         f.L____("private final ", entity.uname, "Service ", entity.lname, "Service;");
@@ -45,6 +46,6 @@ public class BeControllerPrinter extends Printer {
 
         f.L("}");
 
-        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Controller.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + "Controller.java");
     }
 }

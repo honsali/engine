@@ -19,9 +19,9 @@ public class CreateServiceInjection extends ActionServiceInjection {
         f.__(entity().lname, ": I", entity().uname, ") => {");
         f.L____("const { data } = await axios.post<I", entity().uname, ">(`${API_URL}");
         if (byFatherId() && entity().haveFather) {
-            f.__(entity().father.referencedEntity.apiCollectionPath(), "/${id", entity().ufather, "}/", entity().apiCollectionName());
+            f.__(entity().father.referencedEntity.path, "/${id", entity().ufather, "}/", entity().lname);
         } else {
-            f.__(entity().apiCollectionPath());
+            f.__(entity().path);
         }
         f.__("`, ", entity().lname);
         f.__(");");

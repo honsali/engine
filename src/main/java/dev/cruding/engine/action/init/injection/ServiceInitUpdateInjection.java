@@ -24,13 +24,13 @@ public class ServiceInitUpdateInjection extends ActionServiceInjection {
         if (byId()) {
             name = name + "ParId";
             params = params + "id" + entity().uname + " :string";
-            url = entity().apiCollectionPath() + "/${id" + entity().uname + "}";
+            url = entity().path + "/${id" + entity().uname + "}";
         }
         if (byFatherId() && entity().haveFather) {
             name = name + "ParId" + entity().ufather;
             params = params + "id" + entity().ufather + " :string";
-            url = entity().father.referencedEntity.apiCollectionPath()
-                    + "/${id" + entity().ufather + "}/" + entity().apiCollectionName();
+            url = entity().father.referencedEntity.path
+                    + "/${id" + entity().ufather + "}/" + entity().lname;
         }
     }
 

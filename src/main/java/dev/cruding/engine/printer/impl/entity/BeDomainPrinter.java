@@ -17,7 +17,7 @@ public class BeDomainPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
 
         /* *********************************************************************** */
 
@@ -27,7 +27,7 @@ public class BeDomainPrinter extends Printer {
         for (Field field : fields) {
             if ((field.isRef || field.isFather) && !field.jtype.equals(field.containingEntity)) {
                 Entity re = Context.getInstance().getEntity(field.jtype);
-                f.addJavaImport("app.domain." + re.javaPackage() + "." + re.uname);
+                f.addJavaImport("app.domain." + re.javaPackage + "." + re.uname);
             }
             if (field.tranzient) {
                 f.addJavaImport("jakarta.persistence.Transient");
@@ -101,7 +101,7 @@ public class BeDomainPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + ".java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + ".java");
     }
 
     private List<String> parameterList(List<Field> fields) {

@@ -31,7 +31,7 @@ public class BeRepositoryPrinter extends Printer {
             action.repoActionInjection.addRepositoryImport(f);
         }
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
@@ -53,6 +53,6 @@ public class BeRepositoryPrinter extends Printer {
 
         f.L("}");
 
-        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + "/" + entity.uname + "Repository.java");
+        printFile(f.toString(), EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + "/" + entity.uname + "Repository.java");
     }
 }

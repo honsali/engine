@@ -42,7 +42,7 @@ public class BeSpecificationPrinter extends Printer {
 
         /* *********************************************************************** */
 
-        f.__("package app.domain.", entity.javaPackage(), ";");
+        f.__("package app.domain.", entity.javaPackage, ";");
         f.L("");
         f.flushJavaImportBlock();
         f.L("");
@@ -72,7 +72,7 @@ public class BeSpecificationPrinter extends Printer {
 
         /* *********************************************************************** */
         String s = f.toString();
-        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath() + '/' + entity.uname + "Specification.java");
+        printFile(s, EnginePaths.outputRoot + "/be/src/main/java/app/domain/" + entity.javaPath + '/' + entity.uname + "Specification.java");
     }
 
 }
